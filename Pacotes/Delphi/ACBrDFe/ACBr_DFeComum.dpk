@@ -1,0 +1,69 @@
+package ACBr_DFeComum;
+{$R *.res}
+{$R *.otares}
+{$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION OFF}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES ON}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DEFINE DEBUG}
+{$ENDIF IMPLICITBUILDING}
+{$DESCRIPTION 'ACBr - Biblioteca com Métodos e Classes em comum a todos Documentos Fiscais Eletrônicos'}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  rtl,
+  vcl,
+  inet,
+  soaprtl,
+  ACBr_Integrador,
+  ACBr_OpenSSL,
+  ACBr_TCP;
+
+contains
+  ACBrXmlBase in '..\..\..\Fontes\ACBrDFe\ACBrXmlBase.pas',
+  ACBrXmlDocument in '..\..\..\Fontes\ACBrDFe\ACBrXmlDocument.pas',
+  ACBrXmlReader in '..\..\..\Fontes\ACBrDFe\ACBrXmlReader.pas',
+  ACBrXmlWriter in '..\..\..\Fontes\ACBrDFe\ACBrXmlWriter.pas',
+  ACBrDFeConfiguracoes in '..\..\..\Fontes\ACBrDFe\ACBrDFeConfiguracoes.pas',
+  ACBrDFeUtil in '..\..\..\Fontes\ACBrDFe\ACBrDFeUtil.pas',
+  ACBrDFeWebService in '..\..\..\Fontes\ACBrDFe\ACBrDFeWebService.pas',
+  ACBrDFe in '..\..\..\Fontes\ACBrDFe\ACBrDFe.pas',
+  ACBrDFeException in '..\..\..\Fontes\ACBrDFe\ACBrDFeException.pas',
+  ACBrDFeSSL in '..\..\..\Fontes\ACBrDFe\ACBrDFeSSL.pas',
+  ACBrMSXML2_TLB in '..\..\..\Fontes\Terceiros\Ole\ACBrMSXML2_TLB.pas',
+  ACBrDFeOpenSSL in '..\..\..\Fontes\ACBrDFe\ACBrDFeOpenSSL.pas',
+  ACBrDFeHttpOpenSSL in '..\..\..\Fontes\ACBrDFe\ACBrDFeHttpOpenSSL.pas',
+  libxmlsec in '..\..\..\Fontes\Terceiros\LibXmlSec\libxmlsec.pas',
+  ACBrDFeXsXmlSec in '..\..\..\Fontes\ACBrDFe\ACBrDFeXsXmlSec.pas',
+  libxml2 in '..\..\..\Fontes\Terceiros\LibXmlSec\libxml2.pas',
+  ACBrLibXml2 in '..\..\..\Fontes\ACBrDFe\ACBrLibXml2.pas',
+  ACBrDFeXsLibXml2 in '..\..\..\Fontes\ACBrDFe\ACBrDFeXsLibXml2.pas',
+  ACBrDFeHttpIndy in '..\..\..\Fontes\ACBrDFe\ACBrDFeHttpIndy.pas',
+  ACBrDFeCapicom in '..\..\..\Fontes\ACBrDFe\ACBrDFeCapicom.pas',
+  ACBrCAPICOM_TLB in '..\..\..\Fontes\Terceiros\Ole\ACBrCAPICOM_TLB.pas',
+  ACBrDFeXsMsXmlCapicom in '..\..\..\Fontes\ACBrDFe\ACBrDFeXsMsXmlCapicom.pas',
+  ACBRDFeWinCrypt in '..\..\..\Fontes\ACBrDFe\ACBRDFeWinCrypt.pas',
+  ACBrDFeHttpWinApi in '..\..\..\Fontes\ACBrDFe\ACBrDFeHttpWinApi.pas',
+  ACBrDFeXsMsXml in '..\..\..\Fontes\ACBrDFe\ACBrDFeXsMsXml.pas',
+  ACBrDFeReport in '..\..\..\Fontes\ACBrDFe\ACBrDFeReport.pas';
+
+end.
