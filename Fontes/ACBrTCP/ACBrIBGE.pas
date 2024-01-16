@@ -1,33 +1,33 @@
-ï»¿{******************************************************************************}
+{******************************************************************************}
 { Projeto: Componentes ACBr                                                    }
-{  Biblioteca multiplataforma de componentes Delphi para interaï¿½ï¿½o com equipa- }
-{ mentos de Automaï¿½ï¿½o Comercial utilizados no Brasil                           }
+{  Biblioteca multiplataforma de componentes Delphi para interação com equipa- }
+{ mentos de Automação Comercial utilizados no Brasil                           }
 {                                                                              }
 { Direitos Autorais Reservados (c) 2022 Daniel Simoes de Almeida               }
 {                                                                              }
 { Colaboradores nesse arquivo:                                                 }
 {                                                                              }
-{  Vocï¿½ pode obter a ï¿½ltima versï¿½o desse arquivo na pagina do  Projeto ACBr    }
+{  Você pode obter a última versão desse arquivo na pagina do  Projeto ACBr    }
 { Componentes localizado em      http://www.sourceforge.net/projects/acbr      }
 {                                                                              }
-{  Esta biblioteca ï¿½ software livre; vocï¿½ pode redistribuï¿½-la e/ou modificï¿½-la }
-{ sob os termos da Licenï¿½a Pï¿½blica Geral Menor do GNU conforme publicada pela  }
-{ Free Software Foundation; tanto a versï¿½o 2.1 da Licenï¿½a, ou (a seu critï¿½rio) }
-{ qualquer versï¿½o posterior.                                                   }
+{  Esta biblioteca é software livre; você pode redistribuí-la e/ou modificá-la }
+{ sob os termos da Licença Pública Geral Menor do GNU conforme publicada pela  }
+{ Free Software Foundation; tanto a versão 2.1 da Licença, ou (a seu critério) }
+{ qualquer versão posterior.                                                   }
 {                                                                              }
-{  Esta biblioteca ï¿½ distribuï¿½da na expectativa de que seja ï¿½til, porï¿½m, SEM   }
-{ NENHUMA GARANTIA; nem mesmo a garantia implï¿½cita de COMERCIABILIDADE OU      }
-{ ADEQUAï¿½ï¿½O A UMA FINALIDADE ESPECï¿½FICA. Consulte a Licenï¿½a Pï¿½blica Geral Menor}
-{ do GNU para mais detalhes. (Arquivo LICENï¿½A.TXT ou LICENSE.TXT)              }
+{  Esta biblioteca é distribuída na expectativa de que seja útil, porém, SEM   }
+{ NENHUMA GARANTIA; nem mesmo a garantia implícita de COMERCIABILIDADE OU      }
+{ ADEQUAÇÃO A UMA FINALIDADE ESPECÍFICA. Consulte a Licença Pública Geral Menor}
+{ do GNU para mais detalhes. (Arquivo LICENÇA.TXT ou LICENSE.TXT)              }
 {                                                                              }
-{  Vocï¿½ deve ter recebido uma cï¿½pia da Licenï¿½a Pï¿½blica Geral Menor do GNU junto}
-{ com esta biblioteca; se nï¿½o, escreva para a Free Software Foundation, Inc.,  }
-{ no endereï¿½o 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.          }
-{ Vocï¿½ tambï¿½m pode obter uma copia da licenï¿½a em:                              }
+{  Você deve ter recebido uma cópia da Licença Pública Geral Menor do GNU junto}
+{ com esta biblioteca; se não, escreva para a Free Software Foundation, Inc.,  }
+{ no endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.          }
+{ Você também pode obter uma copia da licença em:                              }
 { http://www.opensource.org/licenses/lgpl-license.php                          }
 {                                                                              }
-{ Daniel Simï¿½es de Almeida - daniel@projetoacbr.com.br - www.projetoacbr.com.br}
-{       Rua Coronel Aureliano de Camargo, 963 - Tatuï¿½ - SP - 18270-170         }
+{ Daniel Simões de Almeida - daniel@projetoacbr.com.br - www.projetoacbr.com.br}
+{       Rua Coronel Aureliano de Camargo, 963 - Tatuí - SP - 18270-170         }
 {******************************************************************************}
 
 unit ACBrIBGE ;
@@ -247,7 +247,7 @@ type
   published
     property CacheArquivo: String read GetCacheArquivo write fCacheArquivo;
     property CacheDiasValidade: Integer read fCacheDiasValidade
-      write fCacheDiasValidade default 0;  // 0-nï¿½o expira
+      write fCacheDiasValidade default 0;  // 0-não expira
 
     property IgnorarCaixaEAcentos: Boolean read fIgnorarCaixaEAcentos
       write SetIgnorarCaixaEAcentos default False;
@@ -303,7 +303,7 @@ begin
     SL.Text := StringReplace(AValue,'|',sLineBreak,[rfReplaceAll]);
 
     if (SL.Count <> 7) then
-      raise EACBrIBGEException.CreateFmt( ACBrStr('Linha de UF invï¿½lida: %s'), [AValue] );
+      raise EACBrIBGEException.CreateFmt( ACBrStr('Linha de UF inválida: %s'), [AValue] );
 
     CodUF     := StrToInt( SL[0] );
     UF        := SL[1];
@@ -656,7 +656,7 @@ begin
     SL.Text := StringReplace(AValue,'|',sLineBreak,[rfReplaceAll]);
 
     if (SL.Count <> 6) then
-      raise EACBrIBGEException.CreateFmt( ACBrStr('Linha de Cidade invï¿½lida: %s'), [AValue] );
+      raise EACBrIBGEException.CreateFmt( ACBrStr('Linha de Cidade inválida: %s'), [AValue] );
 
     CodMunicipio := StrToInt( SL[0] );
     Municipio    := SL[1];
@@ -904,7 +904,7 @@ begin
         begin
           JSonRespMun := JSonResp[J].ObjectValue;
           CodMun := JSonRespMun.I['localidade'];
-          iCidade := Find(CodMun * 10, False);   // Municipo vem sem o dï¿½gito verificador
+          iCidade := Find(CodMun * 10, False);   // Municipo vem sem o dígito verificador
           if (iCidade >= 0) then
           begin
             oCidade := Objects[iCidade];
@@ -942,7 +942,7 @@ begin
         begin
           JSonRespMun := JSonResp[J].AsObject;
           CodMun := JSonRespMun.Values['localidade'].AsInteger;
-          iCidade := Find(CodMun * 10, False);   // Municipo vem sem o dï¿½gito verificador
+          iCidade := Find(CodMun * 10, False);   // Municipo vem sem o dígito verificador
           if (iCidade >= 0) then
           begin
             oCidade := Objects[iCidade];
@@ -1021,7 +1021,7 @@ begin
     Exit;
 
   fIgnorarCaixaEAcentos := AValue;
-  fCacheLido := False;  // Forï¿½a recarga do Cache, no formato correto
+  fCacheLido := False;  // Força recarga do Cache, no formato correto
 end;
 
 function TACBrIBGE.UnZipHttpDoc: String;
@@ -1090,7 +1090,7 @@ begin
   RespHTTP.Clear;
   fCidadesEncontradas.Clear;
   if ACodMun = 0 then
-     raise EACBrIBGEException.Create( ACBrStr('Cï¿½digo do Municï¿½pio deve ser informado') );
+     raise EACBrIBGEException.Create( ACBrStr('Código do Município deve ser informado') );
 
   ACodUF := StrToInt(LeftStr(IntToStr(ACodMun), 2));
   ObterCidades(ACodUF);
@@ -1140,13 +1140,13 @@ begin
   fCidadesEncontradas.Clear;
 
   if (Trim(ACidade) = '') then
-    raise EACBrIBGEException.Create( ACBrStr('Nome do Municï¿½pio deve ser informado') );
+    raise EACBrIBGEException.Create( ACBrStr('Nome do Município deve ser informado') );
 
   if (Trim(AUF) <> '') then
   begin
     CodUF := UFToCodUF(Trim(AUF));
     if (CodUF < 0) then
-      raise EACBrIBGEException.CreateFmt( ACBrStr('UF %s nï¿½o encontrada'), [AUF] );
+      raise EACBrIBGEException.CreateFmt( ACBrStr('UF %s não encontrada'), [AUF] );
 
     ObterCidades(CodUF);
   end
@@ -1208,7 +1208,7 @@ begin
     Inc(I);
   end;
 
-  if not Carregar then                                    // Jï¿½ carregou todas ?
+  if not Carregar then                                    // Já carregou todas ?
     Exit;
 
   fListaCidades.Clear;
@@ -1231,10 +1231,10 @@ begin
 
   iUF := fListaUFs.Find(ACodUF);
   if (iUF < 0) then
-    raise EACBrIBGEException.CreateFmt( ACBrStr('Cï¿½digo da UF: %d invï¿½lido'), [ACodUF] );
+    raise EACBrIBGEException.CreateFmt( ACBrStr('Código da UF: %d inválido'), [ACodUF] );
 
   oUF := fListaUFs[iUF];
-  if oUF.CidadesCarregadas then   // Jï¿½ Carregou essa UF ?
+  if oUF.CidadesCarregadas then   // Já Carregou essa UF ?
     Exit;
 
   AURL := StringReplace(CIBGE_URL_MUN_UF, '{idUF}', IntToStrZero(ACodUF,2), []);
@@ -1256,7 +1256,7 @@ begin
   if CodUF > 0 then
     ObterCidades(CodUF)
   else
-    raise EACBrIBGEException.CreateFmt( ACBrStr('UF: %s invï¿½lida'), [AUF] );
+    raise EACBrIBGEException.CreateFmt( ACBrStr('UF: %s inválida'), [AUF] );
 end;
 
 procedure TACBrIBGE.SalvarCidades(AStream: TStream);
@@ -1300,10 +1300,10 @@ begin
   AFile := Trim(AFile);
 
   if (AFile = '') then
-    raise EACBrIBGEException.Create( ACBrStr('Nome do Arquivo nï¿½o informado') );
+    raise EACBrIBGEException.Create( ACBrStr('Nome do Arquivo não informado') );
 
   if (not Overwrite) and FileExists(AFile) then
-    raise EACBrIBGEException.CreateFmt( ACBrStr('Arquivo %s jï¿½ existente'), [AFile] );
+    raise EACBrIBGEException.CreateFmt( ACBrStr('Arquivo %s já existente'), [AFile] );
 
   SL := TStringList.Create;
   try
@@ -1390,10 +1390,10 @@ begin
     Exit;
 
   if (fListaUFs.Count < 1) then
-    raise EACBrIBGEException.Create( ACBrStr('Tabelas de UF nï¿½o estï¿½ na memï¿½ria') );
+    raise EACBrIBGEException.Create( ACBrStr('Tabelas de UF não está na memória') );
 
   if (fListaCidades.Count < 1) then
-    raise EACBrIBGEException.Create( ACBrStr('Tabelas de Cidades nï¿½o estï¿½ na memï¿½ria') );
+    raise EACBrIBGEException.Create( ACBrStr('Tabelas de Cidades não está na memória') );
 
   SL := TStringList.Create;
   try
@@ -1504,7 +1504,7 @@ begin
   if not fCacheLido then
     CarregarCache;
 
-  if (fListaUFs.Count >= CIBGE_UF_COUNT) then  // Jï¿½ fez a carga ?
+  if (fListaUFs.Count >= CIBGE_UF_COUNT) then  // Já fez a carga ?
     Exit;
 
   UFsEmCache := '';

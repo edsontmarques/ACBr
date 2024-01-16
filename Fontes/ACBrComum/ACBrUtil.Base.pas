@@ -1,36 +1,36 @@
-ï»¿{******************************************************************************}
+{******************************************************************************}
 { Projeto: Componentes ACBr                                                    }
-{  Biblioteca multiplataforma de componentes Delphi para interaï¿½ï¿½o com equipa- }
-{ mentos de Automaï¿½ï¿½o Comercial utilizados no Brasil                           }
+{  Biblioteca multiplataforma de componentes Delphi para interação com equipa- }
+{ mentos de Automação Comercial utilizados no Brasil                           }
 {                                                                              }
 { Direitos Autorais Reservados (c) 2020 Daniel Simoes de Almeida               }
 {                                                                              }
 {                                                                              }
-{  Vocï¿½ pode obter a ï¿½ltima versï¿½o desse arquivo na pagina do  Projeto ACBr    }
+{  Você pode obter a última versão desse arquivo na pagina do  Projeto ACBr    }
 { Componentes localizado em      http://www.sourceforge.net/projects/acbr      }
 {                                                                              }
-{  Esta biblioteca ï¿½ software livre; vocï¿½ pode redistribuï¿½-la e/ou modificï¿½-la }
-{ sob os termos da Licenï¿½a Pï¿½blica Geral Menor do GNU conforme publicada pela  }
-{ Free Software Foundation; tanto a versï¿½o 2.1 da Licenï¿½a, ou (a seu critï¿½rio) }
-{ qualquer versï¿½o posterior.                                                   }
+{  Esta biblioteca é software livre; você pode redistribuí-la e/ou modificá-la }
+{ sob os termos da Licença Pública Geral Menor do GNU conforme publicada pela  }
+{ Free Software Foundation; tanto a versão 2.1 da Licença, ou (a seu critério) }
+{ qualquer versão posterior.                                                   }
 {                                                                              }
-{  Esta biblioteca ï¿½ distribuï¿½da na expectativa de que seja ï¿½til, porï¿½m, SEM   }
-{ NENHUMA GARANTIA; nem mesmo a garantia implï¿½cita de COMERCIABILIDADE OU      }
-{ ADEQUAï¿½ï¿½O A UMA FINALIDADE ESPECï¿½FICA. Consulte a Licenï¿½a Pï¿½blica Geral Menor}
-{ do GNU para mais detalhes. (Arquivo LICENï¿½A.TXT ou LICENSE.TXT)              }
+{  Esta biblioteca é distribuída na expectativa de que seja útil, porém, SEM   }
+{ NENHUMA GARANTIA; nem mesmo a garantia implícita de COMERCIABILIDADE OU      }
+{ ADEQUAÇÃO A UMA FINALIDADE ESPECÍFICA. Consulte a Licença Pública Geral Menor}
+{ do GNU para mais detalhes. (Arquivo LICENÇA.TXT ou LICENSE.TXT)              }
 {                                                                              }
-{  Vocï¿½ deve ter recebido uma cï¿½pia da Licenï¿½a Pï¿½blica Geral Menor do GNU junto}
-{ com esta biblioteca; se nï¿½o, escreva para a Free Software Foundation, Inc.,  }
-{ no endereï¿½o 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.          }
-{ Vocï¿½ tambï¿½m pode obter uma copia da licenï¿½a em:                              }
+{  Você deve ter recebido uma cópia da Licença Pública Geral Menor do GNU junto}
+{ com esta biblioteca; se não, escreva para a Free Software Foundation, Inc.,  }
+{ no endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.          }
+{ Você também pode obter uma copia da licença em:                              }
 { http://www.opensource.org/licenses/lgpl-license.php                          }
 {                                                                              }
-{ Daniel Simï¿½es de Almeida - daniel@projetoacbr.com.br - www.projetoacbr.com.br}
-{       Rua Coronel Aureliano de Camargo, 963 - Tatuï¿½ - SP - 18270-170         }
+{ Daniel Simões de Almeida - daniel@projetoacbr.com.br - www.projetoacbr.com.br}
+{       Rua Coronel Aureliano de Camargo, 963 - Tatuí - SP - 18270-170         }
 {******************************************************************************}
 {                                                                              }
-{  Algumas funï¿½oes dessa Unit foram extraidas de outras Bibliotecas, veja no   }
-{ cabeï¿½alho das Funï¿½oes no cï¿½digo abaixo a origem das informaï¿½oes, e autores...}
+{  Algumas funçoes dessa Unit foram extraidas de outras Bibliotecas, veja no   }
+{ cabeçalho das Funçoes no código abaixo a origem das informaçoes, e autores...}
 {                                                                              }
 {******************************************************************************}
 
@@ -139,7 +139,7 @@ begin
 end;
 
 {-----------------------------------------------------------------------------
-  Transforma <NumInteiro> em String, preenchendo com Zeros a Esquerda atï¿½
+  Transforma <NumInteiro> em String, preenchendo com Zeros a Esquerda até
   atingiros digitos de <Tamnho>
  ---------------------------------------------------------------------------- }
 function IntToStrZero(const NumInteiro : Int64 ; Tamanho : Integer) : String ;
@@ -149,8 +149,8 @@ end ;
 
 {-----------------------------------------------------------------------------
   Converte uma <NumString> para Double, semelhante ao StrToFloatDef, mas
-  verifica se a virgula ï¿½ '.' ou ',' efetuando a conversï¿½o se necessï¿½rio
-  Se nï¿½o for possivel converter, retorna <DefaultValue>
+  verifica se a virgula é '.' ou ',' efetuando a conversão se necessário
+  Se não for possivel converter, retorna <DefaultValue>
  ---------------------------------------------------------------------------- }
 function StringToFloatDef(const NumString : String ; const DefaultValue : Double
    ) : Double ;
@@ -168,7 +168,7 @@ begin
 end ;
 
 {-----------------------------------------------------------------------------
-  Faz o mesmo que FormatFloat, porï¿½m garante que o resultado final terï¿½
+  Faz o mesmo que FormatFloat, porém garante que o resultado final terá
   o separador de decimal = ',' e o separador de milhar como Ponto
  ---------------------------------------------------------------------------- }
 function FormatFloatBr(const AValue: Extended; AFormat: String): String;
@@ -219,8 +219,8 @@ end;
 
 {-----------------------------------------------------------------------------
   Converte uma <NumString> para Double, semelhante ao StrToFloat, mas
-  verifica se a virgula ï¿½ '.' ou ',' efetuando a conversï¿½o se necessï¿½rio
-  Se nï¿½o for possivel converter, dispara Exception
+  verifica se a virgula é '.' ou ',' efetuando a conversão se necessário
+  Se não for possivel converter, dispara Exception
  ---------------------------------------------------------------------------- }
 function StringToFloat(NumString: String): Double;
 var
@@ -275,9 +275,9 @@ begin
 end;
 
 {-----------------------------------------------------------------------------
-  Converte um Double para string, semelhante a FloatToStr(), porï¿½m
-  garante que nï¿½o haverï¿½ separador de Milhar e o Separador Decimal serï¿½ igual a
-  "SeparadorDecimal" ( o default ï¿½ .(ponto))
+  Converte um Double para string, semelhante a FloatToStr(), porém
+  garante que não haverá separador de Milhar e o Separador Decimal será igual a
+  "SeparadorDecimal" ( o default é .(ponto))
  ---------------------------------------------------------------------------- }
 function FloatToString(const AValue: Double; SeparadorDecimal: Char;
   const AFormat: String): String;
@@ -390,7 +390,7 @@ begin
 end ;
 
 {-----------------------------------------------------------------------------
-  Traduz Strings do Tipo chr(13)+chr(10) para uma representaï¿½ï¿½o que possa ser
+  Traduz Strings do Tipo chr(13)+chr(10) para uma representação que possa ser
    lida por AscToString Ex: '#13,#10'
  ---------------------------------------------------------------------------- }
 function StringToAsc(const AString: AnsiString): String;
@@ -475,7 +475,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
- Retorna True se o <CodEAN13> informado for vï¿½lido
+ Retorna True se o <CodEAN13> informado for válido
  ------------------------------------------------------------------------------}
 function EAN13Valido(const CodEAN13: String): Boolean;
 begin
