@@ -43,6 +43,28 @@ Símbolo : Significado
 [-]     : Correção de Bug (assim esperamos)
 
 
+25/01/2024
+--- Diversos ---
+[+] Implementação do Banco Inter.
+   Por: Lucas Rampin
+--- Diversos ---
+[*] Alterado o nome da variável protegida de FSequencialDeLote para 
+    FSequencialDoRegistroNoLote, com esse nome deixa claro a sua finalidade.
+   Por: Italo Giurizzato Junior
+
+19/01/2024
+--- CNAB240.GravarTxtRemessa ---
+[-] Incluído o incremento do sequencial de lote nos Segmentos W e Z.
+   Por: Italo Giurizzato Junior
+--- ACBrPagForConversao ---
+[*] TK-2011 Inclusão dos bancos: 380-PicPay e 536-Neon
+   Por: Carlos Solla
+
+18/01/2024
+--- PagFor.BancodoBrasil.GravarTxtRemessa ---
+[-] Corrigido de 4 para 6 digitos ao formatar o campo Receita dos Segmentos N.
+   Por: Italo Giurizzato Junior
+
 12/01/2024
 --- PagFor.Itau.LerTxtRetorno ---
 [*] Alteração visando a leitura do Segmento Z ao ler o Segmento A. TK-4978

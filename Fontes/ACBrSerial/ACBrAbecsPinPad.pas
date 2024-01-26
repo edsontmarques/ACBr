@@ -1,33 +1,33 @@
 {******************************************************************************}
 { Projeto: Componentes ACBr                                                    }
-{  Biblioteca multiplataforma de componentes Delphi para intera√ß√£o com equipa- }
-{ mentos de Automa√ß√£o Comercial utilizados no Brasil                           }
+{  Biblioteca multiplataforma de componentes Delphi para interaÁ„o com equipa- }
+{ mentos de AutomaÁ„o Comercial utilizados no Brasil                           }
 {                                                                              }
 { Direitos Autorais Reservados (c) 2024 Daniel Simoes de Almeida               }
 {                                                                              }
 { Colaboradores nesse arquivo:                                                 }
 {                                                                              }
-{  Voc√™ pode obter a √∫ltima vers√£o desse arquivo na pagina do  Projeto ACBr    }
+{  VocÍ pode obter a ˙ltima vers„o desse arquivo na pagina do  Projeto ACBr    }
 { Componentes localizado em      http://www.sourceforge.net/projects/acbr      }
 {                                                                              }
-{  Esta biblioteca √© software livre; voc√™ pode redistribu√≠-la e/ou modific√°-la }
-{ sob os termos da Licen√ßa P√∫blica Geral Menor do GNU conforme publicada pela  }
-{ Free Software Foundation; tanto a vers√£o 2.1 da Licen√ßa, ou (a seu crit√©rio) }
-{ qualquer vers√£o posterior.                                                   }
+{  Esta biblioteca È software livre; vocÍ pode redistribuÌ-la e/ou modific·-la }
+{ sob os termos da LicenÁa P˙blica Geral Menor do GNU conforme publicada pela  }
+{ Free Software Foundation; tanto a vers„o 2.1 da LicenÁa, ou (a seu critÈrio) }
+{ qualquer vers„o posterior.                                                   }
 {                                                                              }
-{  Esta biblioteca √© distribu√≠da na expectativa de que seja √∫til, por√©m, SEM   }
-{ NENHUMA GARANTIA; nem mesmo a garantia impl√≠cita de COMERCIABILIDADE OU      }
-{ ADEQUA√á√ÉO A UMA FINALIDADE ESPEC√çFICA. Consulte a Licen√ßa P√∫blica Geral Menor}
-{ do GNU para mais detalhes. (Arquivo LICEN√áA.TXT ou LICENSE.TXT)              }
+{  Esta biblioteca È distribuÌda na expectativa de que seja ˙til, porÈm, SEM   }
+{ NENHUMA GARANTIA; nem mesmo a garantia implÌcita de COMERCIABILIDADE OU      }
+{ ADEQUA«√O A UMA FINALIDADE ESPECÕFICA. Consulte a LicenÁa P˙blica Geral Menor}
+{ do GNU para mais detalhes. (Arquivo LICEN«A.TXT ou LICENSE.TXT)              }
 {                                                                              }
-{  Voc√™ deve ter recebido uma c√≥pia da Licen√ßa P√∫blica Geral Menor do GNU junto}
-{ com esta biblioteca; se n√£o, escreva para a Free Software Foundation, Inc.,  }
-{ no endere√ßo 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.          }
-{ Voc√™ tamb√©m pode obter uma copia da licen√ßa em:                              }
+{  VocÍ deve ter recebido uma cÛpia da LicenÁa P˙blica Geral Menor do GNU junto}
+{ com esta biblioteca; se n„o, escreva para a Free Software Foundation, Inc.,  }
+{ no endereÁo 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.          }
+{ VocÍ tambÈm pode obter uma copia da licenÁa em:                              }
 { http://www.opensource.org/licenses/lgpl-license.php                          }
 {                                                                              }
-{ Daniel Sim√µes de Almeida - daniel@projetoacbr.com.br - www.projetoacbr.com.br}
-{       Rua Coronel Aureliano de Camargo, 963 - Tatu√≠ - SP - 18270-170         }
+{ Daniel Simıes de Almeida - daniel@projetoacbr.com.br - www.projetoacbr.com.br}
+{       Rua Coronel Aureliano de Camargo, 963 - TatuÌ - SP - 18270-170         }
 {******************************************************************************}
 
 {$I ACBr.inc}
@@ -37,7 +37,14 @@ unit ACBrAbecsPinPad;
 interface
 
 uses
-  SysUtils, Classes, Contnrs,
+  SysUtils, Classes,
+  {$IF DEFINED(HAS_SYSTEM_GENERICS)}
+   System.Generics.Collections, System.Generics.Defaults,
+  {$ELSEIF DEFINED(DELPHICOMPILER16_UP)}
+   System.Contnrs,
+  {$Else}
+   Contnrs,
+  {$IfEnd}
   ACBrBase, ACBrDevice, ACBrOpenSSLUtils;
 
 resourcestring
@@ -65,18 +72,25 @@ resourcestring
 
   CERR_MOD_WRONG_SIZE = 'Modulus should be %d bytes (Hex)';
   CERR_EXP_WRONG_SIZE = 'Exponent should be 1-6 bytes (Hex)';
+  CERR_SPE_MFNAME = 'Invalid Media file name';
+  CERR_SPE_MFINFO = 'Invalid Media file par‚meters';
+
+  CERR_INVALID_PARAM = 'Invalid value for %s param';
 
 const
   // control characters
   ACK = 06; // Sent from the pinpad to the SPE when receiving a valid packet.
   NAK = 21; // It is returned to the side that sent an invalid packet, requesting its retransmission.
 
-  EOT = 04;  // Pinpad response when receiving a ¬´CAN¬ª.
+  EOT = 04;  // Pinpad response when receiving a ´CANª.
   CAN = 24;  // Sent from the SPE to the pinpad to cancel the execution of a command.
 
   DC3 = 19; // Substitution byte, to prevent special bytes from traveling in the body of the packet.
   SYN = 22; // Indicates the start of a packet.
   ETB = 23; // Indicates the end of a packet.
+
+  CR = #13;
+  LF = #10;
 
   MAX_BLOCK_SIZE = 999;
   MAX_TLV_SIZE = MAX_BLOCK_SIZE - 4;
@@ -90,14 +104,14 @@ const
 
   // Return Codes
   ST_OK            = 000; // Command executed successfully.
-  ST_NOSEC         = 003; // Attempted to use ‚ÄúSecure Communication‚Äù when it has not been established.
+  ST_NOSEC         = 003; // Attempted to use ìSecure Communicationî when it has not been established.
   ST_F1            = 004; // Function #1 key pressed.
   ST_F2            = 005; // Function #2 key pressed.
   ST_F3            = 006; // Function #3 key pressed.
   ST_F4            = 007; // Function #4 key pressed.
   ST_BACKSP        = 008; // Clear (backspace) key pressed
-  ST_ERRPKTSEC     = 009; // Error decoding data received via ‚ÄúSecure Communication‚Äù; or Cleartext command received with ‚ÄúSecure Communication‚Äù established.
-  ST_INVCALL       = 010; // Invalid call to a command (previous operations are necessary) or unknown command (in case of an ‚ÄúERR‚Äù response).
+  ST_ERRPKTSEC     = 009; // Error decoding data received via ìSecure Communicationî; or Cleartext command received with ìSecure Communicationî established.
+  ST_INVCALL       = 010; // Invalid call to a command (previous operations are necessary) or unknown command (in case of an ìERRî response).
   ST_INVPARM       = 011; // An invalid parameter was passed to the command.
   ST_TIMEOUT       = 012; // The maximum time stipulated for the operation has been exhausted.
   ST_CANCEL        = 013; // Operation canceled by the cardholder.
@@ -111,7 +125,7 @@ const
   ST_PINBUSY       = 044; // Pinpad cannot process PIN capture temporarily due to security constrains (such as when the capture limit is reached within a time interval).
   ST_RSPOVRFL      = 045; // Response data exceeds the maximum allowed size.
   ST_ERRCRYPT      = 046; // Generic cryptographic validation error.
-  ST_DUMBCARD      = 060; // ICC inserted, but not responding (‚Äúmute‚Äù).
+  ST_DUMBCARD      = 060; // ICC inserted, but not responding (ìmuteî).
   ST_ERRCARD       = 061; // Communication error between the pinpad and the ICC or CTLS.
   ST_CARDINVALIDAT = 067; // ICC is invalidated.
   ST_CARDPROBLEMS  = 068; // ICC with problems. This status is valid for many situations in which the ICC does not behave as expected and the transaction must be terminated.
@@ -129,7 +143,7 @@ const
   ST_CTLSAPPNAV    = 084; // CTLS with no matching application.
   ST_CTLSAPPNAUT   = 085; // The application selected in the CTLS cannot be used in this situation.
   ST_CTLSEXTCVM    = 086; // Cardholder must perform a validation on his device (mobile phone, for example) and then re-present it to the pinpad.
-  ST_CTLSIFCHG     = 087; // CTLS processing resulted in ‚Äúchange interface‚Äù (request ICC or magnetic card).
+  ST_CTLSIFCHG     = 087; // CTLS processing resulted in ìchange interfaceî (request ICC or magnetic card).
   ST_MFNFOUND      = 100; // Media file not found.
   ST_MFERRFMT      = 101; // Media file format error.
   ST_MFERR         = 102; // Media file loading error.
@@ -137,70 +151,70 @@ const
   // List of parameters
   SPE_IDLIST   = $0001; // B..128 (n*X2,n<=64) List of return data identifiers (up to 64).
   SPE_MTHDPIN  = $0002; // N1 Method to be used for PIN encryption:
-                        // ‚Äú1‚Äù = MK/WK:TDES:PIN; and
-                        // ‚Äú3‚Äù = DUKPT:TDES:PIN (see section 5.1.1).
+                        // ì1î = MK/WK:TDES:PIN; and
+                        // ì3î = DUKPT:TDES:PIN (see section 5.1.1).
   SPE_MTHDDAT  = $0003; // N2 Method to be used for data encryption:
-                        // ‚Äú10‚Äù = MK/WK:TDES:DAT (ECB block encryption);
-                        // ‚Äú11‚Äù = MK/WK:TDES:DAT (CBC block encryption);
-                        // ‚Äú50‚Äù = DUKPT:TDES:DAT#3 (ECB block encryption, see section 5.1.1); and
-                        // ‚Äú51‚Äù = DUKPT:TDES:DAT#3 (CBC block encryption, see section 5.1.1).
+                        // ì10î = MK/WK:TDES:DAT (ECB block encryption);
+                        // ì11î = MK/WK:TDES:DAT (CBC block encryption);
+                        // ì50î = DUKPT:TDES:DAT#3 (ECB block encryption, see section 5.1.1); and
+                        // ì51î = DUKPT:TDES:DAT#3 (CBC block encryption, see section 5.1.1).
   SPE_TAGLIST  = $0004; // B..128 List of tags referring to the EMV objects required by the SPE.
   SPE_EMVDATA  = $0005; // B..512 EMV objects sent to the pinpad (in TLV format - see section 7.1).
-  SPE_CEXOPT   = $0006; // A6 ‚ÄúCEX‚Äù command options.
-                        // ‚Äú0xxxxx‚Äù = Ignore keys;
-                        // ‚Äú1xxxxx‚Äù = Verify key pressing.
-                        // ‚Äúx0xxxx‚Äù = Ignore magnetic card;
-                        // ‚Äúx1xxxx‚Äù = Verify magnetic card swiping.
-                        // ‚Äúxx0xxx‚Äù = Ignore ICC;
-                        // ‚Äúxx1xxx‚Äù = Verify ICC insertion;
-                        // ‚Äúxx2xxx‚Äù = Verify ICC removal.
-                        // ‚Äúxxx0xx‚Äù = Ignore CTLS (do not activate antenna);
-                        // ‚Äúxxx1xx‚Äù = Activate antenna and verify CTLS presence.
-                        // ‚Äúxxxx00‚Äù = RFU.
-  SPE_TRACKS   = $0007; // N4 Identification of track data to be returned by the pinpad in ‚ÄúGTK‚Äù command.
-  SPE_OPNDIG   = $0008; // N1 Number of numeric digits (even number) to be preserved as cleartext at the beginning of encrypted tracks (accepted values: ‚Äú0‚Äù, ‚Äú2‚Äù, ‚Äú4‚Äù, ‚Äú6‚Äù, ‚Äú8‚Äù).
-  SPE_KEYIDX   = $0009; // N2 DUPKT or MK slot index (‚Äú00‚Äù to ‚Äú99‚Äù)
+  SPE_CEXOPT   = $0006; // A6 ìCEXî command options.
+                        // ì0xxxxxî = Ignore keys;
+                        // ì1xxxxxî = Verify key pressing.
+                        // ìx0xxxxî = Ignore magnetic card;
+                        // ìx1xxxxî = Verify magnetic card swiping.
+                        // ìxx0xxxî = Ignore ICC;
+                        // ìxx1xxxî = Verify ICC insertion;
+                        // ìxx2xxxî = Verify ICC removal.
+                        // ìxxx0xxî = Ignore CTLS (do not activate antenna);
+                        // ìxxx1xxî = Activate antenna and verify CTLS presence.
+                        // ìxxxx00î = RFU.
+  SPE_TRACKS   = $0007; // N4 Identification of track data to be returned by the pinpad in ìGTKî command.
+  SPE_OPNDIG   = $0008; // N1 Number of numeric digits (even number) to be preserved as cleartext at the beginning of encrypted tracks (accepted values: ì0î, ì2î, ì4î, ì6î, ì8î).
+  SPE_KEYIDX   = $0009; // N2 DUPKT or MK slot index (ì00î to ì99î)
   SPE_WKENC    = $000A; // B16 Working Key encrypted by MK:TDES.
   SPE_MSGIDX   = $000B; // X2 Index to the message to be presented.
   SPE_TIMEOUT  = $000C; // X1 Wait time for a cardholder action (in seconds - up to 255). IMPORTANT: This parameter reflects the cardholder inactivity time and not the maximum command execution time.
   SPE_MINDIG   = $000D; // X1 Minimum number of digits to be captured on the pinpad (from 0 to 32).
   SPE_MAXDIG   = $000E; // X1 Maximum number of digits to be captured on the pinpad (from 0 to 32).
   SPE_DATAIN   = $000F; // B..995 Generic data to be sent to the pinpad.
-  SPE_ACQREF   = $0010; // N2 Acquirer identifier for searching the AID Tables (de ‚Äú01‚Äù a ‚Äú99‚Äù).
+  SPE_ACQREF   = $0010; // N2 Acquirer identifier for searching the AID Tables (de ì01î a ì99î).
   SPE_APPTYPE  = $0011; // N..20 Application type identifiers for searching the AID Tables (from "01" to "98"). This field supports 1 to 10 different identifiers.
-  SPE_AIDLIST  = $0012; // A..512 Specific list of records in the AID Tables to be used in the transaction processing, which can include up to 128 entries in the ‚ÄúAARR‚Äù format, as follows:
+  SPE_AIDLIST  = $0012; // A..512 Specific list of records in the AID Tables to be used in the transaction processing, which can include up to 128 entries in the ìAARRî format, as follows:
                         // "AA" = Identifier of the Acquirer responsible for the table (from "01" to "99"); and
                         // "RR" = Index of the record in the table (from "01" to "ZZ").
   SPE_AMOUNT   = $0013; // N12 Transaction amount (Amount, authorized), in cents.
   SPE_CASHBACK = $0014; // N12 Cashback amount (Amount, other) , in cents.
-  SPE_TRNDATE  = $0015; // N6 Transaction date (‚ÄúAAMMDD‚Äù)
-  SPE_TRNTIME  = $0016; // N6 Transaction time (‚ÄúHHMMSS‚Äù)
-  SPE_GCXOPT   = $0017; // N5 ‚ÄúGCX‚Äù command options:
-                        // ‚Äú0xxxx‚Äù = Wait for magnetic card or ICC; or
-                        // ‚Äú1xxxx‚Äù = Wait for magnetic card; ICC or CTLS;
-                        // ‚Äúx0xxx‚Äù = Show transaction amount on the card waiting prompt, if not zero.
-                        // ‚Äúx1xxx‚Äù = Do not show transaction amount.
-                        // ‚Äúxx000‚Äù = RFU.
-  SPE_GOXOPT   = $0018; // N5 ‚ÄúGOX‚Äù command options:
-                        // ‚Äú1xxxx‚Äù = PAN is in the Exception List (only for ICC EMV).
-                        // ‚Äúx1xxx‚Äù = Transaction shall not be offline approved (only for ICC EMV).
-                        // ‚Äúxx1xx‚Äù = Do not allow PIN bypass.
-                        // ‚Äúxxx00‚Äù = RFU.
-  SPE_FCXOPT   = $0019; // N4 ‚ÄúFCX‚Äù command options:
-                        // ‚Äú0xxx‚Äù = Transaction approved by the Acquirer.
-                        // ‚Äú1xxx‚Äù = Transaction declined by the Acquirer.
-                        // ‚Äú2xxx‚Äù = Unable to go online (or invalid response from the Acquirer).
-                        // ‚Äúx000‚Äù = RFU.
-  SPE_TRMPAR   = $001A; // B10 Terminal Risk Management parameters to be used on ‚ÄúGOX‚Äù:
-                        // - Terminal Floor Limit (‚ÄúX4‚Äù format, in cents);
-                        // - Target Percentage to be used for Biased Random Selection (‚ÄúX1‚Äù format);
-                        // - Threshold Value for Biased Random Selection (‚ÄúX4‚Äù format, in cents); and
-                        // - Maximum Target Percentage to be used for Biased Random Selection (‚ÄúX1‚Äù format).
+  SPE_TRNDATE  = $0015; // N6 Transaction date (ìAAMMDDî)
+  SPE_TRNTIME  = $0016; // N6 Transaction time (ìHHMMSSî)
+  SPE_GCXOPT   = $0017; // N5 ìGCXî command options:
+                        // ì0xxxxî = Wait for magnetic card or ICC; or
+                        // ì1xxxxî = Wait for magnetic card; ICC or CTLS;
+                        // ìx0xxxî = Show transaction amount on the card waiting prompt, if not zero.
+                        // ìx1xxxî = Do not show transaction amount.
+                        // ìxx000î = RFU.
+  SPE_GOXOPT   = $0018; // N5 ìGOXî command options:
+                        // ì1xxxxî = PAN is in the Exception List (only for ICC EMV).
+                        // ìx1xxxî = Transaction shall not be offline approved (only for ICC EMV).
+                        // ìxx1xxî = Do not allow PIN bypass.
+                        // ìxxx00î = RFU.
+  SPE_FCXOPT   = $0019; // N4 ìFCXî command options:
+                        // ì0xxxî = Transaction approved by the Acquirer.
+                        // ì1xxxî = Transaction declined by the Acquirer.
+                        // ì2xxxî = Unable to go online (or invalid response from the Acquirer).
+                        // ìx000î = RFU.
+  SPE_TRMPAR   = $001A; // B10 Terminal Risk Management parameters to be used on ìGOXî:
+                        // - Terminal Floor Limit (ìX4î format, in cents);
+                        // - Target Percentage to be used for Biased Random Selection (ìX1î format);
+                        // - Threshold Value for Biased Random Selection (ìX4î format, in cents); and
+                        // - Maximum Target Percentage to be used for Biased Random Selection (ìX1î format).
   SPE_DSPMSG   = $001B; // S..128 Display message in free format, may have line break characters (0Dh). When formatting this message, the SPE shall respect the pinpad display capabilities (see PP_DSPTXTSZ).
   SPE_ARC      = $001C; // A2 Authorization Response Code (approval/declination code returned by the Acquirer).
-  SPE_IVCBC    = $001D; // B8 ‚ÄúIV‚Äù (Initialization Vector) to be used in CBC block cryptography
+  SPE_IVCBC    = $001D; // B8 ìIVî (Initialization Vector) to be used in CBC block cryptography
   SPE_MFNAME   = $001E; // A8 Media file name (only numeric characters and letters, without spaces or symbols).
-                        // The file name is not case sensitive, that is, the names ‚ÄúImgAlt01‚Äù and ‚ÄúIMGALT01‚Äù represent the same file.
+                        // The file name is not case sensitive, that is, the names ìImgAlt01î and ìIMGALT01î represent the same file.
   SPE_MFINFO   = $001F; // B10 Information about the media file:
                         // X4 = Size (de 0 a 4294967295 bytes).
                         // B2 = CRC of the file.
@@ -213,10 +227,10 @@ const
                         // 09h = Payment with cashback;
                         // 20h = Refund;
                         // 30h = Balance inquiry; or Other values according to ISO 8583:1987.
-  SPE_TRNCURR  = $0022; // N3 Currency code to be used in the transaction (ex.: Real = ‚Äú986‚Äù, Dollar = ‚Äú840‚Äù).
-  SPE_PANMASK  = $0023; // N4 PAN masking definition in ‚ÄúLLRR‚Äù format:
-                        // ‚ÄúLL‚Äù = Number of open digits on the left; and
-                        // ‚ÄúRR‚Äù = Number of open digits on the right.
+  SPE_TRNCURR  = $0022; // N3 Currency code to be used in the transaction (ex.: Real = ì986î, Dollar = ì840î).
+  SPE_PANMASK  = $0023; // N4 PAN masking definition in ìLLRRî format:
+                        // ìLLî = Number of open digits on the left; and
+                        // ìRRî = Number of open digits on the right.
   SPE_PBKMOD   = $0024; // B256 RSA public key modulus (2048 bits).
   SPE_PBKEXP   = $0025; // B..3 RSA public key exponent.
 
@@ -224,13 +238,13 @@ const
   // List of return data fields
   PP_SERNUM    = $8001; // A..32 Pinpad serial number (free format, it depends on the manufacturer).
   PP_PARTNBR   = $8002; // A..32 Pinpad part number (free format, it depends on the manufacturer).
-  PP_MODEL     = $8003; // A..20 Model / hardware version, in the format: ‚Äúxx...xx;m...m‚Äù, where: ‚Äúxx...xx‚Äù is the device name; and ‚Äúm...m‚Äù is the memory capacity (‚Äú512KB‚Äù, ‚Äú1MB‚Äù, ‚Äú2MB‚Äù, ...).
+  PP_MODEL     = $8003; // A..20 Model / hardware version, in the format: ìxx...xx;m...mî, where: ìxx...xxî is the device name; and ìm...mî is the memory capacity (ì512KBî, ì1MBî, ì2MBî, ...).
   PP_MNNAME    = $8004; // A..20 Name of the manufacturer (free format).
-  PP_CAPAB     = $8005; // A10 Pinpad capabilities: ‚Äú0xxxxxxxxx‚Äù = Does not support CTLS; ‚Äú1xxxxxxxxx‚Äù = Supports CTLS. ‚Äúx0xxxxxxxx‚Äù = Display is not graphic; ‚Äúx1xxxxxxxx‚Äù = Monochromatic graphic display; ‚Äúx2xxxxxxxx‚Äù = Color graphic display. ‚Äúxx00000000‚Äù = RFU. PP_SOVER (‚Ä†) 8006h A..20 Basic software or operating system version (free format).
-  PP_SPECVER   = $8007; // A4 Specification version, in ‚ÄúV.VV‚Äù format (in this case, fixed ‚Äú2.12‚Äù)
-  PP_MANVERS   = $8008; // A16 ‚ÄúManager‚Äù application version, in the format ‚ÄúVVV.VV YYMMDD‚Äù.
-  PP_APPVERS   = $8009; // A16 ‚ÄúAbecs‚Äù application version, in the format ‚ÄúVVV.VV YYMMDD‚Äù.
-  PP_GENVERS   = $800A; // A16 ‚ÄúExtension‚Äù application version, in the format ‚ÄúVVV.VV YYMMDD‚Äù.
+  PP_CAPAB     = $8005; // A10 Pinpad capabilities: ì0xxxxxxxxxî = Does not support CTLS; ì1xxxxxxxxxî = Supports CTLS. ìx0xxxxxxxxî = Display is not graphic; ìx1xxxxxxxxî = Monochromatic graphic display; ìx2xxxxxxxxî = Color graphic display. ìxx00000000î = RFU. PP_SOVER (Ü) 8006h A..20 Basic software or operating system version (free format).
+  PP_SPECVER   = $8007; // A4 Specification version, in ìV.VVî format (in this case, fixed ì2.12î)
+  PP_MANVERS   = $8008; // A16 ìManagerî application version, in the format ìVVV.VV YYMMDDî.
+  PP_APPVERS   = $8009; // A16 ìAbecsî application version, in the format ìVVV.VV YYMMDDî.
+  PP_GENVERS   = $800A; // A16 ìExtensionî application version, in the format ìVVV.VV YYMMDDî.
   PP_KRNLVER   = $8010; // A..20 ICC EMV kernel version.
   PP_CTLSVER   = $8011; // A..20 CTLS EMV kernel version (general or entry point).
   PP_MCTLSVER  = $8012; // A..20 CTLS EMV kernel version - MasterCard PayPass.
@@ -238,97 +252,97 @@ const
   PP_AECTLSVER = $8014; // A..20 CTLS EMV kernel version - American Express.
   PP_DPCTLSVER = $8015; // A..20 CTLS EMV kernel version - Discover.
   PP_PUREVER   = $8016; // A..20 CTLS EMV kernel version - Pure.
-  PP_DSPTXTSZ  = $8020; // N4 Maximum number of rows and columns of the display for showing messages in text mode (‚ÄúRRCC‚Äù format).
-  PP_DSPGRSZ   = $8021; // N8 Maximum number of rows and columns of the graphic display for image presentation (‚ÄúRRRRCCCC‚Äù format, in pixels).
-  PP_MFSUP     = $8022; // A..20 Supported media file types: ‚Äú1xxx ...‚Äù = Supports PNG format; ‚Äúx1xx ...‚Äù = Supports JPG format. ‚Äúxx1x ...‚Äù = Supports GIF format. --------- 8030h --- Reserved.--------- 8031h --- Reserved.
-  PP_MKTDESP   = $8032; // A100 100 characters representing the MK:TDES:PIN key map contained in the pinpad, with each character corresponding to a position (from ‚Äú00‚Äù to ‚Äú99‚Äù), indicating:
-                        // ‚Äú0‚Äù = Key absent (not loaded);
-                        // ‚Äú1‚Äù = Key present (loaded); and
-                        // ‚Äú2‚Äù = Slot not supported.
+  PP_DSPTXTSZ  = $8020; // N4 Maximum number of rows and columns of the display for showing messages in text mode (ìRRCCî format).
+  PP_DSPGRSZ   = $8021; // N8 Maximum number of rows and columns of the graphic display for image presentation (ìRRRRCCCCî format, in pixels).
+  PP_MFSUP     = $8022; // A..20 Supported media file types: ì1xxx ...î = Supports PNG format; ìx1xx ...î = Supports JPG format. ìxx1x ...î = Supports GIF format. --------- 8030h --- Reserved.--------- 8031h --- Reserved.
+  PP_MKTDESP   = $8032; // A100 100 characters representing the MK:TDES:PIN key map contained in the pinpad, with each character corresponding to a position (from ì00î to ì99î), indicating:
+                        // ì0î = Key absent (not loaded);
+                        // ì1î = Key present (loaded); and
+                        // ì2î = Slot not supported.
   PP_MKTDESD   = $8033; // A100 Same for MK:TDES:DAT slots. --------- 8034h --- Reserved.
   PP_DKPTTDESP = $8035; // A100 Same for DUKPT:TDES:PIN slots.
   PP_DKPTTDESD = $8036; // A100 Same for DUKPT:TDES:DAT slots.
-  PP_EVENT     = $8040; // A2 Event detected by the pinpad in the ‚ÄúCEX‚Äù command:
-                        // ‚Äú00‚Äù = [OK/ENTER] key pressed;
-                        // ‚Äú02‚Äù = [ÔÉ°] key pressed;
-                        // ‚Äú03‚Äù = [ÔÉ¢] key pressed;
-                        // ‚Äú04‚Äù = [F1] key pressed;
-                        // ‚Äú05‚Äù = [F2] key pressed;
-                        // ‚Äú06‚Äù = [F3] key pressed;
-                        // ‚Äú07‚Äù = [F4] key pressed;
-                        // ‚Äú08‚Äù = [CLEAR] key pressed;
-                        // ‚Äú13‚Äù = [CANCEL] key pressed;
-                        // ‚Äú90‚Äù = A magnetic card was swiped;
-                        // ‚Äú91‚Äù = ICC removed (or already absent);
-                        // ‚Äú92‚Äù = ICC inserted (or already present);
-                        // ‚Äú93‚Äù = CTLS not detected in 2 (two) minutes; and
-                        // ‚Äú94‚Äù = CTLS detected.
+  PP_EVENT     = $8040; // A2 Event detected by the pinpad in the ìCEXî command:
+                        // ì00î = [OK/ENTER] key pressed;
+                        // ì02î = [?] key pressed;
+                        // ì03î = [?] key pressed;
+                        // ì04î = [F1] key pressed;
+                        // ì05î = [F2] key pressed;
+                        // ì06î = [F3] key pressed;
+                        // ì07î = [F4] key pressed;
+                        // ì08î = [CLEAR] key pressed;
+                        // ì13î = [CANCEL] key pressed;
+                        // ì90î = A magnetic card was swiped;
+                        // ì91î = ICC removed (or already absent);
+                        // ì92î = ICC inserted (or already present);
+                        // ì93î = CTLS not detected in 2 (two) minutes; and
+                        // ì94î = CTLS detected.
   PP_TRK1INC   = $8041; // A..60 Card Track 1, incomplete (see section 5.4.1)
   PP_TRK2INC   = $8042; // A..30 Card Track 2, incomplete (see section 5.4.1)
   PP_TRK3INC   = $8043; // A..30 Card Track 3, incomplete (see section 5.4.1)
-  PP_TRACK1    = $8044; // B..88 Card Track 1 (complete), in cleartext or encrypted (see section 5.4.2.1). Note: Although Track 1 is represented in ASCII, this field follows the ‚ÄúB‚Äù format in case the data is encrypted.
+  PP_TRACK1    = $8044; // B..88 Card Track 1 (complete), in cleartext or encrypted (see section 5.4.2.1). Note: Although Track 1 is represented in ASCII, this field follows the ìBî format in case the data is encrypted.
   PP_TRACK2    = $8045; // B..28 Card Track 1 (complete), in cleartext or encrypted (see section 5.4.2.2). Each Track 2 symbol occupies a nibble, according to the following code:
-                        // 0h (0000) ‚Üí ‚Äú0‚Äù Ah (1010) ‚Üí ‚Äú:‚Äù Dh (1101) ‚Üí ‚Äú=‚Äù
-                        //    ...          Bh (1011) ‚Üí ‚Äú;‚Äù Eh (1110) ‚Üí ‚Äú>‚Äù
-                        // 9h (1001) ‚Üí ‚Äú9‚Äù Ch (1100) ‚Üí ‚Äú<‚Äù Fh (1110) ‚Üí ‚Äú?‚Äù
-                        // Data are left aligned, with trailing Fh (‚Äú?‚Äù) if necessary.
+                        // 0h (0000) ? ì0î Ah (1010) ? ì:î Dh (1101) ? ì=î
+                        //    ...          Bh (1011) ? ì;î Eh (1110) ? ì>î
+                        // 9h (1001) ? ì9î Ch (1100) ? ì<î Fh (1110) ? ì?î
+                        // Data are left aligned, with trailing Fh (ì?î) if necessary.
   PP_TRACK3    = $8046; // B..60 Card Track 1 (complete), in cleartext or encrypted (same format as PP_TRACK2).
   PP_TRK1KSN   = $8047; // B10 KSN of DUKPT used for Track 1 encryption.
   PP_TRK2KSN   = $8048; // B10 KSN of DUKPT used for Track 2 encryption.
   PP_TRK3KSN   = $8049; // B10 KSN of DUKPT used for Track 3 encryption.
-  PP_ENCPAN    = $804A; // B..16 Card PAN, in cleartext of encrypted (see section 5.4.2.2). Each digit of the PAN occupies a nibble. Data is left aligned with trailing Fh, if necessary. Example: A PAN ‚Äú9781234789432‚Äù is encoded as: 97h 81h 23h 47h 89h 43h 2Fh.
+  PP_ENCPAN    = $804A; // B..16 Card PAN, in cleartext of encrypted (see section 5.4.2.2). Each digit of the PAN occupies a nibble. Data is left aligned with trailing Fh, if necessary. Example: A PAN ì9781234789432î is encoded as: 97h 81h 23h 47h 89h 43h 2Fh.
   PP_ENCPANKSN = $804B; // B10 KSN of DUKPT used for PAN encryption.
   PP_KSN       = $804C; // B10 KSN of DUKPT used for PIN or data encryption.
   PP_VALUE     = $804D; // A..32 Value captured by the pinpad.
   PP_DATAOUT   = $804E; // B..256 Generic data returned by the pinpad.
-  PP_CARDTYPE  = $804F; // N2 ‚ÄúGCX‚Äù response: Card type.
-                        // ‚Äú00‚Äù = Magnetic;
-                        // ‚Äú03‚Äù = ICC EMV;
-                        // ‚Äú05‚Äù = CTLS magstripe mode; or
-                        // ‚Äú06‚Äù = CTLS EMV.
-  PP_ICCSTAT   = $8050; // N1 ‚ÄúGCX‚Äù response: Status of the previous ICC processing.
-  PP_AIDTABINFO= $8051; // A..120 ‚ÄúGCX‚Äù response: Information from the AID Table, which may contain up to 20 concatenated ‚ÄúA6‚Äù records.
+  PP_CARDTYPE  = $804F; // N2 ìGCXî response: Card type.
+                        // ì00î = Magnetic;
+                        // ì03î = ICC EMV;
+                        // ì05î = CTLS magstripe mode; or
+                        // ì06î = CTLS EMV.
+  PP_ICCSTAT   = $8050; // N1 ìGCXî response: Status of the previous ICC processing.
+  PP_AIDTABINFO= $8051; // A..120 ìGCXî response: Information from the AID Table, which may contain up to 20 concatenated ìA6î records.
   PP_PAN       = $8052; // N..19 PAN of the processed card.
   PP_PANSEQNO  = $8053; // N2 Application PAN Sequence Number of the processed card.
   PP_EMVDATA   = $8054; // B..512 List of EMV objects returned by the pinpad (in TLV format - see section 7.1).
   PP_CHNAME    = $8055; // A..26 Cardholder name of the processed card.
-  PP_GOXRES    = $8056; // N6 ‚ÄúGOX‚Äù response: EMV processing status.
-                        // ‚Äú0xxxxx‚Äù = Transaction offline approved;
-                        // ‚Äú1xxxxx‚Äù = Transaction declined; or
-                        // ‚Äú2xxxxx‚Äù = Transaction requires online approval.
-                        // ‚Äúx1xxxx‚Äù = Signature on paper.
-                        // ‚Äúxx1xxx‚Äù = Successful offline PIN verification.
-                        // ‚Äúxx2xxx‚Äù = PIN captured for online verification.
-                        // ‚Äúxxx1xx‚Äù = Cardholder verification performed on the mobile device (smartphone, for example)
-                        // ‚Äúxxxx00‚Äù = RFU.
+  PP_GOXRES    = $8056; // N6 ìGOXî response: EMV processing status.
+                        // ì0xxxxxî = Transaction offline approved;
+                        // ì1xxxxxî = Transaction declined; or
+                        // ì2xxxxxî = Transaction requires online approval.
+                        // ìx1xxxxî = Signature on paper.
+                        // ìxx1xxxî = Successful offline PIN verification.
+                        // ìxx2xxxî = PIN captured for online verification.
+                        // ìxxx1xxî = Cardholder verification performed on the mobile device (smartphone, for example)
+                        // ìxxxx00î = RFU.
   PP_PINBLK    = $8057; // B8 Encrypted PIN.
-  PP_FCXRES    = $8058; // N3 ‚ÄúFCX‚Äù response: EMV processing status.
-                        // ‚Äú0xx‚Äù = Transaction approved; or
-                        // ‚Äú1xx‚Äù = Transaction declined.
-                        // ‚Äúx00‚Äù = RFU.
+  PP_FCXRES    = $8058; // N3 ìFCXî response: EMV processing status.
+                        // ì0xxî = Transaction approved; or
+                        // ì1xxî = Transaction declined.
+                        // ìx00î = RFU.
   PP_ISRESULTS = $8059; // B..50 Issuer Script Results (multiple of 5 - up to 10 results).
   PP_BIGRAND   = $805A; // B900 900 random bytes generated by the pinpad (used for testing only).
   PP_LABEL     = $805B; // S..16 Label of the application being processed (ICC EMV or CTLS).
   PP_ISSCNTRY  = $805C; // N3 Issuer Country Code of the processed card.
-  PP_CARDEXP   = $805D; // N6 Application Expiration Date of the processed card, in the ‚ÄúYYMMDD‚Äù format.
+  PP_CARDEXP   = $805D; // N6 Application Expiration Date of the processed card, in the ìYYMMDDî format.
   PP_MFNAME    = $805E; // A8 Name of a media file loaded on the pinpad, always in uppercase.
   PP_DEVTYPE   = $8060; // N2 Device type used in the transaction:
-                        // ‚Äú00‚Äù = Card;
-                        // ‚Äú01‚Äù = Mobile device (i.e. smartphone);
-                        // ‚Äú02‚Äù = Keyring;
-                        // ‚Äú03‚Äù = Watch;
-                        // ‚Äú04‚Äù = Mobile tag;
-                        // ‚Äú05‚Äù = Bracelet;
-                        // ‚Äú06‚Äù = Mobile device case/sleeve;
-                        // ‚Äú10‚Äù = Tablet or e-reader;
+                        // ì00î = Card;
+                        // ì01î = Mobile device (i.e. smartphone);
+                        // ì02î = Keyring;
+                        // ì03î = Watch;
+                        // ì04î = Mobile tag;
+                        // ì05î = Bracelet;
+                        // ì06î = Mobile device case/sleeve;
+                        // ì10î = Tablet or e-reader;
                         // Other values = Future use.
-  PP_TLRMEM    = $8062; // X4 Amount of available memory (in bytes) for loading EMV Table records using the ‚ÄúTLR‚Äù command.
+  PP_TLRMEM    = $8062; // X4 Amount of available memory (in bytes) for loading EMV Table records using the ìTLRî command.
   PP_ENCKRAND  = $8063; // B256 Random key (KRAND) encrypted by an RSA public key in PKCS # 1 format.
   PP_KSNTDESP00= $9100; // B10 DUKPT:TDES:PIN KSN, slot index #nn (from 00 to 99) IMPORTANT: Pay attention to hexadecimal values (PP_KSNTDESP14 = 910Eh)!!
   PP_KSNTDESP63= $9163;
   PP_KSNTDESD00= $9200; // B10 DUKPT:TDES:DAT KSN, slot index #nn (from 00 to 99) IMPORTANT: Pay attention to hexadecimal values (PP_KSNTDESD79 = 924Fh)!!
   PP_KSNTDESD63= $9263;
-  PP_TABVER00  = $9300; // A10 EMV Tables version correspondent to the Acquirer #nn (00 to 99). Index #00 corresponds to the ‚Äúgeneral‚Äù version for all Acquirers.
+  PP_TABVER00  = $9300; // A10 EMV Tables version correspondent to the Acquirer #nn (00 to 99). Index #00 corresponds to the ìgeneralî version for all Acquirers.
   PP_TABVER63  = $9363;
 
 type
@@ -361,7 +375,7 @@ type
 
   { TACBrAbecsTLVList }
 
-  TACBrAbecsTLVList = class(TObjectList{$IfDef HAS_SYSTEM_GENERICS}<TACBrAbecsPar>{$EndIf})
+  TACBrAbecsTLVList = class(TObjectList{$IfDef HAS_SYSTEM_GENERICS}<TACBrAbecsTLV>{$EndIf})
   private
     function GetAsString: AnsiString;
     Function GetItem(Index: Integer): TACBrAbecsTLV;
@@ -432,6 +446,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear; virtual;
+    function GetDataPacket(const BlockStart: Integer; out BlocksRead: Integer): String;
 
     property ID: String read fID write SetID;
     property Blocks: TACBrAbecsBlockList read fBlocks;
@@ -446,7 +461,8 @@ type
   public
     procedure Clear; override;
     procedure AddParamFromData(const AData: AnsiString);
-    procedure AddParamFromTagValue(ATag: Word; const AValue: String);
+    procedure AddParamFromTagValue(ATag: Word; const AValue: String); overload;
+    procedure AddParamFromTagValue(ATag: Word; const AStream: TStream); overload;
     property IsBlocking: Boolean read fIsBlocking write fIsBlocking;
   end;
 
@@ -487,16 +503,49 @@ type
     property AsString: AnsiString read GetAsString write SetAsString;
   end;
 
+  TACBrAbecsPinPadMediaType = (mtPNG, mtJPG, mtGIF);
+  TACBrAbecsMSGIDX = ( msgDigiteDDD, msgRedigiteDDD,
+                       msgDigiteTelefone, msgRedigiteTelefone,
+                       msgDigiteDDDeTelefone, msgRedigiteDDDeTelefone,
+                       msgDigiteCPF, msgRedigiteCPF,
+                       msgDigiteRG, msgRedigiteRG,
+                       msgDigite4UltimosDigitos,
+                       msgDigiteCodSeguranca,
+                       msgDigiteCNPJ, msgRedigiteCNPJ,
+                       msgDigiteDataDDMMAAAA, msgDigiteDataDDMMAA, msgDigiteDataDDMM,
+                       msgDigiteDiaDD, msgDigiteMesMM, msgDigiteAnoAA, msgDigiteAnoAAAA,
+                       msgDataNascimentoDDMMAAAA, msgDataNascimentoDDMMAA, msgDataNascimentoDDMM,
+                       msgDiaNascimentoDD, msgMesNascimentoMM, msgAnoNascimentoAA, msgAnoNascimentoAAAA,
+                       msgDigiteIdentificacao,
+                       msgCodFidelidade, msgNumeroMesa, msgQtdPessoas, msgQuantidade,
+                       msgNumeroBomba, msgNumeroVaga, msgNumeroGuiche,
+                       msgCodVendedor, msgCodGarcom, msgNotaAtendimento,
+                       msgNumeroNotaFiscal, msgNumeroComanda,
+                       msgPlacaVeiculo, msgDigiteQuilometragem, msgQuilometragemInicial, QuilometragemFinal,
+                       msgDigitePorcentagem,
+                       msgPesquisaSatisfacao0_10, msgAvalieAtendimento0_10,
+                       msgDigiteToken, msgDigiteNumeroCartao,
+                       msgNumeroParcelas,
+                       msgCodigoPlano, msgCodigoProduto );
+
+  TACBrAbecsDimension = record
+    Rows: LongWord;
+    Cols: LongWord;
+  end;
+
+  TACBrAbecsExecEvent = procedure (var Cancel: Boolean) of object;
+
+  { TACBrAbecsPinPad }
 
   {$IFDEF RTL230_UP}
   [ComponentPlatformsAttribute(piacbrAllPlatforms)]
   {$ENDIF RTL230_UP}
-
-  { TACBrAbecsPinPad }
-
   TACBrAbecsPinPad = class( TACBrComponent )
   private
     fDevice: TACBrDevice;
+    fOnEndCommand: TNotifyEvent;
+    fOnStartCommand: TNotifyEvent;
+    fOnWaitForResponse: TACBrAbecsExecEvent;
     fOpenSSL: TACBrOpenSSLUtils;
     fCommand: TACBrAbecsCommand;
     fResponse: TACBrAbecsResponse;
@@ -504,24 +553,27 @@ type
 
     fLogLevel: Byte;
     fLogFile: String;
+    fLogTranslate: Boolean;
     fIsBusy: Boolean;
     fTimeOut: Integer;
     fSPEKmod: String;
     fSPEKpub: String;
     fPinpadKSec: String;
+    fDSPTXTSZ: TACBrAbecsDimension;
+    fDSPGRSZ: TACBrAbecsDimension;
 
     function GetIsEnabled: Boolean;
     function GetPort: String;
     procedure SetIsEnabled(AValue: Boolean);
     procedure SetPort(AValue: String);
+
   protected
-    procedure RegisterLog(const AString: AnsiString; Translate: Boolean = True;
-      AddTime: Boolean = True);
+    procedure RegisterLog(const AData: AnsiString; AddTime: Boolean = True);
     procedure DoException(AException: Exception); overload;
     procedure DoException(const AMsg: String); overload;
 
-    procedure ExecCommand;
-    procedure SendCommand;
+    procedure ExecCommand( DoEvaluateResponse: Boolean = True );
+    procedure SendCommand(const BlockStart: Integer; out BlocksRead: Integer);
     function SendCAN: Boolean;
     procedure SendNAK;
     procedure IgnoreAllBytes(SleepTime: Integer = 500);
@@ -531,6 +583,10 @@ type
     procedure CancelWaiting;
 
     procedure ClearSecureData;
+    procedure ClearCacheData;
+    procedure LogApplicationLayer(AApplicationLayer: TACBrAbecsApplicationLayer);
+    procedure GetPinPadSpecs;
+
   public
     constructor Create(AOwner: TComponent); override;
     Destructor Destroy; override ;
@@ -539,7 +595,52 @@ type
     procedure Disable;
     property IsEnabled: Boolean read GetIsEnabled write SetIsEnabled;
 
-    function ReturnCodeDescription(AStatus: Integer): String;
+    property Command: TACBrAbecsCommand read fCommand;
+    property Response: TACBrAbecsResponse read fResponse;
+
+    function FormatSPE_DSPMSG(const ASPE_DSPMSG: String): String;
+    function FormatMSG_S32(const AMSG: String): String;
+    function FormatMSG(const AMSG: String; MaxCols: Integer; MaxLines: Integer;
+      Pad: Byte = 0): String;
+
+  public
+    // Control Commands
+    procedure OPN; overload;
+    procedure OPN(const OPN_MOD: String; const OPN_EXP: String); overload;
+    procedure GIN(const GIN_ACQIDX: Byte = 0);
+    procedure GIX; overload;
+    procedure GIX(PP_DATA: array of Word); overload;
+    procedure CLO(const CLO_MSG: String = '');
+    procedure CLX(const SPE_DSPMSG_or_SPE_MFNAME: String);
+
+    // Basic Commands
+    procedure CEX(const ASPE_CEXOPT: String; ASPE_TIMEOUT: Byte = 0;
+      const ASPE_PANMASK_LLRR: String = ''); overload;
+    procedure CEX( VerifyKey: Boolean; VerifyMagnetic: Boolean;
+      VerifyICCInsertion: Boolean; VerifyICCRemoval: Boolean;
+      VerifyCTLSPresence: Boolean; ASPE_TIMEOUT: Byte = 0;
+      const ASPE_PANMASK_LLRR: String = ''); overload;
+    procedure DEX(const DEX_MSG: String);
+    procedure DSP(const DSP_MSG: String = '');
+    function GCD(ASPE_MSGIDX: Word; ASPE_MINDIG: Byte = 0; ASPE_MAXDIG: Byte = 0;
+      ASPE_TIMEOUT: Byte = 0): String; overload;
+    function GCD(MSGIDX: TACBrAbecsMSGIDX; ASPE_TIMEOUT: Byte = 0): String; overload;
+    function GKY: Integer;
+    function MNU(ASPE_MNUOPT: array of String; ASPE_DSPMSG: String = '';
+      ASPE_TIMEOUT: Byte = 0): String;
+    procedure RMC(const RMC_MSG: String = '');
+
+    // Multimidia Commands
+    procedure MLI(const ASPE_MFNAME: String; const ASPE_MFINFO: AnsiString); overload;
+    procedure MLI(const ASPE_MFNAME: String; FileSize: Int64; CRC: Word; FileType: Byte); overload;
+    procedure MLR(ASPE_DATAIN: TStream);
+    procedure MLE;
+    procedure LMF;
+    procedure DMF(const ASPE_MFNAME: String); overload;
+    procedure DMF(LIST_SPE_MFNAME: array of String); overload;
+    procedure DSI(const ASPE_MFNAME: String);
+
+    procedure LoadMedia(const ASPE_MFNAME: String; ASPE_DATAIN: TStream; MediaType: TACBrAbecsPinPadMediaType);
   published
     property Device: TACBrDevice read fDevice;
     property Port: String read GetPort write SetPort;
@@ -548,24 +649,193 @@ type
 
     property LogFile: String read fLogFile write fLogFile;
     property LogLevel: Byte read fLogLevel write fLogLevel default 2;
+    property LogTranslate: Boolean read fLogTranslate write fLogTranslate default True;
     property OnWriteLog: TACBrGravarLog read fOnWriteLog write fOnWriteLog;
 
-    procedure OPN; overload;
-    procedure OPN(const OPN_MOD: String; const OPN_EXP: String); overload;
-    procedure CLO(const AMsgToDisplay: String = ''; const ALineBreakChar: Char = '|');
-    procedure CLX(const SPE_DSPMSG_or_SPE_MFNAME: String);
-    procedure GIX; overload;
-    procedure GIX(PP_DATA: array of Word); overload;
+    property OnStartCommand: TNotifyEvent read fOnStartCommand write fOnStartCommand;
+    property OnWaitForResponse: TACBrAbecsExecEvent read fOnWaitForResponse write fOnWaitForResponse;
+    property OnEndCommand: TNotifyEvent read fOnEndCommand write fOnEndCommand;
   end ;
+
+  function ReturnStatusCodeDescription(AStatus: Integer): String;
+  function SPE_ToStr(ASPE: Word): String;
+  function PP_ToStr(APP: Word): String;
 
 implementation
 
 uses
-  DateUtils,
+  DateUtils, Math, TypInfo, StrUtils,
   ACBrUtil.FilesIO,
   ACBrUtil.Math,
   ACBrUtil.Strings,
   synautil;
+
+function ReturnStatusCodeDescription(AStatus: Integer): String;
+begin
+  Result := '';
+  case AStatus of
+    ST_OK            : Result := 'Command executed successfully.';
+    ST_NOSEC         : Result := 'Attempted to use ìSecure Communicationî when it has not been established.';
+    ST_F1            : Result := 'Function #1 key pressed.';
+    ST_F2            : Result := 'Function #2 key pressed.';
+    ST_F3            : Result := ' Function #3 key pressed.';
+    ST_F4            : Result := 'Function #4 key pressed.';
+    ST_BACKSP        : Result := 'Clear (backspace) key pressed';
+    ST_ERRPKTSEC     : Result := 'Error decoding data received via ìSecure Communicationî; or Cleartext command received with ìSecure Communicationî established.';
+    ST_INVCALL       : Result := 'Invalid call to a command (previous operations are necessary) or unknown command (in case of an ìERRî response).';
+    ST_INVPARM       : Result := 'An invalid parameter was passed to the command.';
+    ST_TIMEOUT       : Result := 'The maximum time stipulated for the operation has been exhausted.';
+    ST_CANCEL        : Result := 'Operation canceled by the cardholder.';
+    ST_MANDAT        : Result := 'A mandatory parameter was not sent by the SPE.';
+    ST_TABVERDIF     : Result := 'EMV Tables version differs from the expected.';
+    ST_TABERR        : Result := 'Error when trying to write tables (lack of space, for example).';
+    ST_INTERR        : Result := 'Internal pinpad error (unexpected situation that does not correspond to the other error codes described here).';
+    ST_MCDATAERR     : Result := 'Magnetic card reading error.';
+    ST_ERRKEY        : Result := 'MK / DUKPT referenced is not present in the pinpad.';
+    ST_NOCARD        : Result := 'There is no ICC present in the coupler or CTLS detected by the antenna.';
+    ST_PINBUSY       : Result := 'Pinpad cannot process PIN capture temporarily due to security constrains (such as when the capture limit is reached within a time interval).';
+    ST_RSPOVRFL      : Result := 'Response data exceeds the maximum allowed size.';
+    ST_ERRCRYPT      : Result := 'Generic cryptographic validation error.';
+    ST_DUMBCARD      : Result := 'ICC inserted, but not responding (ìmuteî).';
+    ST_ERRCARD       : Result := 'Communication error between the pinpad and the ICC or CTLS.';
+    ST_CARDINVALIDAT : Result := 'ICC is invalidated.';
+    ST_CARDPROBLEMS  : Result := 'ICC with problems. This status is valid for many situations in which the ICC does not behave as expected and the transaction must be terminated.';
+    ST_CARDINVDATA   : Result := 'The ICC behaves correctly but has invalid or inconsistent data.';
+    ST_CARDAPPNAV    : Result := 'ICC with no matching application.';
+    ST_CARDAPPNAUT   : Result := 'The application selected in the ICC cannot be used in this situation.';
+    ST_ERRFALLBACK   : Result := 'High level error in the ICC that allows fallback to magnetic stripe.';
+    ST_INVAMOUNT     : Result := 'Invalid amount for the transaction.';
+    ST_ERRMAXAID     : Result := 'Number of candidate AIDs exceeds the processing capacity of the EMV kernel.';
+    ST_CARDBLOCKED   : Result := 'Card is blocked.';
+    ST_CTLSMULTIPLE  : Result := 'More than one CTLS was presented to the reader simultaneously.';
+    ST_CTLSCOMMERR   : Result := 'Communication error between the pinpad (antenna) and the CTLS.';
+    ST_CTLSINVALIDAT : Result := 'CTLS is invalidated.';
+    ST_CTLSPROBLEMS  : Result := 'CTLS with problems. This status is valid for many situations in which the CTLS does not behave as expected and the transaction must be terminated.';
+    ST_CTLSAPPNAV    : Result := 'CTLS with no matching application.';
+    ST_CTLSAPPNAUT   : Result := 'The application selected in the CTLS cannot be used in this situation.';
+    ST_CTLSEXTCVM    : Result := 'Cardholder must perform a validation on his device (mobile phone, for example) and then re-present it to the pinpad.';
+    ST_CTLSIFCHG     : Result := 'CTLS processing resulted in ìchange interfaceî (request ICC or magnetic card).';
+    ST_MFNFOUND      : Result := 'Media file not found.';
+    ST_MFERRFMT      : Result := 'Media file format error.';
+    ST_MFERR         : Result := 'Media file loading error.';
+  end;
+end;
+
+function SPE_ToStr(ASPE: Word): String;
+begin
+  case ASPE of
+    SPE_IDLIST   : Result := 'SPE_IDLIST';
+    SPE_MTHDPIN  : Result := 'SPE_MTHDPIN';
+    SPE_MTHDDAT  : Result := 'SPE_MTHDDAT';
+    SPE_TAGLIST  : Result := 'SPE_TAGLIST';
+    SPE_EMVDATA  : Result := 'SPE_EMVDATA';
+    SPE_CEXOPT   : Result := 'SPE_CEXOPT';
+    SPE_TRACKS   : Result := 'SPE_TRACKS';
+    SPE_OPNDIG   : Result := 'SPE_OPNDIG';
+    SPE_KEYIDX   : Result := 'SPE_KEYIDX';
+    SPE_WKENC    : Result := 'SPE_WKENC';
+    SPE_MSGIDX   : Result := 'SPE_MSGIDX';
+    SPE_TIMEOUT  : Result := 'SPE_TIMEOUT';
+    SPE_MINDIG   : Result := 'SPE_MINDIG';
+    SPE_MAXDIG   : Result := 'SPE_MAXDIG';
+    SPE_DATAIN   : Result := 'SPE_DATAIN';
+    SPE_ACQREF   : Result := 'SPE_ACQREF';
+    SPE_APPTYPE  : Result := 'SPE_APPTYPE';
+    SPE_AIDLIST  : Result := 'SPE_AIDLIST';
+    SPE_AMOUNT   : Result := 'SPE_AMOUNT';
+    SPE_CASHBACK : Result := 'SPE_CASHBACK';
+    SPE_TRNDATE  : Result := 'SPE_TRNDATE';
+    SPE_TRNTIME  : Result := 'SPE_TRNTIME';
+    SPE_GCXOPT   : Result := 'SPE_GCXOPT';
+    SPE_GOXOPT   : Result := 'SPE_GOXOPT';
+    SPE_FCXOPT   : Result := 'SPE_FCXOPT';
+    SPE_TRMPAR   : Result := 'SPE_TRMPAR';
+    SPE_DSPMSG   : Result := 'SPE_DSPMSG';
+    SPE_ARC      : Result := 'SPE_ARC';
+    SPE_IVCBC    : Result := 'SPE_IVCBC';
+    SPE_MFNAME   : Result := 'SPE_MFNAME';
+    SPE_MFINFO   : Result := 'SPE_MFINFO';
+    SPE_MNUOPT   : Result := 'SPE_MNUOPT';
+    SPE_TRNTYPE  : Result := 'SPE_TRNTYPE';
+    SPE_TRNCURR  : Result := 'SPE_TRNCURR';
+    SPE_PANMASK  : Result := 'SPE_PANMASK';
+    SPE_PBKMOD   : Result := 'SPE_PBKMOD';
+    SPE_PBKEXP   : Result := 'SPE_PBKEXP';
+  else
+    Result := IntToHex(ASPE, 2)+'h';
+  end;
+end;
+
+function PP_ToStr(APP: Word): String;
+begin
+  case APP of
+    PP_SERNUM     : Result := 'PP_SERNUM';
+    PP_PARTNBR    : Result := 'PP_PARTNBR';
+    PP_MODEL      : Result := 'PP_MODEL';
+    PP_MNNAME     : Result := 'PP_MNNAME';
+    PP_CAPAB      : Result := 'PP_CAPAB';
+    PP_SPECVER    : Result := 'PP_SPECVER';
+    PP_MANVERS    : Result := 'PP_MANVERS';
+    PP_APPVERS    : Result := 'PP_APPVERS';
+    PP_GENVERS    : Result := 'PP_GENVERS';
+    PP_KRNLVER    : Result := 'PP_KRNLVER';
+    PP_CTLSVER    : Result := 'PP_CTLSVER';
+    PP_MCTLSVER   : Result := 'PP_MCTLSVER';
+    PP_VCTLSVER   : Result := 'PP_VCTLSVER';
+    PP_AECTLSVER  : Result := 'PP_AECTLSVER';
+    PP_DPCTLSVER  : Result := 'PP_DPCTLSVER';
+    PP_PUREVER    : Result := 'PP_PUREVER';
+    PP_DSPTXTSZ   : Result := 'PP_DSPTXTSZ';
+    PP_DSPGRSZ    : Result := 'PP_DSPGRSZ';
+    PP_MFSUP      : Result := 'PP_MFSUP';
+    PP_MKTDESP    : Result := 'PP_MKTDESP';
+    PP_MKTDESD    : Result := 'PP_MKTDESD';
+    PP_DKPTTDESP  : Result := 'PP_DKPTTDESP';
+    PP_DKPTTDESD  : Result := 'PP_DKPTTDESD';
+    PP_EVENT      : Result := 'PP_EVENT';
+    PP_TRK1INC    : Result := 'PP_TRK1INC';
+    PP_TRK2INC    : Result := 'PP_TRK2INC';
+    PP_TRK3INC    : Result := 'PP_TRK3INC';
+    PP_TRACK1     : Result := 'PP_TRACK1';
+    PP_TRACK2     : Result := 'PP_TRACK2';
+    PP_TRACK3     : Result := 'PP_TRACK3';
+    PP_TRK1KSN    : Result := 'PP_TRK1KSN';
+    PP_TRK2KSN    : Result := 'PP_TRK2KSN';
+    PP_TRK3KSN    : Result := 'PP_TRK3KSN';
+    PP_ENCPAN     : Result := 'PP_ENCPAN';
+    PP_ENCPANKSN  : Result := 'PP_ENCPANKSN';
+    PP_KSN        : Result := 'PP_KSN';
+    PP_VALUE      : Result := 'PP_VALUE';
+    PP_DATAOUT    : Result := 'PP_DATAOUT';
+    PP_CARDTYPE   : Result := 'PP_CARDTYPE';
+    PP_ICCSTAT    : Result := 'PP_ICCSTAT';
+    PP_AIDTABINFO : Result := 'PP_AIDTABINFO';
+    PP_PAN        : Result := 'PP_PAN';
+    PP_PANSEQNO   : Result := 'PP_PANSEQNO';
+    PP_EMVDATA    : Result := 'PP_EMVDATA';
+    PP_CHNAME     : Result := 'PP_CHNAME';
+    PP_GOXRES     : Result := 'PP_GOXRES';
+    PP_PINBLK     : Result := 'PP_PINBLK';
+    PP_FCXRES     : Result := 'PP_FCXRES';
+    PP_ISRESULTS  : Result := 'PP_ISRESULTS';
+    PP_BIGRAND    : Result := 'PP_BIGRAND';
+    PP_LABEL      : Result := 'PP_LABEL';
+    PP_ISSCNTRY   : Result := 'PP_ISSCNTRY';
+    PP_CARDEXP    : Result := 'PP_CARDEXP';
+    PP_MFNAME     : Result := 'PP_MFNAME';
+    PP_DEVTYPE    : Result := 'PP_DEVTYPE';
+    PP_TLRMEM     : Result := 'PP_TLRMEM';
+    PP_ENCKRAND   : Result := 'PP_ENCKRAND';
+    PP_KSNTDESP00 : Result := 'PP_KSNTDESP00';
+    PP_KSNTDESP63 : Result := 'PP_KSNTDESP63';
+    PP_KSNTDESD00 : Result := 'PP_KSNTDESD00';
+    PP_KSNTDESD63 : Result := 'PP_KSNTDESD63';
+    PP_TABVER00   : Result := 'PP_TABVER00';
+    PP_TABVER63   : Result := 'PP_TABVER63';
+  else
+    Result := IntToHex(APP, 2)+'h';
+  end;
+end;
 
 { TACBrAbecsTLV }
 
@@ -617,8 +887,8 @@ begin
   if (l = 0) or (l < 4) then
     raise EACBrAbecsPinPadError.Create(CERR_INVTLV);
 
-  fID := LEStrToInt(copy(AValue, 1, 2));
-  ld := LEStrToInt(copy(AValue, 3, 2));
+  fID := BEStrToInt(copy(AValue, 1, 2));
+  ld := BEStrToInt(copy(AValue, 3, 2));
   if (ld > l) then
     raise EACBrAbecsPinPadError.Create(CERR_INVTLV);
 
@@ -691,7 +961,7 @@ begin
   p := 1;
   while (p < lt) do
   begin
-    lp := LEStrToInt(copy(AValue, p+2, 2));
+    lp := BEStrToInt(copy(AValue, p+2, 2));
     if (lp > lt) then
       raise EACBrAbecsPinPadError.Create(CERR_INVTLV);
 
@@ -807,7 +1077,7 @@ begin
     LastBlk := Items[Count-1];
 
   p := 1;
-  while (p < LenData) do
+  while (p <= LenData) do
   begin
     Chunk := copy(AValue, p, MAX_TLV_SIZE);
     LenChunk := Length(Chunk);
@@ -817,7 +1087,7 @@ begin
 
     tlv := TACBrAbecsTLV.Create(ATag, Chunk);
     try
-      LastBlk.Data := tlv.AsString;
+      LastBlk.Data := LastBlk.Data + tlv.AsString;
     finally
       tlv.Free;
     end;
@@ -852,7 +1122,7 @@ begin
 
     tlv := TACBrAbecsTLV.Create(ATag, Chunk);
     try
-      LastBlk.Data := tlv.AsString;
+      LastBlk.Data := LastBlk.Data + tlv.AsString;
     finally
       tlv.Free;
     end;
@@ -915,6 +1185,28 @@ begin
   fBlocks.Clear;
 end;
 
+function TACBrAbecsApplicationLayer.GetDataPacket(const BlockStart: Integer; out
+  BlocksRead: Integer): String;
+var
+  l, p: Integer;
+begin
+  BlocksRead := 1;
+  Result := fID;
+  if (BlockStart >= Blocks.Count) or (BlockStart < 0) then
+    Exit;
+
+  l := 3;
+  p := BlockStart;
+  while  (p < Blocks.Count) and (l+Blocks[p].Size+3 < MAX_PACKET_SIZE) do
+  begin
+    Result := Result + Blocks[p].AsString;
+    l := Length(Result);
+    Inc(p)
+  end;
+
+  BlocksRead := p - BlockStart;
+end;
+
 procedure TACBrAbecsApplicationLayer.SetID(AValue: String);
 begin
   if fID = AValue then
@@ -959,6 +1251,11 @@ end;
 procedure TACBrAbecsCommand.AddParamFromTagValue(ATag: Word; const AValue: String);
 begin
   fBlocks.AddFromTagValue(ATag, AValue);
+end;
+
+procedure TACBrAbecsCommand.AddParamFromTagValue(ATag: Word; const AStream: TStream);
+begin
+  fBlocks.AddFromTagValue(ATag, AStream);
 end;
 
 { TACBrAbecsResponse }
@@ -1052,7 +1349,7 @@ begin
       try
         tlvlb.AsString := ABlockList[i].Data;
         for j := 0 to tlvlb.Count-1 do
-          ATLVList.AddFromTLV(tlvlb[i].ID, tlvlb[i].Data);
+          ATLVList.AddFromTLV(tlvlb[j].ID, tlvlb[j].Data);
       except
         // Data is not a TLV List
       end;
@@ -1136,9 +1433,14 @@ begin
   inherited Create(AOwner);
   fLogFile := '';
   fLogLevel := 2;
+  fLogTranslate := True;
   fTimeOut := TIMEOUT_RSP;
   fOnWriteLog := nil;
+  fOnStartCommand := nil;
+  fOnWaitForResponse := nil;
+  fOnEndCommand := nil;
   ClearSecureData;
+  ClearCacheData;
 
   fDevice := TACBrDevice.Create(Self);
   fDevice.Name := 'ACBrDevice';
@@ -1167,6 +1469,72 @@ begin
   fPinpadKSec := '';
 end;
 
+procedure TACBrAbecsPinPad.ClearCacheData;
+begin
+  fDSPTXTSZ.Cols := 0;
+  fDSPTXTSZ.Rows := 0;
+  fDSPGRSZ.Cols := 0;
+  fDSPGRSZ.Rows := 0;
+end;
+
+procedure TACBrAbecsPinPad.LogApplicationLayer(AApplicationLayer: TACBrAbecsApplicationLayer);
+var
+  i, j: Integer;
+  tlvl: TACBrAbecsTLVList;
+  s: String;
+begin
+  if (AApplicationLayer is TACBrAbecsCommand) then
+    s := 'Command'
+  else
+    s := 'Response';
+
+  if (Self.LogLevel > 3) then
+    RegisterLog(Format('  %s, Blocks: %d', [s, AApplicationLayer.Blocks.Count]));
+
+  if (Self.LogLevel > 4) and (AApplicationLayer.Blocks.Count > 0) then
+  begin
+    for i := 0 to AApplicationLayer.Blocks.Count-1 do
+    begin
+      RegisterLog(Format('    Block: %d, Size: %d, Data: %s', [i+1, AApplicationLayer.Blocks[i].Size, AApplicationLayer.Blocks[i].Data]));
+      tlvl := TACBrAbecsTLVList.Create;
+      try
+        try
+          tlvl.AsString := AApplicationLayer.Blocks[i].Data;
+          for j := 0 to tlvl.Count-1 do
+          begin
+            if (AApplicationLayer is TACBrAbecsCommand) then
+              s := SPE_ToStr(tlvl[j].ID)
+            else
+              s := PP_ToStr(tlvl[j].ID);
+
+            RegisterLog(Format('      %s, Size: %d, Data: %s', [s, tlvl[j].Size, tlvl[j].Data]));
+          end;
+        except
+        end;
+      finally
+        tlvl.Free;
+      end;
+    end;
+  end;
+end;
+
+procedure TACBrAbecsPinPad.GetPinPadSpecs;
+var
+  s: String;
+begin
+  if (fDSPTXTSZ.Rows <> 0) then
+    Exit;
+
+  GIX([PP_DSPTXTSZ, PP_DSPGRSZ]);
+  s := fResponse.GetResponseFromTagValue(PP_DSPTXTSZ);
+  fDSPTXTSZ.Rows := StrToInt(copy(s,1,2));
+  fDSPTXTSZ.Cols := StrToInt(copy(s,3,2));
+
+  s := fResponse.GetResponseFromTagValue(PP_DSPGRSZ);
+  fDSPGRSZ.Rows := StrToInt(copy(s,1,4));
+  fDSPGRSZ.Cols := StrToInt(copy(s,5,4));
+end;
+
 function TACBrAbecsPinPad.GetIsEnabled: Boolean;
 begin
   Result := Self.Device.Ativo;
@@ -1176,7 +1544,8 @@ procedure TACBrAbecsPinPad.SetIsEnabled(AValue: Boolean);
 begin
   if (AValue = Self.Device.Ativo) then
     Exit;
-  RegisterLog('SetIsEnabled( '+BoolToStr(AValue, 'True', 'False')+' )');
+  if (Self.LogLevel > 0) then
+    RegisterLog('SetIsEnabled( '+BoolToStr(AValue, True)+' )');
 
   Self.Device.Ativo := AValue;
   fSPEKmod := '';
@@ -1195,55 +1564,48 @@ begin
   Self.IsEnabled := False;
 end;
 
-function TACBrAbecsPinPad.ReturnCodeDescription(AStatus: Integer): String;
+function TACBrAbecsPinPad.FormatSPE_DSPMSG(const ASPE_DSPMSG: String): String;
+begin
+  Result := FormatMSG(ASPE_DSPMSG, fDSPTXTSZ.Cols, fDSPTXTSZ.Rows);
+end;
+
+function TACBrAbecsPinPad.FormatMSG_S32(const AMSG: String): String;
+begin
+  Result := FormatMSG(AMSG, 16, 2, 3);
+  Result := ReplaceString(Result, CR, '');
+end;
+
+function TACBrAbecsPinPad.FormatMSG(const AMSG: String; MaxCols: Integer;
+  MaxLines: Integer; Pad: Byte): String;
+var
+  s: String;
+  sl: TStringList;
+  i, r: Integer;
 begin
   Result := '';
-  case AStatus of
-    ST_OK            : Result := 'Command executed successfully.';
-    ST_NOSEC         : Result := 'Attempted to use ‚ÄúSecure Communication‚Äù when it has not been established.';
-    ST_F1            : Result := 'Function #1 key pressed.';
-    ST_F2            : Result := 'Function #2 key pressed.';
-    ST_F3            : Result := ' Function #3 key pressed.';
-    ST_F4            : Result := 'Function #4 key pressed.';
-    ST_BACKSP        : Result := 'Clear (backspace) key pressed';
-    ST_ERRPKTSEC     : Result := 'Error decoding data received via ‚ÄúSecure Communication‚Äù; or Cleartext command received with ‚ÄúSecure Communication‚Äù established.';
-    ST_INVCALL       : Result := 'Invalid call to a command (previous operations are necessary) or unknown command (in case of an ‚ÄúERR‚Äù response).';
-    ST_INVPARM       : Result := 'An invalid parameter was passed to the command.';
-    ST_TIMEOUT       : Result := 'The maximum time stipulated for the operation has been exhausted.';
-    ST_CANCEL        : Result := 'Operation canceled by the cardholder.';
-    ST_MANDAT        : Result := 'A mandatory parameter was not sent by the SPE.';
-    ST_TABVERDIF     : Result := 'EMV Tables version differs from the expected.';
-    ST_TABERR        : Result := 'Error when trying to write tables (lack of space, for example).';
-    ST_INTERR        : Result := 'Internal pinpad error (unexpected situation that does not correspond to the other error codes described here).';
-    ST_MCDATAERR     : Result := 'Magnetic card reading error.';
-    ST_ERRKEY        : Result := 'MK / DUKPT referenced is not present in the pinpad.';
-    ST_NOCARD        : Result := 'There is no ICC present in the coupler or CTLS detected by the antenna.';
-    ST_PINBUSY       : Result := 'Pinpad cannot process PIN capture temporarily due to security constrains (such as when the capture limit is reached within a time interval).';
-    ST_RSPOVRFL      : Result := 'Response data exceeds the maximum allowed size.';
-    ST_ERRCRYPT      : Result := 'Generic cryptographic validation error.';
-    ST_DUMBCARD      : Result := 'ICC inserted, but not responding (‚Äúmute‚Äù).';
-    ST_ERRCARD       : Result := 'Communication error between the pinpad and the ICC or CTLS.';
-    ST_CARDINVALIDAT : Result := 'ICC is invalidated.';
-    ST_CARDPROBLEMS  : Result := 'ICC with problems. This status is valid for many situations in which the ICC does not behave as expected and the transaction must be terminated.';
-    ST_CARDINVDATA   : Result := 'The ICC behaves correctly but has invalid or inconsistent data.';
-    ST_CARDAPPNAV    : Result := 'ICC with no matching application.';
-    ST_CARDAPPNAUT   : Result := 'The application selected in the ICC cannot be used in this situation.';
-    ST_ERRFALLBACK   : Result := 'High level error in the ICC that allows fallback to magnetic stripe.';
-    ST_INVAMOUNT     : Result := 'Invalid amount for the transaction.';
-    ST_ERRMAXAID     : Result := 'Number of candidate AIDs exceeds the processing capacity of the EMV kernel.';
-    ST_CARDBLOCKED   : Result := 'Card is blocked.';
-    ST_CTLSMULTIPLE  : Result := 'More than one CTLS was presented to the reader simultaneously.';
-    ST_CTLSCOMMERR   : Result := 'Communication error between the pinpad (antenna) and the CTLS.';
-    ST_CTLSINVALIDAT : Result := 'CTLS is invalidated.';
-    ST_CTLSPROBLEMS  : Result := 'CTLS with problems. This status is valid for many situations in which the CTLS does not behave as expected and the transaction must be terminated.';
-    ST_CTLSAPPNAV    : Result := 'CTLS with no matching application.';
-    ST_CTLSAPPNAUT   : Result := 'The application selected in the CTLS cannot be used in this situation.';
-    ST_CTLSEXTCVM    : Result := 'Cardholder must perform a validation on his device (mobile phone, for example) and then re-present it to the pinpad.';
-    ST_CTLSIFCHG     : Result := 'CTLS processing resulted in ‚Äúchange interface‚Äù (request ICC or magnetic card).';
-    ST_MFNFOUND      : Result := 'Media file not found.';
-    ST_MFERRFMT      : Result := 'Media file format error.';
-    ST_MFERR         : Result := 'Media file loading error.';
+  s := ReplaceString(AMSG, CR, LF);
+  s := QuebraLinhas(s, MaxCols);
+  sl := TStringList.Create;
+  try
+    sl.Text := s;
+    r := min(sl.Count-1, MaxLines);
+    for i := 0 to r do
+    begin
+      s := sl[i];
+      if (Pad = 1) then
+        s:= PadRight(s, MaxCols)
+      else if (Pad = 2) then
+        s:= PadLeft(s, MaxCols)
+      else if (Pad = 3) then
+        s:= PadCenter(s, MaxCols);
+
+      Result := Result + s + CR;
+    end;
+  finally
+    sl.Free;
   end;
+
+  Result := NativeStringToAnsi(Result);
 end;
 
 function TACBrAbecsPinPad.GetPort: String;
@@ -1256,8 +1618,8 @@ begin
   Self.Device.Porta := AValue;
 end;
 
-procedure TACBrAbecsPinPad.RegisterLog(const AString: AnsiString;
-  Translate: Boolean; AddTime: Boolean);
+procedure TACBrAbecsPinPad.RegisterLog(const AData: AnsiString;
+  AddTime: Boolean);
 var
   Done: Boolean;
   s: AnsiString;
@@ -1265,10 +1627,10 @@ begin
   if (Self.LogFile = '') and (not Assigned(Self.OnWriteLog)) then
     Exit;
 
-  if Translate then
-    s := TranslateUnprintable(AString)
+  if Self.LogTranslate then
+    s := BinaryStringToString(AData)
   else
-    s := AString;
+    s := AData;
 
   if AddTime then
     s := '-- ' + FormatDateTime('dd/mm hh:nn:ss:zzz', now) + ' - ' + s;
@@ -1289,7 +1651,8 @@ begin
   if not Assigned(AException) then
     Exit;
 
-  RegisterLog(AException.ClassName+': '+AException.Message);
+  if (Self.LogLevel > 0) then
+    RegisterLog(AException.ClassName+': '+AException.Message);
   raise AException;
 end;
 
@@ -1298,56 +1661,77 @@ begin
   DoException( EACBrAbecsPinPadError.Create(AMsg) );
 end;
 
-procedure TACBrAbecsPinPad.ExecCommand;
+procedure TACBrAbecsPinPad.ExecCommand(DoEvaluateResponse: Boolean);
 var
   AckByte: Byte;
   ACKFails: Byte;
+  BlockStart, BlocksRead: Integer;
 begin
-  RegisterLog(Format('ExecCommand: %s', [fCommand.ID]));
+  if (Self.LogLevel > 0) then
+    RegisterLog(Format('ExecCommand: %s', [fCommand.ID]));
+
+  if Assigned(fOnStartCommand) then
+    fOnStartCommand(Self);
+
   fIsBusy := True;
   try
-    // initial cleaning
-    AckByte := 0;
-    ACKFails := 0;
-    fResponse.Clear;
+    if (Self.LogLevel > 3) then
+      LogApplicationLayer(fCommand);
 
-    // Send Data and Wait for ACK
-    while (AckByte <> ACK) do
+    BlockStart := -1;
+    while (BlockStart < fCommand.Blocks.Count) do
     begin
-      SendCommand;
-      AckByte := WaitForACK;
+      // initial cleaning
+      AckByte := 0;
+      ACKFails := 0;
+      fResponse.Clear;
 
-      if (AckByte = NAK) then
+      // Send Data and Wait for ACK
+      while (AckByte <> ACK) do
       begin
-        Inc(ACKFails);
-        if (ACKFails >= MAX_ACK_TRIES) then
-          DoException(CERR_READING_ACK);
-      end
-      else if (AckByte <> ACK) then
-        DoException(CERR_READING_ACK);
-    end;
+        BlockStart := max(BlockStart, 0);
+        SendCommand(BlockStart, BlocksRead);
+        AckByte := WaitForACK;
 
-    WaitForResponse;
-    EvaluateResponse;
+        if (AckByte = NAK) then
+        begin
+          Inc(ACKFails);
+          if (ACKFails >= MAX_ACK_TRIES) then
+            DoException(CERR_READING_ACK);
+        end
+        else if (AckByte <> ACK) then
+          DoException(CERR_READING_ACK);
+      end;
+
+      WaitForResponse;
+      if DoEvaluateResponse then
+        EvaluateResponse;
+      Inc(BlockStart, BlocksRead);
+    end;
   finally
     fIsBusy := False;
+    if Assigned(fOnEndCommand) then
+      fOnEndCommand(Self);
   end;
 end;
 
-procedure TACBrAbecsPinPad.SendCommand;
+procedure TACBrAbecsPinPad.SendCommand(const BlockStart: Integer; out BlocksRead: Integer);
 var
   pkt: TACBrAbecsPacket;
   s: AnsiString;
 begin
+  BlocksRead := 0;
   if (Self.LogLevel > 2) then
-    RegisterLog(Format('  SendCommand: %s', [fCommand.ID]));
+    RegisterLog(Format('  SendCommand: %s, BlockStart: %d', [fCommand.ID, BlockStart]));
 
   if not Self.IsEnabled then
     DoException(CERR_NOTENABLED);
 
-  s := fCommand.AsString;
+  s := fCommand.GetDataPacket(BlockStart, BlocksRead);
   pkt := TACBrAbecsPacket.Create(s);
   try
+    if (Self.LogLevel > 2) then
+      RegisterLog(Format('    DataPacket, %d Bytes, %d Blocks', [Length(pkt.Data), BlocksRead]));
     s := pkt.AsString;
     Self.Device.EnviaString(s);
     if (Self.LogLevel > 1) then
@@ -1411,11 +1795,11 @@ end;
 function TACBrAbecsPinPad.WaitForACK: Byte;
 begin
   if (Self.LogLevel > 2) then
-    RegisterLog('  WaitForACK');
+    RegisterLog('    WaitForACK');
 
   Result := Self.Device.LeByte(TIMEOUT_ACK);
   if (Self.LogLevel > 1) then
-    RegisterLog(Format('  RX <- %d', [Result]));
+    RegisterLog(Format('    RX <- %d', [Result]));
 end;
 
 procedure TACBrAbecsPinPad.WaitForResponse;
@@ -1429,6 +1813,7 @@ procedure TACBrAbecsPinPad.WaitForResponse;
   var
     TimeToTimeOut: TDateTime;
     b: Byte;
+    Cancel: Boolean;
   begin
     TimeToTimeOut := IncMilliSecond(Now, Self.TimeOut);
     if (Self.LogLevel > 2) then
@@ -1442,10 +1827,17 @@ procedure TACBrAbecsPinPad.WaitForResponse;
       end
       else
       begin
+        if Assigned(fOnWaitForResponse) then
+        begin
+          Cancel := False;
+          fOnWaitForResponse(Cancel);
+          fIsBusy := not Cancel;
+        end;
+
         if UserCancelled then
         begin
           if (Self.LogLevel > 1) then
-            RegisterLog('  UserCancelled');
+            RegisterLog('    UserCancelled');
 
           if SendCAN then
             DoException(CERR_CANCELLED_BY_USER)
@@ -1457,12 +1849,12 @@ procedure TACBrAbecsPinPad.WaitForResponse;
       try
         b := Self.Device.LeByte(500);
         if (Self.LogLevel > 2) then
-          RegisterLog(Format('  RX <- %d', [b]));
+          RegisterLog(Format('    RX <- %d', [b]));
       except
       end;
     until (b = SYN);
 
-    if (Self.LogLevel > 2) then
+    if (Self.LogLevel > 3) then
       RegisterLog('  SYN received');
   end;
 
@@ -1475,9 +1867,6 @@ procedure TACBrAbecsPinPad.WaitForResponse;
     Result := '';
     repeat
       b := Self.Device.LeByte(TIMEOUT_ACK);  // Raise Exception for Timeout
-      if (Self.LogLevel > 3) then
-        RegisterLog(Format('  RX <- %d', [b]));
-
       if (b <> ETB) then
       begin
         if (Length(Result) < MAX_PACKET_SIZE) then
@@ -1498,7 +1887,7 @@ var
   pkt: TACBrAbecsPacket;
 begin
   if (Self.LogLevel > 1) then
-    RegisterLog('WaitForResponse');
+    RegisterLog('  WaitForResponse');
 
   pkt := TACBrAbecsPacket.Create();
   try
@@ -1510,11 +1899,11 @@ begin
 
       try
         PktData := WaitForDataPacket;
-        if (Self.LogLevel > 2) then
-          RegisterLog('  ReadCRC');
+        if (Self.LogLevel > 3) then
+          RegisterLog('    ReadCRC');
         CRCData := Self.Device.LeString(TIMEOUT_ACK, 2); // Read 2 bytes
-        if (Self.LogLevel > 1) then
-          RegisterLog(Format('  CRC: %s', [CRCData]));
+        if (Self.LogLevel > 2) then
+          RegisterLog(Format('    CRC: %s', [CRCData]));
 
         // TACBrAbecsPacket.AsString Setter checks for CRC and raise Exception on error
         pkt.AsString := chr(SYN) + PktData + chr(ETB) + CRCData;
@@ -1522,8 +1911,8 @@ begin
       except
         on E: Exception do
         begin
-          if (Self.LogLevel > 1) then
-            RegisterLog(Format('  %s: %s', [E.ClassName, E.Message]));
+          if (Self.LogLevel > 2) then
+            RegisterLog(Format('    %s: %s', [E.ClassName, E.Message]));
 
           IgnoreAllBytes;
           SendNAK;
@@ -1531,8 +1920,8 @@ begin
           Inc(NumFails);
           if (NumFails >= MAX_ACK_TRIES) then
           begin
-            if (Self.LogLevel > 1) then
-              RegisterLog(Format('  %d Fails', [NumFails]));
+            if (Self.LogLevel > 2) then
+              RegisterLog(Format('    %d Fails', [NumFails]));
             DoException(CERR_READING_RSP);
           end;
         end;
@@ -1540,8 +1929,10 @@ begin
     until Done;
 
     fResponse.AsString := pkt.Data;
-    if (Self.LogLevel > 2) then
-      RegisterLog('  WaitForResponse - OK');
+    if (Self.LogLevel > 1) then
+      RegisterLog(Format('  Response.STAT: %d',[fResponse.STAT]));
+    if (Self.LogLevel > 3) then
+      LogApplicationLayer(fResponse);
   finally
     pkt.Free;
   end;
@@ -1550,24 +1941,27 @@ end;
 procedure TACBrAbecsPinPad.EvaluateResponse;
 begin
   if (Self.LogLevel > 2) then
-    RegisterLog(Format('EvaluateResponse: %d', [fResponse.STAT]));
+    RegisterLog(Format('  EvaluateResponse: %d', [fResponse.STAT]));
 
   if (fResponse.STAT <> ST_OK) then
-    DoException(Format('Error: %d - %s', [fResponse.STAT, ReturnCodeDescription(fResponse.STAT)]));
+    DoException(Format('Error: %d - %s', [fResponse.STAT, ReturnStatusCodeDescription(fResponse.STAT)]));
 end;
 
 procedure TACBrAbecsPinPad.CancelWaiting;
 begin
-  RegisterLog('CancelWaiting');
+  if (Self.LogLevel > 0) then
+    RegisterLog('  CancelWaiting');
   fIsBusy := False;
 end;
 
 procedure TACBrAbecsPinPad.OPN;
 begin
-  RegisterLog('OPN');
+  if (Self.LogLevel > 0) then
+    RegisterLog('OPN');
   fCommand.Clear;
   fCommand.ID := 'OPN';
   ExecCommand;
+  GetPinPadSpecs;
 end;
 
 procedure TACBrAbecsPinPad.OPN(const OPN_MOD: String; const OPN_EXP: String);
@@ -1575,7 +1969,8 @@ var
   LenMod, LenExp: Integer;
   CRKSEC: String;
 begin
-  RegisterLog('OPN');
+  if (Self.LogLevel > 0) then
+    RegisterLog('OPN( '+OPN_MOD+', '+OPN_EXP+' )');
   LenMod := Trunc(Length(OPN_MOD)/2);
   if ((LenMod <> OPN_MODLEN) or
       (not StrIsHexa(OPN_MOD))) then
@@ -1588,70 +1983,33 @@ begin
     DoException(CERR_EXP_WRONG_SIZE);
 
   ClearSecureData;
+  ClearCacheData;
   fSPEKmod := OPN_MOD;
   fSPEKpub := OPN_EXP;
 
   fCommand.Clear;
   fCommand.ID := 'OPN';
   fCommand.AddParamFromData(
-    '0' +               // OPN_OPMODE N1 Operation mode (fixed ‚Äú0‚Äù)
-    IntToStr(LenMod) +  // OPN_MODLEN N3 Number of bytes represented in OPN_MOD (length √∑ 2), fixed ‚Äú256‚Äù
+    '0' +               // OPN_OPMODE N1 Operation mode (fixed ì0î)
+    IntToStr(LenMod) +  // OPN_MODLEN N3 Number of bytes represented in OPN_MOD (length ˜ 2), fixed ì256î
     OPN_MOD +           // OPN_MOD H512 Modulus of the RSA key created by the SPE (KMOD).
-    IntToStr(LenExp) +  // OPN_EXPLEN N1 Number of bytes represented in OPN_EXP (length √∑ 2).
+    IntToStr(LenExp) +  // OPN_EXPLEN N1 Number of bytes represented in OPN_EXP (length ˜ 2).
     OPN_EXP );          // OPN_EXP H..6 Public exponent of the RSA key created by the SPE (KPUB).
   ExecCommand;
 
   CRKSEC := fResponse.GetResponseData;
+  //TODO: A LOT OF TO DO....
+  GetPinPadSpecs;
 end;
 
-procedure TACBrAbecsPinPad.CLO(const AMsgToDisplay: String;
-  const ALineBreakChar: Char);
-var
-  p: Integer;
-  msg: String;
+procedure TACBrAbecsPinPad.GIN(const GIN_ACQIDX: Byte);
 begin
-  RegisterLog('CLO( '+AMsgToDisplay+', '+ALineBreakChar+' )');
+  if (Self.LogLevel > 0) then
+    RegisterLog('GIN( '+IntToStr(GIN_ACQIDX)+' )');
   fCommand.Clear;
-  fCommand.ID := 'CLO';
-  if (AMsgToDisplay <> '') then
-  begin
-    p := pos(ALineBreakChar, AMsgToDisplay);
-    if (p > 0) then
-      msg := PadRight(copy(AMsgToDisplay, 1, p-1), 16) +
-             PadRight(copy(AMsgToDisplay, p+1, 16), 16)
-    else
-      msg := PadRight(AMsgToDisplay, 32);
-
-    fCommand.AddParamFromData(msg);
-  end;
-
+  fCommand.ID := 'GIN';
+  fCommand.AddParamFromData(Format('%.2d', [GIN_ACQIDX]));
   ExecCommand;
-  ClearSecureData;
-end;
-
-procedure TACBrAbecsPinPad.CLX(const SPE_DSPMSG_or_SPE_MFNAME: String);
-var
-  s: String;
-  l: Word;
-  ls: Integer;
-begin
-  RegisterLog('CLX( '+SPE_DSPMSG_or_SPE_MFNAME+' )');
-  fCommand.Clear;
-  fCommand.ID := 'CLX';
-  s := TrimRight(SPE_DSPMSG_or_SPE_MFNAME);
-  ls := Length(s);
-  if (ls > 0) then
-  begin
-    if (ls = 8) and StrIsAlphaNum(s) then
-      l := SPE_MFNAME
-    else
-      l := SPE_DSPMSG;
-
-    fCommand.AddParamFromTagValue(l, s);
-  end;
-
-  ExecCommand;
-  ClearSecureData;
 end;
 
 procedure TACBrAbecsPinPad.GIX;
@@ -1664,7 +2022,8 @@ var
   s: AnsiString;
   i: Integer;
 begin
-  RegisterLog('GIX');
+  if (Self.LogLevel > 0) then
+    RegisterLog('GIX');
   fCommand.Clear;
   fCommand.ID := 'GIX';
 
@@ -1673,9 +2032,415 @@ begin
     s := s + IntToBEStr(PP_DATA[i]);
 
   if (s <> '') then
+  begin
+    if (Self.LogLevel > 1) then
+      RegisterLog('   '+s);
+
     fCommand.AddParamFromTagValue(SPE_IDLIST, s);
+  end;
 
   ExecCommand;
+end;
+
+procedure TACBrAbecsPinPad.CLO(const CLO_MSG: String);
+begin
+  if (Self.LogLevel > 0) then
+    RegisterLog('CLO( '+CLO_MSG+' )');
+  fCommand.Clear;
+  fCommand.ID := 'CLO';
+  if (CLO_MSG <> '') then
+    fCommand.AddParamFromData(FormatMSG_S32(CLO_MSG));
+
+  ExecCommand;
+  ClearSecureData;
+  ClearCacheData;
+end;
+
+procedure TACBrAbecsPinPad.CLX(const SPE_DSPMSG_or_SPE_MFNAME: String);
+var
+  s: String;
+  l: Word;
+  ls: Integer;
+begin
+  GetPinPadSpecs;
+  if (Self.LogLevel > 0) then
+    RegisterLog('CLX( '+SPE_DSPMSG_or_SPE_MFNAME+' )');
+  fCommand.Clear;
+  fCommand.ID := 'CLX';
+  s := TrimRight(SPE_DSPMSG_or_SPE_MFNAME);
+  ls := Length(s);
+  if (ls > 0) then
+  begin
+    if (ls = 8) and StrIsAlphaNum(s) then
+      l := SPE_MFNAME
+    else
+    begin
+      l := SPE_DSPMSG;
+      s := FormatSPE_DSPMSG(s);
+    end;
+
+    fCommand.AddParamFromTagValue(l, s);
+  end;
+
+  ExecCommand;
+  ClearSecureData;
+  ClearCacheData;
+end;
+
+procedure TACBrAbecsPinPad.CEX(const ASPE_CEXOPT: String; ASPE_TIMEOUT: Byte;
+  const ASPE_PANMASK_LLRR: String);
+var
+  s: String;
+  l: Integer;
+begin
+  if (Self.LogLevel > 0) then
+    RegisterLog(Format('CEX( %s, %d, %s )',[ASPE_CEXOPT, ASPE_TIMEOUT, ASPE_PANMASK_LLRR]));
+  fCommand.Clear;
+  fCommand.ID := 'CEX';
+  s := trim(ASPE_CEXOPT);
+  l := Length(s);
+  if (l <> 6) or (not StrIsNumber(s)) then
+    DoException(Format(CERR_INVALID_PARAM, ['SPE_CEXOPT']));
+
+  fCommand.AddParamFromTagValue(SPE_CEXOPT, s);
+  if (ASPE_TIMEOUT > 0) then
+    fCommand.AddParamFromTagValue(SPE_TIMEOUT, chr(ASPE_TIMEOUT));
+
+  if (ASPE_PANMASK_LLRR <> '') then
+  begin
+    s := trim(ASPE_PANMASK_LLRR);
+    l := Length(s);
+    if (l <> 4) or (not StrIsNumber(s)) then
+      DoException(Format(CERR_INVALID_PARAM, ['SPE_PANMASK']));
+
+    fCommand.AddParamFromTagValue(SPE_PANMASK, s);
+  end;
+
+  ExecCommand;
+end;
+
+procedure TACBrAbecsPinPad.CEX(VerifyKey: Boolean; VerifyMagnetic: Boolean;
+  VerifyICCInsertion: Boolean; VerifyICCRemoval: Boolean;
+  VerifyCTLSPresence: Boolean; ASPE_TIMEOUT: Byte;
+  const ASPE_PANMASK_LLRR: String);
+var
+  ASPE_CEXOPT: String;
+begin
+  if (Self.LogLevel > 0) then
+    RegisterLog('CEX: VerifyKey: '+BoolToStr(VerifyKey)+
+                   ', VerifyMagnetic: '+BoolToStr(VerifyMagnetic)+
+                   ', VerifyICCInsertion: '+BoolToStr(VerifyICCInsertion)+
+                   ', VerifyICCRemoval: '+BoolToStr(VerifyICCRemoval)+
+                   ', VerifyCTLSPresence: '+BoolToStr(VerifyCTLSPresence)+
+                   ', SPE_TIMEOUT: '+IntToStr(ASPE_TIMEOUT)+
+                   ', SPE_PANMASK_LLRR: '+ASPE_PANMASK_LLRR);
+
+  ASPE_CEXOPT := IfThen(VerifyKey, '1', '0');
+  ASPE_CEXOPT := ASPE_CEXOPT + IfThen(VerifyMagnetic, '1', '0');
+  ASPE_CEXOPT := ASPE_CEXOPT + IfThen(VerifyICCInsertion, '1', IfThen(VerifyICCRemoval, '2', '0'));
+  ASPE_CEXOPT := ASPE_CEXOPT + IfThen(VerifyCTLSPresence, '1', '0');
+  ASPE_CEXOPT := ASPE_CEXOPT + '00' ;  // RFU
+
+  CEX(ASPE_CEXOPT, ASPE_TIMEOUT, ASPE_PANMASK_LLRR);
+end;
+
+procedure TACBrAbecsPinPad.DEX(const DEX_MSG: String);
+var
+  s: String;
+  l: Integer;
+begin
+  GetPinPadSpecs;
+  if (Self.LogLevel > 0) then
+    RegisterLog('DEX( '+DEX_MSG+' )');
+  fCommand.Clear;
+  fCommand.ID := 'DEX';
+  s := FormatSPE_DSPMSG(DEX_MSG);
+  l := Length(s);
+  s := Format('%.3d', [l])+s;
+  fCommand.AddParamFromData(s);
+  ExecCommand;
+end;
+
+procedure TACBrAbecsPinPad.DSP(const DSP_MSG: String);
+begin
+  if (Self.LogLevel > 0) then
+    RegisterLog('DSP( '+DSP_MSG+' )');
+  fCommand.Clear;
+  fCommand.ID := 'DSP';
+  fCommand.AddParamFromData(FormatMSG_S32(DSP_MSG));
+  ExecCommand;
+end;
+
+function TACBrAbecsPinPad.GCD(ASPE_MSGIDX: Word; ASPE_MINDIG: Byte;
+  ASPE_MAXDIG: Byte; ASPE_TIMEOUT: Byte): String;
+begin
+  if (Self.LogLevel > 0) then
+    RegisterLog(Format('GCD( %d, %d, %d, %d) ',[ASPE_MSGIDX, ASPE_MINDIG, ASPE_MAXDIG, ASPE_TIMEOUT]));
+
+  fCommand.Clear;
+  fCommand.ID := 'GCD';
+  fCommand.IsBlocking := True;
+  fCommand.AddParamFromTagValue(SPE_MSGIDX, IntToBEStr(ASPE_MSGIDX, 2));
+  if (ASPE_MINDIG > 0) then
+    fCommand.AddParamFromTagValue(SPE_MINDIG, chr(ASPE_MINDIG));
+  if (ASPE_MAXDIG > 0) then
+    fCommand.AddParamFromTagValue(SPE_MAXDIG, chr(ASPE_MAXDIG));
+  if (ASPE_TIMEOUT > 0) then
+    fCommand.AddParamFromTagValue(SPE_TIMEOUT, chr(ASPE_TIMEOUT));
+
+  ExecCommand;
+  Result := fResponse.GetResponseFromTagValue(PP_VALUE);
+end;
+
+function TACBrAbecsPinPad.GCD(MSGIDX: TACBrAbecsMSGIDX; ASPE_TIMEOUT: Byte): String;
+var
+  mindig, maxdig: Byte;
+  ASPE_MSGIDX: Word;
+begin
+  if (Self.LogLevel > 0) then
+    RegisterLog(Format('GCD( %s, %d )',[GetEnumName(TypeInfo(TACBrAbecsMSGIDX), integer(MSGIDX)), ASPE_TIMEOUT]));
+
+  mindig := 0; maxdig := 0;
+  case MSGIDX of
+    msgDigiteDDD, msgRedigiteDDD:
+      begin
+        mindig := 3; maxdig := 3;
+      end;
+    msgDigiteTelefone, msgRedigiteTelefone:
+      begin
+        mindig := 8; maxdig := 9;
+      end;
+    msgDigiteDDDeTelefone, msgRedigiteDDDeTelefone:
+      begin
+        mindig := 10; maxdig := 11;
+      end;
+    msgDigiteCPF, msgRedigiteCPF:
+      begin
+        mindig := 11; maxdig := 11;
+      end;
+    msgDigiteRG, msgRedigiteRG:
+      begin
+        mindig := 5; maxdig := 11;
+      end;
+    msgDigite4UltimosDigitos:
+      begin
+        mindig := 4; maxdig := 4;
+      end;
+    msgDigiteCodSeguranca:
+      begin
+        mindig := 3; maxdig := 3;
+      end;
+    msgDigiteCNPJ, msgRedigiteCNPJ:
+      begin
+        mindig := 14; maxdig := 14;
+      end;
+    msgDigiteDataDDMMAAAA, msgDataNascimentoDDMMAAAA:
+      begin
+        mindig := 8; maxdig := 8;
+      end;
+    msgDigiteDataDDMMAA,  msgDataNascimentoDDMMAA:
+      begin
+        mindig := 6; maxdig := 6;
+      end;
+    msgDigiteDataDDMM, msgDataNascimentoDDMM, msgDigiteAnoAAAA, msgAnoNascimentoAAAA:
+      begin
+        mindig := 4; maxdig := 4;
+      end;
+    msgDigiteDiaDD, msgDigiteMesMM, msgDigiteAnoAA, msgDiaNascimentoDD, msgMesNascimentoMM, msgAnoNascimentoAA:
+      begin
+        mindig := 2; maxdig := 2;
+      end;
+    msgPesquisaSatisfacao0_10, msgAvalieAtendimento0_10, msgNotaAtendimento:
+      begin
+        mindig := 1; maxdig := 2;
+      end;
+    msgNumeroParcelas:
+      begin
+        mindig := 1; maxdig := 3;
+      end;
+  end;
+
+  ASPE_MSGIDX := integer(MSGIDX)+1;
+  Result := GCD(ASPE_MSGIDX, mindig, maxdig, ASPE_TIMEOUT);
+end;
+
+function TACBrAbecsPinPad.GKY: Integer;
+begin
+  if (Self.LogLevel > 0) then
+    RegisterLog('GKY');
+
+  fCommand.Clear;
+  fCommand.ID := 'GKY';
+  fCommand.IsBlocking := True;
+  ExecCommand( False ); // Do not EvaluateResponse
+  Result := fResponse.STAT;
+end;
+
+function TACBrAbecsPinPad.MNU(ASPE_MNUOPT: array of String; ASPE_DSPMSG: String;
+  ASPE_TIMEOUT: Byte): String;
+var
+  s: String;
+  i: Integer;
+begin
+  GetPinPadSpecs;
+  if (Self.LogLevel > 0) then
+  begin
+    s := '';
+    for i := Low(ASPE_MNUOPT) to High(ASPE_MNUOPT) do
+      s := s + ASPE_MNUOPT[i];
+    RegisterLog(Format('MNU( %d, %s, %s )', [ASPE_TIMEOUT, ASPE_DSPMSG, s]));
+  end;
+
+  fCommand.Clear;
+  fCommand.ID := 'MNU';
+  fCommand.IsBlocking := True;
+  if (ASPE_TIMEOUT > 0) then
+    fCommand.AddParamFromTagValue(SPE_TIMEOUT, chr(ASPE_TIMEOUT));
+  fCommand.AddParamFromTagValue(SPE_DSPMSG, FormatSPE_DSPMSG(ASPE_DSPMSG));
+  for i := Low(ASPE_MNUOPT) to High(ASPE_MNUOPT) do
+  begin
+    s := LeftStr(ASPE_MNUOPT[i], 24);
+    fCommand.AddParamFromTagValue(SPE_MNUOPT, s);
+  end;
+  ExecCommand;
+  Result := fResponse.GetResponseFromTagValue(PP_VALUE);
+end;
+
+procedure TACBrAbecsPinPad.RMC(const RMC_MSG: String);
+begin
+  if (Self.LogLevel > 0) then
+    RegisterLog('RMC( '+RMC_MSG+' )');
+  fCommand.Clear;
+  fCommand.ID := 'RMC';
+  fCommand.IsBlocking := True;
+  fCommand.AddParamFromData(FormatMSG_S32(RMC_MSG));
+  ExecCommand;
+end;
+
+procedure TACBrAbecsPinPad.MLI(const ASPE_MFNAME: String;
+  const ASPE_MFINFO: AnsiString);
+var
+  l: Integer;
+  s: String;
+begin
+  if (Self.LogLevel > 0) then
+    RegisterLog('MLI( '+ASPE_MFNAME+', '+ASPE_MFINFO+' )');
+  s := trim(ASPE_MFNAME);
+  l := Length(s);
+  if (l = 0) or (l > 8) or (not StrIsAlphaNum(s)) then
+    DoException(CERR_SPE_MFNAME);
+
+  l := Length(ASPE_MFINFO);
+  if (l <> 10) then
+    DoException(CERR_SPE_MFINFO);
+
+  s := PadRight(s, 8);
+
+  fCommand.Clear;
+  fCommand.ID := 'MLI';
+  fCommand.AddParamFromTagValue(SPE_MFNAME, s);
+  fCommand.AddParamFromTagValue(SPE_MFINFO, ASPE_MFINFO);
+  ExecCommand;
+end;
+
+procedure TACBrAbecsPinPad.MLI(const ASPE_MFNAME: String; FileSize: Int64;
+  CRC: Word; FileType: Byte);
+var
+  ASPE_MFINFO: AnsiString;
+begin
+  if (Self.LogLevel > 0) then
+    RegisterLog('MLI( '+ASPE_MFNAME+', '+IntToStr(FileSize)+', '+IntToStr(CRC)+', '+IntToStr(FileType)+' )');
+  ASPE_MFINFO := IntToBEStr(FileSize, 4) + IntToBEStr(CRC, 2) + chr(FileType) + #0#0#0;
+  MLI(ASPE_MFNAME, ASPE_MFINFO);
+end;
+
+procedure TACBrAbecsPinPad.MLR(ASPE_DATAIN: TStream);
+begin
+  if (Self.LogLevel > 0) then
+    RegisterLog(Format('MLR( %d Bytes )', [ASPE_DATAIN.Size]));
+  fCommand.Clear;
+  fCommand.ID := 'MLR';
+  fCommand.AddParamFromTagValue(SPE_DATAIN, ASPE_DATAIN);
+  ExecCommand;
+end;
+
+procedure TACBrAbecsPinPad.MLE;
+begin
+  if (Self.LogLevel > 0) then
+    RegisterLog('MLE');
+  fCommand.Clear;
+  fCommand.ID := 'MLE';
+  ExecCommand;
+end;
+
+procedure TACBrAbecsPinPad.LMF;
+begin
+  if (Self.LogLevel > 0) then
+    RegisterLog('LMF');
+  fCommand.Clear;
+  fCommand.ID := 'LMF';
+  ExecCommand;
+end;
+
+procedure TACBrAbecsPinPad.DMF(const ASPE_MFNAME: String);
+begin
+  if (Self.LogLevel > 0) then
+    RegisterLog('DMF( '+ASPE_MFNAME+' )');
+  fCommand.Clear;
+  fCommand.ID := 'DMF';
+  fCommand.AddParamFromTagValue(SPE_MFNAME, ASPE_MFNAME);
+  ExecCommand;
+end;
+
+procedure TACBrAbecsPinPad.DMF(LIST_SPE_MFNAME: array of String);
+var
+  s: String;
+  i: Integer;
+begin
+  s := '';
+  for i := Low(LIST_SPE_MFNAME) to High(LIST_SPE_MFNAME) do
+    s := s + LIST_SPE_MFNAME[i]+', ';
+
+  if (Self.LogLevel > 0) then
+    RegisterLog('DMF( '+copy(s, 1, Length(s)-2)+' )');
+
+  fCommand.Clear;
+  fCommand.ID := 'DMF';
+  for i := Low(LIST_SPE_MFNAME) to High(LIST_SPE_MFNAME) do
+    fCommand.AddParamFromTagValue(SPE_MFNAME, LIST_SPE_MFNAME[i]);
+  ExecCommand;
+end;
+
+procedure TACBrAbecsPinPad.DSI(const ASPE_MFNAME: String);
+begin
+  if (Self.LogLevel > 0) then
+    RegisterLog('DSI( '+ASPE_MFNAME+' )');
+  fCommand.Clear;
+  fCommand.ID := 'DSI';
+  fCommand.AddParamFromTagValue(SPE_MFNAME, ASPE_MFNAME);
+  ExecCommand;
+end;
+
+procedure TACBrAbecsPinPad.LoadMedia(const ASPE_MFNAME: String;
+  ASPE_DATAIN: TStream; MediaType: TACBrAbecsPinPadMediaType);
+var
+  AData: AnsiString;
+  crc: Word;
+  ft: Byte;
+begin
+  ASPE_DATAIN.Position := 0;
+  AData := ReadStrFromStream(ASPE_DATAIN, ASPE_DATAIN.Size);
+  crc := StringCrcCCITT(AData, 0, $1021);
+  case MediaType of
+    mtPNG: ft := 1;
+    mtJPG: ft := 2;
+    mtGIF: ft := 3;
+  end;
+
+  MLI(ASPE_MFNAME, ASPE_DATAIN.Size, crc, ft);
+  ASPE_DATAIN.Position := 0;
+  MLR(ASPE_DATAIN);
+  MLE;
 end;
 
 end.

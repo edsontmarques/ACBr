@@ -38,7 +38,9 @@ interface
 
 uses
   SysUtils, Classes, ACBrBase,
-  ACBrNFComClass, pcnConversao, ACBrDFeReport;
+  ACBrNFComClass,
+  pcnConversao,
+  ACBrDFeReport;
 
 type
 
@@ -87,7 +89,7 @@ type
 implementation
 
 uses
-  ACBrNFCom, ACBrUtil;
+  ACBrNFCom;
 
 { TACBrNFComDANFComClass }
 

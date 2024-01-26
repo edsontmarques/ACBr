@@ -42,7 +42,7 @@ uses
   ACBrXmlBase,
   ACBrNFComConfiguracoes, ACBrNFComWebServices, ACBrNFComNotasFiscais,
   ACBrNFComDANFComClass,
-  ACBrDFeConversao,
+//  ACBrDFeConversao,
   pcnConversao,
   ACBrNFComClass, ACBrNFComConversao, ACBrNFComEnvEvento;
 
@@ -141,7 +141,7 @@ implementation
 uses
   dateutils, math,
   ACBrUtil.Base, ACBrUtil.Strings, ACBrUtil.FilesIO,
-  pcnAuxiliar, ACBrDFeSSL;
+  ACBrDFeSSL;
 
 {$IFDEF FPC}
  {$R ACBrNFComServicos.rc}
@@ -176,8 +176,8 @@ begin
   SetStatus( stNFComEmail );
 
   try
-    inherited EnviarEmail(sPara, sAssunto, sMensagem, sCC, Anexos, StreamNFCom, NomeArq,
-      sReplyTo, sBCC);
+    inherited EnviarEmail(sPara, sAssunto, sMensagem, sCC, Anexos, StreamNFCom,
+      NomeArq, sReplyTo, sBCC);
   finally
     SetStatus( stNFComIdle );
   end;
@@ -309,10 +309,7 @@ begin
     Result := ''
   else
   begin
-    if ASchemaEventoNFCom = schEnvEPEC then
-      xComplemento := GetNomeModeloDFe
-    else
-      xComplemento := '';
+    xComplemento := '';
 
     Result := PathWithDelim( Configuracoes.Arquivos.PathSchemas ) +
               SchemaEventoToStr(ASchemaEventoNFCom) + xComplemento + '_v' +
@@ -467,7 +464,7 @@ begin
       infEvento.cOrgao   := StrToIntDef(copy(OnlyNumber(WebServices.Consulta.NFComChave), 1, 2), 0);
       infEvento.dhEvento := now;
       infEvento.tpEvento := teCancelamento;
-      infEvento.chNFCom   := WebServices.Consulta.NFComChave;
+      infEvento.chNFCom  := WebServices.Consulta.NFComChave;
 
       infEvento.detEvento.nProt := WebServices.Consulta.Protocolo;
       infEvento.detEvento.xJust := AJustificativa;
@@ -615,15 +612,11 @@ end;
 
 function TACBrNFCom.NomeServicoToNomeSchema(const NomeServico: string): string;
 var
-  ok: Boolean;
   ALayout: TLayOutNFCom;
 begin
-  ALayout := ServicoToLayOutNFCom(ok, NomeServico);
+  ALayout := ServicoToLayOutNFCom(NomeServico);
 
-  if ok then
-    Result := SchemaNFComToStr( LayOutNFComToSchema( ALayout ) )
-  else
-    Result := '';
+  Result := SchemaNFComToStr(LayOutNFComToSchema(ALayout))
 end;
 
 procedure TACBrNFCom.ImprimirEvento;
@@ -664,8 +657,9 @@ begin
     AnexosEmail.Add(DANFCom.ArquivoPDF);
 
     NomeArq := OnlyNumber(EventoNFCom.Evento[0].InfEvento.Id);
+
     EnviarEmail(sPara, sAssunto, sMensagem, sCC, AnexosEmail, StreamNFCom,
-  	  NomeArq + '-procEventoNFCom.xml', sReplyTo);
+            	  NomeArq + '-procEventoNFCom.xml', sReplyTo);
   finally
     AnexosEmail.Free;
     StreamNFCom.Free;

@@ -91,21 +91,12 @@ type
      pagBS2DistribuidoraTitulos, pagOleBonsucessoConsignado, pagLastroRDV,
      pagFrenteCC, pagBTCC, pagNovoBancoContinental, pagCreditAgricoleBrasil,
      pagBancoSistema, pagCredialianca, pagVR, pagBancoOurinvest, pagCredicoamo,
-     pagRBCapitalInvestimentos, pagJohnDeere, pagAdvanced, pagC6, pagDigimais);
+     pagRBCapitalInvestimentos, pagJohnDeere, pagAdvanced, pagC6, pagDigimais,
+     pagPicPay, PagNeon);
      {
-  pagABCBrasil, pagAgibank, pagAlfa, pagAndbank, pagB3, pagBancodaAmazonia, pagBancodaChinaBrasil,
-    pagBancodoBrasil, pagBancodoEstadodeSergipe, pagBancodoEstadodoPara, pagBanrisul, pagBancoDoNordeste, pagBANDEPE,
-    pagBANESTES, pagBankofAmericaMerrillLynch, pagBCV, pagBEXSBancodeCambio, pagBMG, pagBNPParibasBrasil, pagBNYMellonBanco,
-    pagBOCOMBBM, pagBradescard, pagBradesco, pagBRB, pagBS2, pagBTGPactual, pagC6Consignado, pagCaixaEconomica,
-    pagCaixaGeralBrasil, pagCargill, pagCetelem, pagChinaConstructionBank, pagCifra, pagCitibankNA, pagCitibank,
-    pagCreditAgricoleBrasil, pagCreditSuisse, pagDaycoval, pagDeutscheBank, pagDigimais, pagFibra, pagFinaxis, pagGenial,
-    pagGuanabara, pagHipercardBancoMultiplo, pagHSBC, pagInbursa, pagIndustrialdoBrasil, pagINGBankNV, pagInter,
-    pagInvestcredUni, pagItau, pagJPMorgan, pagJSafra, pagJohnDeere, pagJPMorganChaseBank, pagNationalAssociation,
-    pagKirtonBank, pagLetsbank, pagLusoBrasileiro, pagMaster, pagMercantil, pagMizuhodoBrasil, pagModal, pagMSBank,
-    pagMUFGBrasil, pagOleBonsucessoConsignado, pagOriginal, pagPAN, pagParanaBanco, pagPaulista, pagPine, pagRabobank,
-    pagRendimento, pagRodobens, pagSafra, pagSantander, pagScotiabankBrasil, pagSemear, pagSenff, pagSicoob, pagSicredi,
-    pagSocieteGeneraleBrasil, pagSorocred, pagStateStreetBrasil, pagSumitomoMitsui, pagTopazio, pagTravelex, pagTriangulo,
-    pagUBSBrasil, pagVoiter, pagVotorantim, pagVR, pagWesternUniondoBrasil, pagXP, pagBancoCECRED);
+      pagC6Consignado, pagChinaConstructionBank, pagNationalAssociation,
+      pagLetsbank, pagMaster, pagSicoob, pagSorocred, pagStateStreetBrasil,
+      pagTravelex, pagVoiter
     }
   TTipoInscricao = (tiIsento, tiCPF, tiCNPJ, tiPISPASEP, tiOutros);
 
@@ -354,7 +345,7 @@ begin
      '131', '011', '611', '755', '089', '643', '140', '707', '288', '101',
      '487', '233', '117', '633', '218', '292', '169', '293', '285', '080',
      '753', '222', '754', '098', '610', '712', '010', '283', '217', '117',
-     '336', '654'],
+     '336', '654', '380', '536'],
     [pagNenhum,
      pagBancodoBrasil, pagBancoDigito, pagNuBank,
      pagPagSeguro, pagMercadoPago, pagBradesco, pagSofisaDireto, pagInter, pagItau,
@@ -402,7 +393,8 @@ begin
      pagBS2DistribuidoraTitulos, pagOleBonsucessoConsignado, pagLastroRDV,
      pagFrenteCC, pagBTCC, pagNovoBancoContinental, pagCreditAgricoleBrasil,
      pagBancoSistema, pagCredialianca, pagVR, pagBancoOurinvest, pagCredicoamo,
-     pagRBCapitalInvestimentos, pagJohnDeere, pagAdvanced, pagC6, pagDigimais]);
+     pagRBCapitalInvestimentos, pagJohnDeere, pagAdvanced, pagC6, pagDigimais,
+     pagPicPay, PagNeon]);
 end;
 
 function BancoToDesc(const t: TBanco): String;
@@ -483,7 +475,7 @@ begin
      'BANCO CREDIT AGRICOLE BR S.A', 'BANCO SISTEMA', 'CREDIALIANCA CCR',
      'BANCO VR S.A', 'BANCO OURINVEST S.A', 'CREDICOAMO',
      'RB CAPITAL INVESTIMENTOS DTVM LTDA', 'BANCO JOHN DEERE S.A',
-     'ADVANCED CC LTDA', 'BANCO C6 S.A', 'BANCO DIGIMAIS S.A'],
+     'ADVANCED CC LTDA', 'BANCO C6 S.A', 'BANCO DIGIMAIS S.A', 'PICPAY', 'NEON'],
     [pagNenhum,
      pagBancodoBrasil, pagBancoDigito, pagNuBank, pagPagSeguro, pagMercadoPago,
      pagSofisaDireto, pagInter, pagItau, pagCaixaEconomica, pagSantander,
@@ -531,7 +523,8 @@ begin
      pagBS2DistribuidoraTitulos, pagOleBonsucessoConsignado, pagLastroRDV,
      pagFrenteCC, pagBTCC, pagNovoBancoContinental, pagCreditAgricoleBrasil,
      pagBancoSistema, pagCredialianca, pagVR, pagBancoOurinvest, pagCredicoamo,
-     pagRBCapitalInvestimentos, pagJohnDeere, pagAdvanced, pagC6, pagDigimais]);
+     pagRBCapitalInvestimentos, pagJohnDeere, pagAdvanced, pagC6, pagDigimais,
+     pagPicPay, PagNeon]);
 end;
 
 function StrToBanco(var ok: boolean; const s: String): TBanco;
@@ -559,7 +552,7 @@ begin
      '131', '011', '611', '755', '089', '643', '140', '707', '288', '101',
      '487', '233', '117', '633', '218', '292', '169', '293', '285', '080',
      '753', '222', '754', '098', '610', '712', '010', '283', '217', '117',
-     '336', '654'],
+     '336', '654', '380', '536'],
     [pagNenhum,
      pagBancodoBrasil, pagBancoDigito, pagNuBank,
      pagPagSeguro, pagMercadoPago, pagBradesco, pagSofisaDireto, pagInter, pagItau,
@@ -607,7 +600,8 @@ begin
      pagBS2DistribuidoraTitulos, pagOleBonsucessoConsignado, pagLastroRDV,
      pagFrenteCC, pagBTCC, pagNovoBancoContinental, pagCreditAgricoleBrasil,
      pagBancoSistema, pagCredialianca, pagVR, pagBancoOurinvest, pagCredicoamo,
-     pagRBCapitalInvestimentos, pagJohnDeere, pagAdvanced, pagC6, pagDigimais]);
+     pagRBCapitalInvestimentos, pagJohnDeere, pagAdvanced, pagC6, pagDigimais,
+     pagPicPay, PagNeon]);
 end;
 
 function BancoToIspb(const t: TBanco): String;
@@ -649,7 +643,7 @@ begin
        '92856905', '68900810', '71027866', '28650236', '        ', '71590442',
        '71677850', '73622748', '74828799', '75647891', '76543115', '78157146',
        '78626983', '78632767', '81723108', '89960090', '91884981', '92856905',
-       '31872495', '92874270'],
+       '31872495', '92874270', '22896431', '59588111'],
     [pagNenhum,
      pagBancodoBrasil, pagBancoDigito, pagNuBank,
      pagPagSeguro, pagMercadoPago, pagBradesco, pagSofisaDireto, pagInter, pagItau,
@@ -697,7 +691,8 @@ begin
      pagBS2DistribuidoraTitulos, pagOleBonsucessoConsignado, pagLastroRDV,
      pagFrenteCC, pagBTCC, pagNovoBancoContinental, pagCreditAgricoleBrasil,
      pagBancoSistema, pagCredialianca, pagVR, pagBancoOurinvest, pagCredicoamo,
-     pagRBCapitalInvestimentos, pagJohnDeere, pagAdvanced, pagC6, pagDigimais]);
+     pagRBCapitalInvestimentos, pagJohnDeere, pagAdvanced, pagC6, pagDigimais,
+     pagPicPay, PagNeon]);
 end;
 
 function TpInscricaoToStr(const t: TTipoInscricao): String;
