@@ -44,7 +44,7 @@ uses
    System.Contnrs,
   {$IFEND}
   ACBrBase,
-  pcnConversao, pcnGerador, pcnConsts, pmdfeConsts,
+  pcnConversao, pcnGerador, pmdfeConsts,
   pmdfeEventoMDFe, pcnSignature;
 
 type
@@ -103,7 +103,8 @@ implementation
 
 uses
   IniFiles,
-  pcnAuxiliar, pmdfeRetEnvEventoMDFe, pmdfeConversaoMDFe,
+  ACBrDFeConsts,
+  pmdfeRetEnvEventoMDFe, pmdfeConversaoMDFe,
   ACBrUtil.Strings, ACBrUtil.FilesIO, ACBrUtil.Base, ACBrUtil.DateTime,
   ACBrDFeUtil;
 
@@ -181,7 +182,7 @@ begin
   if Versao = '3.00' then
     Gerador.wCampo(tcStr, 'EP09', 'dhEvento', 01, 25, 1,
      FormatDateTime('yyyy-mm-dd"T"hh:nn:ss', Evento.Items[0].InfEvento.dhEvento)
-                        + GetUTC(CodigoParaUF(Evento.Items[0].InfEvento.cOrgao),
+                        + GetUTC(CodigoUFparaUF(Evento.Items[0].InfEvento.cOrgao),
                                             Evento.Items[0].InfEvento.dhEvento))
   else
     Gerador.wCampo(tcStr, 'EP09', 'dhEvento', 01, 25, 1,

@@ -42,6 +42,28 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+14/02/2024
+-- ACBrNFComRetEnvEvento --
+[-] Corrigido a leitura do grupo Signature do retorno.
+  Por: Italo Giurizzato Junior
+
+09/02/2024
+-- Diversos --
+[*] Refactoring visando deixar de usar a unit pcnAuxiliar.
+  Por: Italo Giurizzato Junior
+
+02/02/2024
+-- Diversos --
+[*] Compatibilização com o D7 e outros ajustes.
+  Por: Italo Giurizzato Junior
+-- ACBrNFComConsStatServ/ACBrNFComRetConsStatServ --
+[*] Renoção das units acima, pois o componente vai usar as units respectivas 
+    que estão na pasta Comum.
+  Por: Italo Giurizzato Junior
+-- Diversos --
+[*] Refactoring visando deixar de usar a unit pcnConsts.
+  Por: Italo Giurizzato Junior
+
 23/01/2024
 -- Diversos --
 [*] A unit ACBrNFComConversao foi totalmente reescrita e as demais units ajustes

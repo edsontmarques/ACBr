@@ -42,10 +42,14 @@ uses
   ACBrDFe, ACBrDFeWebService,
   ACBrXmlBase,
   ACBrNF3eNotasFiscais, ACBrNF3eConfiguracoes,
-  ACBrNF3eClass, ACBrNF3eConversao, ACBrNF3eProc, ACBrNF3eRetConsSit,
-  ACBrNF3eEnvEvento, ACBrNF3eRetEnvEvento, ACBrNF3eRetEnv,
-  pcnAuxiliar, pcnConversao,
-  pcnRetConsReciDFe, pcnDistDFeInt, pcnRetDistDFeInt;
+  ACBrNF3eClass, ACBrNF3eConversao,
+  ACBrNF3eEnvEvento, ACBrNF3eRetEnvEvento,
+  ACBrNF3eRetConsSit,
+  ACBrDFeComum.RetConsReciDFe,
+  ACBrDFeComum.Proc,
+  ACBrDFeComum.RetEnvio,
+//  ACBrDFeComum.DistDFeInt, ACBrDFeComum.RetDistDFeInt,
+  pcnConversao;
 
 type
 
@@ -56,7 +60,7 @@ type
     FOldSSLType: TSSLType;
     FOldHeaderElement: String;
   protected
-    FPStatus: TStatusACBrNF3e;
+    FPStatus: TStatusNF3e;
     FPLayout: TLayOut;
     FPConfiguracoesNF3e: TConfiguracoesNF3e;
 
@@ -72,7 +76,7 @@ type
     constructor Create(AOwner: TACBrDFe); override;
     procedure Clear; override;
 
-    property Status: TStatusACBrNF3e read FPStatus;
+    property Status: TStatusNF3e read FPStatus;
     property Layout: TLayOut read FPLayout;
   end;
 
@@ -131,7 +135,7 @@ type
     FVersaoDF: TVersaoNF3e;
 
     FNF3eRetornoSincrono: TRetConsSitNF3e;
-    FNF3eRetorno: TretEnvNF3e;
+    FNF3eRetorno: TretEnvDFe;
     FMsgUnZip: String;
 
     function GetLote: String;
@@ -176,7 +180,7 @@ type
     FChaveNF3e: String;
     FNotasFiscais: TNotasFiscais;
     Fversao: String;
-    FTpAmb: TpcnTipoAmbiente;
+    FTpAmb: TACBrTipoAmbiente;
     FverAplic: String;
     FcStat: integer;
     FcUF: integer;
@@ -208,7 +212,7 @@ type
     function Executar: Boolean; override;
 
     property versao: String read Fversao;
-    property TpAmb: TpcnTipoAmbiente read FTpAmb;
+    property TpAmb: TACBrTipoAmbiente read FTpAmb;
     property verAplic: String read FverAplic;
     property cStat: integer read FcStat;
     property cUF: integer read FcUF;
@@ -284,7 +288,7 @@ type
     FcUF: integer;
     FRetNF3eDFe: String;
 
-    FprotNF3e: TProcNF3e;
+    FprotNF3e: TProcDFe;
     FprocEventoNF3e: TRetEventoNF3eCollection;
 
     procedure SetNF3eChave(const AValue: String);
@@ -315,7 +319,7 @@ type
     property cUF: integer read FcUF;
     property RetNF3eDFe: String read FRetNF3eDFe;
 
-    property protNF3e: TProcNF3e read FprotNF3e;
+    property protNF3e: TProcDFe read FprotNF3e;
     property procEventoNF3e: TRetEventoNF3eCollection read FprocEventoNF3e;
   end;
 
@@ -327,7 +331,7 @@ type
     FEvento: TEventoNF3e;
     FcStat: integer;
     FxMotivo: String;
-    FTpAmb: TpcnTipoAmbiente;
+    FTpAmb: TACBrTipoAmbiente;
     FCNPJ: String;
 
     FEventoRetorno: TRetEventoNF3e;
@@ -349,13 +353,13 @@ type
     property idLote: Int64 read FidLote write FidLote;
     property cStat: integer read FcStat;
     property xMotivo: String read FxMotivo;
-    property TpAmb: TpcnTipoAmbiente read FTpAmb;
+    property TpAmb: TACBrTipoAmbiente read FTpAmb;
 
     property EventoRetorno: TRetEventoNF3e read FEventoRetorno;
   end;
 
   { TDistribuicaoDFe }
-
+(*
   TDistribuicaoDFe = class(TNF3eWebService)
   private
     FcUFAutor: integer;
@@ -392,7 +396,7 @@ type
 
     property retDistDFeInt: TretDistDFeInt read FretDistDFeInt;
   end;
-
+*)
   { TNF3eEnvioWebService }
 
   TNF3eEnvioWebService = class(TNF3eWebService)
@@ -433,7 +437,7 @@ type
     FRecibo: TNF3eRecibo;
     FConsulta: TNF3eConsulta;
     FEnvEvento: TNF3eEnvEvento;
-    FDistribuicaoDFe: TDistribuicaoDFe;
+//    FDistribuicaoDFe: TDistribuicaoDFe;
     FEnvioWebService: TNF3eEnvioWebService;
   public
     constructor Create(AOwner: TACBrDFe); overload;
@@ -451,8 +455,8 @@ type
     property Recibo: TNF3eRecibo read FRecibo write FRecibo;
     property Consulta: TNF3eConsulta read FConsulta write FConsulta;
     property EnvEvento: TNF3eEnvEvento read FEnvEvento write FEnvEvento;
-    property DistribuicaoDFe: TDistribuicaoDFe
-      read FDistribuicaoDFe write FDistribuicaoDFe;
+//    property DistribuicaoDFe: TDistribuicaoDFe
+//      read FDistribuicaoDFe write FDistribuicaoDFe;
     property EnvioWebService: TNF3eEnvioWebService
       read FEnvioWebService write FEnvioWebService;
   end;
@@ -461,14 +465,16 @@ implementation
 
 uses
   StrUtils, Math,
+  ACBrDFeConsts,
+  ACBrDFeUtil,
   ACBrUtil.Base, ACBrUtil.XMLHTML, ACBrUtil.Strings, ACBrUtil.DateTime,
   ACBrUtil.FilesIO,
   ACBrCompress, ACBrNF3e, ACBrIntegrador,
   ACBrNF3eConsts,
   ACBrNF3eConsSit,
-  pcnConsts, pcnGerador, pcnLeitor,
-  ACBrDFeConsStatServ, ACBrDFeRetConsStatServ,
-  pcnConsReciDFe;
+  pcnGerador, pcnLeitor,
+  ACBrDFeComum.ConsStatServ, ACBrDFeComum.RetConsStatServ,
+  ACBrDFeComum.ConsReciDFe;
 
 { TNF3eWebService }
 
@@ -606,7 +612,7 @@ var
 begin
   ConsStatServ := TConsStatServ.Create(FPVersaoServico, NAME_SPACE_NF3e, 'NF3e', False);
   try
-    ConsStatServ.TpAmb := TACBrTipoAmbiente(FPConfiguracoesNF3e.WebServices.Ambiente);
+    ConsStatServ.TpAmb := FPConfiguracoesNF3e.WebServices.Ambiente;
     ConsStatServ.CUF := FPConfiguracoesNF3e.WebServices.UFCodigo;
 
     FPDadosMsg := ConsStatServ.GerarXML;
@@ -678,7 +684,7 @@ begin
                            'Retorno: %s' + LineBreak +
                            'Observação: %s' + LineBreak),
                    [Fversao, TpAmbToStr(FtpAmb), FverAplic, IntToStr(FcStat),
-                    FxMotivo, CodigoParaUF(FcUF),
+                    FxMotivo, CodigoUFparaUF(FcUF),
                     IfThen(FdhRecbto = 0, '', FormatDateTimeBr(FdhRecbto)),
                     IntToStr(FTMed),
                     IfThen(FdhRetorno = 0, '', FormatDateTimeBr(FdhRetorno)),
@@ -741,7 +747,7 @@ begin
     FNF3eRetorno.Free;
 
   FNF3eRetornoSincrono := TRetConsSitNF3e.Create;
-  FNF3eRetorno := TretEnvNF3e.Create;
+  FNF3eRetorno := TretEnvDFe.Create;
 end;
 
 function TNF3eRecepcao.GetLote: String;
@@ -879,7 +885,7 @@ function TNF3eRecepcao.TratarResposta: Boolean;
 var
   I: integer;
   chNF3e, AXML, NomeXMLSalvo: String;
-  AProcNF3e: TProcNF3e;
+  AProcNF3e: TProcDFe;
   SalvarXML: Boolean;
 begin
   FPRetWS := SeparaDadosArray(['nf3eResultMsg'], FPRetornoWS );
@@ -909,7 +915,7 @@ begin
     // Consta no Retorno da NFC-e
     FRecibo := FNF3eRetornoSincrono.nRec;
     FcUF := FNF3eRetornoSincrono.cUF;
-    chNF3e := FNF3eRetornoSincrono.ProtNF3e.chNF3e;
+    chNF3e := FNF3eRetornoSincrono.ProtNF3e.chDFe;
 
     if (FNF3eRetornoSincrono.protNF3e.cStat > 0) then
       FcStat := FNF3eRetornoSincrono.protNF3e.cStat
@@ -949,18 +955,17 @@ begin
             NF3e.procNF3e.cStat := FNF3eRetornoSincrono.protNF3e.cStat;
             NF3e.procNF3e.tpAmb := FNF3eRetornoSincrono.tpAmb;
             NF3e.procNF3e.verAplic := FNF3eRetornoSincrono.verAplic;
-            NF3e.procNF3e.chNF3e := FNF3eRetornoSincrono.ProtNF3e.chNF3e;
+            NF3e.procNF3e.chDFe := FNF3eRetornoSincrono.ProtNF3e.chDFe;
             NF3e.procNF3e.dhRecbto := FNF3eRetornoSincrono.protNF3e.dhRecbto;
             NF3e.procNF3e.nProt := FNF3eRetornoSincrono.ProtNF3e.nProt;
             NF3e.procNF3e.digVal := FNF3eRetornoSincrono.protNF3e.digVal;
             NF3e.procNF3e.xMotivo := FNF3eRetornoSincrono.protNF3e.xMotivo;
 
-            AProcNF3e := TProcNF3e.Create;
+            AProcNF3e := TProcDFe.Create(FPVersaoServico, NAME_SPACE_NF3e, 'NF3e');
             try
               // Processando em UTF8, para poder gravar arquivo corretamente //
-              AProcNF3e.XML_NF3e := RemoverDeclaracaoXML(XMLAssinado);
+              AProcNF3e.XML_DFe := RemoverDeclaracaoXML(XMLAssinado);
               AProcNF3e.XML_Prot := FNF3eRetornoSincrono.XMLprotNF3e;
-              AProcNF3e.Versao := FPVersaoServico;
               XMLOriginal := AProcNF3e.GerarXML;
 
               if FPConfiguracoesNF3e.Arquivos.Salvar then
@@ -992,7 +997,7 @@ begin
   end
   else
   begin
-    FNF3eRetorno.Leitor.Arquivo := ParseText(FPRetWS, True, False);
+    FNF3eRetorno.XmlRetorno := ParseText(FPRetWS, True, False);
     FNF3eRetorno.LerXml;
 
     Fversao := FNF3eRetorno.versao;
@@ -1027,7 +1032,7 @@ begin
                       FNF3eRetornoSincrono.verAplic,
                       IntToStr(FNF3eRetornoSincrono.protNF3e.cStat),
                       FNF3eRetornoSincrono.protNF3e.xMotivo,
-                      CodigoParaUF(FNF3eRetornoSincrono.cUF),
+                      CodigoUFparaUF(FNF3eRetornoSincrono.cUF),
                       FormatDateTimeBr(FNF3eRetornoSincrono.dhRecbto),
                       FNF3eRetornoSincrono.chNF3e])
   else
@@ -1041,11 +1046,11 @@ begin
                              'Recebimento: %s ' + LineBreak +
                              'Tempo Médio: %s ' + LineBreak),
                      [FNF3eRetorno.versao,
-                      TpAmbToStr(FNF3eRetorno.TpAmb),
+                      TipoAmbienteToStr(FNF3eRetorno.TpAmb),
                       FNF3eRetorno.verAplic,
                       IntToStr(FNF3eRetorno.cStat),
                       FNF3eRetorno.xMotivo,
-                      CodigoParaUF(FNF3eRetorno.cUF),
+                      CodigoUFparaUF(FNF3eRetorno.cUF),
                       FNF3eRetorno.infRec.nRec,
                       IfThen(FNF3eRetorno.InfRec.dhRecbto = 0, '',
                              FormatDateTimeBr(FNF3eRetorno.InfRec.dhRecbto)),
@@ -1127,7 +1132,7 @@ begin
 
   if Assigned(FPConfiguracoesNF3e) then
   begin
-    FtpAmb := FPConfiguracoesNF3e.WebServices.Ambiente;
+    FtpAmb := TACBrTipoAmbiente(FPConfiguracoesNF3e.WebServices.Ambiente);
     FcUF := FPConfiguracoesNF3e.WebServices.UFCodigo;
   end;
 
@@ -1142,7 +1147,7 @@ begin
         if OnlyNumber(FNF3eRetorno.ProtDFe.Items[i].chDFe) = FNotasFiscais.Items[J].NumID then
         begin
           FNotasFiscais.Items[j].NF3e.procNF3e.verAplic := '';
-          FNotasFiscais.Items[j].NF3e.procNF3e.chNF3e    := '';
+          FNotasFiscais.Items[j].NF3e.procNF3e.chDFe    := '';
           FNotasFiscais.Items[j].NF3e.procNF3e.dhRecbto := 0;
           FNotasFiscais.Items[j].NF3e.procNF3e.nProt    := '';
           FNotasFiscais.Items[j].NF3e.procNF3e.digVal   := '';
@@ -1205,7 +1210,7 @@ begin
   end;
 
   VerServ := VersaoNF3eToDbl(FVersaoDF);
-  FTpAmb := FPConfiguracoesNF3e.WebServices.Ambiente;
+  FTpAmb := TACBrTipoAmbiente(FPConfiguracoesNF3e.WebServices.Ambiente);
   FPVersaoServico := '';
   FPURL := '';
 
@@ -1222,7 +1227,7 @@ begin
   TACBrNF3e(FPDFeOwner).LerServicoDeParams(
     'NF3e',
     xUF,
-    FTpAmb,
+    TpcnTipoAmbiente(FTpAmb),
     LayOutToServico(FPLayout),
     VerServ,
     FPURL,
@@ -1254,13 +1259,11 @@ var
 begin
   ConsReciNF3e := TConsReciDFe.Create(FPVersaoServico, NAME_SPACE_NF3e, 'NF3e');
   try
-    ConsReciNF3e.tpAmb := FTpAmb;
+    ConsReciNF3e.tpAmb := TpcnTipoAmbiente(FTpAmb);
     ConsReciNF3e.nRec := FRecibo;
 
-    AjustarOpcoes( ConsReciNF3e.Gerador.Opcoes );
-    ConsReciNF3e.GerarXML;
-
-    FPDadosMsg := ConsReciNF3e.Gerador.ArquivoFormatoXML;
+//    AjustarOpcoes( ConsReciNF3e.Gerador.Opcoes );
+    FPDadosMsg := ConsReciNF3e.GerarXML;
   finally
     ConsReciNF3e.Free;
   end;
@@ -1274,7 +1277,7 @@ begin
 
   RemoverNameSpace;
 
-  FNF3eRetorno.Leitor.Arquivo := ParseText(FPRetWS, True, False);
+  FNF3eRetorno.XmlRetorno := ParseText(FPRetWS, True, False);
   FNF3eRetorno.LerXML;
 
   Fversao := FNF3eRetorno.versao;
@@ -1293,7 +1296,7 @@ end;
 function TNF3eRetRecepcao.TratarRespostaFinal: Boolean;
 var
   I, J: integer;
-  AProcNF3e: TProcNF3e;
+  AProcNF3e: TProcDFe;
   AInfProt: TProtDFeCollection;
   SalvarXML: Boolean;
   NomeXMLSalvo: String;
@@ -1327,7 +1330,7 @@ begin
         begin
           NF3e.procNF3e.tpAmb := TACBrTipoAmbiente(AInfProt.Items[I].tpAmb);
           NF3e.procNF3e.verAplic := AInfProt.Items[I].verAplic;
-          NF3e.procNF3e.chNF3e := AInfProt.Items[I].chDFe;
+          NF3e.procNF3e.chDFe := AInfProt.Items[I].chDFe;
           NF3e.procNF3e.dhRecbto := AInfProt.Items[I].dhRecbto;
           NF3e.procNF3e.nProt := AInfProt.Items[I].nProt;
           NF3e.procNF3e.digVal := AInfProt.Items[I].digVal;
@@ -1340,11 +1343,10 @@ begin
            (AInfProt.Items[I].cStat = 150) or (AInfProt.Items[I].cStat = 301) or
            (AInfProt.Items[I].cStat = 302) or (AInfProt.Items[I].cStat = 303) then
         begin
-          AProcNF3e := TProcNF3e.Create;
+          AProcNF3e := TProcDFe.Create(FPVersaoServico, NAME_SPACE_NF3e, 'NF3e');
           try
-            AProcNF3e.XML_NF3e := RemoverDeclaracaoXML(FNotasFiscais.Items[J].XMLAssinado);
+            AProcNF3e.XML_DFe := RemoverDeclaracaoXML(FNotasFiscais.Items[J].XMLAssinado);
             AProcNF3e.XML_Prot := AInfProt.Items[I].XMLprotDFe;
-            AProcNF3e.Versao := FPVersaoServico;
 
             with FNotasFiscais.Items[J] do
             begin
@@ -1436,10 +1438,10 @@ begin
                            'UF: %s ' + LineBreak +
                            'cMsg: %s ' + LineBreak +
                            'xMsg: %s ' + LineBreak),
-                   [FNF3eRetorno.versao, TpAmbToStr(FNF3eRetorno.tpAmb),
+                   [FNF3eRetorno.versao, TipoAmbienteToStr(FNF3eRetorno.tpAmb),
                     FNF3eRetorno.verAplic, FNF3eRetorno.nRec,
                     IntToStr(FNF3eRetorno.cStat), FNF3eRetorno.xMotivo,
-                    CodigoParaUF(FNF3eRetorno.cUF), IntToStr(FNF3eRetorno.cMsg),
+                    CodigoUFparaUF(FNF3eRetorno.cUF), IntToStr(FNF3eRetorno.cMsg),
                     FNF3eRetorno.xMsg]);
   {*)}
 end;
@@ -1578,10 +1580,8 @@ begin
     ConsReciNF3e.tpAmb := FTpAmb;
     ConsReciNF3e.nRec  := FRecibo;
 
-    AjustarOpcoes( ConsReciNF3e.Gerador.Opcoes );
-    ConsReciNF3e.GerarXML;
-
-    FPDadosMsg := ConsReciNF3e.Gerador.ArquivoFormatoXML;
+//    AjustarOpcoes( ConsReciNF3e.Gerador.Opcoes );
+    FPDadosMsg := ConsReciNF3e.GerarXML;
   finally
     ConsReciNF3e.Free;
   end;
@@ -1595,11 +1595,11 @@ begin
 
   RemoverNameSpace;
 
-  FNF3eRetorno.Leitor.Arquivo := ParseText(FPRetWS, True, False);
+  FNF3eRetorno.XmlRetorno := ParseText(FPRetWS, True, False);
   FNF3eRetorno.LerXML;
 
   Fversao := FNF3eRetorno.versao;
-  FTpAmb := FNF3eRetorno.TpAmb;
+  FTpAmb := TpcnTipoAmbiente(FNF3eRetorno.TpAmb);
   FverAplic := FNF3eRetorno.verAplic;
   FcStat := FNF3eRetorno.cStat;
   FxMotivo := FNF3eRetorno.xMotivo;
@@ -1621,11 +1621,11 @@ begin
                            'Status Código: %s ' + LineBreak +
                            'Status Descrição: %s ' + LineBreak +
                            'UF: %s ' + LineBreak),
-                   [FNF3eRetorno.versao, TpAmbToStr(FNF3eRetorno.TpAmb),
+                   [FNF3eRetorno.versao, TipoAmbienteToStr(FNF3eRetorno.TpAmb),
                    FNF3eRetorno.verAplic, FNF3eRetorno.nRec,
                    IntToStr(FNF3eRetorno.cStat),
                    FNF3eRetorno.xMotivo,
-                   CodigoParaUF(FNF3eRetorno.cUF)]);
+                   CodigoUFparaUF(FNF3eRetorno.cUF)]);
   {*)}
 end;
 
@@ -1676,7 +1676,7 @@ begin
   if Assigned(FprocEventoNF3e) then
     FprocEventoNF3e.Free;
 
-  FprotNF3e := TProcNF3e.Create;
+  FprotNF3e := TProcDFe.Create(FPVersaoServico, NAME_SPACE_NF3e, 'NF3e');
   FprocEventoNF3e := TRetEventoNF3eCollection.Create;
 end;
 
@@ -1804,8 +1804,8 @@ var
   NF3eRetorno: TRetConsSitNF3e;
   SalvarXML, NFCancelada, Atualiza: Boolean;
   aEventos, sPathNF3e, NomeXMLSalvo: String;
-  AProcNF3e: TProcNF3e;
-  I, J, Inicio, Fim: integer;
+  AProcNF3e: TProcDFe;
+  I, Inicio, Fim: integer;
   dhEmissao: TDateTime;
 begin
   NF3eRetorno := TRetConsSitNF3e.Create;
@@ -1836,18 +1836,17 @@ begin
 
     // <protNF3e> - Retorno dos dados do ENVIO da NF3-e
     // Considerá-los apenas se não existir nenhum evento de cancelamento (110111)
-    FprotNF3e.PathNF3e := NF3eRetorno.protNF3e.PathNF3e;
-    FprotNF3e.PathRetConsReciNF3e := NF3eRetorno.protNF3e.PathRetConsReciNF3e;
-    FprotNF3e.PathRetConsSitNF3e := NF3eRetorno.protNF3e.PathRetConsSitNF3e;
+    FprotNF3e.PathDFe := NF3eRetorno.protNF3e.PathDFe;
+    FprotNF3e.PathRetConsReciDFe := NF3eRetorno.protNF3e.PathRetConsReciDFe;
+    FprotNF3e.PathRetConsSitDFe := NF3eRetorno.protNF3e.PathRetConsSitDFe;
     FprotNF3e.tpAmb := NF3eRetorno.protNF3e.tpAmb;
     FprotNF3e.verAplic := NF3eRetorno.protNF3e.verAplic;
-    FprotNF3e.chNF3e := NF3eRetorno.protNF3e.chNF3e;
+    FprotNF3e.chDFe := NF3eRetorno.protNF3e.chDFe;
     FprotNF3e.dhRecbto := NF3eRetorno.protNF3e.dhRecbto;
     FprotNF3e.nProt := NF3eRetorno.protNF3e.nProt;
     FprotNF3e.digVal := NF3eRetorno.protNF3e.digVal;
     FprotNF3e.cStat := NF3eRetorno.protNF3e.cStat;
     FprotNF3e.xMotivo := NF3eRetorno.protNF3e.xMotivo;
-    FprotNF3e.Versao := NF3eRetorno.protNF3e.Versao;
 
     {(*}
     if Assigned(NF3eRetorno.procEventoNF3e) and (NF3eRetorno.procEventoNF3e.Count > 0) then
@@ -1861,26 +1860,27 @@ begin
       FprocEventoNF3e.Clear;
       for I := 0 to NF3eRetorno.procEventoNF3e.Count - 1 do
       begin
-        with FprocEventoNF3e.New.RetEventoNF3e do
+        with FprocEventoNF3e.New.RetEventoNF3e.retInfEvento do
         begin
-          idLote := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.idLote;
-          tpAmb := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.tpAmb;
-          verAplic := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.verAplic;
-          cOrgao := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.cOrgao;
-          cStat := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.cStat;
-          xMotivo := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.xMotivo;
-          XML := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.XML;
+//          idLote := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.retInfEvento.idLote;
+          tpAmb := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.retInfEvento.tpAmb;
+          verAplic := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.retInfEvento.verAplic;
+          cOrgao := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.retInfEvento.cOrgao;
+          cStat := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.retInfEvento.cStat;
+          xMotivo := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.retInfEvento.xMotivo;
+          XML := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.retInfEvento.XML;
 
-          InfEvento.ID := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.InfEvento.ID;
-          InfEvento.tpAmb := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.InfEvento.tpAmb;
-          InfEvento.CNPJ := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.InfEvento.CNPJ;
-          InfEvento.chNF3e := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.InfEvento.chNF3e;
-          InfEvento.dhEvento := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.InfEvento.dhEvento;
-          InfEvento.TpEvento := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.InfEvento.TpEvento;
-          InfEvento.nSeqEvento := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.InfEvento.nSeqEvento;
-          InfEvento.DetEvento.nProt := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.InfEvento.DetEvento.nProt;
-          InfEvento.DetEvento.xJust := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.InfEvento.DetEvento.xJust;
+          ID := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.retInfEvento.ID;
+          tpAmb := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.retInfEvento.tpAmb;
+//          CNPJ := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.retInfEvento.CNPJ;
+          chNF3e := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.retInfEvento.chNF3e;
+//          dhEvento := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.retInfEvento.dhEvento;
+          TpEvento := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.retInfEvento.TpEvento;
+          nSeqEvento := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.retInfEvento.nSeqEvento;
+          nProt := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.retInfEvento.nProt;
+//          xJust := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.retInfEvento.xJust;
 
+          {
           retEvento.Clear;
           for J := 0 to NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.retEvento.Count-1 do
           begin
@@ -1903,8 +1903,10 @@ begin
               XML := NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e.retEvento.Items[J].RetInfEvento.XML;
             end;
           end;
+          }
         end;
 
+        {
         with NF3eRetorno.procEventoNF3e.Items[I].RetEventoNF3e do
         begin
           for j := 0 to retEvento.Count -1 do
@@ -1934,6 +1936,7 @@ begin
             end;
           end;
         end;
+        }
       end;
     end;
     {*)}
@@ -1994,37 +1997,31 @@ begin
                 begin
                   NF3e.procNF3e.tpAmb := NF3eRetorno.tpAmb;
                   NF3e.procNF3e.verAplic := NF3eRetorno.verAplic;
-                  NF3e.procNF3e.chNF3e := NF3eRetorno.chNF3e;
+                  NF3e.procNF3e.chDFe := NF3eRetorno.chNF3e;
                   NF3e.procNF3e.dhRecbto := FDhRecbto;
                   NF3e.procNF3e.nProt := FProtocolo;
                   NF3e.procNF3e.digVal := NF3eRetorno.protNF3e.digVal;
                   NF3e.procNF3e.cStat := NF3eRetorno.cStat;
                   NF3e.procNF3e.xMotivo := NF3eRetorno.xMotivo;
-                  NF3e.procNF3e.Versao := NF3eRetorno.protNF3e.Versao;
-
+   
                   GerarXML;
                 end
                 else
                 begin
                   NF3e.procNF3e.tpAmb := NF3eRetorno.protNF3e.tpAmb;
                   NF3e.procNF3e.verAplic := NF3eRetorno.protNF3e.verAplic;
-                  NF3e.procNF3e.chNF3e := NF3eRetorno.protNF3e.chNF3e;
+                  NF3e.procNF3e.chDFe := NF3eRetorno.protNF3e.chDFe;
                   NF3e.procNF3e.dhRecbto := NF3eRetorno.protNF3e.dhRecbto;
                   NF3e.procNF3e.nProt := NF3eRetorno.protNF3e.nProt;
                   NF3e.procNF3e.digVal := NF3eRetorno.protNF3e.digVal;
                   NF3e.procNF3e.cStat := NF3eRetorno.protNF3e.cStat;
                   NF3e.procNF3e.xMotivo := NF3eRetorno.protNF3e.xMotivo;
-                  NF3e.procNF3e.Versao := NF3eRetorno.protNF3e.Versao;
 
                   // O código abaixo é bem mais rápido que "GerarXML" (acima)...
-                  AProcNF3e := TProcNF3e.Create;
+                  AProcNF3e := TProcDFe.Create(FPVersaoServico, NAME_SPACE_NF3e, 'NF3e');
                   try
-                    AProcNF3e.XML_NF3e := RemoverDeclaracaoXML(XMLOriginal);
+                    AProcNF3e.XML_DFe := RemoverDeclaracaoXML(XMLOriginal);
                     AProcNF3e.XML_Prot := NF3eRetorno.XMLprotNF3e;
-                    AProcNF3e.Versao := NF3eRetorno.protNF3e.Versao;
-
-                    if AProcNF3e.Versao = '' then
-                      AProcNF3e.Versao := FPVersaoServico;
 
                     XMLOriginal := AProcNF3e.GerarXML;
                   finally
@@ -2133,7 +2130,7 @@ begin
                            'Protocolo: %s ' + LineBreak +
                            'Digest Value: %s ' + LineBreak),
                    [Fversao, FNF3eChave, TpAmbToStr(FTpAmb), FverAplic,
-                    IntToStr(FcStat), FXMotivo, CodigoParaUF(FcUF), FNF3eChave,
+                    IntToStr(FcStat), FXMotivo, CodigoUFparaUF(FcUF), FNF3eChave,
                     FormatDateTimeBr(FDhRecbto), FProtocolo, FprotNF3e.digVal]);
   {*)}
 end;
@@ -2174,7 +2171,7 @@ begin
   FCNPJ := '';
 
   if Assigned(FPConfiguracoesNF3e) then
-    FtpAmb := FPConfiguracoesNF3e.WebServices.Ambiente;
+    FtpAmb := TACBrTipoAmbiente(FPConfiguracoesNF3e.WebServices.Ambiente);
 
   if Assigned(FEventoRetorno) then
     FEventoRetorno.Free;
@@ -2202,7 +2199,7 @@ begin
   FPLayout := LayNF3eEvento;
   VerServ  := VersaoNF3eToDbl(FPConfiguracoesNF3e.Geral.VersaoDF);
   FCNPJ    := FEvento.Evento.Items[0].InfEvento.CNPJ;
-  FTpAmb   := TpcnTipoAmbiente(FEvento.Evento.Items[0].InfEvento.tpAmb);
+  FTpAmb   := FEvento.Evento.Items[0].InfEvento.tpAmb;
 
   // Configuração correta ao enviar para o SVC
   case FPConfiguracoesNF3e.Geral.FormaEmissao of
@@ -2229,7 +2226,7 @@ begin
   TACBrNF3e(FPDFeOwner).LerServicoDeParams(
     'NF3e',
     UF,
-    FTpAmb,
+    TpcnTipoAmbiente(FTpAmb),
     LayOutToServico(FPLayout),
     VerServ,
     FPURL,
@@ -2388,10 +2385,10 @@ begin
 end;
 
 function TNF3eEnvEvento.TratarResposta: Boolean;
-var
-  Leitor: TLeitor;
-  I, J: integer;
-  NomeArq, PathArq, VersaoEvento, Texto: String;
+//var
+//  Leitor: TLeitor;
+//  I, J: integer;
+//  NomeArq, PathArq, VersaoEvento, Texto: String;
 begin
   FEvento.idLote := idLote;
 
@@ -2401,16 +2398,16 @@ begin
 
   RemoverNameSpace;
 
-  EventoRetorno.Leitor.Arquivo := ParseText(FPRetWS, True, False);
+  EventoRetorno.XmlRetorno := ParseText(FPRetWS, True, False);
   EventoRetorno.LerXml;
 
-  FcStat := EventoRetorno.cStat;
-  FxMotivo := EventoRetorno.xMotivo;
-  FPMsg := EventoRetorno.xMotivo;
-  FTpAmb := TpcnTipoAmbiente(EventoRetorno.tpAmb);
+  FcStat := EventoRetorno.retInfEvento.cStat;
+  FxMotivo := EventoRetorno.retInfEvento.xMotivo;
+  FPMsg := EventoRetorno.retInfEvento.xMotivo;
+  FTpAmb := EventoRetorno.retInfEvento.tpAmb;
 
   Result := (FcStat = 128);
-
+  (*
   //gerar arquivo proc de evento
   if Result then
   begin
@@ -2479,6 +2476,7 @@ begin
       Leitor.Free;
     end;
   end;
+  *)
 end;
 
 function TNF3eEnvEvento.GerarMsgLog: String;
@@ -2491,15 +2489,15 @@ begin
                          'Versão Aplicativo: %s ' + LineBreak +
                          'Status Código: %s ' + LineBreak +
                          'Status Descrição: %s ' + LineBreak),
-                 [FEventoRetorno.versao, TipoAmbienteToStr(FEventoRetorno.tpAmb),
-                  FEventoRetorno.verAplic, IntToStr(FEventoRetorno.cStat),
-                  FEventoRetorno.xMotivo]);
-
+                 [FEventoRetorno.versao, TipoAmbienteToStr(FEventoRetorno.retInfEvento.tpAmb),
+                  FEventoRetorno.retInfEvento.verAplic, IntToStr(FEventoRetorno.retInfEvento.cStat),
+                  FEventoRetorno.retInfEvento.xMotivo]);
+  {
   if FEventoRetorno.retEvento.Count > 0 then
     aMsg := aMsg + Format(ACBrStr('Recebimento: %s ' + LineBreak),
        [IfThen(FEventoRetorno.retEvento.Items[0].RetInfEvento.dhRegEvento = 0, '',
                FormatDateTimeBr(FEventoRetorno.retEvento.Items[0].RetInfEvento.dhRegEvento))]);
-
+  }
   Result := aMsg;
   {*)}
 end;
@@ -2511,7 +2509,7 @@ begin
 end;
 
 { TDistribuicaoDFe }
-
+(*
 constructor TDistribuicaoDFe.Create(AOwner: TACBrDFe);
 begin
   inherited Create(AOwner);
@@ -2674,7 +2672,6 @@ end;
 
 function TDistribuicaoDFe.GerarMsgLog: String;
 begin
-  {(*}
   Result := Format(ACBrStr('Versão Layout: %s ' + LineBreak +
                            'Ambiente: %s ' + LineBreak +
                            'Versão Aplicativo: %s ' + LineBreak +
@@ -2689,7 +2686,6 @@ begin
                     IfThen(FretDistDFeInt.dhResp = 0, '',
                            FormatDateTimeBr(RetDistDFeInt.dhResp)),
                     FretDistDFeInt.ultNSU, FretDistDFeInt.maxNSU]);
-  {*)}
 end;
 
 function TDistribuicaoDFe.GerarMsgErro(E: Exception): String;
@@ -2738,7 +2734,7 @@ begin
                                                         Data);
   end;
 end;
-
+*)
 { TNF3eEnvioWebService }
 
 constructor TNF3eEnvioWebService.Create(AOwner: TACBrDFe);
@@ -2825,7 +2821,7 @@ begin
   FRecibo := TNF3eRecibo.Create(FACBrNF3e, TACBrNF3e(FACBrNF3e).NotasFiscais);
   FConsulta := TNF3eConsulta.Create(FACBrNF3e, TACBrNF3e(FACBrNF3e).NotasFiscais);
   FEnvEvento := TNF3eEnvEvento.Create(FACBrNF3e, TACBrNF3e(FACBrNF3e).EventoNF3e);
-  FDistribuicaoDFe := TDistribuicaoDFe.Create(FACBrNF3e);
+//  FDistribuicaoDFe := TDistribuicaoDFe.Create(FACBrNF3e);
   FEnvioWebService := TNF3eEnvioWebService.Create(FACBrNF3e);
 end;
 
@@ -2837,7 +2833,7 @@ begin
   FRecibo.Free;
   FConsulta.Free;
   FEnvEvento.Free;
-  FDistribuicaoDFe.Free;
+//  FDistribuicaoDFe.Free;
   FEnvioWebService.Free;
 
   inherited Destroy;

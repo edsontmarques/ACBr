@@ -313,7 +313,8 @@ begin
     begin
       Nota.XmlRps := FAOwner.SSL.Assinar(Nota.XmlRps,
                                          PrefixoTS + ConfigMsgDados.XmlRps.DocElemento,
-                                         ConfigMsgDados.XmlRps.InfElemento, '', '', '', IdAttr);
+                                         ConfigMsgDados.XmlRps.InfElemento, '', '', '',
+                                         IdAttr);
     end;
 
     SalvarXmlRps(Nota);
@@ -750,7 +751,8 @@ begin
   begin
     Nota.XmlRps := FAOwner.SSL.Assinar(Nota.XmlRps,
                                        PrefixoTS + ConfigMsgDados.XmlRps.DocElemento,
-                                       ConfigMsgDados.XmlRps.InfElemento, '', '', '', IdAttr);
+                                       ConfigMsgDados.XmlRps.InfElemento, '', '', '',
+                                       IdAttr);
   end;
 
   SalvarXmlRps(Nota);

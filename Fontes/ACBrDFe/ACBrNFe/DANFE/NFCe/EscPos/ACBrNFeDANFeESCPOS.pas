@@ -88,7 +88,6 @@ type
     procedure GerarObservacoesEvento;
 
     function CalcularDadosQRCode: String;
-    function ValidaLogoBmp(const APathLogo:string):Boolean;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -119,7 +118,6 @@ uses
   ACBrDFeUtil,
   ACBrConsts,
   pcnConversao,
-  pcnAuxiliar,
   ACBrImage;
 
 { TACBrNFeDANFeESCPOS }
@@ -224,7 +222,7 @@ begin
     FPosPrinter.Buffer.Add('</zera><mp>' +
                           FPosPrinter.ConfigurarRegiaoModoPagina(0,0,Altura,CLarguraRegiaoEsquerda));
 
-    FPosPrinter.Buffer.Add(IfThen(ValidaLogoBmp(logo),'<bmp>'+Logo+'</bmp>','</lf></logo>'));
+    FPosPrinter.Buffer.Add(IfThen(FPosPrinter.ValidaLogoBmp(logo),'<bmp>'+Logo+'</bmp>','</lf></logo>'));
 
     FPosPrinter.Buffer.Add(FPosPrinter.ConfigurarRegiaoModoPagina(CLarguraRegiaoEsquerda,0,Altura,325) +
                           TextoLateral +
@@ -232,7 +230,7 @@ begin
   end
   else
   begin
-    FPosPrinter.Buffer.Add('</zera></ce>'+ IfThen(ValidaLogoBmp(logo),'<bmp>'+Logo+'</bmp>','</lf></logo>'));
+    FPosPrinter.Buffer.Add('</zera></ce>'+ IfThen(FPosPrinter.ValidaLogoBmp(logo),'<bmp>'+Logo+'</bmp>','</lf></logo>'));
 
     if (Trim(FpNFe.Emit.xFant) <> '') and ImprimeNomeFantasia then
        FPosPrinter.Buffer.Add('</ce>'+TagLigaCondensado+'<n>' +  FpNFe.Emit.xFant + '</n>');
@@ -357,7 +355,7 @@ begin
           begin
             LinhaCmd := '</ae>'+TagLigaCondensado + padSpace(
                 'Desconto ' + padLeft(FormatFloatBr(LDesconto, '-,0.00'), 15, ' ')
-                +IIf((VlrAcrescimo+Prod.vFrete > 0),'','|' + FormatFloatBr(VlrLiquido)) ,
+                +IfThen((VlrAcrescimo+Prod.vFrete > 0),'','|' + FormatFloatBr(VlrLiquido)) ,
                 ColunasCondensado, '|');
             FPosPrinter.Buffer.Add('</ae>'+TagLigaCondensado + LinhaCmd);
           end;
@@ -367,7 +365,7 @@ begin
           begin
             LinhaCmd := '</ae>'+TagLigaCondensado + padSpace(
                 'Frete ' + padLeft(FormatFloatBr(Prod.vFrete, '+,0.00'), 15, ' ')
-                +IIf((VlrAcrescimo > 0),'','|' + FormatFloatBr(VlrLiquido)) ,
+                +IfThen((VlrAcrescimo > 0),'','|' + FormatFloatBr(VlrLiquido)) ,
                 ColunasCondensado, '|');
             FPosPrinter.Buffer.Add('</ae>'+TagLigaCondensado + LinhaCmd);
           end;
@@ -479,7 +477,7 @@ begin
     end;
   end;
 
-  Troco := IIf(FpNFe.pag.vTroco > 0,FpNFe.pag.vTroco,vTroco);
+  Troco := IfThen(FpNFe.pag.vTroco > 0,FpNFe.pag.vTroco,vTroco);
 
   if Troco > 0 then
     FPosPrinter.Buffer.Add(TagLigaCondensado + PadSpace('Troco R$|' +
@@ -970,27 +968,6 @@ begin
     Result := FpNFe.infNFeSupl.qrCode;
 end;
 
-function TACBrNFeDANFeESCPOS.ValidaLogoBmp(const APathLogo: string): Boolean;
-var
-  LFileStream : TFileStream;
-begin
-   Result := False;
-
-   if not FileExists(APathLogo) then
-     Exit;
-
-   LFileStream := TFileStream.Create(APathLogo, fmOpenRead or fmShareDenyWrite);
-   try
-     if not IsBMP(LFileStream, True) then
-       Exit;
-
-     //if LFileStream.Size <= 5000 then // Menor ou igual a 5 KB -- se necessário validar, ficar para futuro
-       Result := True;
-
-   finally
-     LFileStream.Free;
-   end;
-end;
 
 function TACBrNFeDANFeESCPOS.ColunasCondensado: Integer;
 begin

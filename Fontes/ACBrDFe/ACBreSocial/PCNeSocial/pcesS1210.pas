@@ -56,7 +56,8 @@ uses
    System.Contnrs,
   {$IfEnd}
   ACBrBase,
-  pcnConversao, pcnGerador, pcnConsts,
+  ACBrDFeConsts,
+  pcnConversao, pcnGerador,
   pcesCommon, pcesConversaoeSocial, pcesGerador;
 
 type
@@ -736,7 +737,7 @@ type
   TplanSaudeCollectionItem = class(TObject)
   private
     FcnpjOper: string;
-    FregANS: integer;
+    FregANS: string;
     FvlrSaudeTit: double;
     FinfoDepSau: TinfoDepSauCollection;
 
@@ -748,7 +749,7 @@ type
     function infoDepSauInst: boolean;
 
     property cnpjOper: string read FcnpjOper write FcnpjOper;
-    property regANS: integer read FregANS write FregANS;
+    property regANS: string read FregANS write FregANS;
     property vlrSaudeTit: double read FvlrSaudeTit write FvlrSaudeTit;
     property infoDepSau: TinfoDepSauCollection read getInfoDepSau write FinfoDepSau;
   end;
@@ -784,7 +785,7 @@ type
   private
     FindOrgReemb: string;
     FcnpjOper: string;
-    FregANS: integer;
+    FregANS: string;
     FdetReembTit: TdetReembTitCollection;
     FinfoReembDep: TinfoReembDepCollection;
 
@@ -799,7 +800,7 @@ type
 
     property indOrgReemb: string read FindOrgReemb write FindOrgReemb;
     property cnpjOper: string read FcnpjOper write FcnpjOper;
-    property regANS: integer read FregANS write FregANS;
+    property regANS: string read FregANS write FregANS;
     property detReembTit: TdetReembTitCollection read getDetReembTit write FdetReembTit;
     property infoReembDep: TinfoReembDepCollection read getInfoReembDep write FinfoReembDep;
   end;
@@ -1719,7 +1720,7 @@ begin
     Gerador.wGrupo('planSaude');
 
     Gerador.wCampo(tcStr, '', 'cnpjOper',    14, 14, 1, obj[i].cnpjOper);
-    Gerador.wCampo(tcInt, '', 'regANS',       0,  6, 0, obj[i].regANS);
+    Gerador.wCampo(tcStr, '', 'regANS',       0,  6, 0, obj[i].regANS);
     Gerador.wCampo(tcDe2, '', 'vlrSaudeTit',  1, 14, 1, obj[i].vlrSaudeTit);
 
     if obj[i].infoDepSauInst() then
@@ -1762,7 +1763,7 @@ begin
     if obj[i].indOrgReemb = '1' then
     begin
       Gerador.wCampo(tcStr, '', 'cnpjOper',    0, 14, 0, obj[i].cnpjOper);
-      Gerador.wCampo(tcInt, '', 'regANS',      0,  6, 0, obj[i].regANS);
+      Gerador.wCampo(tcStr, '', 'regANS',      0,  6, 0, obj[i].regANS);
     end;
 
     if obj[i].detReembTitInst() then
@@ -2653,7 +2654,7 @@ begin
             with PlanSaude.New do
             begin
               cnpjOper := sFim;
-              regANS := INIRec.ReadInteger(sSecao, 'regANS', 0);
+              regANS := INIRec.ReadString(sSecao, 'regANS', '');
               vlrSaudeTit := StringToFloatDef(INIRec.ReadString(sSecao, 'vlrSaudeTit', ''), 0);
 
               K := 1;
@@ -2694,7 +2695,7 @@ begin
             begin
               indOrgReemb := sFim;
               cnpjOper := INIRec.ReadString(sSecao, 'cnpjOper', '');
-              regANS := INIRec.ReadInteger(sSecao, 'regANS', 0);
+              regANS := INIRec.ReadString(sSecao, 'regANS', '');
 
               K := 1;
               while true do

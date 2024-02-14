@@ -421,8 +421,8 @@ begin
           if VersaoDFx <= ve02_05_00 then
             natJurid := '0001';
           indCoop := tpIndCoop(1);
-          indConstr := tpIndConstr(2);
-          indDesFolha := tpIndDesFolha(1);
+          indConstr := tpIndConstr(1);
+          indDesFolha := tpIndDesFolha(2);
           indPorte := tpNao;
           indOptRegEletron := tpIndOptRegEletron(1);
 
@@ -1751,7 +1751,7 @@ begin
             with PlanSaude.New do
             begin
               cnpjOper := '12345678000112';
-              regANS := 123456;
+              regANS := '123456';
               vlrSaudeTit := 100;
 
               InfoDepSau.Clear;
@@ -1767,7 +1767,7 @@ begin
             begin
               indOrgReemb := '1';
               cnpjOper := '12345678000112';
-              regANS := 123456;
+              regANS := '123456';
 
               DetReembTit.Clear;
               with DetReembTit.New do

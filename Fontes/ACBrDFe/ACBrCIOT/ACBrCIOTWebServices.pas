@@ -38,9 +38,9 @@ interface
 
 uses
   Classes, SysUtils,
-  ACBrDFe, ACBrDFeWebService, pcnConsts,
+  ACBrDFe, ACBrDFeWebService,
   ACBrCIOTContratos, ACBrCIOTConfiguracoes,
-  pcnAuxiliar, pcnConversao, pcnConversaoCIOT, pcnCIOT, pcnRetEnvCIOT;
+  pcnConversao, pcnConversaoCIOT, pcnCIOT, pcnRetEnvCIOT;
 
 const
   CURL_WSDL = 'http://schemas.ipc.adm.br/efrete/pef/';
@@ -148,6 +148,7 @@ type
 implementation
 
 uses
+  ACBrDFeConsts,
   ACBrUtil.Base,
   ACBrUtil.Strings,
   ACBrUtil.DateTime,

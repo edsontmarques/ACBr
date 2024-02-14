@@ -32,52 +32,56 @@
 
 {$I ACBr.inc}
 
-unit ACBrNFComRetConsStatServ;
+unit ACBrDFeComum.RetEnvio;
 
 interface
 
 uses
-  SysUtils, Classes, DateUtils,
+  SysUtils, Classes,
   {$IF DEFINED(HAS_SYSTEM_GENERICS)}
    System.Generics.Collections, System.Generics.Defaults,
   {$ELSEIF DEFINED(DELPHICOMPILER16_UP)}
    System.Contnrs,
   {$IFEND}
   ACBrBase, ACBrXmlBase;
+//  pcnConversao;
 
 type
 
-  TRetConsStatServ = class(TObject)
+  TInfRec = class(TObject)
+  private
+    FnRec: string;
+    FdhRecbto: TDateTime;
+    FtMed: Integer;
+  public
+    property nRec: string        read FnRec     write FnRec;
+    property dhRecbto: TDateTime read FdhRecbto write FdhRecbto;
+    property tMed: Integer       read FtMed     write FtMed;
+  end;
+
+  TretEnvDFe = class(TObject)
   private
     Fversao: string;
     FtpAmb: TACBrTipoAmbiente;
-    FdhRecbto: TDateTime;
     FcStat: Integer;
-    FxMotivo: string;
     FcUF: Integer;
     FverAplic: string;
-    FtMed: Integer;
-    FdhRetorno: TDateTime;
-    FxObs: string;
-    FtagGrupoMsg: string;
-
+    FxMotivo: string;
+    FinfRec: TInfRec;
     FXmlRetorno: string;
   public
-    constructor Create(const AtagGrupoMsg: string);
+    constructor Create;
     destructor Destroy; override;
 
     function LerXml: Boolean;
 
-    property versao: string read Fversao write Fversao;
-    property tpAmb: TACBrTipoAmbiente read FtpAmb write FtpAmb;
-    property verAplic: string read FverAplic write FverAplic;
-    property cStat: Integer read FcStat write FcStat;
-    property xMotivo: string read FxMotivo write FxMotivo;
-    property cUF: Integer read FcUF write FcUF;
-    property dhRecbto: TDateTime read FdhRecbto write FdhRecbto;
-    property tMed: Integer read FtMed write FtMed;
-    property dhRetorno: TDateTime read FdhRetorno write FdhRetorno;
-    property xObs: string read FxObs write FxObs;
+    property versao: string           read Fversao    write Fversao;
+    property tpAmb: TACBrTipoAmbiente read FtpAmb    write FtpAmb;
+    property verAplic: string         read FverAplic write FverAplic;
+    property cStat: Integer           read FcStat    write FcStat;
+    property xMotivo: string          read FxMotivo  write FxMotivo;
+    property cUF: Integer             read FcUF      write FcUF;
+    property infRec: TInfRec          read FinfRec   write FinfRec;
 
     property XmlRetorno: string read FXmlRetorno write FXmlRetorno;
   end;
@@ -88,52 +92,61 @@ uses
   ACBrUtil.Strings,
   ACBrXmlDocument;
 
-{ TRetConsStatServ }
+{ TretEnvDFe }
 
-constructor TRetConsStatServ.Create(const AtagGrupoMsg: string);
+constructor TretEnvDFe.Create;
 begin
   inherited Create;
 
-  FtagGrupoMsg := AtagGrupoMsg;
+  FinfRec := TInfREC.Create
 end;
 
-destructor TRetConsStatServ.Destroy;
+destructor TretEnvDFe.Destroy;
 begin
+  FinfRec.Free;
 
   inherited;
 end;
 
-function TRetConsStatServ.LerXml: Boolean;
+function TretEnvDFe.LerXml: Boolean;
 var
   Document: TACBrXmlDocument;
-  ANode: TACBrXmlNode;
+  ANode, AuxNode: TACBrXmlNode;
   ok: Boolean;
 begin
   Document := TACBrXmlDocument.Create;
 
   try
-    Document.LoadFromXml(XmlRetorno);
+    try
+      Document.LoadFromXml(XmlRetorno);
 
-    ANode := Document.Root;
+      ANode := Document.Root;
 
-    if ANode <> nil then
-    begin
-      versao := ObterConteudoTag(ANode.Attributes.Items['versao']);
-      tpAmb := StrToTipoAmbiente(ok, ObterConteudoTag(Anode.Childrens.FindAnyNs('tpAmb'), tcStr));
-      verAplic := ObterConteudoTag(ANode.Childrens.FindAnyNs('verAplic'), tcStr);
-      cStat := ObterConteudoTag(ANode.Childrens.FindAnyNs('cStat'), tcInt);
-      xMotivo := ACBrStr(ObterConteudoTag(ANode.Childrens.FindAnyNs('xMotivo'), tcStr));
-      cUF := ObterConteudoTag(Anode.Childrens.FindAnyNs('cUF'), tcInt);
-      dhRecbto := ObterConteudoTag(Anode.Childrens.FindAnyNs('dhRecbto'), tcDatHor);
-      tMed := ObterConteudoTag(ANode.Childrens.FindAnyNs('tMed'), tcInt);
-      dhRetorno := ObterConteudoTag(Anode.Childrens.FindAnyNs('dhRetorno'), tcDatHor);
-      xObs := ACBrStr(ObterConteudoTag(ANode.Childrens.FindAnyNs('xObs'), tcStr));
+      if ANode <> nil then
+      begin
+        versao := ObterConteudoTag(ANode.Attributes.Items['versao']);
+        tpAmb := StrToTipoAmbiente(ok, ObterConteudoTag(Anode.Childrens.FindAnyNs('tpAmb'), tcStr));
+        cUF := ObterConteudoTag(Anode.Childrens.FindAnyNs('cUF'), tcInt);
+        verAplic := ObterConteudoTag(ANode.Childrens.FindAnyNs('verAplic'), tcStr);
+        cStat := ObterConteudoTag(ANode.Childrens.FindAnyNs('cStat'), tcInt);
+        xMotivo := ACBrStr(ObterConteudoTag(ANode.Childrens.FindAnyNs('xMotivo'), tcStr));
+
+        AuxNode := ANode.Childrens.FindAnyNs('infRec');
+
+        if AuxNode <> nil then
+        begin
+          infRec.nRec := ObterConteudoTag(Anode.Childrens.FindAnyNs('nRec'), tcStr);
+          infRec.dhRecbto := ObterConteudoTag(Anode.Childrens.FindAnyNs('dhRecbto'), tcDatHor);
+          infRec.tMed := ObterConteudoTag(ANode.Childrens.FindAnyNs('tMed'), tcInt);
+        end;
+      end;
+
+      Result := True;
+    except
+      Result := False;
     end;
-
+  finally
     FreeAndNil(Document);
-    Result := True;
-  except
-    Result := False;
   end;
 end;
 

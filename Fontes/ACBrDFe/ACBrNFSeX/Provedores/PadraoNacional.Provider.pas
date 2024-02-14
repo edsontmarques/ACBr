@@ -109,16 +109,11 @@ implementation
 
 uses
   synacode,
-  pcnAuxiliar,
   ACBrDFeException, ACBrCompress,
+  ACBrUtil.DateTime,
   ACBrUtil.Base, ACBrUtil.XMLHTML, ACBrUtil.Strings, ACBrUtil.FilesIO,
   ACBrNFSeX, ACBrNFSeXConsts, ACBrNFSeXConfiguracoes,
   PadraoNacional.GravarXml, PadraoNacional.LerXml;
-
-{
-  Ainda não é possível remover o pcnAuxiliar, pois utiliza a função:
-  GetUTC.
-}
 
 { TACBrNFSeProviderPadraoNacional }
 
@@ -246,8 +241,8 @@ var
     begin
       AItem := Collection.New;
       AItem.Codigo := Codigo;
-      AItem.Descricao := ACBrStr(JSonItem.AsString['Descricao']);
-      AItem.Correcao := ACBrStr(JSonItem.AsString['Complemento']);
+      AItem.Descricao := JSonItem.AsString['Descricao'];
+      AItem.Correcao := JSonItem.AsString['Complemento'];
     end
     else
     begin
@@ -257,8 +252,8 @@ var
       begin
         AItem := Collection.New;
         AItem.Codigo := Codigo;
-        AItem.Descricao := ACBrStr(JSonItem.AsString['descricao']);
-        AItem.Correcao := ACBrStr(JSonItem.AsString['complemento']);
+        AItem.Descricao := JSonItem.AsString['descricao'];
+        AItem.Correcao := JSonItem.AsString['complemento'];
       end;
     end;
   end;

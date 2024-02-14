@@ -116,10 +116,16 @@
       <Unit>
         <Filename Value="formprincipal.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="Form1"/>
+        <ComponentName Value="frMain"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="FormPrincipal"/>
+      </Unit>
+      <Unit>
+        <Filename Value="configuraserial.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frConfiguraSerial"/>
+        <ResourceBaseClass Value="Form"/>
       </Unit>
     </Units>
   </ProjectOptions>
@@ -177,6 +183,12 @@
       </Item>
       <Item>
         <Name Value="ESynaSerError"/>
+      </Item>
+      <Item>
+        <Name Value="EACBrAbecsPinPadTimeout"/>
+      </Item>
+      <Item>
+        <Name Value="EACBrAbecsPinPadError"/>
       </Item>
     </Exceptions>
   </Debugging>

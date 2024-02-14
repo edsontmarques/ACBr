@@ -52,6 +52,29 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+09/02/2024
+-- Diversos --
+[*] Refactoring visando deixar de usar a unit pcnAuxiliar.
+  Por: Italo Giurizzato Junior
+
+03/02/2024
+-- Diversos --
+[*] Refactoring visando deixar de usar a unit pcnConsts.
+  Por: Italo Giurizzato Junior
+-- pcesS1000 --
+[*] Alterado valor padrão do indTribFolhaPisCofins quando não existir a tag, na leitura do ini do S1000, considerando em branco pois o campo só deve ser preenchido quando for "S"
+  Por: IMATECH
+-- pcesConversaoeSocial --
+[*] Corrigidas eSIndDesFolhaToStr e eSStrToIndDesFolha para considerarem a faixa de 0..2 do enumerado para indDesFolha
+-- evtInfoEmpregador-v_S_01_02_00.xsd --
+[*] Corrigidos schemas para considerarem a faixa de 0..2 de indDesFolha
+  Por: Hudson G Leite
+
+29/01/2024
+-- pcesS1210.pas, pcesS5002.pas, Frm_ACBreSocial --
+[-] Corrigido campo regANS, do evento S-1210, convertendo para string e permitindo o preenchimento de zeros à esquerda
+  Por: alemartinssilva@gmail.com, Renato Rubinho
+
 19/01/2024
 -- pcesS1280.pas --
 [*] Corrigida a geração do grupo infoAtivConcom, do evento S-1280, para ser opcional, consideranto fatorMes

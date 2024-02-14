@@ -30,90 +30,66 @@
 {       Rua Coronel Aureliano de Camargo, 963 - Tatuí - SP - 18270-170         }
 {******************************************************************************}
 
-{$I ACBr.inc}
+{******************************************************************************
+|* Comum (Units de uso comum, ou seja, são utilizadas por diversos componentes)
+|*
+|* PROPÓSITO: Registro de Alterações
+******************************************************************************}
 
-unit ACBrNFComConsStatServ;
+Símbolo : Significado
 
-interface
+[+]     : Novo recurso
+[*]     : Recurso modificado/melhorado
+[-]     : Correção de Bug (assim esperamos)
 
-uses
-  SysUtils, Classes,
-  ACBrXmlBase;
+14/02/2024
+-- ACBrDFeComum.RetEnvio --
+[*] Removido o parâmentro do Create, pois não se faz necessário.
+  Por: Italo Giurizzato Junior
 
-type
+13/02/2024
+-- ACBrDFeComum.RetEnvio --
+[+] Nova Unit para ler o retorno do Envio do DFe em modo Assíncrono.
+  Por: Italo Giurizzato Junior
+-- ACBrDFeComum.RetConsCad --
+[*] Removido uma variável que estava definida mas sem utilização.
+  Por: Italo Giurizzato Junior
 
-  TConsStatServ = class
-  private
-    FtpAmb: TACBrTipoAmbiente;
-    FcUF: Integer;
-    FVersao: string;
-    FNameSpace: string;
-    FtagGrupoMsg: string;
-    FGerarcUF: Boolean;
-  public
-    constructor Create(const AVersao, ANameSpace, AtagGrupoMsg: string; AGerarcUF: Boolean);
-    destructor Destroy; override;
+12/02/2024
+-- ACBrDFeComum.SignatureClass --
+[+] Incluído na classe TSignature os campos IdSignature e IdSignatureValue.
+-- ACBrDFeComum.RetConsCad --
+[*] Ajustes para a leitura correta do endereço do contribuinte.
+  Por: Italo Giurizzato Junior
 
-    function GerarXML: string;
-    function ObterNomeArquivo: string;
+09/02/2024
+-- ACBrDFeComum.DistDFeInt --
+[+] Nova Unit para Distribuição DFe.
+-- ACBrDFeComum.RetDistDFeInt --
+[+] Nova Unit para ler o retorno do Distribuição DFe.
+-- ACBrDFeComum.SignatureClass --
+[+] Nova Unit com a classe TSignature.
+  Por: Italo Giurizzato Junior
+-- Diversos --
+[*] Refactoring visando deixar de usar a unit pcnAuxiliar.
+  Por: Italo Giurizzato Junior
 
-    property tpAmb: TACBrTipoAmbiente read FtpAmb write FtpAmb;
-    property cUF: Integer read FcUF write FcUF;
-  end;
+02/02/2024
+-- ACBrDFeComum.Proc --
+[+] Nova Unit para montagem do grupo de informações do protocolo.
+  Por: Italo Giurizzato Junior
 
-implementation
-
-uses
-  ACBrUtil.Strings;
-
-{ TConsStatServ }
-
-constructor TConsStatServ.Create(const AVersao, ANameSpace, AtagGrupoMsg: string; AGerarcUF: Boolean);
-begin
-  inherited Create;
-
-  FVersao := AVersao;
-  FNameSpace := ANameSpace;
-  FtagGrupoMsg := AtagGrupoMsg;
-  FGerarcUF := AGerarcUF;
-end;
-
-destructor TConsStatServ.Destroy;
-begin
-
-  inherited;
-end;
-
-function TConsStatServ.ObterNomeArquivo: string;
-var
-  DataHora: TDateTime;
-  Year, Month, Day, Hour, Min, Sec, Milli: Word;
-  AAAAMMDDTHHMMSS: string;
-begin
-  Datahora:=now;
-  DecodeTime(DataHora, Hour, Min, Sec, Milli);
-  DecodeDate(DataHora, Year, Month, Day);
-  AAAAMMDDTHHMMSS := Poem_Zeros(Year, 4) + Poem_Zeros(Month, 2) + Poem_Zeros(Day, 2) +
-    Poem_Zeros(Hour, 2) + Poem_Zeros(Min, 2) + Poem_Zeros(Sec, 2);
-
-  Result := AAAAMMDDTHHMMSS + '-ped-sta.xml';
-end;
-
-function TConsStatServ.GerarXML: string;
-var
-  xUF: string;
-begin
-  xUF := '';
-
-  if FGerarcUF then
-    xUF := '<cUF>' + IntToStr(cUF) + '</cUF>';
-
-  Result := '<consStatServ' + FtagGrupoMsg + ' ' + FNameSpace + ' versao="' + Fversao + '">' +
-              '<tpAmb>' + TipoAmbienteToStr(tpAmb) + '</tpAmb>' +
-              xUF +
-              '<xServ>STATUS</xServ>' +
-            '</consStatServ' + FtagGrupoMsg + '>';
-end;
-
-end.
-
+31/01/2024
+-- ACBrDFeComum.ConsCad --
+[+] Nova Unit para Consultar Cadastro de Contribuintes.
+-- ACBrDFeComum.RetConsCad --
+[+] Nova Unit para ler o retorno do Consultar Cadastro de Contribuintes.
+-- ACBrDFeComum.ConsReciDFe --
+[+] Nova Unit para Consultar o DFe pelo numero do Recibo.
+-- ACBrDFeComum.RetConsReciDFe --
+[+] Nova Unit para ler o retorno do Consultar o DFe pelo numero do Recibo.
+-- ACBrDFeComum.ConsStatServ --
+[+] Nova Unit para Consultar o Status de Serviço.
+-- ACBrDFeComum.RetConsStatServ --
+[+] Nova Unit para ler o retorno do Consultar o Status de Serviço.
+  Por: Italo Giurizzato Junior

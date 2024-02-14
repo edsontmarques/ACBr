@@ -39,7 +39,7 @@ interface
 uses
   Classes, SysUtils,
   ACBrXmlBase, ACBrXmlDocument, ACBrXmlWriter,
-  ACBrNF3eClass, ACBrNF3eConsts;
+  ACBrNF3eClass;
 
 type
   TNF3eXmlWriterOptions = class(TACBrXmlWriterOptions)
@@ -130,7 +130,6 @@ type
     function Gerar_gANEEL_gHistFat: TACBrXmlNodeArray;
     function Gerar_gANEEL_gHistFat_gGrandFat(agHistFat: Integer): TACBrXmlNodeArray;
 
-
     function Gerar_autXML: TACBrXmlNodeArray;
     function Gerar_InfAdic: TACBrXmlNode;
     function Gerar_gRespTec: TACBrXmlNode;
@@ -161,13 +160,18 @@ type
 implementation
 
 uses
-  variants, dateutils,
+  variants,
+  dateutils,
+  StrUtils,
+  Math,
+  ACBrDFeConsts,
+  ACBrNF3eConsts,
   ACBrNF3eConversao,
   ACBrValidador,
-  pcnAuxiliar,
   ACBrDFeUtil,
-  pcnConsts,
-  ACBrUtil.Base, ACBrUtil.Strings;
+  ACBrUtil.Base,
+  ACBrUtil.DateTime,
+  ACBrUtil.Strings;
 
 constructor TNF3eXmlWriter.Create(AOwner: TNF3e);
 begin
@@ -211,9 +215,9 @@ var
   PaisBrasil: boolean;
 begin
   PaisBrasil := cPais = CODIGO_BRASIL;
-  cMun := IIf(PaisBrasil, vcMun, CMUN_EXTERIOR);
-  xMun := IIf(PaisBrasil, vxMun, XMUN_EXTERIOR);
-  xUF := IIf(PaisBrasil, vxUF, UF_EXTERIOR);
+  cMun := IfThen(PaisBrasil, vcMun, CMUN_EXTERIOR);
+  xMun := IfThen(PaisBrasil, vxMun, XMUN_EXTERIOR);
+  xUF := IfThen(PaisBrasil, vxUF, UF_EXTERIOR);
 
   if Opcoes.NormatizarMunicipios then
     if ((EstaZerado(cMun)) and (xMun <> XMUN_EXTERIOR)) then
@@ -370,15 +374,15 @@ begin
   Result.AppendChild(AddNode(tcInt, '#8', 'serie', 1, 3, 1,
     NF3e.ide.serie, DSC_SERIE));
 
-  Result.AppendChild(AddNode(tcInt, '#9', 'nNF', 1, 9, 1, NF3e.ide.nNF, DSC_NNF));
+  Result.AppendChild(AddNode(tcInt, '#9', 'nNF', 1, 9, 1, NF3e.ide.nNF, DSC_NDF));
 
   Result.AppendChild(AddNode(tcStr, '#10', 'cNF', 7, 7, 1,
-    IntToStrZero(ExtrairCodigoChaveAcesso(NF3e.infNF3e.ID), 7), DSC_CNF));
+    IntToStrZero(ExtrairCodigoChaveAcesso(NF3e.infNF3e.ID), 7), DSC_CDF));
 
   Result.AppendChild(AddNode(tcInt, '#11', 'cDV', 1, 1, 1, NF3e.Ide.cDV, DSC_CDV));
 
   Result.AppendChild(AddNode(tcStr, '#12', 'dhEmi', 25, 25, 1,
-    DateTimeTodh(NF3e.ide.dhEmi) + GetUTC(CodigoParaUF(NF3e.ide.cUF), NF3e.ide.dhEmi),
+    DateTimeTodh(NF3e.ide.dhEmi) + GetUTC(CodigoUFparaUF(NF3e.ide.cUF), NF3e.ide.dhEmi),
     DSC_DEMI));
 
   Result.AppendChild(AddNode(tcStr, '#13', 'tpEmis', 1, 1, 1,
@@ -402,7 +406,7 @@ begin
   if (NF3e.Ide.dhCont > 0) or (NF3e.Ide.xJust <> '') then
   begin
     Result.AppendChild(AddNode(tcStr, '#17', 'dhCont', 25, 25,
-      1, DateTimeTodh(NF3e.ide.dhCont) + GetUTC(CodigoParaUF(NF3e.ide.cUF),
+      1, DateTimeTodh(NF3e.ide.dhCont) + GetUTC(CodigoUFparaUF(NF3e.ide.cUF),
       NF3e.ide.dhCont), DSC_DHCONT));
 
     Result.AppendChild(AddNode(tcStr, '#18', 'xJust', 15, 256, 1,
@@ -429,7 +433,7 @@ begin
       wAlerta('#21', 'IE', DSC_IE, ERR_MSG_VAZIO)
     else
     begin
-      if not pcnAuxiliar.ValidarIE(NF3e.Emit.IE, CodigoParaUF(NF3e.Ide.cUF)) then
+      if not ValidarIE(NF3e.Emit.IE, CodigoUFparaUF(NF3e.Ide.cUF)) then
         wAlerta('#21', 'IE', DSC_IE, ERR_MSG_INVALIDO);
     end;
   end;
@@ -478,7 +482,7 @@ begin
 
   Result.AppendChild(AddNode(tcStr, '#32', 'UF', 2, 2, 1, xUF, DSC_UF));
 
-  if not pcnAuxiliar.ValidarUF(xUF) then
+  if not ValidarUF(xUF) then
     wAlerta('#32', 'UF', DSC_UF, ERR_MSG_INVALIDO);
 
   Result.AppendChild(AddNode(tcStr, '#33', 'fone', 7, 12, 0,
@@ -531,7 +535,7 @@ begin
 
       if (Opcoes.ValidarInscricoes) and (NF3e.Dest.IE <> '') and
          (NF3e.Dest.IE <> 'ISENTO') then
-        if not pcnAuxiliar.ValidarIE(NF3e.Dest.IE, UF) then
+        if not ValidarIE(NF3e.Dest.IE, UF) then
           wAlerta('#41', 'IE', DSC_IE, ERR_MSG_INVALIDO);
     end;
   end;
@@ -587,7 +591,7 @@ begin
 
   Result.AppendChild(AddNode(tcStr, '#53', 'UF', 2, 2, 1, xUF, DSC_UF));
 
-  if not pcnAuxiliar.ValidarUF(xUF) then
+  if not ValidarUF(xUF) then
     wAlerta('#53', 'UF', DSC_UF, ERR_MSG_INVALIDO);
 
   Result.AppendChild(AddNode(tcStr, '#54', 'fone', 7, 12, 0,
@@ -673,7 +677,7 @@ begin
     NF3e.gSub.serie, DSC_SERIE));
 
   Result.AppendChild(AddNode(tcStr, '#74', 'nNF', 1, 9, 1,
-    NF3e.gSub.nNF, DSC_NNF));
+    NF3e.gSub.nNF, DSC_NDF));
 
   Result.AppendChild(AddNode(tcStr, '#75', 'CompetEmis', 6, 6, 1,
     FormatDateTime('yyyymm', NF3e.gSub.CompetEmis), DSC_COMPETEMIS));
@@ -1274,7 +1278,11 @@ function TNF3eXmlWriter.Gerar_NFdet_det_DetItem_Imposto(aNFdet,
 begin
   Result := FDocument.CreateElement('imposto');
 
-  Result.AppendChild(Gerar_NFdet_det_DetItem_Imposto_ICMS(aNFdet, aDet));
+  if NF3e.NFDet[aNFdet].Det[aDet].detItem.Imposto.ICMS.indSemCST = tiSim then
+    Result.AppendChild(AddNode(tcStr, '#175', 'indSemCST', 1, 1, 1, '1', ''))
+  else
+    Result.AppendChild(Gerar_NFdet_det_DetItem_Imposto_ICMS(aNFdet, aDet));
+
   Result.AppendChild(Gerar_NFdet_det_DetItem_Imposto_PIS(aNFdet, aDet));
   Result.AppendChild(Gerar_NFdet_det_DetItem_Imposto_PISEfet(aNFdet, aDet));
   Result.AppendChild(Gerar_NFdet_det_DetItem_Imposto_COFINS(aNFdet, aDet));
@@ -1395,11 +1403,29 @@ begin
 
       cst90:
         begin
-          Result.AppendChild(AddNode(tcDe2, '#207', 'vBC', 1, 15, 1, vBC, DSC_VBC));
+          if vBC > 0 then
+          begin
+            Result.AppendChild(AddNode(tcDe2, '#207', 'vBC', 1, 15, 1, vBC, DSC_VBC));
 
-          Result.AppendChild(AddNode(tcDe2, '#208', 'pICMS', 1, 5, 1, pICMS, DSC_PICMS));
+            Result.AppendChild(AddNode(tcDe2, '#208', 'pICMS', 1, 5, 1, pICMS, DSC_PICMS));
 
-          Result.AppendChild(AddNode(tcDe2, '#209', 'vICMS', 1, 15, 1, vICMS, DSC_VICMS));
+            Result.AppendChild(AddNode(tcDe2, '#209', 'vICMS', 1, 15, 1, vICMS, DSC_VICMS));
+          end;
+
+          if vICMSDeson > 0 then
+          begin
+            Result.AppendChild(AddNode(tcDe2, '#210', 'vICMSDeson', 1, 15, 1,
+              vICMSDeson, DSC_VICMSDESON));
+
+            Result.AppendChild(AddNode(tcStr, '#211', 'cBenef', 10, 10, 1, cBenef, DSC_CBENEF));
+          end;
+
+          if (pFCP > 0) or (vFCP > 0) then
+          begin
+            Result.AppendChild(AddNode(tcDe2, '#195', 'pFCP', 1, 5, 1, pFCP, DSC_PFCP));
+
+            Result.AppendChild(AddNode(tcDe2, '#196', 'vFCP', 1, 15, 1, vFCP, DSC_VFCP));
+          end;
         end;
     end;
   end;
@@ -1678,7 +1704,7 @@ begin
     NF3e.Total.vPISEfet, DSC_VPISEfet));
 
   Result.AppendChild(AddNode(tcDe2, '#271', 'vNF', 1, 15, 1,
-    NF3e.Total.vNF, DSC_VNF));
+    NF3e.Total.vNF, DSC_VDF));
 end;
 
 function TNF3eXmlWriter.Gerar_TotalICMSTotal: TACBrXmlNode;
@@ -1800,7 +1826,7 @@ begin
 
   Result.AppendChild(AddNode(tcStr, '#291', 'UF', 2, 2, 1, xUF, DSC_UF));
 
-  if not pcnAuxiliar.ValidarUF(xUF) then
+  if not ValidarUF(xUF) then
     wAlerta('#291', 'UF', DSC_UF, ERR_MSG_INVALIDO);
 
   Result.AppendChild(AddNode(tcStr, '#292', 'fone', 7, 12, 0,
@@ -1965,11 +1991,11 @@ begin
 
   xmlNode.AddChild('verAplic').Content := NF3e.procNF3e.verAplic;
 
-  xmlNode.AddChild('chNF3e').Content := NF3e.procNF3e.chNF3e;
+  xmlNode.AddChild('chNF3e').Content := NF3e.procNF3e.chDFe;
 
   xmlNode.AddChild('dhRecbto').Content :=
     FormatDateTime('yyyy-mm-dd"T"hh:nn:ss', NF3e.procNF3e.dhRecbto) +
-    GetUTC(CodigoParaUF(FNF3e.Ide.cUF), NF3e.procNF3e.dhRecbto);
+    GetUTC(CodigoUFparaUF(FNF3e.Ide.cUF), NF3e.procNF3e.dhRecbto);
 
   xmlNode.AddChild('nProt').Content := NF3e.procNF3e.nProt;
 

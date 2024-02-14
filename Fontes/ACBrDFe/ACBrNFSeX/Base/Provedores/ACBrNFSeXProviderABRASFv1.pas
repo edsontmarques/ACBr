@@ -429,7 +429,8 @@ begin
     begin
       Nota.XmlRps := FAOwner.SSL.Assinar(Nota.XmlRps,
                                          PrefixoTS + ConfigMsgDados.XmlRps.DocElemento,
-                                         ConfigMsgDados.XmlRps.InfElemento, '', '', '', IdAttr);
+                                         ConfigMsgDados.XmlRps.InfElemento, '', '', '',
+                                         IdAttr);
     end;
 
     SalvarXmlRps(Nota);
@@ -1818,8 +1819,8 @@ begin
     begin
       AErro := Response.Erros.New;
       AErro.Codigo := ObterConteudoTag(ANodeArray[I].Childrens.FindAnyNs('Codigo'), tcStr);
-      AErro.Descricao := ACBrStr(Mensagem);
-      AErro.Correcao := ACBrStr(ObterConteudoTag(ANodeArray[I].Childrens.FindAnyNs('Correcao'), tcStr));
+      AErro.Descricao := Mensagem;
+      AErro.Correcao := ObterConteudoTag(ANodeArray[I].Childrens.FindAnyNs('Correcao'), tcStr);
     end;
   end;
 end;

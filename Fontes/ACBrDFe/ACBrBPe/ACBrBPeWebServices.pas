@@ -39,7 +39,7 @@ interface
 uses
   Classes, SysUtils, dateutils, blcksock, synacode,
   ACBrDFe, ACBrDFeUtil, ACBrDFeWebService,
-  pcnAuxiliar, pcnConversao, pcnBPe, pcnConversaoBPe, pcnProcBPe,
+  pcnConversao, pcnBPe, pcnConversaoBPe, pcnProcBPe,
   pcnEnvEventoBPe, pcnRetEnvEventoBPe, pcnRetConsSitBPe, pcnDistDFeInt,
   pcnRetDistDFeInt, pcnRetEnvBPe, ACBrBPeBilhetes, ACBrBPeConfiguracoes;
 
@@ -352,8 +352,10 @@ uses
   ACBrUtil.DateTime,
   ACBrUtil.XMLHTML,
   ACBrUtil.FilesIO,
-  ACBrCompress, ACBrBPe, pcnBPeConsts, pcnConsts,
-  pcnGerador, pcnLeitor, pcnConsStatServ, pcnRetConsStatServ,
+  ACBrCompress, ACBrBPe, pcnBPeConsts, ACBrDFeConsts,
+  pcnGerador, pcnLeitor,
+  ACBrDFeComum.ConsStatServ,
+  ACBrDFeComum.RetConsStatServ,
   pcnConsSitBPe;
 
 { TBPeWebService }
@@ -470,11 +472,7 @@ begin
     ConsStatServ.TpAmb := FPConfiguracoesBPe.WebServices.Ambiente;
     ConsStatServ.CUF := FPConfiguracoesBPe.WebServices.UFCodigo;
 
-    AjustarOpcoes( ConsStatServ.Gerador.Opcoes );
-    ConsStatServ.GerarXML;
-
-    // Atribuindo o XML para propriedade interna //
-    FPDadosMsg := ConsStatServ.Gerador.ArquivoFormatoXML;
+    FPDadosMsg := ConsStatServ.GerarXML;
   finally
     ConsStatServ.Free;
   end;
@@ -486,15 +484,13 @@ var
 begin
   FPRetWS := SeparaDadosArray(['bpeResultMsg', 'bpeStatusServicoBPResult'], FPRetornoWS );
 
-  FPRetWS := TiraAcentos(FPRetWS);
-
   BPeRetorno := TRetConsStatServ.Create('BPe');
   try
-    BPeRetorno.Leitor.Arquivo := ParseText(FPRetWS);
+    BPeRetorno.XmlRetorno := ParseText(AnsiString(FPRetWS), True, {$IfDef FPC}True{$Else}False{$EndIf});
     BPeRetorno.LerXml;
 
     Fversao := BPeRetorno.versao;
-    FtpAmb := BPeRetorno.tpAmb;
+    FtpAmb := TpcnTipoAmbiente(BPeRetorno.tpAmb);
     FverAplic := BPeRetorno.verAplic;
     FcStat := BPeRetorno.cStat;
     FxMotivo := BPeRetorno.xMotivo;
@@ -538,7 +534,7 @@ begin
                            'Retorno: %s' + LineBreak +
                            'Observação: %s' + LineBreak),
                    [Fversao, TpAmbToStr(FtpAmb), FverAplic, IntToStr(FcStat),
-                    FxMotivo, CodigoParaUF(FcUF),
+                    FxMotivo, CodigoUFparaUF(FcUF),
                     IfThen(FdhRecbto = 0, '', FormatDateTimeBr(FdhRecbto)),
                     IntToStr(FTMed),
                     IfThen(FdhRetorno = 0, '', FormatDateTimeBr(FdhRetorno)),
@@ -863,7 +859,7 @@ begin
                       FBPeRetorno.verAplic,
                       IntToStr(FBPeRetorno.cStat),
                       FBPeRetorno.xMotivo,
-                      CodigoParaUF(FBPeRetorno.cUF)]);
+                      CodigoUFparaUF(FBPeRetorno.cUF)]);
   {*)}
 end;
 
@@ -1354,7 +1350,7 @@ begin
                            'Protocolo: %s ' + LineBreak +
                            'Digest Value: %s ' + LineBreak),
                    [Fversao, FBPeChave, TpAmbToStr(FTpAmb), FverAplic,
-                    IntToStr(FcStat), FXMotivo, CodigoParaUF(FcUF), FBPeChave,
+                    IntToStr(FcStat), FXMotivo, CodigoUFparaUF(FcUF), FBPeChave,
                     FormatDateTimeBr(FDhRecbto), FProtocolo, FprotBPe.digVal]);
   {*)}
 end;

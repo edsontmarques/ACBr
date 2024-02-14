@@ -3,7 +3,7 @@
 {  Biblioteca multiplataforma de componentes Delphi para interação com equipa- }
 { mentos de Automação Comercial utilizados no Brasil                           }
 {                                                                              }
-{ Direitos Autorais Reservados (c) 2022 Daniel Simoes de Almeida               }
+{ Direitos Autorais Reservados (c) 2024 Daniel Simoes de Almeida               }
 {                                                                              }
 { Colaboradores nesse arquivo: Italo Giurizzato Junior                         }
 {                                                                              }
@@ -32,43 +32,43 @@
 
 {$I ACBr.inc}
 
-unit ACBrDFeConsStatServ;
+unit ACBrDFeComum.ConsStatServ;
 
 interface
 
 uses
   SysUtils, Classes,
-  ACBrXmlBase;
+  pcnConversao;
 
 type
 
   TConsStatServ = class
   private
-    FtpAmb: TACBrTipoAmbiente;
+    FtpAmb: TpcnTipoAmbiente;
     FcUF: Integer;
-    FVersao: String;
-    FNameSpace: String;
-    FtagGrupoMsg: String;
+    FVersao: string;
+    FNameSpace: string;
+    FtagGrupoMsg: string;
     FGerarcUF: Boolean;
   public
-    constructor Create(const AVersao, ANameSpace, AtagGrupoMsg: String; AGerarcUF: Boolean);
+    constructor Create(const AVersao, ANameSpace, AtagGrupoMsg: string; AGerarcUF: Boolean);
     destructor Destroy; override;
 
-    function GerarXML: String;
+    function GerarXML: string;
     function ObterNomeArquivo: string;
 
-    property tpAmb: TACBrTipoAmbiente read FtpAmb write FtpAmb;
-    property cUF: Integer             read FcUF   write FcUF;
+    property tpAmb: TpcnTipoAmbiente read FtpAmb write FtpAmb;
+    property cUF: Integer read FcUF write FcUF;
   end;
 
 implementation
 
 uses
-  pcnAuxiliar;
+  ACBrUtil.Strings;
 
 { TConsStatServ }
 
-constructor TConsStatServ.Create(const AVersao, ANameSpace, AtagGrupoMsg: String; AGerarcUF: Boolean);
+constructor TConsStatServ.Create(const AVersao, ANameSpace, AtagGrupoMsg: string; AGerarcUF: Boolean);
 begin
   inherited Create;
 
@@ -93,12 +93,13 @@ begin
   Datahora:=now;
   DecodeTime(DataHora, Hour, Min, Sec, Milli);
   DecodeDate(DataHora, Year, Month, Day);
-  AAAAMMDDTHHMMSS := IntToStrZero(Year, 4) + IntToStrZero(Month, 2) + IntToStrZero(Day, 2) +
-    IntToStrZero(Hour, 2) + IntToStrZero(Min, 2) + IntToStrZero(Sec, 2);
+  AAAAMMDDTHHMMSS := Poem_Zeros(Year, 4) + Poem_Zeros(Month, 2) + Poem_Zeros(Day, 2) +
+    Poem_Zeros(Hour, 2) + Poem_Zeros(Min, 2) + Poem_Zeros(Sec, 2);
+
   Result := AAAAMMDDTHHMMSS + '-ped-sta.xml';
 end;
 
-function TConsStatServ.GerarXML: String;
+function TConsStatServ.GerarXML: string;
 var
   xUF: string;
 begin
@@ -108,7 +109,7 @@ begin
     xUF := '<cUF>' + IntToStr(cUF) + '</cUF>';
 
   Result := '<consStatServ' + FtagGrupoMsg + ' ' + FNameSpace + ' versao="' + Fversao + '">' +
-              '<tpAmb>' + TipoAmbienteToStr(tpAmb) + '</tpAmb>' +
+              '<tpAmb>' + tpAmbToStr(tpAmb) + '</tpAmb>' +
               xUF +
               '<xServ>STATUS</xServ>' +
             '</consStatServ' + FtagGrupoMsg + '>';

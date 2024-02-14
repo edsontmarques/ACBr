@@ -42,7 +42,116 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+
+13/02/2024
+-- Diversos --
+[*] Removido do ProcessarMensagemErros a função ACBrStr ao atribuir a descrição e
+    correção de erros e alertas retornados pelo webservice do provedor, pois essa
+    função estava apresentando as vogais acentuadas de forma errada no Lazarus.
+[*] Removido do TratarXmlRetornado a função NativeStringToUTF8, pois estava sendo
+    executado em duplicidade e consequentemente não convertendo as vogais acentuadas
+    de forma correta.
+  Por: Italo Giurizzato Junior
+
+09/02/2024
+-- Diversos --
+[*] Refactoring visando deixar de usar a unit pcnAuxiliar.
+  Por: Italo Giurizzato Junior
+-- Diversos --
+[-] Correção nos parâmetros para assinatura
+  Por: Renato Rubinho
+
+08/02/2024
+-- ACBrNFSeXServicos --
+[*] A cidade de Biguaçu/SC trocou de provedor, agora é IPM na versão 1.01
+  Por: Willian Delan
+[*] A cidade de Nova Odessa/SP trocou as URLs, a versão e o provedor é o mesmo.
+  Por: Kaue Barros
+
+07/02/2024
+-- ACBrNFSeXServicos --
+[*] Adiciona as URLs e a versão 1.01 para a cidade de Lagoa Vermelha/RS
+   Por: DNA Automação
+[*] Acrescentada URL do link de Produção para o provedor SystemPro
+   Por: Renato Rubinho
+
+06/02/2024
+-- ACBrNFSeXServicos --
+[*] A cidade de Pedra Preta/MT trocou de provedor, agora é Fiorilli na versão 2.00
+  Por: Catrini
+[*] Adicioa parâmetro para não formatar ItemListaServico para Santo Andre/SP
+  Por: João Frederico de Souza
+[*] A cidade de Ouro/SC trocou de provedor, agora é IPM versão 1.00
+  Por: Willian Delan
+[+] Inclusão da cidade: Esmeraldas/MG o provedor é Fiorilli.
+  Por: Marcos Giordani
+[*] Adiciona parâmetro para não formatar ItemListaServico para Suzano/SP
+  Por: Adauri A. Camacho Jr.
+
+03/02/2024
+-- ACBrNFSeXServicos --
+[*] A cidade de Boituva/SP trocou de provedor, agora é Pronim versão 2.03.
+  Por: Antonio Donizete Ribeiro Junior
+[*] A cidade de Serra Alta/SC trocou de provedor, agora é IPM.
+  Por: C4Dev
+
+01/02/2024
+-- ACBrNFSeXServicos --
+[*] A cidade de Aracruz/ES trocou a URL e a versão o provedor é o mesmo.
+  Por: Paulo Alves N. Júnior
+[*] A cidade de Itaborai/RJ trocou de provedor, agora é CTA
+  Por: Thiagfb
+[*] Removidos os parâmetros para gerar as tags de ValorIss e Aliquota para as 
+    cidades de Dracena/SP e Brasilia/DF.
+  Por: Adriano Teodorico
+[+] Inclusão da cidade: São Miguel/RN o provedor é Tributus.
+  Por: Arimateia Jr
+
+31/01/2024
+-- ACBrNFSeXServicos --
+[+] Inclusão das cidades: Piranga/MG, Presidente Bernardes/MG, 
+    Senhora de Oliveira/MG, Bras Pires/MG, Lamim/MG e Rio Espera/MG
+    todas utilizam o provedor Futurize.
+  Por: Arimateia Jr
+-- Equiplano.LerXml --
+[*] Não estava identificando corretamente um XML de NFS-e.
+  Por: Diego Reckziegel
+-- ACBrNFSeXServicos --
+[*] A cidade de Carlos Barbosa/RS trocou de provedor, agora é Infisc versão 1.01
+  Por: DNA Automação
+
+30/01/2024
+-- ACBrNFSeXServicos --
+[*] A cidade de Boa Esperanca/MG trocou de provedor, agora é Betha versaõ 2.02
+  Por: José Geraldo
+[*] A cidade de Caceres/MT mudou a URL de produção. Provedor e o mesmo.
+  Por: Fernando Henrique
+[*] A cidade de Itapeva/MG trocou de provedor, agora é Fiorilli.
+  Por: Fernanda Penteado
+
+29/01/2024
+-- ACBrNFSeXWebserviceBase --
+[*] Alterado as condições para detectar a ausencia de encoding no inicio do 
+    XML.
+  Por: Italo Giurizzato Junior
+-- SoftPlan.LerXml --
+[*] Alteração visando o calculo do Valor Liquido Total da Nota.
+  Por: Italo Giurizzato Junior
+-- IPM.LerXml --
+[*] Alterado o formato para decodificação das datas.
+  Por: Jaisson
+-- ACBrNFSeXServicos --
+[*] A cidade de Castanhal/PA mudou a URL de produção. Provedor e o mesmo.
+  Por: Diogo Rodrigues
+[*] A cidade de Camboriu/SC mudou a URL. Provedor e versão ainda são os mesmos
+  Por: rose_asano 
+[*] Correção da versão para a cidade de Morro Reuter/RS.
+  Por: Daniel - DNA Automação
+
 26/01/2024
+-- ACBrNFSeXServicos --
+[*] A cidade de Morro Reuter/RS trocou de provedor, agora é Pronim
+  Por: Daniel - DNA Automação
 -- ACBrNFSeXDANFSeFR --
 [*] Alteração visando emitir uma Discriminação de até 4 mil caracteres.
   Por: kurtslucas

@@ -3,7 +3,7 @@
 {  Biblioteca multiplataforma de componentes Delphi para interação com equipa- }
 { mentos de Automação Comercial utilizados no Brasil                           }
 {                                                                              }
-{ Direitos Autorais Reservados (c) 2020 Daniel Simoes de Almeida               }
+{ Direitos Autorais Reservados (c) 2024 Daniel Simoes de Almeida               }
 {                                                                              }
 { Colaboradores nesse arquivo: Italo Giurizzato Junior                         }
 {                                                                              }
@@ -38,10 +38,10 @@ interface
 
 uses
   Classes, SysUtils, synacode,
-  pcnAuxiliar,
   pcnConversao,
   ACBrDFe, ACBrDFeWebService,
   ACBrDCeClass,
+  ACBrXmlBase,
 //  pcnRetConsReciDFe,
   ACBrDCeConversao, ACBrDCeProc,
 //  pmdfeEnvEventoMDFe, pmdfeRetEnvEventoMDFe,
@@ -79,7 +79,7 @@ type
   TDCeStatusServico = class(TDCeWebService)
   private
     Fversao: String;
-    FtpAmb: TpcnTipoAmbiente;
+    FtpAmb: TACBrTipoAmbiente;
     FverAplic: String;
     FcStat: Integer;
     FxMotivo: String;
@@ -99,7 +99,7 @@ type
     procedure Clear; override;
 
     property versao: String read Fversao;
-    property tpAmb: TpcnTipoAmbiente read FtpAmb;
+    property tpAmb: TACBrTipoAmbiente read FtpAmb;
     property verAplic: String read FverAplic;
     property cStat: Integer read FcStat;
     property xMotivo: String read FxMotivo;
@@ -503,9 +503,11 @@ uses
   ACBrUtil.DateTime,
   ACBrUtil.FilesIO,
   ACBrCompress, ACBrDCe, ACBrDCeConsts,
+  ACBrDFeUtil,
   pcnLeitor,
-  pcnConsStatServ, pcnRetConsStatServ,
-//  pmdfeConsSitDCe, pmdfeConsDCeNaoEnc,
+  ACBrDFeComum.ConsStatServ,
+  ACBrDFeComum.RetConsStatServ,
+//  pmdfeConsSitDCe,
   pcnConsReciDFe;
 
 { TDCeWebService }
@@ -592,7 +594,7 @@ begin
 
   if Assigned(FPConfiguracoesDCe) then
   begin
-    FtpAmb := FPConfiguracoesDCe.WebServices.Ambiente;
+    FtpAmb := TACBrTipoAmbiente(FPConfiguracoesDCe.WebServices.Ambiente);
     FcUF := FPConfiguracoesDCe.WebServices.UFCodigo;
   end
 end;
@@ -611,14 +613,8 @@ begin
   try
     ConsStatServ.TpAmb := FPConfiguracoesDCe.WebServices.Ambiente;
     ConsStatServ.CUF := FPConfiguracoesDCe.WebServices.UFCodigo;
-//    ConsStatServ.Versao := FPVersaoServico;
 
-    AjustarOpcoes( ConsStatServ.Gerador.Opcoes );
-
-    ConsStatServ.GerarXML;
-
-    // Atribuindo o XML para propriedade interna //
-    FPDadosMsg := ConsStatServ.Gerador.ArquivoFormatoXML;
+    FPDadosMsg := ConsStatServ.GerarXML;
   finally
     ConsStatServ.Free;
   end;
@@ -632,7 +628,7 @@ begin
 
   DCeRetorno := TRetConsStatServ.Create('DCe');
   try
-    DCeRetorno.Leitor.Arquivo := ParseText(FPRetWS);
+    DCeRetorno.XmlRetorno := ParseText(FPRetWS);
     DCeRetorno.LerXml;
 
     Fversao := DCeRetorno.versao;
@@ -669,8 +665,8 @@ begin
                            'Tempo Médio: %s' + LineBreak +
                            'Retorno: %s' + LineBreak +
                            'Observação: %s' + LineBreak),
-                   [Fversao, TpAmbToStr(FtpAmb), FverAplic, IntToStr(FcStat),
-                    FxMotivo, CodigoParaUF(FcUF),
+                   [Fversao, TipoAmbienteToStr(FtpAmb), FverAplic, IntToStr(FcStat),
+                    FxMotivo, CodigoUFParaUF(FcUF),
                     IfThen(FdhRecbto = 0, '', FormatDateTimeBr(FdhRecbto)),
                     IntToStr(FTMed),
                     IfThen(FdhRetorno = 0, '', FormatDateTimeBr(FdhRetorno)),
@@ -2047,7 +2043,7 @@ begin
                            'Protocolo: %s ' + LineBreak +
                            'Digest Value: %s ' + LineBreak),
                    [Fversao, FDCeChave, TpAmbToStr(FTpAmb), FverAplic,
-                    IntToStr(FcStat), FXMotivo, CodigoParaUF(FcUF), FDCeChave,
+                    IntToStr(FcStat), FXMotivo, CodigoUFParaUF(FcUF), FDCeChave,
                     FormatDateTimeBr(FDhRecbto), FProtocolo, FprotDCe.digVal]);
 end;
 

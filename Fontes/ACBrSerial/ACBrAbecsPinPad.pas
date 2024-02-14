@@ -76,6 +76,7 @@ resourcestring
   CERR_SPE_MFINFO = 'Invalid Media file parâmeters';
 
   CERR_INVALID_PARAM = 'Invalid value for %s param';
+  CERR_NOT_IMPLEMENTED = '%s is not implemented yet';
 
 const
   // control characters
@@ -241,6 +242,7 @@ const
   PP_MODEL     = $8003; // A..20 Model / hardware version, in the format: “xx...xx;m...m”, where: “xx...xx” is the device name; and “m...m” is the memory capacity (“512KB”, “1MB”, “2MB”, ...).
   PP_MNNAME    = $8004; // A..20 Name of the manufacturer (free format).
   PP_CAPAB     = $8005; // A10 Pinpad capabilities: “0xxxxxxxxx” = Does not support CTLS; “1xxxxxxxxx” = Supports CTLS. “x0xxxxxxxx” = Display is not graphic; “x1xxxxxxxx” = Monochromatic graphic display; “x2xxxxxxxx” = Color graphic display. “xx00000000” = RFU. PP_SOVER (†) 8006h A..20 Basic software or operating system version (free format).
+  PP_SOVER     = $8006; // Basic software or operating system version (free format).
   PP_SPECVER   = $8007; // A4 Specification version, in “V.VV” format (in this case, fixed “2.12”)
   PP_MANVERS   = $8008; // A16 “Manager” application version, in the format “VVV.VV YYMMDD”.
   PP_APPVERS   = $8009; // A16 “Abecs” application version, in the format “VVV.VV YYMMDD”.
@@ -347,7 +349,8 @@ const
 
 type
 
-  EACBrAbecsPinPadError = Exception;
+  EACBrAbecsPinPadError = class(Exception);
+  EACBrAbecsPinPadTimeout = class(EACBrAbecsPinPadError);
 
   { TACBrAbecsTLV }
 
@@ -480,6 +483,8 @@ type
     function GetResponseData: AnsiString;
     function GetResponseFromTagValue(ATag: Word): AnsiString; overload;
     procedure GetResponseFromTagValue(ATag: Word; AStream: TStream); overload;
+    procedure GetResponseFromTagValue(ATag: Word; AStringList: TStrings); overload;
+    procedure GetResponseAsValues(AStringList: TStrings);
     property STAT: Integer read fSTAT;
   end;
 
@@ -504,6 +509,7 @@ type
   end;
 
   TACBrAbecsPinPadMediaType = (mtPNG, mtJPG, mtGIF);
+  TACBrAbecsMsgAlign = (alNone, alLeft, alRight, alCenter);
   TACBrAbecsMSGIDX = ( msgDigiteDDD, msgRedigiteDDD,
                        msgDigiteTelefone, msgRedigiteTelefone,
                        msgDigiteDDDeTelefone, msgRedigiteDDDeTelefone,
@@ -533,6 +539,23 @@ type
     Cols: LongWord;
   end;
 
+  TACBrAbecsPinPadCapabilities = record
+    SerialNumber: String;
+    PartNumber: String;
+    Model: String;
+    Memory: String;
+    Manufacturer: String;
+    SupportContactless: Boolean;
+    DisplayIsGraphic: Boolean;
+    DisplayIsColor: Boolean;
+    SpecificationVersion: Double;
+    DisplayTextModeDimensions: TACBrAbecsDimension;
+    DisplayGraphicPixels: TACBrAbecsDimension;
+    MediaPNGisSupported: Boolean;
+    MediaJPGisSupported: Boolean;
+    MediaGIFisSupported: Boolean;
+  end;
+
   TACBrAbecsExecEvent = procedure (var Cancel: Boolean) of object;
 
   { TACBrAbecsPinPad }
@@ -543,6 +566,8 @@ type
   TACBrAbecsPinPad = class( TACBrComponent )
   private
     fDevice: TACBrDevice;
+    fMsgAlign: TACBrAbecsMsgAlign;
+    fMsgWordWrap: Boolean;
     fOnEndCommand: TNotifyEvent;
     fOnStartCommand: TNotifyEvent;
     fOnWaitForResponse: TACBrAbecsExecEvent;
@@ -559,8 +584,7 @@ type
     fSPEKmod: String;
     fSPEKpub: String;
     fPinpadKSec: String;
-    fDSPTXTSZ: TACBrAbecsDimension;
-    fDSPGRSZ: TACBrAbecsDimension;
+    fPinPadCapabilities: TACBrAbecsPinPadCapabilities;
 
     function GetIsEnabled: Boolean;
     function GetPort: String;
@@ -585,8 +609,9 @@ type
     procedure ClearSecureData;
     procedure ClearCacheData;
     procedure LogApplicationLayer(AApplicationLayer: TACBrAbecsApplicationLayer);
-    procedure GetPinPadSpecs;
 
+    function FormatMSG(const AMSG: String; MaxCols: Integer; MaxLines: Integer): String;
+    function GetPinPadCapabilities: TACBrAbecsPinPadCapabilities;
   public
     constructor Create(AOwner: TComponent); override;
     Destructor Destroy; override ;
@@ -597,20 +622,16 @@ type
 
     property Command: TACBrAbecsCommand read fCommand;
     property Response: TACBrAbecsResponse read fResponse;
+    property PinPadCapabilities: TACBrAbecsPinPadCapabilities read GetPinPadCapabilities;
 
-    function FormatSPE_DSPMSG(const ASPE_DSPMSG: String): String;
-    function FormatMSG_S32(const AMSG: String): String;
-    function FormatMSG(const AMSG: String; MaxCols: Integer; MaxLines: Integer;
-      Pad: Byte = 0): String;
-
-  public
     // Control Commands
     procedure OPN; overload;
     procedure OPN(const OPN_MOD: String; const OPN_EXP: String); overload;
     procedure GIN(const GIN_ACQIDX: Byte = 0);
     procedure GIX; overload;
     procedure GIX(PP_DATA: array of Word); overload;
-    procedure CLO(const CLO_MSG: String = '');
+    procedure CLO(const CLO_MSG: String = ''); overload;
+    procedure CLO(const Line1: String; Line2: String); overload;
     procedure CLX(const SPE_DSPMSG_or_SPE_MFNAME: String);
 
     // Basic Commands
@@ -620,15 +641,19 @@ type
       VerifyICCInsertion: Boolean; VerifyICCRemoval: Boolean;
       VerifyCTLSPresence: Boolean; ASPE_TIMEOUT: Byte = 0;
       const ASPE_PANMASK_LLRR: String = ''); overload;
-    procedure DEX(const DEX_MSG: String);
-    procedure DSP(const DSP_MSG: String = '');
+    procedure DEX(const DEX_MSG: String = '');
+    procedure DSP(const DSP_MSG: String = ''); overload;
+    procedure DSP(const Line1: String; Line2: String); overload;
     function GCD(ASPE_MSGIDX: Word; ASPE_MINDIG: Byte = 0; ASPE_MAXDIG: Byte = 0;
       ASPE_TIMEOUT: Byte = 0): String; overload;
     function GCD(MSGIDX: TACBrAbecsMSGIDX; ASPE_TIMEOUT: Byte = 0): String; overload;
     function GKY: Integer;
     function MNU(ASPE_MNUOPT: array of String; ASPE_DSPMSG: String = '';
-      ASPE_TIMEOUT: Byte = 0): String;
-    procedure RMC(const RMC_MSG: String = '');
+      ASPE_TIMEOUT: Byte = 0): String; overload;
+    function MNU(ASPE_MNUOPT: TStrings; ASPE_DSPMSG: String = '';
+      ASPE_TIMEOUT: Byte = 0): String; overload;
+    procedure RMC(const RMC_MSG: String = ''); overload;
+    procedure RMC(const Line1: String; Line2: String); overload;
 
     // Multimidia Commands
     procedure MLI(const ASPE_MFNAME: String; const ASPE_MFINFO: AnsiString); overload;
@@ -638,9 +663,13 @@ type
     procedure LMF;
     procedure DMF(const ASPE_MFNAME: String); overload;
     procedure DMF(LIST_SPE_MFNAME: array of String); overload;
+    procedure DMF(LIST_SPE_MFNAME: TStrings); overload;
     procedure DSI(const ASPE_MFNAME: String);
 
     procedure LoadMedia(const ASPE_MFNAME: String; ASPE_DATAIN: TStream; MediaType: TACBrAbecsPinPadMediaType);
+    function FormatSPE_MFNAME(const ASPE_MFNAME: String): String;
+    function FormatSPE_DSPMSG(const ASPE_DSPMSG: String): String;
+    function FormatMSG_S32(const AMSG: String): String;
   published
     property Device: TACBrDevice read fDevice;
     property Port: String read GetPort write SetPort;
@@ -651,6 +680,9 @@ type
     property LogLevel: Byte read fLogLevel write fLogLevel default 2;
     property LogTranslate: Boolean read fLogTranslate write fLogTranslate default True;
     property OnWriteLog: TACBrGravarLog read fOnWriteLog write fOnWriteLog;
+
+    property MsgAlign: TACBrAbecsMsgAlign read fMsgAlign write fMsgAlign default alCenter;
+    property MsgWordWrap: Boolean read fMsgWordWrap write fMsgWordWrap default True;
 
     property OnStartCommand: TNotifyEvent read fOnStartCommand write fOnStartCommand;
     property OnWaitForResponse: TACBrAbecsExecEvent read fOnWaitForResponse write fOnWaitForResponse;
@@ -665,6 +697,7 @@ implementation
 
 uses
   DateUtils, Math, TypInfo, StrUtils,
+  ACBrUtil.Base,
   ACBrUtil.FilesIO,
   ACBrUtil.Math,
   ACBrUtil.Strings,
@@ -774,6 +807,7 @@ begin
     PP_MODEL      : Result := 'PP_MODEL';
     PP_MNNAME     : Result := 'PP_MNNAME';
     PP_CAPAB      : Result := 'PP_CAPAB';
+    PP_SOVER      : Result := 'PP_SOVER';
     PP_SPECVER    : Result := 'PP_SPECVER';
     PP_MANVERS    : Result := 'PP_MANVERS';
     PP_APPVERS    : Result := 'PP_APPVERS';
@@ -1309,6 +1343,40 @@ begin
   end;
 end;
 
+procedure TACBrAbecsResponse.GetResponseFromTagValue(ATag: Word;
+  AStringList: TStrings);
+var
+  i: Integer;
+  tlvl: TACBrAbecsTLVList;
+begin
+  AStringList.Clear;
+  tlvl := TACBrAbecsTLVList.Create;
+  try
+    BlockListToTLVList(Blocks, tlvl);
+    for i := 0 to tlvl.Count-1 do
+      if (tlvl[i].ID = ATag) then
+        AStringList.Add(tlvl[i].Data);
+  finally
+    tlvl.Free;
+  end;
+end;
+
+procedure TACBrAbecsResponse.GetResponseAsValues(AStringList: TStrings);
+var
+  i: Integer;
+  tlvl: TACBrAbecsTLVList;
+begin
+  AStringList.Clear;
+  tlvl := TACBrAbecsTLVList.Create;
+  try
+    BlockListToTLVList(Blocks, tlvl);
+    for i := 0 to tlvl.Count-1 do
+      AStringList.Add(Format('%d=%s',[tlvl[i].ID,tlvl[i].Data]));
+  finally
+    tlvl.Free;
+  end;
+end;
+
 function TACBrAbecsResponse.GetAsString: AnsiString;
 begin
   Result := inherited GetAsString;
@@ -1374,16 +1442,16 @@ end;
 
 function TACBrAbecsPacket.GetAsString: AnsiString;
 begin
-  Result := chr(SYN) +
+  Result := AnsiChr(SYN) +
             DC3Substitution(fData) +
-            chr(ETB) +
-            CalcCRC(fData + chr(ETB));
+            AnsiChr(ETB) +
+            CalcCRC(fData + AnsiChr(ETB));
 end;
 
 procedure TACBrAbecsPacket.SetAsString(const AValue: AnsiString);
 var
   l: Integer;
-  s, crc: AnsiString;
+  s, crc1, crc2: AnsiString;
 begin
   l := Length(AValue);
   if (l < 7) then
@@ -1397,8 +1465,9 @@ begin
 
   s := copy(AValue, 2, l-4);
   s := DC3RevertSubstitution(s);
-  crc := copy(AValue, l-1, 2);
-  if (crc <> CalcCRC(s + chr(ETB))) then
+  crc1 := copy(AValue, l-1, 2);
+  crc2 := CalcCRC(s + AnsiChr(ETB));
+  if (crc1 <> crc2) then
     raise EACBrAbecsPinPadError.Create(CERR_INVCRC);
 
   fData := s;
@@ -1412,18 +1481,18 @@ end;
 function TACBrAbecsPacket.DC3Substitution(const AData: AnsiString): AnsiString;
 begin
   Result := AData;
-  Result := ReplaceString(Result, chr(DC3), chr(DC3)+'3');
-  Result := ReplaceString(Result, chr(SYN), chr(DC3)+'6');
-  Result := ReplaceString(Result, chr(ETB), chr(DC3)+'7');
+  Result := ReplaceString(Result, AnsiChr(DC3), AnsiChr(DC3)+'3');
+  Result := ReplaceString(Result, AnsiChr(SYN), AnsiChr(DC3)+'6');
+  Result := ReplaceString(Result, AnsiChr(ETB), AnsiChr(DC3)+'7');
 end;
 
 function TACBrAbecsPacket.DC3RevertSubstitution(const AData: AnsiString
   ): AnsiString;
 begin
   Result := AData;
-  Result := ReplaceString(Result, chr(DC3)+'7', chr(ETB));
-  Result := ReplaceString(Result, chr(DC3)+'6', chr(SYN));
-  Result := ReplaceString(Result, chr(DC3)+'3', chr(DC3));
+  Result := ReplaceString(Result, AnsiChr(DC3)+'7', AnsiChr(ETB));
+  Result := ReplaceString(Result, AnsiChr(DC3)+'6', AnsiChr(SYN));
+  Result := ReplaceString(Result, AnsiChr(DC3)+'3', AnsiChr(DC3));
 end;
 
 { TACBrAbecsPinPad }
@@ -1435,6 +1504,8 @@ begin
   fLogLevel := 2;
   fLogTranslate := True;
   fTimeOut := TIMEOUT_RSP;
+  fMsgAlign := alCenter;
+  fMsgWordWrap := True;
   fOnWriteLog := nil;
   fOnStartCommand := nil;
   fOnWaitForResponse := nil;
@@ -1456,6 +1527,10 @@ end;
 
 destructor TACBrAbecsPinPad.Destroy;
 begin
+  fOnWriteLog := nil;
+  fOnStartCommand := nil;
+  fOnEndCommand := nil;
+  fOnWaitForResponse := nil;
   Disable;
   fCommand.Free;
   fResponse.Free;
@@ -1471,10 +1546,31 @@ end;
 
 procedure TACBrAbecsPinPad.ClearCacheData;
 begin
-  fDSPTXTSZ.Cols := 0;
-  fDSPTXTSZ.Rows := 0;
-  fDSPGRSZ.Cols := 0;
-  fDSPGRSZ.Rows := 0;
+  with fPinPadCapabilities do
+  begin
+    PartNumber := '';
+    SerialNumber := '';
+    Model := '';
+    Manufacturer := '';
+    Memory := '';
+    SupportContactless := False;
+    DisplayIsGraphic := False;
+    DisplayIsColor := False;
+    SpecificationVersion := 0;
+    MediaPNGisSupported := False;
+    MediaJPGisSupported := False;
+    MediaGIFisSupported := False;
+    with DisplayTextModeDimensions do
+    begin
+      Rows := 0;
+      Cols := 0;
+    end;
+    with DisplayGraphicPixels do
+    begin
+      Rows := 0;
+      Cols := 0;
+    end;
+  end;
 end;
 
 procedure TACBrAbecsPinPad.LogApplicationLayer(AApplicationLayer: TACBrAbecsApplicationLayer);
@@ -1518,21 +1614,62 @@ begin
   end;
 end;
 
-procedure TACBrAbecsPinPad.GetPinPadSpecs;
+function TACBrAbecsPinPad.GetPinPadCapabilities: TACBrAbecsPinPadCapabilities;
 var
   s: String;
+  p: Integer;
 begin
-  if (fDSPTXTSZ.Rows <> 0) then
-    Exit;
+  if (fPinPadCapabilities.SerialNumber = '') then
+  begin
+    ClearCacheData;
 
-  GIX([PP_DSPTXTSZ, PP_DSPGRSZ]);
-  s := fResponse.GetResponseFromTagValue(PP_DSPTXTSZ);
-  fDSPTXTSZ.Rows := StrToInt(copy(s,1,2));
-  fDSPTXTSZ.Cols := StrToInt(copy(s,3,2));
+    if (Self.LogLevel > 1) then
+      RegisterLog('- GetPinPadCapabilities');
 
-  s := fResponse.GetResponseFromTagValue(PP_DSPGRSZ);
-  fDSPGRSZ.Rows := StrToInt(copy(s,1,4));
-  fDSPGRSZ.Cols := StrToInt(copy(s,5,4));
+    GIX([PP_SERNUM, PP_PARTNBR, PP_MODEL, PP_MNNAME, PP_CAPAB, PP_SPECVER, PP_DSPTXTSZ, PP_DSPGRSZ, PP_MFSUP]);
+
+    with fPinPadCapabilities do
+    begin
+      SerialNumber := Trim(fResponse.GetResponseFromTagValue(PP_SERNUM));
+      PartNumber := Trim(fResponse.GetResponseFromTagValue(PP_PARTNBR));
+
+      s := Trim(fResponse.GetResponseFromTagValue(PP_MODEL));
+      p := Pos(';', s+';');
+      Model := copy(s, 1, p-1);
+      Memory := copy(s, p+1, Length(s));
+      Manufacturer := Trim(fResponse.GetResponseFromTagValue(PP_MNNAME));
+
+      s := PadRight(Trim(fResponse.GetResponseFromTagValue(PP_CAPAB)), 10, '0');
+      SupportContactless := (s[1] = '1');
+      p := StrToIntDef(s[2], 0);
+      DisplayIsGraphic := (p > 0);
+      DisplayIsColor := (p > 1);
+
+      s := Trim(fResponse.GetResponseFromTagValue(PP_SPECVER));
+      SpecificationVersion := StringToFloatDef(s, 0);
+
+      s := Trim(fResponse.GetResponseFromTagValue(PP_DSPTXTSZ));
+      with DisplayTextModeDimensions do
+      begin
+        Rows := StrToIntDef(copy(s, 1, 2), 0);
+        Cols := StrToIntDef(copy(s, 3, 2), 0);
+      end;
+
+      s := Trim(fResponse.GetResponseFromTagValue(PP_DSPGRSZ));
+      with DisplayGraphicPixels do
+      begin
+        Rows := StrToIntDef(copy(s, 1, 4), 0);
+        Cols := StrToIntDef(copy(s, 5, 4), 0);
+      end;
+
+      s := Trim(fResponse.GetResponseFromTagValue(PP_MFSUP));
+      MediaPNGisSupported := (copy(s, 1, 1) = '1');
+      MediaJPGisSupported := (copy(s, 2, 1) = '1');
+      MediaGIFisSupported := (copy(s, 3, 1) = '1');
+    end;
+  end;
+
+  Result := fPinPadCapabilities;
 end;
 
 function TACBrAbecsPinPad.GetIsEnabled: Boolean;
@@ -1566,38 +1703,43 @@ end;
 
 function TACBrAbecsPinPad.FormatSPE_DSPMSG(const ASPE_DSPMSG: String): String;
 begin
-  Result := FormatMSG(ASPE_DSPMSG, fDSPTXTSZ.Cols, fDSPTXTSZ.Rows);
+  with fPinPadCapabilities.DisplayTextModeDimensions do
+    Result := FormatMSG(ASPE_DSPMSG, Cols, Rows);
 end;
 
 function TACBrAbecsPinPad.FormatMSG_S32(const AMSG: String): String;
 begin
-  Result := FormatMSG(AMSG, 16, 2, 3);
+  Result := FormatMSG(AMSG, 16, 2);
   Result := ReplaceString(Result, CR, '');
 end;
 
 function TACBrAbecsPinPad.FormatMSG(const AMSG: String; MaxCols: Integer;
-  MaxLines: Integer; Pad: Byte): String;
+  MaxLines: Integer): String;
 var
   s: String;
   sl: TStringList;
   i, r: Integer;
 begin
   Result := '';
-  s := ReplaceString(AMSG, CR, LF);
-  s := QuebraLinhas(s, MaxCols);
+  s := ReplaceString(AMSG, CR+LF, LF);
+  s := ReplaceString(s, CR, LF);
+  if fMsgWordWrap then
+    s := QuebraLinhas(s, MaxCols);
+
   sl := TStringList.Create;
   try
     sl.Text := s;
     r := min(sl.Count-1, MaxLines);
     for i := 0 to r do
     begin
-      s := sl[i];
-      if (Pad = 1) then
-        s:= PadRight(s, MaxCols)
-      else if (Pad = 2) then
-        s:= PadLeft(s, MaxCols)
-      else if (Pad = 3) then
-        s:= PadCenter(s, MaxCols);
+      s := Trim(sl[i]);
+      case Self.MsgAlign of
+        alLeft: s := PadRight(s, MaxCols);
+        alRight: s := PadLeft(s, MaxCols);
+        alCenter: s:= PadCenter(s, MaxCols);
+      else
+        s := sl[i];
+      end;
 
       Result := Result + s + CR;
     end;
@@ -1606,6 +1748,11 @@ begin
   end;
 
   Result := NativeStringToAnsi(Result);
+end;
+
+function TACBrAbecsPinPad.FormatSPE_MFNAME(const ASPE_MFNAME: String): String;
+begin
+  Result := PadRight(UpperCase(OnlyAlphaNum(ASPE_MFNAME)), 8);
 end;
 
 function TACBrAbecsPinPad.GetPort: String;
@@ -1823,7 +1970,7 @@ procedure TACBrAbecsPinPad.WaitForResponse;
       if not fCommand.IsBlocking then
       begin
         if (Now > TimeToTimeOut) then
-          DoException(CERR_TIMEOUT_RSP);
+          DoException(EACBrAbecsPinPadTimeout.Create(CERR_TIMEOUT_RSP));
       end
       else
       begin
@@ -1870,7 +2017,7 @@ procedure TACBrAbecsPinPad.WaitForResponse;
       if (b <> ETB) then
       begin
         if (Length(Result) < MAX_PACKET_SIZE) then
-          Result := Result + chr(b)
+          Result := Result + AnsiChr(b)
         else
           DoException(CERR_DATAPACKET_TO_LARGE);
       end;
@@ -1906,7 +2053,7 @@ begin
           RegisterLog(Format('    CRC: %s', [CRCData]));
 
         // TACBrAbecsPacket.AsString Setter checks for CRC and raise Exception on error
-        pkt.AsString := chr(SYN) + PktData + chr(ETB) + CRCData;
+        pkt.AsString := AnsiChr(SYN) + PktData + AnsiChr(ETB) + CRCData;
         Done := True;
       except
         on E: Exception do
@@ -1939,12 +2086,18 @@ begin
 end;
 
 procedure TACBrAbecsPinPad.EvaluateResponse;
+var
+  s: String;
 begin
   if (Self.LogLevel > 2) then
     RegisterLog(Format('  EvaluateResponse: %d', [fResponse.STAT]));
 
+  s := Format('Error: %d - %s', [fResponse.STAT, ReturnStatusCodeDescription(fResponse.STAT)]);
+  if (fResponse.STAT = ST_TIMEOUT) then
+    DoException(EACBrAbecsPinPadTimeout.Create(s));
+
   if (fResponse.STAT <> ST_OK) then
-    DoException(Format('Error: %d - %s', [fResponse.STAT, ReturnStatusCodeDescription(fResponse.STAT)]));
+    DoException(s);
 end;
 
 procedure TACBrAbecsPinPad.CancelWaiting;
@@ -1961,14 +2114,17 @@ begin
   fCommand.Clear;
   fCommand.ID := 'OPN';
   ExecCommand;
-  GetPinPadSpecs;
+  GetPinPadCapabilities;
 end;
 
 procedure TACBrAbecsPinPad.OPN(const OPN_MOD: String; const OPN_EXP: String);
-var
-  LenMod, LenExp: Integer;
-  CRKSEC: String;
+//var
+//  LenMod, LenExp: Integer;
+//  CRKSEC: String;
 begin
+  DoException(Format(CERR_NOT_IMPLEMENTED, ['OPN Secure']));
+
+{
   if (Self.LogLevel > 0) then
     RegisterLog('OPN( '+OPN_MOD+', '+OPN_EXP+' )');
   LenMod := Trunc(Length(OPN_MOD)/2);
@@ -1999,7 +2155,8 @@ begin
 
   CRKSEC := fResponse.GetResponseData;
   //TODO: A LOT OF TO DO....
-  GetPinPadSpecs;
+  GetPinPadCapabilities;
+}
 end;
 
 procedure TACBrAbecsPinPad.GIN(const GIN_ACQIDX: Byte);
@@ -2056,13 +2213,18 @@ begin
   ClearCacheData;
 end;
 
+procedure TACBrAbecsPinPad.CLO(const Line1: String; Line2: String);
+begin
+  CLO( Line1 + CR + Line2);
+end;
+
 procedure TACBrAbecsPinPad.CLX(const SPE_DSPMSG_or_SPE_MFNAME: String);
 var
   s: String;
   l: Word;
   ls: Integer;
 begin
-  GetPinPadSpecs;
+  GetPinPadCapabilities;
   if (Self.LogLevel > 0) then
     RegisterLog('CLX( '+SPE_DSPMSG_or_SPE_MFNAME+' )');
   fCommand.Clear;
@@ -2097,14 +2259,18 @@ begin
     RegisterLog(Format('CEX( %s, %d, %s )',[ASPE_CEXOPT, ASPE_TIMEOUT, ASPE_PANMASK_LLRR]));
   fCommand.Clear;
   fCommand.ID := 'CEX';
+  fCommand.IsBlocking := True;
   s := trim(ASPE_CEXOPT);
   l := Length(s);
   if (l <> 6) or (not StrIsNumber(s)) then
     DoException(Format(CERR_INVALID_PARAM, ['SPE_CEXOPT']));
 
+  if (StrToIntDef(s,0) = 0) then
+    DoException(Format(CERR_INVALID_PARAM, ['SPE_CEXOPT']));
+
   fCommand.AddParamFromTagValue(SPE_CEXOPT, s);
   if (ASPE_TIMEOUT > 0) then
-    fCommand.AddParamFromTagValue(SPE_TIMEOUT, chr(ASPE_TIMEOUT));
+    fCommand.AddParamFromTagValue(SPE_TIMEOUT, AnsiChr(ASPE_TIMEOUT));
 
   if (ASPE_PANMASK_LLRR <> '') then
   begin
@@ -2149,7 +2315,7 @@ var
   s: String;
   l: Integer;
 begin
-  GetPinPadSpecs;
+  GetPinPadCapabilities;
   if (Self.LogLevel > 0) then
     RegisterLog('DEX( '+DEX_MSG+' )');
   fCommand.Clear;
@@ -2171,6 +2337,11 @@ begin
   ExecCommand;
 end;
 
+procedure TACBrAbecsPinPad.DSP(const Line1: String; Line2: String);
+begin
+  DSP(Line1 + CR + Line2);
+end;
+
 function TACBrAbecsPinPad.GCD(ASPE_MSGIDX: Word; ASPE_MINDIG: Byte;
   ASPE_MAXDIG: Byte; ASPE_TIMEOUT: Byte): String;
 begin
@@ -2182,11 +2353,11 @@ begin
   fCommand.IsBlocking := True;
   fCommand.AddParamFromTagValue(SPE_MSGIDX, IntToBEStr(ASPE_MSGIDX, 2));
   if (ASPE_MINDIG > 0) then
-    fCommand.AddParamFromTagValue(SPE_MINDIG, chr(ASPE_MINDIG));
+    fCommand.AddParamFromTagValue(SPE_MINDIG, AnsiChr(ASPE_MINDIG));
   if (ASPE_MAXDIG > 0) then
-    fCommand.AddParamFromTagValue(SPE_MAXDIG, chr(ASPE_MAXDIG));
+    fCommand.AddParamFromTagValue(SPE_MAXDIG, AnsiChr(ASPE_MAXDIG));
   if (ASPE_TIMEOUT > 0) then
-    fCommand.AddParamFromTagValue(SPE_TIMEOUT, chr(ASPE_TIMEOUT));
+    fCommand.AddParamFromTagValue(SPE_TIMEOUT, AnsiChr(ASPE_TIMEOUT));
 
   ExecCommand;
   Result := fResponse.GetResponseFromTagValue(PP_VALUE);
@@ -2282,7 +2453,8 @@ var
   s: String;
   i: Integer;
 begin
-  GetPinPadSpecs;
+  Result := '';
+  GetPinPadCapabilities;
   if (Self.LogLevel > 0) then
   begin
     s := '';
@@ -2295,7 +2467,7 @@ begin
   fCommand.ID := 'MNU';
   fCommand.IsBlocking := True;
   if (ASPE_TIMEOUT > 0) then
-    fCommand.AddParamFromTagValue(SPE_TIMEOUT, chr(ASPE_TIMEOUT));
+    fCommand.AddParamFromTagValue(SPE_TIMEOUT, AnsiChr(ASPE_TIMEOUT));
   fCommand.AddParamFromTagValue(SPE_DSPMSG, FormatSPE_DSPMSG(ASPE_DSPMSG));
   for i := Low(ASPE_MNUOPT) to High(ASPE_MNUOPT) do
   begin
@@ -2304,6 +2476,22 @@ begin
   end;
   ExecCommand;
   Result := fResponse.GetResponseFromTagValue(PP_VALUE);
+end;
+
+function TACBrAbecsPinPad.MNU(ASPE_MNUOPT: TStrings; ASPE_DSPMSG: String;
+  ASPE_TIMEOUT: Byte): String;
+var
+  i: Integer;
+  Options: array of String;
+begin
+  Result := '';
+  for i := 0 to ASPE_MNUOPT.Count-1 do
+  begin
+    SetLength(Options, i+1);
+    Options[i] := ASPE_MNUOPT[i];
+  end;
+
+  Result := MNU(Options, ASPE_DSPMSG, ASPE_TIMEOUT);
 end;
 
 procedure TACBrAbecsPinPad.RMC(const RMC_MSG: String);
@@ -2317,6 +2505,11 @@ begin
   ExecCommand;
 end;
 
+procedure TACBrAbecsPinPad.RMC(const Line1: String; Line2: String);
+begin
+  RMC( Line1 + CR + Line2);
+end;
+
 procedure TACBrAbecsPinPad.MLI(const ASPE_MFNAME: String;
   const ASPE_MFINFO: AnsiString);
 var
@@ -2325,16 +2518,14 @@ var
 begin
   if (Self.LogLevel > 0) then
     RegisterLog('MLI( '+ASPE_MFNAME+', '+ASPE_MFINFO+' )');
-  s := trim(ASPE_MFNAME);
+  s := FormatSPE_MFNAME(ASPE_MFNAME);
   l := Length(s);
-  if (l = 0) or (l > 8) or (not StrIsAlphaNum(s)) then
+  if (l = 0) then
     DoException(CERR_SPE_MFNAME);
 
   l := Length(ASPE_MFINFO);
   if (l <> 10) then
     DoException(CERR_SPE_MFINFO);
-
-  s := PadRight(s, 8);
 
   fCommand.Clear;
   fCommand.ID := 'MLI';
@@ -2350,7 +2541,7 @@ var
 begin
   if (Self.LogLevel > 0) then
     RegisterLog('MLI( '+ASPE_MFNAME+', '+IntToStr(FileSize)+', '+IntToStr(CRC)+', '+IntToStr(FileType)+' )');
-  ASPE_MFINFO := IntToBEStr(FileSize, 4) + IntToBEStr(CRC, 2) + chr(FileType) + #0#0#0;
+  ASPE_MFINFO := IntToBEStr(FileSize, 4) + IntToBEStr(CRC, 2) + AnsiChr(FileType) + #0#0#0;
   MLI(ASPE_MFNAME, ASPE_MFINFO);
 end;
 
@@ -2388,7 +2579,7 @@ begin
     RegisterLog('DMF( '+ASPE_MFNAME+' )');
   fCommand.Clear;
   fCommand.ID := 'DMF';
-  fCommand.AddParamFromTagValue(SPE_MFNAME, ASPE_MFNAME);
+  fCommand.AddParamFromTagValue(SPE_MFNAME, FormatSPE_MFNAME(ASPE_MFNAME));
   ExecCommand;
 end;
 
@@ -2407,8 +2598,22 @@ begin
   fCommand.Clear;
   fCommand.ID := 'DMF';
   for i := Low(LIST_SPE_MFNAME) to High(LIST_SPE_MFNAME) do
-    fCommand.AddParamFromTagValue(SPE_MFNAME, LIST_SPE_MFNAME[i]);
+    fCommand.AddParamFromTagValue(SPE_MFNAME, FormatSPE_MFNAME(LIST_SPE_MFNAME[i]));
   ExecCommand;
+end;
+
+procedure TACBrAbecsPinPad.DMF(LIST_SPE_MFNAME: TStrings);
+var
+  i: Integer;
+  Medias: array of String;
+begin
+  for i := 0 to LIST_SPE_MFNAME.Count-1 do
+  begin
+    SetLength(Medias, i+1);
+    Medias[i] := LIST_SPE_MFNAME[i];
+  end;
+
+  DMF(Medias);
 end;
 
 procedure TACBrAbecsPinPad.DSI(const ASPE_MFNAME: String);
@@ -2417,7 +2622,7 @@ begin
     RegisterLog('DSI( '+ASPE_MFNAME+' )');
   fCommand.Clear;
   fCommand.ID := 'DSI';
-  fCommand.AddParamFromTagValue(SPE_MFNAME, ASPE_MFNAME);
+  fCommand.AddParamFromTagValue(SPE_MFNAME, FormatSPE_MFNAME(ASPE_MFNAME));
   ExecCommand;
 end;
 

@@ -42,6 +42,40 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+14/02/2024
+-- Diversos --
+[*] Realizado diversos ajustes para poder usar a nova unit: ACBrDFeComum.RetEnvio
+    e outras diversas correções.
+    Remoção da unit ACBrNF3eRetEnv e renomeado a unit ACBrNF3eEvento para
+    ACBrNF3eEventoClass.
+  Por: Italo Giurizzato Junior
+
+13/02/2024
+-- ACBrNF3eWebServices/ACBrNFe3Class/ACBrNF3eXmlReader/
+   ACBrNF3eXmlWriter/ACBrNF3eRetConsSit --
+[*] Refactoring visando a utilizar as units: ACBrDFeComum.Proc.
+-- ACBrNF3eEnvEvento --
+[-] Correção pois a variável de indice não estava sendo inicializada corretamente.
+-- ACBrNF3eProc/ACBrDFeConsStatServ/ACBrDFeDistDFeInt/
+   ACBrDFeRetConsStatServ/ACBrDFeRetDistDFeInt --
+[*] As units acima foram removidas, pois agora vai usar as units 
+    ACBrDFeComum.Proc, ACBrDFeComum.ConsStatServ, ACBrDFeComum.DistDFeInt,
+    ACBrDFeComum.RetConsStatServ, ACBrDFeComum.RetDistDFeInt.
+  Por: Italo Giurizzato Junior
+
+09/02/2024
+-- Diversos --
+[*] Refactoring visando deixar de usar a unit pcnAuxiliar.
+  Por: Italo Giurizzato Junior
+
+02/02/2024
+-- ACBrNF3e/ACBrNF3eWebServices --
+[*] Compatibilização com o D7 e outros ajustes.
+  Por: Italo Giurizzato Junior
+-- Diversos --
+[*] Refactoring visando deixar de usar a unit pcnConsts.
+  Por: Italo Giurizzato Junior
+
 20/10/2022
 -- ACBrNF3eNotasFiscais/ACBrNF3eXmlReader --
 [*] Ajustes para a leitura correta do XML.

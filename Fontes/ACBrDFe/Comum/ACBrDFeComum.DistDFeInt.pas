@@ -3,7 +3,7 @@
 {  Biblioteca multiplataforma de componentes Delphi para interação com equipa- }
 { mentos de Automação Comercial utilizados no Brasil                           }
 {                                                                              }
-{ Direitos Autorais Reservados (c) 2022 Daniel Simoes de Almeida               }
+{ Direitos Autorais Reservados (c) 2024 Daniel Simoes de Almeida               }
 {                                                                              }
 { Colaboradores nesse arquivo: Italo Giurizzato Junior                         }
 {                                                                              }
@@ -32,12 +32,13 @@
 
 {$I ACBr.inc}
 
-unit ACBrDFeDistDFeInt;
+unit ACBrDFeComum.DistDFeInt;
 
 interface
 
 uses
-  SysUtils, Classes, pcnConversao, pcnGerador, pcnConsts;
+  SysUtils, Classes,
+  pcnConversao;
 
 type
 
@@ -45,60 +46,60 @@ type
 
   TDistDFeInt = class
   private
-    FGerador: TGerador;
     FtpAmb: TpcnTipoAmbiente;
     FcUFAutor: Integer;
-    FCNPJCPF: String;
-    FultNSU: String;
-    FNSU: String;
-    FChave: String;
+    FCNPJCPF: string;
+    FultNSU: string;
+    FNSU: string;
+    FChave: string;
 
-    FVersao: String;
-    FNameSpace: String;
-    FtagGrupoMsg: String;
-    FtagconsChDFe: String;
-    FtagchDFe: String;
-    FGerarcUFAutor: Boolean;
+    FpVersao: string;
+    FpNameSpace: string;
+    FptagGrupoMsg: string;
+    FptagconsChDFe: string;
+    FptagchDFe: string;
+    FpGerarcUFAutor: Boolean;
   public
-    constructor Create(const AVersao, ANameSpace, AtagGrupoMsg, AtagconsChDFe, AtagchDFe: String; AGerarcUFAutor: Boolean);
+    constructor Create(const AVersao, ANameSpace, AtagGrupoMsg, AtagconsChDFe,
+      AtagchDFe: string; AGerarcUFAutor: Boolean);
     destructor Destroy; override;
-    function GerarXML: boolean;
+
+    function GerarXML: string;
     function ObterNomeArquivo: string;
-    property Gerador: TGerador       read FGerador  write FGerador;
+
     property tpAmb: TpcnTipoAmbiente read FtpAmb    write FtpAmb;
     property cUFAutor: Integer       read FcUFAutor write FcUFAutor;
-    property CNPJCPF: String         read FCNPJCPF  write FCNPJCPF;
-    property ultNSU: String          read FultNSU   write FultNSU;
+    property CNPJCPF: string         read FCNPJCPF  write FCNPJCPF;
+    property ultNSU: string          read FultNSU   write FultNSU;
     // Usado no Grupo de informações para consultar um DF-e a partir de um
     // NSU específico.
-    property NSU: String             read FNSU      write FNSU;
+    property NSU: string             read FNSU      write FNSU;
     // Usado no Grupo de informações para consultar um DF-e a partir de uma
     // chave específica.
-    property Chave: String           read FChave    write FChave;
+    property Chave: string           read FChave    write FChave;
   end;
 
 implementation
 
 uses
-  pcnAuxiliar;
+  ACBrDFeConsts,
+  ACBrUtil.Strings;
 
 { TDistDFeInt }
 
 constructor TDistDFeInt.Create(const AVersao, ANameSpace, AtagGrupoMsg,
-  AtagconsChDFe, AtagchDFe: String; AGerarcUFAutor: Boolean);
+  AtagconsChDFe, AtagchDFe: string; AGerarcUFAutor: Boolean);
 begin
-  FGerador := TGerador.Create;
-  FVersao := AVersao;
-  FNameSpace := ANameSpace;
-  FtagGrupoMsg := AtagGrupoMsg;
-  FtagconsChDFe := AtagconsChDFe;
-  FtagchDFe := AtagchDFe;
-  FGerarcUFAutor := AGerarcUFAutor;
+  FpVersao := AVersao;
+  FpNameSpace := ANameSpace;
+  FptagGrupoMsg := AtagGrupoMsg;
+  FptagconsChDFe := AtagconsChDFe;
+  FptagchDFe := AtagchDFe;
+  FpGerarcUFAutor := AGerarcUFAutor;
 end;
 
 destructor TDistDFeInt.Destroy;
 begin
-  FGerador.Free;
 
   inherited;
 end;
@@ -112,61 +113,62 @@ begin
   Datahora := now;
   DecodeTime(DataHora, Hour, Min, Sec, Milli);
   DecodeDate(DataHora, Year, Month, Day);
-  AAAAMMDDTHHMMSS := IntToStrZero(Year, 4) + IntToStrZero(Month, 2) + IntToStrZero(Day, 2) +
-    IntToStrZero(Hour, 2) + IntToStrZero(Min, 2) + IntToStrZero(Sec, 2);
+  AAAAMMDDTHHMMSS := Poem_Zeros(Year, 4) + Poem_Zeros(Month, 2) + Poem_Zeros(Day, 2) +
+    Poem_Zeros(Hour, 2) + Poem_Zeros(Min, 2) + Poem_Zeros(Sec, 2);
   Result := AAAAMMDDTHHMMSS + '-con-dist-dfe.xml';
 end;
 
-function TDistDFeInt.GerarXML: boolean;
+function TDistDFeInt.GerarXML: string;
 var
- sNSU: String;
+ sNSU, sTagGrupoMsgIni, sTagGrupoMsgFim,
+ xUFAutor, xDoc, xConsulta: string;
 begin
-  Gerador.ArquivoFormatoXML := '';
+  sTagGrupoMsgIni := '';
+  sTagGrupoMsgFim := '';
+  xUFAutor := '';
 
-  if FtagGrupoMsg <> '' then
-    Gerador.wGrupo(FtagGrupoMsg);
-
-  Gerador.wGrupo('distDFeInt ' + FNameSpace + ' versao="' + FVersao + '"');
-  Gerador.wCampo(tcStr, 'A03', 'tpAmb   ', 01, 01, 1, tpAmbToStr(FtpAmb), DSC_TPAMB);
-
-  if FGerarcUFAutor then
-    Gerador.wCampo(tcInt, 'A04', 'cUFAutor', 02, 02, 0, FcUFAutor, DSC_UF);
-
-  Gerador.wCampoCNPJCPF('A05', 'A06', FCNPJCPF);
-
-  if FNSU = '' then
+  if FptagGrupoMsg <> '' then
   begin
-    if FChave = '' then
+    sTagGrupoMsgIni := '<' + FptagGrupoMsg + '>';
+    sTagGrupoMsgFim := '</' + FptagGrupoMsg + '>';
+  end;
+
+  if FpGerarcUFAutor then
+    xUFAutor := '<cUFAutor>' + IntToStr(cUFAutor) + '</cUFAutor>';
+
+  if Length(CNPJCPF) = 14 then
+    xDoc := '<CNPJ>' + CNPJCPF + '</CNPJ>'
+  else
+    xDoc := '<CPF>' + CNPJCPF + '</CPF>';
+
+  if NSU = '' then
+  begin
+    if Chave = '' then
     begin
-      sNSU := IntToStrZero(StrToIntDef(FultNSU,0),15);
-      Gerador.wGrupo('distNSU');
-      Gerador.wCampo(tcStr, 'A08', 'ultNSU', 01, 15, 1, sNSU, DSC_ULTNSU);
-      Gerador.wGrupo('/distNSU');
+      sNSU := Poem_Zeros(StrToIntDef(ultNSU, 0), 15);
+      xConsulta := '<distNSU>' + '<ultNSU>' + sNSU + '</ultNSU>' + '</distNSU>';
     end
-    else begin
-      Gerador.wGrupo(FtagconsChDFe);
-      Gerador.wCampo(tcStr, 'A12', FtagchDFe, 44, 44, 1, FChave, DSC_CHAVE);
-
-      if not ValidarChave(FChave) then
-        Gerador.wAlerta('A12', FtagchDFe, '', 'Chave do DFe inválida');
-
-      Gerador.wGrupo('/' + FtagconsChDFe);
+    else
+    begin
+      xConsulta := '<' + FptagconsChDFe +'>' +
+                     '<' + FptagchDFe + '>' + Chave + '</' + FptagchDFe + '>' +
+                   '</' + FptagconsChDFe + '>';
     end;
   end
   else
   begin
-    sNSU := IntToStrZero(StrToIntDef(FNSU,0),15);
-    Gerador.wGrupo('consNSU');
-    Gerador.wCampo(tcStr, 'A10', 'NSU', 01, 15, 1, sNSU, DSC_NSU);
-    Gerador.wGrupo('/consNSU');
+    sNSU := Poem_Zeros(StrToIntDef(NSU, 0), 15);
+    xConsulta := '<consNSU>' + '<NSU>' + sNSU + '</NSU>' + '</consNSU>';
   end;
 
-  Gerador.wGrupo('/distDFeInt');
-
-  if FtagGrupoMsg <> '' then
-    Gerador.wGrupo('/' + FtagGrupoMsg);
-
-  Result := (Gerador.ListaDeAlertas.Count = 0);
+  Result := sTagGrupoMsgIni +
+              '<distDFeInt ' + FpNameSpace + ' versao="' + FpVersao + '">' +
+                '<tpAmb>' + tpAmbToStr(tpAmb) + '</tpAmb>' +
+                xUFAutor +
+                xDoc +
+                xConsulta +
+              '</distDFeInt>' +
+            sTagGrupoMsgFim;
 end;
 
 end.

@@ -3,7 +3,7 @@
 {  Biblioteca multiplataforma de componentes Delphi para interação com equipa- }
 { mentos de Automação Comercial utilizados no Brasil                           }
 {                                                                              }
-{ Direitos Autorais Reservados (c) 2022 Daniel Simoes de Almeida               }
+{ Direitos Autorais Reservados (c) 2024 Daniel Simoes de Almeida               }
 {                                                                              }
 { Colaboradores nesse arquivo: Italo Giurizzato Junior                         }
 {                                                                              }
@@ -32,97 +32,111 @@
 
 {$I ACBr.inc}
 
-unit ACBrNF3eRetEnv;
+unit ACBrDFeComum.RetConsStatServ;
 
 interface
 
 uses
-  SysUtils, Classes, pcnConversao, pcnLeitor;
+  SysUtils, Classes,
+  {$IF DEFINED(HAS_SYSTEM_GENERICS)}
+   System.Generics.Collections, System.Generics.Defaults,
+  {$ELSEIF DEFINED(DELPHICOMPILER16_UP)}
+   System.Contnrs,
+  {$IFEND}
+  ACBrBase, ACBrXmlBase;
 
 type
 
-  TInfREC = class
+  TRetConsStatServ = class(TObject)
   private
-    FnRec: String;
+    Fversao: string;
+    FtpAmb: TACBrTipoAmbiente;
     FdhRecbto: TDateTime;
-    FtMed: Integer;
-  public
-    property nRec: String        read FnRec     write FnRec;
-    property dhRecbto: TDateTime read FdhRecbto write FdhRecbto;
-    property tMed: Integer       read FtMed     write FtMed;
-  end;
-
-  TretEnvNF3e = class(TObject)
-  private
-    Fversao: String;
-    FtpAmb: TpcnTipoAmbiente;
     FcStat: Integer;
-    FLeitor: TLeitor;
+    FxMotivo: string;
     FcUF: Integer;
-    FverAplic: String;
-    FxMotivo: String;
-    FinfRec: TInfREC;
+    FverAplic: string;
+    FtMed: Integer;
+    FdhRetorno: TDateTime;
+    FxObs: string;
+    FtagGrupoMsg: string;
+
+    FXmlRetorno: string;
   public
-    constructor Create;
+    constructor Create(const AtagGrupoMsg: string);
     destructor Destroy; override;
+
     function LerXml: Boolean;
 
-    property Leitor: TLeitor         read FLeitor   write FLeitor;
-    property versao: String          read Fversao    write Fversao;
-    property tpAmb: TpcnTipoAmbiente read FtpAmb    write FtpAmb;
-    property verAplic: String        read FverAplic write FverAplic;
-    property cStat: Integer          read FcStat    write FcStat;
-    property xMotivo: String         read FxMotivo  write FxMotivo;
-    property cUF: Integer            read FcUF      write FcUF;
-    property infRec: TInfREC         read FinfRec   write FinfRec;
+    property versao: string read Fversao write Fversao;
+    property tpAmb: TACBrTipoAmbiente read FtpAmb write FtpAmb;
+    property verAplic: string read FverAplic write FverAplic;
+    property cStat: Integer read FcStat write FcStat;
+    property xMotivo: string read FxMotivo write FxMotivo;
+    property cUF: Integer read FcUF write FcUF;
+    property dhRecbto: TDateTime read FdhRecbto write FdhRecbto;
+    property tMed: Integer read FtMed write FtMed;
+    property dhRetorno: TDateTime read FdhRetorno write FdhRetorno;
+    property xObs: string read FxObs write FxObs;
+
+    property XmlRetorno: string read FXmlRetorno write FXmlRetorno;
   end;
 
 implementation
 
-{ TretEnvNF3e }
+uses
+  ACBrUtil.Strings,
+  ACBrXmlDocument;
 
-constructor TretEnvNF3e.Create;
+{ TRetConsStatServ }
+
+constructor TRetConsStatServ.Create(const AtagGrupoMsg: string);
 begin
   inherited Create;
 
-  FLeitor := TLeitor.Create;
-  FinfRec := TInfREC.Create
+  FtagGrupoMsg := AtagGrupoMsg;
 end;
 
-destructor TretEnvNF3e.Destroy;
+destructor TRetConsStatServ.Destroy;
 begin
-  FLeitor.Free;
-  FinfRec.Free;
 
   inherited;
 end;
 
-function TretEnvNF3e.LerXml: Boolean;
+function TRetConsStatServ.LerXml: Boolean;
 var
+  Document: TACBrXmlDocument;
+  ANode: TACBrXmlNode;
   ok: Boolean;
 begin
-  result := False;
+  Document := TACBrXmlDocument.Create;
+
   try
-    Leitor.Grupo := Leitor.Arquivo;
+    try
+      Document.LoadFromXml(XmlRetorno);
 
-    if leitor.rExtrai(1, 'retEnviNF3e') <> '' then
-    begin
-      Fversao   := Leitor.rAtributo('versao');
-      FtpAmb    := StrToTpAmb(ok, Leitor.rCampo(tcStr, 'tpAmb'));
-      FcUF      := Leitor.rCampo(tcInt, 'cUF');
-      FverAplic := Leitor.rCampo(tcStr, 'verAplic');
-      FcStat    := Leitor.rCampo(tcInt, 'cStat');
-      FxMotivo  := Leitor.rCampo(tcStr, 'xMotivo');
+      ANode := Document.Root;
 
-      // Grupo infRec - Dados do Recibo do Lote (Só é gerado se o Lote for aceito)
-      infRec.nRec      := Leitor.rCampo(tcStr, 'nRec');
-      infRec.FdhRecbto := Leitor.rCampo(tcDatHor, 'dhRecbto');
-      infRec.FtMed     := Leitor.rCampo(tcInt, 'tMed');
-      
+      if ANode <> nil then
+      begin
+        versao := ObterConteudoTag(ANode.Attributes.Items['versao']);
+        tpAmb := StrToTipoAmbiente(ok, ObterConteudoTag(ANode.Childrens.FindAnyNs('tpAmb'), tcStr));
+        verAplic := ObterConteudoTag(ANode.Childrens.FindAnyNs('verAplic'), tcStr);
+        cStat := ObterConteudoTag(ANode.Childrens.FindAnyNs('cStat'), tcInt);
+        xMotivo := ACBrStr(ObterConteudoTag(ANode.Childrens.FindAnyNs('xMotivo'), tcStr));
+        cUF := ObterConteudoTag(ANode.Childrens.FindAnyNs('cUF'), tcInt);
+        dhRecbto := ObterConteudoTag(ANode.Childrens.FindAnyNs('dhRecbto'), tcDatHor);
+        tMed := ObterConteudoTag(ANode.Childrens.FindAnyNs('tMed'), tcInt);
+        dhRetorno := ObterConteudoTag(ANode.Childrens.FindAnyNs('dhRetorno'), tcDatHor);
+        xObs := ACBrStr(ObterConteudoTag(ANode.Childrens.FindAnyNs('xObs'), tcStr));
+      end;
+
       Result := True;
+    except
+      Result := False;
     end;
-  except
-    result := false;
+  finally
+    FreeAndNil(Document);
   end;
 end;
 
