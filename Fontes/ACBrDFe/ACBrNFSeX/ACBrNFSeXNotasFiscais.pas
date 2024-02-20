@@ -373,6 +373,8 @@ begin
 
         //Provedor Governa
         RegRec := StrToRegRec(Ok, INIRec.ReadString(sSecao, 'RegRec', ''));
+
+        InformacoesComplementares := INIRec.ReadString(sSecao, 'InformacoesComplementares', '');
       end;
 
       sSecao := 'RpsSubstituido';
@@ -567,6 +569,19 @@ begin
 
           // Provedor SoftPlan
           CFPS := INIRec.ReadString(sSecao, 'CFPS', '');
+
+          // Provedor Giap Informações sobre o Endereço da Prestação de Serviço
+          with Endereco do
+          begin
+            Bairro := INIRec.ReadString(sSecao, 'Bairro', '');
+            CEP := INIRec.ReadString(sSecao, 'CEP', '');
+            xMunicipio := INIRec.ReadString(sSecao, 'xMunicipio', '');
+            Complemento := INIRec.ReadString(sSecao, 'Complemento', '');
+            Endereco := INIRec.ReadString(sSecao, 'Logradouro', '');
+            Numero := INIRec.ReadString(sSecao, 'Numero', '');
+            xPais := INIRec.ReadString(sSecao, 'xPais', '');
+            UF := INIRec.ReadString(sSecao, 'UF', '');
+          end;
         end;
 
         i := 1;
@@ -638,6 +653,7 @@ begin
             CodMunPrestacao := INIRec.ReadString(sSecao, 'CodMunPrestacao', '');
             SituacaoTributaria := INIRec.ReadInteger(sSecao, 'SituacaoTributaria', 0);
             ValorISSRetido := StringToFloatDef(INIRec.ReadString(sSecao, 'ValorISSRetido', ''), 0);
+            ValorTributavel := StringToFloatDef(INIRec.ReadString(sSecao, 'ValorTributavel', ''), 0);
           end;
 
           Inc(i);
@@ -982,6 +998,8 @@ begin
 
       //Provedor Governa
       INIRec.WriteString(sSecao, 'RegRec', RegRecToStr(RegRec));
+
+      INIRec.WriteString(sSecao, 'InformacoesComplementares', InformacoesComplementares);
 
       if RpsSubstituido.Numero <> '' then
       begin

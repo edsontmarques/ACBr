@@ -171,6 +171,7 @@ type
     tsOpen: TTabSheet;
     ApplicationEvents1: TApplicationEvents;
     ImageList1: TImageList;
+    btDetectPinPad: TBitBtn;
     procedure ACBrAbecsPinPad1EndCommand(Sender: TObject);
     procedure ACBrAbecsPinPad1StartCommand(Sender: TObject);
     procedure ACBrAbecsPinPad1WaitForResponse(var Cancel: Boolean);
@@ -212,6 +213,7 @@ type
     procedure ApplicationEvents1Exception(Sender: TObject; E: Exception);
     procedure cbGIXAllClick(Sender: TObject);
     procedure cbMNUHotKeyClick(Sender: TObject);
+    procedure btDetectPinPadClick(Sender: TObject);
   protected
     function ConfigFileName: String;
     procedure SaveParams;
@@ -601,7 +603,8 @@ begin
   ConfigPanelsCommands(ACBrAbecsPinPad1.IsEnabled);
   if ACBrAbecsPinPad1.IsEnabled then
   begin
-    LoadMediaNames;
+    if (ACBrAbecsPinPad1.PinPadCapabilities.DisplayGraphicPixels.Rows > 0) then
+      LoadMediaNames;
     pgcCommands.ActivePageIndex := 1;
   end;
 end;
@@ -794,6 +797,48 @@ begin
   begin
     if (lbLMFMedias.Selected[i]) then
       ACBrAbecsPinPad1.DSI(lbLMFMedias.Items[i])
+  end;
+end;
+
+procedure TfrMain.btDetectPinPadClick(Sender: TObject);
+var
+  sl: TStringList;
+  PortFound: String;
+  i: Integer;
+begin
+  sl := TStringList.Create;
+  try
+    ACBrAbecsPinPad1.Device.AcharPortasSeriais( sl );
+    i := 0;
+    PortFound := '';
+    while (i < sl.Count) and (PortFound = '') do
+    begin
+      try
+        ACBrAbecsPinPad1.Disable;
+        ACBrAbecsPinPad1.Port := sl[i];
+        ACBrAbecsPinPad1.Enable;
+        try
+          ACBrAbecsPinPad1.OPN;
+          ACBrAbecsPinPad1.CLO;
+          PortFound := ACBrAbecsPinPad1.Port;
+        finally
+          ACBrAbecsPinPad1.Disable;
+        end;
+      except
+      end;
+      Inc(i);
+    end;
+
+    if (PortFound <> '') then
+    begin
+      ShowMessage('PinPad Found on '+PortFound);
+      cbxPort.Items.Assign(sl);
+      cbxPort.Text := PortFound;
+    end
+    else
+      ShowMessage('PinPad not Found');
+  finally
+    sl.Free;
   end;
 end;
 
