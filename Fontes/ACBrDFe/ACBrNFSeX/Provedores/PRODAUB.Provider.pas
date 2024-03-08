@@ -68,13 +68,14 @@ type
     function CriarLeitorXml(const ANFSe: TNFSe): TNFSeRClass; override;
     function CriarServiceClient(const AMetodo: TMetodo): TACBrNFSeXWebservice; override;
 
+    function SetIdSignatureValue(const ConteudoXml, docElement, IdAttr: string): string;  override;
   end;
 
 implementation
 
 uses
   ACBrUtil.XMLHTML, //ACBrUtil.Strings,
-  ACBrDFeException,
+  ACBrDFeException, ACBrDFeUtil,
   PRODAUB.GravarXml, PRODAUB.LerXml;
 
 { TACBrNFSeProviderPRODAUB204 }
@@ -106,7 +107,7 @@ begin
     ConsultarNFSeRps  := False;
     ConsultarNFSe     := False;
     CancelarNFSe      := False;
-    RpsGerarNFSe      := False;
+    RpsGerarNFSe      := True;
     LoteGerarNFSe     := False;
     RpsSubstituirNFSe := False;
     SubstituirNFSe    := False;
@@ -145,6 +146,23 @@ begin
     else
       raise EACBrDFeException.Create(ERR_SEM_URL_HOM);
   end;
+end;
+
+function TACBrNFSeProviderPRODAUB204.SetIdSignatureValue(const ConteudoXml,
+  docElement, IdAttr: string): string;
+var
+  URI: string;
+  i: Integer;
+begin
+  URI := EncontrarURI(ConteudoXml, docElement, IdAttr);
+
+  i := Pos('_', URI);
+  URI := Copy(URI, i + 1, Length(URI));
+
+  if ConfigAssinar.IdSignatureValue <> '' then
+    Result := ' Id="' + ConfigAssinar.IdSignatureValue + URI + '"'
+  else
+    Result := '';
 end;
 
 { TACBrNFSeXWebservicePRODAUB204 }
@@ -323,7 +341,7 @@ function TACBrNFSeXWebservicePRODAUB204.TratarXmlRetornado(
 begin
   Result := inherited TratarXmlRetornado(aXML);
 
-  Result := ParseText(AnsiString(Result), True, {$IfDef FPC}True{$Else}False{$EndIf});
+  Result := ParseText(Result);
   Result := RemoverDeclaracaoXML(Result);
   Result := RemoverPrefixosDesnecessarios(Result);
 end;

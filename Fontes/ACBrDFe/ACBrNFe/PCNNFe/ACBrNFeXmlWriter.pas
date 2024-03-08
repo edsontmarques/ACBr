@@ -53,7 +53,7 @@ type
     FForcarGerarTagRejeicao938: TForcarGeracaoTag;
     FForcarGerarTagRejeicao906: TForcarGeracaoTag;
 
-  published
+  public
     property AjustarTagNro: boolean read FAjustarTagNro write FAjustarTagNro;
     property GerarTagIPIparaNaoTributado: boolean read FGerarTagIPIparaNaoTributado write FGerarTagIPIparaNaoTributado;
     property NormatizarMunicipios: boolean read FNormatizarMunicipios write FNormatizarMunicipios;
@@ -408,13 +408,14 @@ var
   i: integer;
 begin
   Result := FDocument.CreateElement('ide');
+
   Result.AppendChild(AddNode(tcInt, 'B02', 'cUF', 02, 02, 1, NFe.ide.cUF, DSC_CUF));
 
   if not ValidarCodigoUF(NFe.ide.cUF) then
     wAlerta('B02', 'cUF', DSC_CUF, ERR_MSG_INVALIDO);
 
-  Result.AppendChild(AddNode(tcStr, 'B03', 'cNF', 08, 08, 1,
-    IntToStrZero(ExtrairCodigoChaveAcesso(NFe.infNFe.ID), 8), DSC_CDF));
+  Result.AppendChild(AddNode(tcInt, 'B03', 'cNF', 08, 08, 1,
+                                                         NFe.Ide.cNF, DSC_CDF));
   Result.AppendChild(AddNode(tcStr, 'B04', 'natOp', 01, 60, 1,
     NFe.ide.natOp, DSC_NATOP));
 
@@ -1003,7 +1004,7 @@ const
 var
   ErroValidarGTIN: string;
   nodeArray: TACBrXmlNodeArray;
-  j: integer;
+  j, idx: integer;
 begin
   Result := FDocument.CreateElement('prod');
   Result.AppendChild(AddNode(tcStr, 'I02', 'cProd', 01, 60, 1,
@@ -1057,6 +1058,18 @@ begin
     end;
     Result.AppendChild(AddNode(tcStr, 'I05f', 'cBenef', 08, 10, 0,
       NFe.Det[i].Prod.cBenef, DSC_CBENEF));
+
+    for idx := 0 to NFe.Det[i].Prod.CredPresumido.Count - 1 do
+    begin
+      Result.AppendChild(AddNode(tcStr, 'I05h', 'cCredPresumido', 8, 10, 1,
+        NFe.Det[i].Prod.CredPresumido[idx].cCredPresumido, DSC_CCREDPRESUMIDO));
+
+      Result.AppendChild(AddNode(FormatoValor4ou2, 'I05i', 'pCredPresumido', 1, IfThen(Usar_tcDe4, 07, 05), 1,
+        NFe.Det[i].Prod.CredPresumido[idx].pCredPresumido, DSC_PCREDPRESUMIDO));
+
+      Result.AppendChild(AddNode(tcDe2, 'I05j', 'vCredPresumido', 1, 15, 1,
+        NFe.Det[i].Prod.CredPresumido[idx].vCredPresumido, DSC_VCREDPRESUMIDO));
+    end;
   end
   else
     Result.AppendChild(AddNode(tcStr, 'I05w', 'CEST', 07, 07, 0,
@@ -1205,8 +1218,8 @@ begin
         01, 01, 1, TipoIntermedioToStr(NFe.Det[i].Prod.DI[j].tpIntermedio),
         DSC_TPINTERMEDIO));
 
-      Result[j].AppendChild(AddNode(tcStr, 'I23d', 'CNPJ',
-        14, 14, 0, NFe.Det[i].Prod.DI[j].CNPJ, DSC_CNPJ));
+      Result[j].AppendChild(AddNodeCNPJCPF('I23d', 'I23d1',
+        NFe.Det[i].Prod.DI[j].CNPJ, False));
 
       Result[j].AppendChild(AddNode(tcStr, 'I23e', 'UFTerceiro',
         02, 02, 0, NFe.Det[i].Prod.DI[j].UFTerceiro, DSC_UF));
@@ -2011,7 +2024,14 @@ begin
               xmlNode.AppendChild(AddNode(tcStr, 'N28', 'motDesICMS',
                 01, 02, 1, motDesICMSToStr(NFe.Det[i].Imposto.ICMS.motDesICMS),
                 DSC_MOTDESICMS));
+
+              if (NFe.infNFe.Versao >= 4) and (NFe.Det[i].Imposto.ICMS.indDeduzDeson = tiSim) then
+              begin
+                xmlNode.AppendChild(AddNode(tcStr, 'N28b', 'indDeduzDeson',
+                  1, 2, 1, '1'));
+              end;
             end;
+
           end;
           cst30:
           begin
@@ -2053,7 +2073,14 @@ begin
               xmlNode.AppendChild(AddNode(tcStr, 'N28', 'motDesICMS',
                 01, 02, 1, motDesICMSToStr(NFe.Det[i].Imposto.ICMS.motDesICMS),
                 DSC_MOTDESICMS));
+
+              if (NFe.infNFe.Versao >= 4) and (NFe.Det[i].Imposto.ICMS.indDeduzDeson = tiSim) then
+              begin
+                xmlNode.AppendChild(AddNode(tcStr, 'N28b', 'indDeduzDeson',
+                  1, 2, 1, '1'));
+              end;
             end;
+
           end;
           cst40,
           cst41,
@@ -2070,6 +2097,12 @@ begin
                 xmlNode.AppendChild(AddNode(tcStr, 'N13b',
                   'motDesICMS', 01, 02, 1, motDesICMSToStr(
                   NFe.Det[i].Imposto.ICMS.motDesICMS), DSC_MOTDESICMS));
+
+                if (NFe.infNFe.Versao >= 4) and (NFe.Det[i].Imposto.ICMS.indDeduzDeson = tiSim) then
+                begin
+                  xmlNode.AppendChild(AddNode(tcStr, 'N28b', 'indDeduzDeson',
+                    1, 2, 1, '1'));
+                end;
               end;
             end
             else
@@ -2092,6 +2125,9 @@ begin
             xmlNode.AppendChild(AddNode(FormatoValor4ou2,
               'N14', 'pRedBC', 01, IfThen(Usar_tcDe4, 07, 05), 0,
               NFe.Det[i].Imposto.ICMS.pRedBC, DSC_PREDBC));
+            xmlNode.AppendChild(AddNode(tcStr,
+              'N14a', 'cBenefRBC', 08, 10, 0,
+              NFe.Det[i].Imposto.ICMS.cBenefRBC, DSC_CBENEFRBC));
             xmlNode.AppendChild(AddNode(tcDe2, 'N15', 'vBC',
               01, 15, 0, NFe.Det[i].Imposto.ICMS.vBC, DSC_VBC));
             xmlNode.AppendChild(AddNode(FormatoValor4ou2,
@@ -2267,8 +2303,15 @@ begin
 
                 xmlNode.AppendChild(AddNode(tcStr, 'N33b', 'motDesICMSST', 01, 02, 1,
                   motDesICMSToStr(nfe.Det[i].Imposto.ICMS.motDesICMSST), DSC_MOTDESICMSST));
+
+                if (NFe.infNFe.Versao >= 4) and (NFe.Det[i].Imposto.ICMS.indDeduzDeson = tiSim) then
+                begin
+                  xmlNode.AppendChild(AddNode(tcStr, 'N28b', 'indDeduzDeson',
+                    1, 2, 1, '1'));
+                end;
               end;
             end;
+
           end;
           cst90,
           cstPart90:
@@ -2369,8 +2412,15 @@ begin
 
                 xmlNode.AppendChild(AddNode(tcStr, 'N33b', 'motDesICMSST', 01, 02, 1,
                   motDesICMSToStr(nfe.Det[i].Imposto.ICMS.motDesICMSST), DSC_MOTDESICMSST));
+
+                if (NFe.infNFe.Versao >= 4) and (NFe.Det[i].Imposto.ICMS.indDeduzDeson = tiSim) then
+                begin
+                  xmlNode.AppendChild(AddNode(tcStr, 'N28b', 'indDeduzDeson',
+                    1, 2, 1, '1'));
+                end;
               end;
             end;
+
           end;
           cstRep41,
           cstRep60:
@@ -3344,6 +3394,13 @@ begin
     xmlNode.AppendChild(AddNode(tcStr, 'YA02', 'tPag', 02, 02, 1, FormaPagamentoToStr(NFe.pag[i].tPag), DSC_TPAG));
     xmlNode.AppendChild(AddNode(tcStr, 'YA02a', 'xPag', 02, 60, 0, NFe.pag[i].xPag, DSC_XPAG));
     xmlNode.AppendChild(AddNode(tcDe2, 'YA03', 'vPag', 01, 15, 1, NFe.pag[i].vPag, DSC_VPAG));
+    xmlNode.AppendChild(AddNode(tcDat, 'YA03a', 'dPag', 10, 10, 0, NFe.pag[i].dPag, DSC_DPAG));
+
+    if (NFe.pag[i].CNPJPag <> '') or (NFe.pag[i].UFPag <> '') then
+    begin
+      xmlNode.AppendChild(AddNode(tcStr, 'YA03c', 'CNPJPag', 14, 14, 1, NFe.pag[i].CNPJPag, DSC_CNPJPAG));
+      xmlNode.AppendChild(AddNode(tcStr, 'YA03d', 'UFPag', 2, 2, 1, NFe.pag[i].UFPag, DSC_UFPAG));
+    end;
 
     if NFe.pag[i].tpIntegra <> tiNaoInformado then
     begin
@@ -3351,7 +3408,10 @@ begin
       xmlCardNode.AppendChild(AddNode(tcStr, 'YA04a', 'tpIntegra', 01, 01, 1, tpIntegraToStr(NFe.pag[i].tpIntegra), DSC_TPINTEGRA));
       xmlCardNode.AppendChild(AddNode(tcStr, 'YA05', 'CNPJ', 14, 14, 0, NFe.pag[i].CNPJ, DSC_CNPJ));
       xmlCardNode.AppendChild(AddNode(tcStr, 'YA06', 'tBand', 02, 02, 0, BandeiraCartaoToStr(NFe.pag[i].tBand), DSC_TBAND));
-      xmlCardNode.AppendChild(AddNode(tcStr, 'YA07', 'cAut', 01, 20, 0, NFe.pag[i].cAut, DSC_CAUT));
+      xmlCardNode.AppendChild(AddNode(tcStr, 'YA07', 'cAut', 01, 128, 0, NFe.pag[i].cAut, DSC_CAUT));
+
+      xmlCardNode.AppendChild(AddNode(tcStr, 'YA07a', 'CNPJReceb', 14, 14, 0, NFe.pag[i].CNPJReceb, DSC_CNPJRECEB));
+      xmlCardNode.AppendChild(AddNode(tcStr, 'YA07b', 'idTermPag', 0, 40, 0, NFe.pag[i].idTermPag, DSC_IDTERMPAG));
     end;
 
     if (NFe.infNFe.Versao >= 4) then

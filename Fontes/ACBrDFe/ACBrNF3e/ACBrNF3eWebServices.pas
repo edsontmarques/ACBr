@@ -39,17 +39,17 @@ interface
 uses
   Classes, SysUtils, dateutils,
   blcksock, synacode,
-  ACBrDFe, ACBrDFeWebService,
   ACBrXmlBase,
-  ACBrNF3eNotasFiscais, ACBrNF3eConfiguracoes,
-  ACBrNF3eClass, ACBrNF3eConversao,
-  ACBrNF3eEnvEvento, ACBrNF3eRetEnvEvento,
-  ACBrNF3eRetConsSit,
+  pcnConversao,
+  ACBrDFe, ACBrDFeWebService,
   ACBrDFeComum.RetConsReciDFe,
   ACBrDFeComum.Proc,
   ACBrDFeComum.RetEnvio,
-//  ACBrDFeComum.DistDFeInt, ACBrDFeComum.RetDistDFeInt,
-  pcnConversao;
+  ACBrDFeComum.DistDFeInt, ACBrDFeComum.RetDistDFeInt,
+  ACBrNF3eNotasFiscais, ACBrNF3eConfiguracoes,
+  ACBrNF3eClass, ACBrNF3eConversao,
+  ACBrNF3eEnvEvento, ACBrNF3eRetEnvEvento,
+  ACBrNF3eRetConsSit;
 
 type
 
@@ -359,9 +359,10 @@ type
   end;
 
   { TDistribuicaoDFe }
-(*
+
   TDistribuicaoDFe = class(TNF3eWebService)
   private
+    FOwner: TACBrDFe;
     FcUFAutor: integer;
     FCNPJCPF: String;
     FultNSU: String;
@@ -382,7 +383,8 @@ type
     function GerarMsgLog: String; override;
     function GerarMsgErro(E: Exception): String; override;
   public
-    constructor Create(AOwner: TACBrDFe); override;
+//    constructor Create(AOwner: TACBrDFe); override;
+    constructor Create(AOwner: TACBrDFe); reintroduce; overload;
     destructor Destroy; override;
     procedure Clear; override;
 
@@ -396,7 +398,7 @@ type
 
     property retDistDFeInt: TretDistDFeInt read FretDistDFeInt;
   end;
-*)
+
   { TNF3eEnvioWebService }
 
   TNF3eEnvioWebService = class(TNF3eWebService)
@@ -437,7 +439,7 @@ type
     FRecibo: TNF3eRecibo;
     FConsulta: TNF3eConsulta;
     FEnvEvento: TNF3eEnvEvento;
-//    FDistribuicaoDFe: TDistribuicaoDFe;
+    FDistribuicaoDFe: TDistribuicaoDFe;
     FEnvioWebService: TNF3eEnvioWebService;
   public
     constructor Create(AOwner: TACBrDFe); overload;
@@ -455,8 +457,8 @@ type
     property Recibo: TNF3eRecibo read FRecibo write FRecibo;
     property Consulta: TNF3eConsulta read FConsulta write FConsulta;
     property EnvEvento: TNF3eEnvEvento read FEnvEvento write FEnvEvento;
-//    property DistribuicaoDFe: TDistribuicaoDFe
-//      read FDistribuicaoDFe write FDistribuicaoDFe;
+    property DistribuicaoDFe: TDistribuicaoDFe
+      read FDistribuicaoDFe write FDistribuicaoDFe;
     property EnvioWebService: TNF3eEnvioWebService
       read FEnvioWebService write FEnvioWebService;
   end;
@@ -465,16 +467,16 @@ implementation
 
 uses
   StrUtils, Math,
-  ACBrDFeConsts,
-  ACBrDFeUtil,
   ACBrUtil.Base, ACBrUtil.XMLHTML, ACBrUtil.Strings, ACBrUtil.DateTime,
   ACBrUtil.FilesIO,
-  ACBrCompress, ACBrNF3e, ACBrIntegrador,
-  ACBrNF3eConsts,
-  ACBrNF3eConsSit,
-  pcnGerador, pcnLeitor,
+  ACBrCompress, ACBrIntegrador,
+  ACBrDFeConsts,
+  ACBrDFeUtil,
   ACBrDFeComum.ConsStatServ, ACBrDFeComum.RetConsStatServ,
-  ACBrDFeComum.ConsReciDFe;
+  ACBrDFeComum.ConsReciDFe,
+  ACBrNF3e,
+  ACBrNF3eConsts,
+  ACBrNF3eConsSit;
 
 { TNF3eWebService }
 
@@ -633,7 +635,7 @@ begin
 
   NF3eRetorno := TRetConsStatServ.Create('NF3e');
   try
-    NF3eRetorno.XmlRetorno := ParseText(FPRetWS, True, False);
+    NF3eRetorno.XmlRetorno := ParseText(FPRetWS);
     NF3eRetorno.LerXml;
 
     Fversao := NF3eRetorno.versao;
@@ -648,7 +650,7 @@ begin
       acontece o erro. }
     if (pos('svrs.rs.gov.br', FPURL) > 0) and
        (MinutesBetween(NF3eRetorno.dhRecbto, Now) > 50) and
-       (not IsHorarioDeVerao(CUFtoUF(FcUF), NF3eRetorno.dhRecbto)) then
+       (not IsHorarioDeVerao(CodigoUFparaUF(FcUF), NF3eRetorno.dhRecbto)) then
       FdhRecbto:= IncHour(NF3eRetorno.dhRecbto,-1)
     else
       FdhRecbto := NF3eRetorno.dhRecbto;
@@ -761,11 +763,9 @@ begin
 end;
 
 procedure TNF3eRecepcao.InicializarServico;
-var
-  ok: Boolean;
 begin
   if FNotasFiscais.Count > 0 then    // Tem NF3e ? Se SIM, use as informações do XML
-    FVersaoDF := DblToVersaoNF3e(ok, FNotasFiscais.Items[0].NF3e.infNF3e.Versao)
+    FVersaoDF := DblToVersaoNF3e(FNotasFiscais.Items[0].NF3e.infNF3e.Versao)
   else
     FVersaoDF := FPConfiguracoesNF3e.Geral.VersaoDF;
 
@@ -807,7 +807,7 @@ begin
     teSVCAN: xUF := 'SVC-AN';
     teSVCRS: xUF := 'SVC-RS';
   else
-    xUF := CUFtoUF(FcUF);
+    xUF := CodigoUFparaUF(FcUF);
   end;
 
   TACBrNF3e(FPDFeOwner).LerServicoDeParams(
@@ -905,7 +905,7 @@ begin
     else
       AXML := FPRetWS;
 
-    FNF3eRetornoSincrono.XmlRetorno := ParseText(AXML, True, False);
+    FNF3eRetornoSincrono.XmlRetorno := ParseText(AXML);
     FNF3eRetornoSincrono.LerXml;
 
     Fversao := FNF3eRetornoSincrono.versao;
@@ -997,7 +997,7 @@ begin
   end
   else
   begin
-    FNF3eRetorno.XmlRetorno := ParseText(FPRetWS, True, False);
+    FNF3eRetorno.XmlRetorno := ParseText(FPRetWS);
     FNF3eRetorno.LerXml;
 
     Fversao := FNF3eRetorno.versao;
@@ -1099,11 +1099,9 @@ begin
 end;
 
 procedure TNF3eRetRecepcao.InicializarServico;
-var
-  ok: Boolean;
 begin
   if FNotasFiscais.Count > 0 then    // Tem NF3e ? Se SIM, use as informações do XML
-    FVersaoDF := DblToVersaoNF3e(ok, FNotasFiscais.Items[0].NF3e.infNF3e.Versao)
+    FVersaoDF := DblToVersaoNF3e(FNotasFiscais.Items[0].NF3e.infNF3e.Versao)
   else
     FVersaoDF := FPConfiguracoesNF3e.Geral.VersaoDF;
 
@@ -1221,7 +1219,7 @@ begin
     teSVCAN: xUF := 'SVC-AN';
     teSVCRS: xUF := 'SVC-RS';
   else
-    xUF := CUFtoUF(FcUF);
+    xUF := CodigoUFparaUF(FcUF);
   end;
 
   TACBrNF3e(FPDFeOwner).LerServicoDeParams(
@@ -1277,7 +1275,7 @@ begin
 
   RemoverNameSpace;
 
-  FNF3eRetorno.XmlRetorno := ParseText(FPRetWS, True, False);
+  FNF3eRetorno.XmlRetorno := ParseText(FPRetWS);
   FNF3eRetorno.LerXML;
 
   Fversao := FNF3eRetorno.versao;
@@ -1496,11 +1494,9 @@ begin
 end;
 
 procedure TNF3eRecibo.InicializarServico;
-var
-  ok: Boolean;
 begin
   if FNotasFiscais.Count > 0 then    // Tem NF3e ? Se SIM, use as informações do XML
-    FVersaoDF := DblToVersaoNF3e(ok, FNotasFiscais.Items[0].NF3e.infNF3e.Versao)
+    FVersaoDF := DblToVersaoNF3e(FNotasFiscais.Items[0].NF3e.infNF3e.Versao)
   else
     FVersaoDF := FPConfiguracoesNF3e.Geral.VersaoDF;
 
@@ -1555,7 +1551,7 @@ begin
     teSVCAN: xUF := 'SVC-AN';
     teSVCRS: xUF := 'SVC-RS';
   else
-    xUF := CUFtoUF(FcUF);
+    xUF := CodigoUFparaUF(FcUF);
   end;
 
   TACBrNF3e(FPDFeOwner).LerServicoDeParams(
@@ -1595,7 +1591,7 @@ begin
 
   RemoverNameSpace;
 
-  FNF3eRetorno.XmlRetorno := ParseText(FPRetWS, True, False);
+  FNF3eRetorno.XmlRetorno := ParseText(FPRetWS);
   FNF3eRetorno.LerXML;
 
   Fversao := FNF3eRetorno.versao;
@@ -1716,7 +1712,7 @@ begin
     teSVCAN: xUF := 'SVC-AN';
     teSVCRS: xUF := 'SVC-RS';
   else
-    xUF := CUFtoUF(FcUF);
+    xUF := CodigoUFparaUF(FcUF);
   end;
 
   TACBrNF3e(FPDFeOwner).LerServicoDeParams(
@@ -1817,7 +1813,7 @@ begin
 
     RemoverNameSpace;
 
-    NF3eRetorno.XmlRetorno := ParseText(FPRetWS, True, False);
+    NF3eRetorno.XmlRetorno := ParseText(FPRetWS);
     NF3eRetorno.LerXML;
 
     NFCancelada := False;
@@ -2206,7 +2202,7 @@ begin
     teSVCAN: UF := 'SVC-AN';
     teSVCRS: UF := 'SVC-RS';
   else
-    UF := CUFtoUF(ExtrairUFChaveAcesso(FEvento.Evento.Items[0].InfEvento.chNF3e));
+    UF := CodigoUFparaUF(ExtrairUFChaveAcesso(FEvento.Evento.Items[0].InfEvento.chNF3e));
   end;
   {
   if (FEvento.Evento.Items[0].InfEvento.tpEvento = teEPECNFe) then
@@ -2286,95 +2282,41 @@ begin
     EventoNF3e.Versao := FPVersaoServico;
     EventoNF3e.GerarXML;
 
-    // Separa os grupos <evento> e coloca na variável Eventos
-    I := Pos('<evento ', EventoNF3e.Xml);
-    Lote := Copy(EventoNF3e.Xml, 1, I - 1);
-    Eventos := SeparaDados(EventoNF3e.Xml, 'envEvento');
-    I := Pos('<evento ', Eventos);
-    Eventos := NativeStringToUTF8( Copy(Eventos, I, length(Eventos)) );
+    AssinarXML(EventoNF3e.Xml, 'eventoNF3e', 'infEvento', 'Falha ao assinar o Envio de Evento ');
 
-    EventosAssinados := '';
+    // Separa o XML especifico do Evento para ser Validado.
+    AXMLEvento := SeparaDados(FPDadosMsg, 'detEvento');
 
-    // Realiza a assinatura para cada evento
-    while Eventos <> '' do
-    begin
-      F := Pos('</evento>', Eventos);
-
-      if F > 0 then
-      begin
-        Evento := Copy(Eventos, 1, F + 8);
-        Eventos := Copy(Eventos, F + 9, length(Eventos));
-
-        AssinarXML(Evento, 'evento', 'infEvento', 'Falha ao assinar o Envio de Evento ');
-        EventosAssinados := EventosAssinados + FPDadosMsg;
-      end
-      else
-        Break;
+    case SchemaEventoNF3e of
+      schCancNF3e:
+        begin
+          AXMLEvento := '<evCancNF3e xmlns="' + ACBRNF3E_NAMESPACE + '">' +
+//                          AXMLEvento +
+                          Trim(RetornarConteudoEntre(AXMLEvento, '<evCancNF3e>', '</evCancNF3e>')) +
+                        '</evCancNF3e>';
+        end;
     end;
 
-    F := Pos('?>', EventosAssinados);
-    if F <> 0 then
-      FPDadosMsg := copy(EventosAssinados, 1, F + 1) + Lote +
-        copy(EventosAssinados, F + 2, Length(EventosAssinados)) + '</envEvento>'
-    else
-      FPDadosMsg := Lote + EventosAssinados + '</envEvento>';
+    AXMLEvento := '<' + ENCODING_UTF8 + '>' + AXMLEvento;
 
     with TACBrNF3e(FPDFeOwner) do
     begin
-      MsgEventoEhValido := SSL.Validar(FPDadosMsg,
-                                       GerarNomeArqSchema(FPLayout, StringToFloatDef(FPVersaoServico,0)),
-                                       FPMsg);
+      EventoEhValido := SSL.Validar(FPDadosMsg,
+                                    GerarNomeArqSchema(FPLayout,
+                                      StringToFloatDef(FPVersaoServico, 0)),
+                                      FPMsg) and
+                        SSL.Validar(AXMLEvento,
+                                    GerarNomeArqSchemaEvento(SchemaEventoNF3e,
+                                      StringToFloatDef(FPVersaoServico, 0)),
+                                      FPMsg);
     end;
 
-    if (not MsgEventoEhValido) or (SchemaEventoNF3e = schErro) then
+    if not EventoEhValido then
     begin
-      if (SchemaEventoNF3e = schErro) and (FPMsg='') then
-       FPMsg := 'Schema do Evento não foi definido';
-
-      FErroValidacao := ACBrStr('Falha na validação da Mensagem do Evento: ') +
+      FErroValidacao := ACBrStr('Falha na validação dos dados do Evento: ') +
         FPMsg;
 
       raise EACBrNF3eException.CreateDef(FErroValidacao);
-    end;
-
-    // Realiza a validação de cada evento
-    Eventos := SeparaDados(EventoNF3e.Xml, 'envEvento');
-    I := Pos('<evento ', Eventos);
-    Eventos := NativeStringToUTF8( Copy(Eventos, I, length(Eventos)) );
-
-    while Eventos <> '' do
-    begin
-      F := Pos('</evento>', Eventos);
-
-      if F > 0 then
-      begin
-        Evento := Copy(Eventos, 1, F + 8);
-        Eventos := Copy(Eventos, F + 9, length(Eventos));
-
-        // Separa o XML especifico do Evento para ser Validado.
-        AXMLEvento := '<detEvento versao="' + FPVersaoServico + '" xmlns="' +
-                                                      ACBRNF3e_NAMESPACE + '">' +
-                        SeparaDados(Evento, 'detEvento') +
-                      '</detEvento>';
-
-        with TACBrNF3e(FPDFeOwner) do
-        begin
-          EventoEhValido := SSL.Validar(AXMLEvento,
-                                        GerarNomeArqSchemaEvento(SchemaEventoNF3e,
-                                                             StringToFloatDef(FPVersaoServico, 0)),
-                                        FPMsg);
-        end;
-
-        if not EventoEhValido then
-        begin
-          FErroValidacao := ACBrStr('Falha na validação dos dados do Evento: ') +
-            FPMsg;
-
-          raise EACBrNF3eException.CreateDef(FErroValidacao);
-        end;
-      end
-      else
-        Break;
     end;
 
     for I := 0 to FEvento.Evento.Count - 1 do
@@ -2398,7 +2340,7 @@ begin
 
   RemoverNameSpace;
 
-  EventoRetorno.XmlRetorno := ParseText(FPRetWS, True, False);
+  EventoRetorno.XmlRetorno := ParseText(FPRetWS);
   EventoRetorno.LerXml;
 
   FcStat := EventoRetorno.retInfEvento.cStat;
@@ -2461,7 +2403,7 @@ begin
               end;
 
               { Converte de UTF8 para a String nativa e Decodificar caracteres HTML Entity }
-              Texto := ParseText(Texto, True, False);
+              Texto := ParseText(Texto);
             end;
 
             // Se o evento for rejeitado a propriedade XML conterá uma string vazia
@@ -2509,10 +2451,12 @@ begin
 end;
 
 { TDistribuicaoDFe }
-(*
+
 constructor TDistribuicaoDFe.Create(AOwner: TACBrDFe);
 begin
   inherited Create(AOwner);
+
+  FOwner := AOwner;
 end;
 
 destructor TDistribuicaoDFe.Destroy;
@@ -2528,7 +2472,7 @@ begin
   inherited Clear;
 
   FPStatus := stDistDFeInt;
-  FPLayout := LayDistDFeInt;
+  FPLayout := LayNF3eDistDFeInt;
   FPArqEnv := 'con-dist-dfe';
   FPArqResp := 'dist-dfe';
   FPBodyElement := 'NF3eDistDFeInteresse';
@@ -2537,7 +2481,7 @@ begin
   if Assigned(FretDistDFeInt) then
     FretDistDFeInt.Free;
 
-  FretDistDFeInt := TRetDistDFeInt.Create('NF3e');
+  FretDistDFeInt := TRetDistDFeInt.Create(FOwner, 'NF3e');
 
   if Assigned(FlistaArqs) then
     FlistaArqs.Free;
@@ -2591,10 +2535,7 @@ begin
     DistDFeInt.NSU := trim(FNSU);
     DistDFeInt.Chave := trim(FchNF3e);
 
-    AjustarOpcoes( DistDFeInt.Gerador.Opcoes );
-    DistDFeInt.GerarXML;
-
-    FPDadosMsg := DistDFeInt.Gerador.ArquivoFormatoXML;
+    FPDadosMsg := DistDFeInt.GerarXML;
   finally
     DistDFeInt.Free;
   end;
@@ -2613,8 +2554,11 @@ begin
   RemoverNameSpace;
 
   // Processando em UTF8, para poder gravar arquivo corretamente //
-  FretDistDFeInt.Leitor.Arquivo := FPRetWS;
+  FretDistDFeInt.XmlRetorno := ParseText(FPRetWS);
   FretDistDFeInt.LerXml;
+
+  FPMsg := FretDistDFeInt.xMotivo;
+  Result := (FretDistDFeInt.CStat = 137) or (FretDistDFeInt.CStat = 138);
 
   for I := 0 to FretDistDFeInt.docZip.Count - 1 do
   begin
@@ -2657,17 +2601,6 @@ begin
       end;
     end;
   end;
-
-  { Processsa novamente, chamando ParseTXT, para converter de UTF8 para a String
-    nativa e Decodificar caracteres HTML Entity }
-  FretDistDFeInt.Free;   // Limpando a lista
-  FretDistDFeInt := TRetDistDFeInt.Create('NF3e');
-
-  FretDistDFeInt.Leitor.Arquivo := ParseText(FPRetWS, True, False);
-  FretDistDFeInt.LerXml;
-
-  FPMsg := FretDistDFeInt.xMotivo;
-  Result := (FretDistDFeInt.CStat = 137) or (FretDistDFeInt.CStat = 138);
 end;
 
 function TDistribuicaoDFe.GerarMsgLog: String;
@@ -2734,7 +2667,7 @@ begin
                                                         Data);
   end;
 end;
-*)
+
 { TNF3eEnvioWebService }
 
 constructor TNF3eEnvioWebService.Create(AOwner: TACBrDFe);
@@ -2772,9 +2705,10 @@ begin
 end;
 
 procedure TNF3eEnvioWebService.DefinirDadosMsg;
-var
-  LeitorXML: TLeitor;
+//var
+//  LeitorXML: TLeitor;
 begin
+{
   LeitorXML := TLeitor.Create;
   try
     LeitorXML.Arquivo := FXMLEnvio;
@@ -2783,7 +2717,7 @@ begin
   finally
     LeitorXML.Free;
   end;
-
+}
   FPDadosMsg := FXMLEnvio;
 end;
 
@@ -2821,7 +2755,7 @@ begin
   FRecibo := TNF3eRecibo.Create(FACBrNF3e, TACBrNF3e(FACBrNF3e).NotasFiscais);
   FConsulta := TNF3eConsulta.Create(FACBrNF3e, TACBrNF3e(FACBrNF3e).NotasFiscais);
   FEnvEvento := TNF3eEnvEvento.Create(FACBrNF3e, TACBrNF3e(FACBrNF3e).EventoNF3e);
-//  FDistribuicaoDFe := TDistribuicaoDFe.Create(FACBrNF3e);
+  FDistribuicaoDFe := TDistribuicaoDFe.Create(FACBrNF3e);
   FEnvioWebService := TNF3eEnvioWebService.Create(FACBrNF3e);
 end;
 
@@ -2833,12 +2767,11 @@ begin
   FRecibo.Free;
   FConsulta.Free;
   FEnvEvento.Free;
-//  FDistribuicaoDFe.Free;
+  FDistribuicaoDFe.Free;
   FEnvioWebService.Free;
 
   inherited Destroy;
 end;
-
 
 function TWebServices.Envia(ALote: Int64; const ASincrono: Boolean): Boolean;
 begin

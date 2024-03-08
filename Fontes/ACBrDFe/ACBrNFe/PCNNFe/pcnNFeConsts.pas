@@ -366,6 +366,14 @@ const
   DSC_TPINTEGRA = 'Tipo de Integração para pagamento';
   DSC_TBAND = 'Bandeira da Operadora de Cartão';
   DSC_CAUT = 'Número da Autorização';
+  DSC_CNPJPAG = 'CNPJ Transacional do Pagamento';
+  DSC_UFPAG = 'UF do CNPJ do estabelecimento onde o pagamento foi processado/transacionado/recebido';
+  DSC_CNPJRECEB = 'CNPJ do beneficiário do pagamento';
+  DSC_IDTERMPAG = 'Identificador do terminal de pagamento';
+  DSC_CCREDPRESUMIDO = 'Código de Benefício Fiscal de Crédito Presumido na UF aplicado ao item';
+  DSC_PCREDPRESUMIDO = 'Percentual do Crédito Presumido';
+  DSC_VCREDPRESUMIDO = 'Valor do Crédito Presumido';
+  DSC_CBENEFRBC = 'Código de Benefício Fiscal na UF aplicado ao item quando houver RBC.';
 
 implementation
 

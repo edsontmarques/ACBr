@@ -49,7 +49,7 @@ uses
   ACBrBoletoFCFortesFr, Printers, DbCtrls, DBGrids, LazHelpHTML,
   SynHighlighterXML, SynMemo, PrintersDlgs, IpHtml, TreeFilterEdit,
   ACBrNFSeXConversao, pcnConversao, pcnConversaoNFe, pcteConversaoCTe,
-  pcnConversaoBPe, ACBrSAT, ACBrSATExtratoESCPOS, ACBrSATExtratoFortesFr,
+  ACBrBPeConversao, ACBrSAT, ACBrSATExtratoESCPOS, ACBrSATExtratoFortesFr,
   ACBrSATClass, pcnRede, pgnreConversao, ACBrDFeSSL, ACBrGNRE2,
   ACBrGNReGuiaRLClass, ACBrBlocoX, ACBrMDFe, ACBrMDFeDAMDFeRLClass, ACBrCTe,
   ACBrCTeDACTeRLClass, types, fileinfo, ACBrDFeConfiguracoes, ACBrBPe,
@@ -153,6 +153,7 @@ type
     bBoletoRelatorioRetorno: TBitBtn;
     bBOLLerArqRelatorio: TBitBtn;
     bCEPTestar: TButton;
+    btnConsCNPJ: TButton;
     bCHQTestar: TBitBtn;
     bDISAnimar: TBitBtn;
     bDISLimpar: TBitBtn;
@@ -513,6 +514,7 @@ type
     edEntTXT: TEdit;
     edIBGECodNome: TEdit;
     edConsultarGTIN: TEdit;
+    edtConsCNPJ: TEdit;
     edtBolMargemInferior: TEdit;
     edtArquivoWebServicesNFSe: TEdit;
     edtBOLChavePix: TEdit;
@@ -861,6 +863,7 @@ type
     Label284: TLabel;
     Label285: TLabel;
     Label286: TLabel;
+    lblConsCNPJ: TLabel;
     lblConsCNPJProvedor: TLabel;
     lblConCNPJSenha: TLabel;
     lbConsultarGTIN: TLabel;
@@ -1539,6 +1542,7 @@ type
     procedure btNCMConsultarClick(Sender: TObject);
     procedure btNCMSalvarArquivoClick(Sender: TObject);
     procedure btNCMValidadeHelpClick(Sender: TObject);
+    procedure btnConsCNPJClick(Sender: TObject);
     procedure btnConsultarClick(Sender: TObject);
     procedure btnConsultarCTeClick(Sender: TObject);
     procedure btnConsultarGTINClick(Sender: TObject);
@@ -2014,6 +2018,8 @@ type
     procedure SetFontLabels(Sender: TObject);
 
     procedure ConfigPainelMenu(Edicao: Boolean);
+
+    function TrataDadosSensiveis(aString : String):string;
 
   protected
     procedure MostraLogoBanco;
@@ -3606,6 +3612,47 @@ begin
     sLineBreak + 'Após a validade o Download será feito novamente ' +
     sLineBreak + '(Zero para sempre ler NCMs do Cache local)',
     mtInformation, [mbOK], 0);
+end;
+
+procedure TFrmACBrMonitor.btnConsCNPJClick(Sender: TObject);
+var
+  I: Integer;
+  aMSG : string;
+begin
+  ACBrConsultaCNPJ1.Provedor  := TACBrCNPJProvedorWS(cbxConsCNPJProvedor.ItemIndex);
+  ACBrConsultaCNPJ1.ProxyHost := edCONProxyHost.Text;
+  ACBrConsultaCNPJ1.ProxyPort := edCONProxyPort.Text;
+  ACBrConsultaCNPJ1.ProxyUser := edCONProxyUser.Text;
+  ACBrConsultaCNPJ1.ProxyPass := edCONProxyPass.Text;
+  if ACBrConsultaCNPJ1.Provedor = cwsNenhum then
+     raise EACBrConsultaCNPJException.Create('Nenhum provedor Selecionado!');
+  if ACBrConsultaCNPJ1.Consulta(edtConsCNPJ.Text) then
+  begin
+    aMSG :=
+    'EmpresaTipo: '+ ACBrConsultaCNPJ1.EmpresaTipo+sLineBreak+
+    'RazaoSocial: '+ ACBrConsultaCNPJ1.RazaoSocial+sLineBreak+
+    'Porte      : '+ ACBrConsultaCNPJ1.Porte+sLineBreak+
+    'Abertura   : '+ DateToStr( ACBrConsultaCNPJ1.Abertura )+sLineBreak+
+    'Fantasia   : '+ ACBrConsultaCNPJ1.Fantasia+sLineBreak+
+    'Endereco   : '+ ACBrConsultaCNPJ1.Endereco+sLineBreak+
+    'Numero     : '+ ACBrConsultaCNPJ1.Numero+sLineBreak+
+    'Complemento: '+ ACBrConsultaCNPJ1.Complemento+sLineBreak+
+    'Bairro     : '+ ACBrConsultaCNPJ1.Bairro+sLineBreak+
+    'Complemento: '+ ACBrConsultaCNPJ1.Complemento+sLineBreak+
+    'Cidade     : '+ ACBrConsultaCNPJ1.Cidade+sLineBreak+
+    'UF         : '+ ACBrConsultaCNPJ1.UF+sLineBreak+
+    'CEP        : '+ ACBrConsultaCNPJ1.CEP+sLineBreak+
+    'Situacao   : '+ ACBrConsultaCNPJ1.Situacao+sLineBreak+
+    'Email      : '+ ACBrConsultaCNPJ1.EndEletronico+sLineBreak+
+    'Telefone   : '+ ACBrConsultaCNPJ1.Telefone+sLineBreak+
+    'CNAE1      : '+ ACBrConsultaCNPJ1.CNAE1+sLineBreak;
+    for I := 0 to ACBrConsultaCNPJ1.CNAE2.Count - 1 do
+      aMSG := 'CNAE2      : '+ ACBrConsultaCNPJ1.CNAE2[I];
+     MessageDlg(AMsg, mtInformation, [mbOK], 0);
+  end;
+
+
+
 end;
 
 procedure TFrmACBrMonitor.btnConsultarClick(Sender: TObject);
@@ -5685,6 +5732,10 @@ begin
     cbxConsCNPJProvedorChange(Self);
     edtConsCNPJUsuario.Text           := Usuario;
     edtConsCNPJSenha.Text             := Senha;
+    edCONProxyHost.Text               := Proxy_Host;
+    edCONProxyPort.Text               := Proxy_Port;
+    edCONProxyUser.Text               := Proxy_User;
+    edCONProxyPass.Text               := Proxy_Pass;
   end;
 
     with ACBrIBGE1 do
@@ -6632,6 +6683,10 @@ begin
     Provedor := TACBrCNPJProvedorWS(cbxConsCNPJProvedor.ItemIndex);
     Usuario  := edtConsCNPJUsuario.Text;
     Senha    := edtConsCNPJSenha.Text;
+    ProxyHost := edCONProxyHost.Text;
+    ProxyPort := edCONProxyPort.Text;
+    ProxyUser := edCONProxyUser.Text;
+    ProxyPass := edCONProxyPass.Text;
   end;
 
   with ACBrMail1 do
@@ -7893,7 +7948,8 @@ end;
 {------------------------------------------------------------------------------}
 procedure TFrmACBrMonitor.Processar;
 var
-  Linha, Objeto: String;
+  Linha,Linha2, Objeto: String;
+
 begin
   if NewLines <> '' then
     fsProcessar.Add(NewLines);
@@ -7969,8 +8025,38 @@ begin
         //Validar Erros de configuração dos Componentes
         VerificarErrosConfiguracaoComponentes(fsCmd);
 
-        //Log Comando
-        AddLinesLog(Linha);
+        // Tratamento dos metodos para não exibir senhas no log e na tela.
+        if pos('CNPJ.SETPROVEDOR',uppercase(Linha)) > 0 then
+           Linha2 := 'CNPJ.SetProvedor('+fscmd.Params(0)+', '+ TrataDadosSensiveis(fscmd.Params(1))+', '+  TrataDadosSensiveis(fscmd.Params(2))+')';
+
+        if pos('BOLETO.GERARPDFCOMSENHA',uppercase(Linha)) > 0 then
+           Linha2 := 'BOLETO.GerarPDFComSenha('+ TrataDadosSensiveis(fscmd.Params(0))+', '+fscmd.Params(1)+')';
+
+        if pos('BOLETO.GERARPDFBOLETOCOMSENHA',uppercase(Linha)) > 0 then
+           Linha2 := 'BOLETO.GerarPDFBoletoComSenha('+fscmd.Params(0)+', '+ TrataDadosSensiveis(fscmd.Params(1)) +')';
+
+        if pos('NFE.SETCERTIFICADO',uppercase(Linha)) > 0 then
+           Linha2 := 'NFe.SetCertificado('+fscmd.Params(0)+', '+ TrataDadosSensiveis(fscmd.Params(1))+')';
+
+        if pos('CTE.SETCERTIFICADO',uppercase(Linha)) > 0 then
+           Linha2 := 'CTe.SetCertificado('+fscmd.Params(0)+', '+ TrataDadosSensiveis(fscmd.Params(1))+')';
+
+        if pos('NFSE.SETCERTIFICADO',uppercase(Linha)) > 0 then
+           Linha2 := 'NFSe.SetCertificado('+fscmd.Params(0)+', '+ TrataDadosSensiveis(fscmd.Params(1))+')';
+
+        if pos('MDFE.SETCERTIFICADO',uppercase(Linha)) > 0 then
+           Linha2 := 'MDFE.SetCertificado('+fscmd.Params(0)+', '+ TrataDadosSensiveis(fscmd.Params(1))+')';
+
+        if pos('NFSE.SETAUTENTICACAONFSE',uppercase(Linha)) > 0 then
+           Linha2 := 'NFSE.SETAUTENTICACAONFSE('+fscmd.Params(0)+', '+ TrataDadosSensiveis(fscmd.Params(1))+', '+
+                  TrataDadosSensiveis(fscmd.Params(2))+', '+ TrataDadosSensiveis(fscmd.Params(3))+', '+ TrataDadosSensiveis(fscmd.Params(4))+')';
+
+
+        //Log Comando Linha2 contem dados sensiveis
+        if NaoEstaVazio(Linha2) then
+           AddLinesLog(Linha2)
+        else
+           AddLinesLog(Linha);
 
         if fsCmd.Objeto = 'ACBR' then
           FDoACBr.Executar(fsCmd)
@@ -11964,7 +12050,7 @@ begin
   else if Configuracoes is TConfiguracoesBPe then
   begin
     TConfiguracoesBPe(Configuracoes).Geral.FormaEmissao := StrToTpEmis(OK, IntToStr(cbFormaEmissaoBPe.ItemIndex + 1));
-    TConfiguracoesBPe(Configuracoes).Geral.VersaoDF     := StrToVersaoBPe(ok, cbVersaoWSBPe.Text);
+    TConfiguracoesBPe(Configuracoes).Geral.VersaoDF     := StrToVersaoBPe(OK, cbVersaoWSBPe.Text);
 
     TConfiguracoesBPe(Configuracoes).Arquivos.IniServicos    := edtArquivoWebServicesBPe.Text;
     TConfiguracoesBPe(Configuracoes).Arquivos.EmissaoPathBPe := cbxEmissaoPathNFe.Checked;
@@ -12672,6 +12758,17 @@ begin
     pgConfig.ActivePageIndex := 0;
   end;
 
+end;
+
+function TFrmACBrMonitor.TrataDadosSensiveis(aString: String): string;
+var
+  LString : string;
+begin
+   if NaoEstaVazio(aString) then
+     begin
+      LString:= StrCrypt(aString,_C);
+      Result := AsciiToHex(LString);
+     end;
 end;
 
 procedure TFrmACBrMonitor.MostraLogoBanco;

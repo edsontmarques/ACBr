@@ -240,7 +240,7 @@ begin
   begin
     Node := Node.Childrens.FindAnyNs('InfNfse');
 
-    if not Assigned(Node) or (Node = nil) then Exit;
+    if not Assigned(Node) then Exit;
 
     NumNFSe := ObterConteudoTag(Node.Childrens.FindAnyNs('Numero'), tcStr);
     CodVerif := ObterConteudoTag(Node.Childrens.FindAnyNs('CodigoVerificacao'), tcStr);
@@ -253,10 +253,10 @@ begin
     if Node2 = nil then
       Node2 := Node.Childrens.FindAnyNs('Rps');
 
-    if not Assigned(Node2) or (Node2 = nil) then Exit;
+    if not Assigned(Node2) then Exit;
 
     Node := Node2.Childrens.FindAnyNs('InfDeclaracaoPrestacaoServico');
-    if not Assigned(Node) or (Node = nil) then Exit;
+    if not Assigned(Node) then Exit;
 
     Node := Node.Childrens.FindAnyNs('Rps');
 
@@ -321,7 +321,7 @@ begin
   begin
     Node := Node.Childrens.FindAnyNs('InfNfse');
 
-    if not Assigned(Node) or (Node = nil) then Exit;
+    if not Assigned(Node) then Exit;
 
     NumNFSe := ObterConteudoTag(Node.Childrens.FindAnyNs('Numero'), tcStr);
     CodVerif := ObterConteudoTag(Node.Childrens.FindAnyNs('CodigoVerificacao'), tcStr);
@@ -334,10 +334,10 @@ begin
     if Node2 = nil then
       Node2 := Node.Childrens.FindAnyNs('Rps');
 
-    if not Assigned(Node2) or (Node2 = nil) then Exit;
+    if not Assigned(Node2) then Exit;
 
     Node := Node2.Childrens.FindAnyNs('InfDeclaracaoPrestacaoServico');
-    if not Assigned(Node) or (Node = nil) then Exit;
+    if not Assigned(Node) then Exit;
 
     Node := Node.Childrens.FindAnyNs('Rps');
 
@@ -390,7 +390,7 @@ var
   AErro: TNFSeEventoCollectionItem;
   aParams: TNFSeParamsResponse;
   Nota: TNotaFiscal;
-  Versao, IdAttr, NameSpace, NameSpaceLote, ListaRps, xRps,
+  Versao, IdAttr, NameSpace, NameSpaceLote, ListaRps, xRps, IdAttrSig,
   TagEnvio, Prefixo, PrefixoTS: string;
   I: Integer;
 begin
@@ -524,10 +524,13 @@ begin
     if (ConfigAssinar.Rps and (Response.ModoEnvio in [meLoteAssincrono, meLoteSincrono, meTeste])) or
        (ConfigAssinar.RpsGerarNFSe and (Response.ModoEnvio = meUnitario)) then
     begin
+      IdAttrSig := SetIdSignatureValue(Nota.XmlRps,
+                                     ConfigMsgDados.XmlRps.DocElemento, IdAttr);
+
       Nota.XmlRps := FAOwner.SSL.Assinar(Nota.XmlRps,
                                          PrefixoTS + ConfigMsgDados.XmlRps.DocElemento,
                                          ConfigMsgDados.XmlRps.InfElemento, '', '', '',
-                                         IdAttr);
+                                         IdAttr, IdAttrSig);
     end;
 
     SalvarXmlRps(Nota);
@@ -686,7 +689,7 @@ begin
         begin
           ANode := ANodeArray[I];
           AuxNode := ANode.Childrens.FindAnyNs('Nfse');
-          if not Assigned(AuxNode) or (AuxNode = nil) then Exit;
+          if not Assigned(AuxNode) then Exit;
 
           AuxNode := AuxNode.Childrens.FindAnyNs('InfNfse');
 
@@ -707,17 +710,17 @@ begin
           // para <Rps>
           if AuxNode2 = nil then
             AuxNode2 := AuxNode.Childrens.FindAnyNs('Rps');
-          if not Assigned(AuxNode2) or (AuxNode2 = nil) then Exit;
+          if not Assigned(AuxNode2) then Exit;
 
           AuxNode := AuxNode2.Childrens.FindAnyNs('InfDeclaracaoPrestacaoServico');
-          if not Assigned(AuxNode) or (AuxNode = nil) then Exit;
+          if not Assigned(AuxNode) then Exit;
 
           AuxNode := AuxNode.Childrens.FindAnyNs('Rps');
 
           if AuxNode <> nil then
           begin
             AuxNode := AuxNode.Childrens.FindAnyNs('IdentificacaoRps');
-            if not Assigned(AuxNode) or (AuxNode = nil) then Exit;
+            if not Assigned(AuxNode) then Exit;
 
             NumRps := ObterConteudoTag(AuxNode.Childrens.FindAnyNs('Numero'), tcStr);
             SerieRps := ObterConteudoTag(AuxNode.Childrens.FindAnyNs('Serie'), tcStr);
@@ -1150,7 +1153,7 @@ begin
       if AuxNode <> nil then
       begin
         AuxNode := AuxNode.Childrens.FindAnyNs('InfNfse');
-        if not Assigned(AuxNode) or (AuxNode = nil) then Exit;
+        if not Assigned(AuxNode) then Exit;
 
         NumNFSe := ObterConteudoTag(AuxNode.Childrens.FindAnyNs('Numero'), tcStr);
 
@@ -1171,17 +1174,17 @@ begin
           // para <Rps>
           if AuxNode2 = nil then
             AuxNode2 := AuxNode.Childrens.FindAnyNs('Rps');
-          if not Assigned(AuxNode2) or (AuxNode2 = nil) then Exit;
+          if not Assigned(AuxNode2) then Exit;
 
           AuxNode := AuxNode2.Childrens.FindAnyNs('InfDeclaracaoPrestacaoServico');
-          if not Assigned(AuxNode) or (AuxNode = nil) then Exit;
+          if not Assigned(AuxNode) then Exit;
 
           AuxNode := AuxNode.Childrens.FindAnyNs('Rps');
 
           if AuxNode <> nil then
           begin
             AuxNode := AuxNode.Childrens.FindAnyNs('IdentificacaoRps');
-            if not Assigned(AuxNode) or (AuxNode = nil) then Exit;
+            if not Assigned(AuxNode) then Exit;
 
             NumRps := ObterConteudoTag(AuxNode.Childrens.FindAnyNs('Numero'), tcStr);
 
@@ -1404,7 +1407,7 @@ end;
 
 procedure TACBrNFSeProviderABRASFv2.AssinarConsultaNFSeporFaixa(Response: TNFSeConsultaNFSeResponse);
 var
-  IdAttr, Prefixo: string;
+  IdAttr, Prefixo, IdAttrSig: string;
   AErro: TNFSeEventoCollectionItem;
 begin
   if not ConfigAssinar.ConsultarNFSePorFaixa then Exit;
@@ -1420,9 +1423,13 @@ begin
     Prefixo := ConfigMsgDados.Prefixo + ':';
 
   try
+    IdAttrSig := SetIdSignatureValue(Response.ArquivoEnvio,
+                      ConfigMsgDados.ConsultarNFSePorFaixa.DocElemento, IdAttr);
+
     Response.ArquivoEnvio := FAOwner.SSL.Assinar(Response.ArquivoEnvio,
       Prefixo + ConfigMsgDados.ConsultarNFSePorFaixa.DocElemento,
-      ConfigMsgDados.ConsultarNFSePorFaixa.InfElemento, '', '', '', IdAttr);
+      ConfigMsgDados.ConsultarNFSePorFaixa.InfElemento, '', '', '', IdAttr,
+      IdAttrSig);
   except
     on E:Exception do
     begin
@@ -1486,7 +1493,7 @@ begin
       begin
         ANode := ANodeArray[I];
         AuxNode := ANode.Childrens.FindAnyNs('Nfse');
-        if not Assigned(AuxNode) or (AuxNode = nil) then Exit;
+        if not Assigned(AuxNode) then Exit;
 
         if not PreencherNotaRespostaConsultaNFSe(AuxNode, ANode, Response) then
         begin
@@ -1497,10 +1504,10 @@ begin
         end;
         {
         AuxNode := AuxNode.Childrens.FindAnyNs('InfNfse');
-        if not Assigned(AuxNode) or (AuxNode = nil) then Exit;
+        if not Assigned(AuxNode) then Exit;
 
         AuxNode := AuxNode.Childrens.FindAnyNs('Numero');
-        if not Assigned(AuxNode) or (AuxNode = nil) then Exit;
+        if not Assigned(AuxNode) then Exit;
 
         NumNFSe := AuxNode.AsString;
 
@@ -1670,7 +1677,7 @@ end;
 procedure TACBrNFSeProviderABRASFv2.AssinarConsultaNFSeServicoPrestado(
   Response: TNFSeConsultaNFSeResponse);
 var
-  IdAttr, Prefixo: string;
+  IdAttr, Prefixo, IdAttrSig: string;
   AErro: TNFSeEventoCollectionItem;
 begin
   if not ConfigAssinar.ConsultarNFSeServicoPrestado then Exit;
@@ -1686,10 +1693,13 @@ begin
     Prefixo := ConfigMsgDados.Prefixo + ':';
 
   try
+    IdAttrSig := SetIdSignatureValue(Response.ArquivoEnvio,
+               ConfigMsgDados.ConsultarNFSeServicoPrestado.DocElemento, IdAttr);
+
     Response.ArquivoEnvio := FAOwner.SSL.Assinar(Response.ArquivoEnvio,
       Prefixo + ConfigMsgDados.ConsultarNFSeServicoPrestado.DocElemento,
       ConfigMsgDados.ConsultarNFSeServicoPrestado.InfElemento, '', '', '',
-      IdAttr);
+      IdAttr, IdAttrSig);
   except
     on E:Exception do
     begin
@@ -1755,7 +1765,7 @@ begin
       begin
         ANode := ANodeArray[I];
         AuxNode := ANode.Childrens.FindAnyNs('Nfse');
-        if not Assigned(AuxNode) or (AuxNode = nil) then Exit;
+        if not Assigned(AuxNode) then Exit;
 
         if not PreencherNotaRespostaConsultaNFSe(AuxNode, ANode, Response) then
         begin
@@ -1766,10 +1776,10 @@ begin
         end;
         {
         AuxNode := AuxNode.Childrens.FindAnyNs('InfNfse');
-        if not Assigned(AuxNode) or (AuxNode = nil) then Exit;
+        if not Assigned(AuxNode) then Exit;
 
         AuxNode := AuxNode.Childrens.FindAnyNs('Numero');
-        if not Assigned(AuxNode) or (AuxNode = nil) then Exit;
+        if not Assigned(AuxNode) then Exit;
 
         NumNFSe := AuxNode.AsString;
 
@@ -1936,7 +1946,7 @@ end;
 procedure TACBrNFSeProviderABRASFv2.AssinarConsultaNFSeServicoTomado(
   Response: TNFSeConsultaNFSeResponse);
 var
-  IdAttr, Prefixo: string;
+  IdAttr, Prefixo, IdAttrSig: string;
   AErro: TNFSeEventoCollectionItem;
 begin
   if not ConfigAssinar.ConsultarNFSeServicoTomado then Exit;
@@ -1952,9 +1962,13 @@ begin
     Prefixo := ConfigMsgDados.Prefixo + ':';
 
   try
+    IdAttrSig := SetIdSignatureValue(Response.ArquivoEnvio,
+               ConfigMsgDados.ConsultarNFSeServicoTomado.DocElemento, IdAttr);
+
     Response.ArquivoEnvio := FAOwner.SSL.Assinar(Response.ArquivoEnvio,
       Prefixo + ConfigMsgDados.ConsultarNFSeServicoTomado.DocElemento,
-      ConfigMsgDados.ConsultarNFSeServicoTomado.InfElemento, '', '', '', IdAttr);
+      ConfigMsgDados.ConsultarNFSeServicoTomado.InfElemento, '', '', '', IdAttr,
+      IdAttrSig);
   except
     on E:Exception do
     begin
@@ -2017,7 +2031,7 @@ begin
       begin
         ANode := ANodeArray[I];
         AuxNode := ANode.Childrens.FindAnyNs('Nfse');
-        if not Assigned(AuxNode) or (AuxNode = nil) then Exit;
+        if not Assigned(AuxNode) then Exit;
 
         if not PreencherNotaRespostaConsultaNFSe(AuxNode, ANode, Response) then
         begin
@@ -2028,10 +2042,10 @@ begin
         end;
         {
         AuxNode := AuxNode.Childrens.FindAnyNs('InfNfse');
-        if not Assigned(AuxNode) or (AuxNode = nil) then Exit;
+        if not Assigned(AuxNode) then Exit;
 
         AuxNode := AuxNode.Childrens.FindAnyNs('Numero');
-        if not Assigned(AuxNode) or (AuxNode = nil) then Exit;
+        if not Assigned(AuxNode) then Exit;
 
         NumNFSe := AuxNode.AsString;
 
@@ -2305,6 +2319,17 @@ begin
       Ret := Response.RetCancelamento;
       Ret.DataHora := ObterConteudoTag(ANode.Childrens.FindAnyNs('DataHora'), FpFormatoDataHora);
 
+      if Ret.DataHora > 0 then
+      begin
+        Ret.Sucesso := 'Sim';
+        Ret.Situacao := 'Cancelado';
+      end
+      else
+      begin
+        Ret.Sucesso := '';
+        Ret.Situacao := '';
+      end;
+
       if ConfigAssinar.IncluirURI then
         IdAttr := ConfigGeral.Identificador
       else
@@ -2319,13 +2344,13 @@ begin
         ANode := AuxNode;
 
       ANode := ANode.Childrens.FindAnyNs('InfPedidoCancelamento');
-      if not Assigned(ANode) or (ANode = nil) then Exit;
+      if not Assigned(ANode) then Exit;
 
       Ret.Pedido.InfID.ID := ObterConteudoTag(ANode.Attributes.Items[IdAttr]);
       Ret.Pedido.CodigoCancelamento := ObterConteudoTag(ANode.Childrens.FindAnyNs('CodigoCancelamento'), tcStr);
 
       ANode := ANode.Childrens.FindAnyNs('IdentificacaoNfse');
-      if not Assigned(ANode) or (ANode = nil) then Exit;
+      if not Assigned(ANode) then Exit;
 
       with Ret.Pedido.IdentificacaoNfse do
       begin
@@ -2364,7 +2389,8 @@ var
   AErro: TNFSeEventoCollectionItem;
   aParams: TNFSeParamsResponse;
   Nota: TNotaFiscal;
-  IdAttr, xRps, NameSpace, NumRps, TagEnvio, Prefixo, PrefixoTS: string;
+  IdAttr, xRps, NameSpace, NumRps, TagEnvio, Prefixo, PrefixoTS,
+  IdAttrSig: string;
 begin
   if EstaVazio(Response.PedCanc) then
   begin
@@ -2443,10 +2469,13 @@ begin
 
   if ConfigAssinar.RpsSubstituirNFSe then
   begin
+    IdAttrSig := SetIdSignatureValue(Nota.XmlRps,
+               ConfigMsgDados.XmlRps.DocElemento, IdAttr);
+
     Nota.XmlRps := FAOwner.SSL.Assinar(Nota.XmlRps,
                                        PrefixoTS + ConfigMsgDados.XmlRps.DocElemento,
                                        ConfigMsgDados.XmlRps.InfElemento, '', '', '',
-                                       IdAttr);
+                                       IdAttr, IdAttrSig);
   end;
 
   SalvarXmlRps(Nota);
@@ -2532,10 +2561,10 @@ var
     end;
 
     AuxNode := ANode.Childrens.FindAnyNs('Nfse');
-    if not Assigned(AuxNode) or (AuxNode = nil) then Exit;
+    if not Assigned(AuxNode) then Exit;
 
     AuxNode := AuxNode.Childrens.FindAnyNs('InfNfse');
-    if not Assigned(AuxNode) or (AuxNode = nil) then Exit;
+    if not Assigned(AuxNode) then Exit;
 
     AuxNode := AuxNode.Childrens.FindAnyNs('Numero');
 
@@ -2606,7 +2635,7 @@ begin
         end;
 
         ANodeSubstituida := ANodeSubstituida.Childrens.FindAnyNs('Nfse');
-        if not Assigned(ANodeSubstituida) or (ANodeSubstituida = nil) then Exit;
+        if not Assigned(ANodeSubstituida) then Exit;
 
         ANodeSubstituida := ANodeSubstituida.Childrens.FindAnyNs('InfNfse');
 

@@ -40,12 +40,12 @@ interface
 uses
   Classes, SysUtils, StrUtils,
   ACBrNFeConfiguracoes, pcnNFe,
-  {$IfDef DFE_ACBR_LIBXML2}
+  {$IfDef USE_ACBr_XMLDOCUMENT}
     ACBrNFeXmlReader, ACBrNFeXmlWriter,
   {$Else}
-     pcnNFeR, pcnNFeW,
+    pcnNFeR, pcnNFeW,
   {$EndIf}
-   pcnConversao, pcnLeitor;
+  pcnConversao, pcnLeitor;
 
 type
 
@@ -54,7 +54,7 @@ type
   NotaFiscal = class(TCollectionItem)
   private
     FNFe: TNFe;
-{$IfDef DFE_ACBR_LIBXML2}
+{$IfDef USE_ACBr_XMLDOCUMENT}
     FNFeW: TNFeXmlWriter;
     FNFeR: TNFeXmlReader;
 {$Else}
@@ -199,7 +199,7 @@ constructor NotaFiscal.Create(Collection2: TCollection);
 begin
   inherited Create(Collection2);
   FNFe := TNFe.Create;
-  {$IfDef DFE_ACBR_LIBXML2}
+  {$IfDef USE_ACBr_XMLDOCUMENT}
     FNFeW := TNFeXmlWriter.Create(FNFe);
     FNFeR := TNFeXmlReader.Create(FNFe);
 {$Else}
@@ -1560,14 +1560,14 @@ begin
 end;
 
 function NotaFiscal.LerXML(const AXML: String): Boolean;
-{$IfNDef DFE_ACBR_LIBXML2}
+{$IfNDef USE_ACBr_XMLDOCUMENT}
 var
   XMLStr: String;
 {$EndIf}
 begin
   XMLOriginal := AXML;  // SetXMLOriginal() irá verificar se AXML está em UTF8
 
-{$IfDef DFE_ACBR_LIBXML2}
+{$IfDef USE_ACBr_XMLDOCUMENT}
   FNFeR.Arquivo := XMLOriginal;
 {$Else}
   { Verifica se precisa converter "AXML" de UTF8 para a String nativa da IDE.
@@ -1859,6 +1859,25 @@ begin
           Prod.indEscala:= StrToIndEscala(OK, INIRec.ReadString( sSecao,'indEscala' ,'') );
           Prod.CNPJFab  := INIRec.ReadString( sSecao,'CNPJFab'   ,'');
           Prod.cBenef   := INIRec.ReadString( sSecao,'cBenef'    ,'');
+
+          J := 1;
+          while true do
+          begin
+            sSecao := 'CredPresumido' + IntToStrZero(I,3) + IntToStrZero(J,1);
+            sFim     := INIRec.ReadString(sSecao, 'cCredPresumido', '');
+            if (sFim <> '') then
+              with Prod.CredPresumido.New do
+              begin
+                cCredPresumido := sFim;
+                pCredPresumido := StringToFloatDef(INIRec.ReadString(sSecao, 'pCredPresumido', ''), 0);
+                vCredPresumido := StringToFloatDef(INIRec.ReadString(sSecao, 'vCredPresumido', ''), 0);
+              end
+            else
+              Break;
+
+            Inc(J);
+          end;
+
           Prod.EXTIPI   := INIRec.ReadString( sSecao,'EXTIPI'      ,'');
           Prod.CFOP     := INIRec.ReadString( sSecao,'CFOP'     ,'');
           Prod.uCom     := INIRec.ReadString( sSecao,'uCom'  ,INIRec.ReadString( sSecao,'Unidade'  ,''));
@@ -2176,6 +2195,7 @@ begin
                 CSOSN           := StrToCSOSNIcms(OK, INIRec.ReadString(sSecao,'CSOSN'   ,''  ));
                 ICMS.modBC      := StrTomodBC(    OK, INIRec.ReadString(sSecao,'modBC'   ,INIRec.ReadString(sSecao,'Modalidade','0' ) ));
                 ICMS.pRedBC     := StringToFloatDef( INIRec.ReadString(sSecao,'pRedBC'   ,INIRec.ReadString(sSecao,'PercentualReducao','')) ,0);
+                ICMS.cBenefRBC  := INIRec.ReadString(sSecao, 'cBenefRBC', '');
                 ICMS.vBC        := StringToFloatDef( INIRec.ReadString(sSecao,'vBC'      ,INIRec.ReadString(sSecao,'ValorBase'  ,'')) ,0);
                 ICMS.pICMS      := StringToFloatDef( INIRec.ReadString(sSecao,'pICMS'    ,INIRec.ReadString(sSecao,'Aliquota','')) ,0);
                 ICMS.vICMS      := StringToFloatDef( INIRec.ReadString(sSecao,'vICMS'    ,INIRec.ReadString(sSecao,'Valor','')) ,0);
@@ -2236,6 +2256,7 @@ begin
                 ICMS.motRedAdRem := StrTomotRedAdRem(OK, INIRec.ReadString(sSecao,'motRedAdRem','0'));
                 ICMS.qBCMonoRet := StringToFloatDef( INIRec.ReadString(sSecao,'qBCMonoRet','') ,0);
                 ICMS.vICMSMonoOp := StringToFloatDef( INIRec.ReadString(sSecao,'vICMSMonoOp','') ,0);
+                ICMS.indDeduzDeson := StrToTIndicador(OK, INIRec.ReadString(sSecao,'indDeduzDeson','0'));
               end;
             end;
 
@@ -2588,14 +2609,22 @@ begin
           tPag  := StrToFormaPagamento(OK,sFim);
           xPag  := INIRec.ReadString(sSecao,'xPag','');
           vPag  := StringToFloatDef( INIRec.ReadString(sSecao,'vPag','') ,0);
+          dPag  := StringToDateTime(INIRec.ReadString( sSecao,'dPag','0'));
+
+          CNPJPag := INIRec.ReadString(sSecao,'CNPJPag','');
+          UFPag   := INIRec.ReadString(sSecao,'UFPag','');
+
           // Se não for informado 0=Pagamento à Vista ou 1=Pagamento à Prazo
           // a tag <indPag> não deve ser gerada.
           indPag:= StrToIndpag(OK,INIRec.ReadString(sSecao, 'indPag', ''));
 
           tpIntegra  := StrTotpIntegra(OK,INIRec.ReadString(sSecao,'tpIntegra',''));
           CNPJ  := INIRec.ReadString(sSecao,'CNPJ','');
-          tBand := StrToBandeiraCartao(OK,INIRec.ReadString(sSecao,'tBand','99'));
+          tBand := StrToBandeiraCartao(OK,INIRec.ReadString(sSecao,'tBand',''));
           cAut  := INIRec.ReadString(sSecao,'cAut','');
+
+          CNPJReceb := INIRec.ReadString(sSecao,'CNPJReceb','');
+          idTermPag := INIRec.ReadString(sSecao,'idTermPag','');
         end;
         cVTroco:= StringToFloatDef( INIRec.ReadString(sSecao,'vTroco','') ,0);
         if (cVTroco > 0) then
@@ -3186,6 +3215,18 @@ begin
               end;
             end;
           end;
+
+          for J := 0 to Prod.CredPresumido.Count - 1 do
+          begin
+            sSecao := 'CredPresumido' + IntToStrZero(I + 1, 3) + IntToStrZero(J + 1, 1);
+            with Prod.CredPresumido[J] do
+            begin
+              INIRec.WriteString(sSecao, 'cCredPresumido', cCredPresumido);
+              INIRec.WriteFloat(sSecao, 'pCredPresumido', pCredPresumido);
+              INIRec.WriteFloat(sSecao, 'vCredPresumido', vCredPresumido);
+            end;
+          end;
+
           with Imposto do
           begin
             sSecao := 'ICMS' + IntToStrZero(I + 1, 3);
@@ -3196,6 +3237,7 @@ begin
               INIRec.WriteString(sSecao, 'CSOSN', CSOSNIcmsToStr(CSOSN));
               INIRec.WriteString(sSecao, 'modBC', modBCToStr(ICMS.modBC));
               INIRec.WriteFloat(sSecao, 'pRedBC', ICMS.pRedBC);
+              INIRec.WriteString(sSecao, 'cBenefRBC', ICMS.cBenefRBC);
               INIRec.WriteFloat(sSecao, 'vBC', ICMS.vBC);
               INIRec.WriteFloat(sSecao, 'pICMS', ICMS.pICMS);
               INIRec.WriteFloat(sSecao, 'vICMS', ICMS.vICMS);
@@ -3257,6 +3299,7 @@ begin
               INIRec.WriteString(sSecao, 'motRedAdRem', motRedAdRemToStr(ICMS.motRedAdRem));
               INIRec.WriteFloat(sSecao, 'qBCMonoRet', ICMS.qBCMonoRet);
               INIRec.WriteFloat(sSecao, 'vICMSMonoOp', ICMS.vICMSMonoOp);
+              INIRec.WriteString(sSecao, 'indDeduzDeson', TIndicadorToStr(ICMS.indDeduzDeson));
             end;
             sSecao := 'ICMSUFDEST' + IntToStrZero(I + 1, 3);
             with ICMSUFDest do
@@ -3554,11 +3597,17 @@ begin
           INIRec.WriteString(sSecao, 'tPag', FormaPagamentoToStr(tPag));
           INIRec.WriteString(sSecao, 'xPag', xPag);
           INIRec.WriteFloat(sSecao, 'vPag', vPag);
+          INIRec.WriteString(sSecao, 'dPag', DateToStr(dPag));
+          INIRec.WriteString(sSecao, 'CNPJPag', CNPJPag);
+          INIRec.WriteString(sSecao, 'UFPag', UFPag);
+
           INIRec.WriteString(sSecao, 'indPag', IndpagToStr(indPag));
           INIRec.WriteString(sSecao, 'tpIntegra', tpIntegraToStr(tpIntegra));
           INIRec.WriteString(sSecao, 'CNPJ', CNPJ);
           INIRec.WriteString(sSecao, 'tBand', BandeiraCartaoToStr(tBand));
           INIRec.WriteString(sSecao, 'cAut', cAut);
+          INIRec.WriteString(sSecao, 'CNPJReceb', CNPJReceb);
+          INIRec.WriteString(sSecao, 'idTermPag', idTermPag);
         end;
       end;
       INIRec.WriteFloat(sSecao, 'vTroco', pag.vTroco);
@@ -3751,7 +3800,7 @@ begin
   with TACBrNFe(TNotasFiscais(Collection).ACBrNFe) do
   begin
     IdAnterior := NFe.infNFe.ID;
-{$IfDef DFE_ACBR_LIBXML2}
+{$IfDef USE_ACBr_XMLDOCUMENT}
     FNFeW.Opcoes.FormatoAlerta  := Configuracoes.Geral.FormatoAlerta;
     FNFeW.Opcoes.RetirarAcentos := Configuracoes.Geral.RetirarAcentos;
     FNFeW.Opcoes.RetirarEspacos := Configuracoes.Geral.RetirarEspacos;
@@ -3779,7 +3828,7 @@ begin
     FNFeW.CSRT   := Configuracoes.RespTec.CSRT;
   end;
 
-{$IfNDef DFE_ACBR_LIBXML2}
+{$IfNDef USE_ACBr_XMLDOCUMENT}
   FNFeW.Opcoes.GerarTXTSimultaneamente := False;
 {$EndIf}
 
@@ -3788,7 +3837,7 @@ begin
   //WriteToTXT('c:\temp\Notafiscal.xml', FNFeW.Document.Xml, False, False);
   //WriteToTXT('c:\temp\Notafiscal.xml', FNFeW.Gerador.ArquivoFormatoXML, False, False);
 
-{$IfDef DFE_ACBR_LIBXML2}
+{$IfDef USE_ACBr_XMLDOCUMENT}
   XMLOriginal := FNFeW.Document.Xml;  // SetXMLOriginal() irá converter para UTF8
 {$Else}
   XMLOriginal := FNFeW.Gerador.ArquivoFormatoXML;  // SetXMLOriginal() irá converter para UTF8
@@ -3799,7 +3848,7 @@ begin
   if (NaoEstaVazio(FNomeArq) and (IdAnterior <> FNFe.infNFe.ID)) then
     FNomeArq := CalcularNomeArquivoCompleto('', ExtractFilePath(FNomeArq));
 
-{$IfDef DFE_ACBR_LIBXML2}
+{$IfDef USE_ACBr_XMLDOCUMENT}
   FAlertas := ACBrStr( FNFeW.ListaDeAlertas.Text );
 {$Else}
   FAlertas := ACBrStr( FNFeW.Gerador.ListaDeAlertas.Text );
@@ -3808,11 +3857,13 @@ begin
 end;
 
 function NotaFiscal.GerarTXT: String;
+{$IfNDef USE_ACBr_XMLDOCUMENT}
 var
   IdAnterior : String;
+{$EndIf}
 begin
   Result := '';
-{$IfNDef DFE_ACBR_LIBXML2}
+{$IfNDef USE_ACBr_XMLDOCUMENT}
   with TACBrNFe(TNotasFiscais(Collection).ACBrNFe) do
   begin
     IdAnterior                             := NFe.infNFe.ID;

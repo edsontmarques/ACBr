@@ -298,7 +298,7 @@ type
 
   TRetDistDFeInt = class(TObject)
   private
-    FAOwner: TACBrDFe;
+    FOwner: TACBrDFe;
 
     Fversao: string;
     FtpAmb: TpcnTipoAmbiente;
@@ -475,10 +475,7 @@ begin
 
   FdocZip := TdocZipCollection.Create();
 
-  FAOwner := AOwner;
-  if not Assigned(FAOwner) then
-    raise EACBrDFeException.Create('Componente ACBrDFe não informado');
-
+  FOwner := AOwner;
   FptpDFe := AtpDFe;
 end;
 
@@ -614,7 +611,6 @@ end;
 procedure TRetDistDFeInt.LerDocumento(const ANode: TACBrXmlNode; Indice: Integer);
 var
   AuxNode: TACBrXmlNode;
-  Ok: Boolean;
 begin
   if not Assigned(ANode) or (ANode = nil) then Exit;
 
@@ -670,7 +666,6 @@ procedure TRetDistDFeInt.LerGrupo_detEvento_emit(const ANode: TACBrXmlNode;
   Indice: Integer);
 var
   AuxNode: TACBrXmlNode;
-  Ok: Boolean;
 begin
   if not Assigned(ANode) or (ANode = nil) then Exit;
 
@@ -714,9 +709,9 @@ begin
 
   docZip[Indice].procEvento.detEvento.versao := ObterConteudoTag(ANode.Attributes.Items['versao']);
   docZip[Indice].procEvento.detEvento.nProt := ObterConteudoTag(ANode.Childrens.FindAnyNs('nProt'), tcStr);
-  docZip[Indice].procEvento.detEvento.xJust := ACBrStr(ObterConteudoTag(ANode.Childrens.FindAnyNs('xJust'), tcStr));
-  docZip[Indice].procEvento.detEvento.xCorrecao := ACBrStr(ObterConteudoTag(ANode.Childrens.FindAnyNs('xCorrecao'), tcStr));
-  docZip[Indice].procEvento.detEvento.descEvento := ACBrStr(ObterConteudoTag(ANode.Childrens.FindAnyNs('descEvento'), tcStr));
+  docZip[Indice].procEvento.detEvento.xJust := ObterConteudoTag(ANode.Childrens.FindAnyNs('xJust'), tcStr);
+  docZip[Indice].procEvento.detEvento.xCorrecao := ObterConteudoTag(ANode.Childrens.FindAnyNs('xCorrecao'), tcStr);
+  docZip[Indice].procEvento.detEvento.descEvento := ObterConteudoTag(ANode.Childrens.FindAnyNs('descEvento'), tcStr);
   docZip[Indice].procEvento.detEvento.tpAutor := ObterConteudoTag(ANode.Childrens.FindAnyNs('tpAutor'), tcInt);
   docZip[Indice].procEvento.detEvento.verAplic := ObterConteudoTag(ANode.Childrens.FindAnyNs('verAplic'), tcStr);
 
@@ -777,7 +772,6 @@ end;
 
 procedure TRetDistDFeInt.LerDocumentoDecodificado(const DocDecod: AnsiString; Indice: Integer);
 var
-  ok: boolean;
   Document: TACBrXmlDocument;
   ANode: TACBrXmlNode;
   AuxNode: TACBrXmlNode;
@@ -785,32 +779,34 @@ begin
   Document := TACBrXmlDocument.Create;
 
   try
-    XML := DocDecod;
-    Document.LoadFromXml(DocDecod);
+    try
+      XML := DocDecod;
+      Document.LoadFromXml(DocDecod);
 
-    ANode := Document.Root;
+      ANode := Document.Root;
 
-    if ANode <> nil then
-    begin
-      AuxNode := ANode.Childrens.FindAnyNs('res' + FptpDFe);
-      LerResumo(AuxNode, Indice);
+      if ANode <> nil then
+      begin
+        AuxNode := ANode.Childrens.FindAnyNs('res' + FptpDFe);
+        LerResumo(AuxNode, Indice);
 
-      AuxNode := ANode.Childrens.FindAnyNs('resEvento');
-      LerResumoEvento(AuxNode, Indice);
+        AuxNode := ANode.Childrens.FindAnyNs('resEvento');
+        LerResumoEvento(AuxNode, Indice);
 
-      AuxNode := ANode.Childrens.FindAnyNs(LowerCase(FptpDFe) + 'Proc');
-      LerDocumento(AuxNode, Indice);
+        AuxNode := ANode.Childrens.FindAnyNs(LowerCase(FptpDFe) + 'Proc');
+        LerDocumento(AuxNode, Indice);
 
-      AuxNode := ANode.Childrens.FindAnyNs(LowerCase(FptpDFe) + 'OSProc');
-      LerDocumento(AuxNode, Indice);
+        AuxNode := ANode.Childrens.FindAnyNs(LowerCase(FptpDFe) + 'OSProc');
+        LerDocumento(AuxNode, Indice);
 
-      AuxNode := ANode.Childrens.FindAnyNs('procEvento' + FptpDFe);
-      LerEvento(AuxNode, Indice);
+        AuxNode := ANode.Childrens.FindAnyNs('procEvento' + FptpDFe);
+        LerEvento(AuxNode, Indice);
+      end;
+    except
+      //    Result := False;
     end;
-
+  finally
     FreeAndNil(Document);
-  except
-//    Result := False;
   end;
 end;
 
@@ -912,14 +908,14 @@ function TRetDistDFeInt.GerarPathDistribuicao(
 begin
   case AItem.schema of
     schresEvento:
-      Result := FAOwner.Configuracoes.Arquivos.GetPathDownloadEvento(AItem.resEvento.tpEvento,
+      Result := FOwner.Configuracoes.Arquivos.GetPathDownloadEvento(AItem.resEvento.tpEvento,
                                                       AItem.resDFe.xNome,
                                                       AItem.resEvento.CNPJCPF,
                                                       AItem.resDFe.IE,
                                                       AItem.resEvento.dhEvento);
 
     schprocEventoNFe:
-      Result := FAOwner.Configuracoes.Arquivos.GetPathDownloadEvento(AItem.procEvento.tpEvento,
+      Result := FOwner.Configuracoes.Arquivos.GetPathDownloadEvento(AItem.procEvento.tpEvento,
                                                      AItem.resDFe.xNome,
                                                      AItem.procEvento.CNPJ,
                                                      AItem.resDFe.IE,
@@ -927,7 +923,7 @@ begin
 
     schresNFe,
     schprocNFe:
-      Result := FAOwner.Configuracoes.Arquivos.GetPathDownload(AItem.resDFe.xNome,
+      Result := FOwner.Configuracoes.Arquivos.GetPathDownload(AItem.resDFe.xNome,
                                                            AItem.resDFe.CNPJCPF,
                                                            AItem.resDFe.IE,
                                                            AItem.resDFe.dhEmi);

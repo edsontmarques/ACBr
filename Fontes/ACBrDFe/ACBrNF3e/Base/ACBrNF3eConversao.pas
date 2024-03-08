@@ -50,27 +50,27 @@ type
   TVersaoNF3e = (ve100);
 
 const
-  TVersaoNF3eArrayStrings: array[TVersaoNF3e] of string = ('1.00');
-  TVersaoNF3eArrayDouble: array[TVersaoNF3e] of Double = (1.00);
+  TVersaoArrayStrings: array[TVersaoNF3e] of string = ('1.00');
+  TVersaoArrayDouble: array[TVersaoNF3e] of Double = (1.00);
 
 type
   TSchemaNF3e = (schErro, schconsStatServNF3e, schNF3e, schconsReciNF3e,
-                 schconsSitNF3e, schInutNF3e, schenvEvento,
+                 schconsSitNF3e, schInutNF3e, schEventoNF3e,
                  schCancNF3e);
 
 const
-  TSchemaNF3eArrayStrings: array[TSchemaNF3e] of string = ('', '', '', '',
-    '', '', '', 'evCancNF3e');
+  TSchemaArrayStrings: array[TSchemaNF3e] of string = ('', '', '', '',  '', '',
+    '', 'evCancNF3e');
 
 type
   TLayOut = (LayNF3eStatusServico, LayNF3eRecepcao, LayNF3eRecepcaoSinc,
              LayNF3eRetRecepcao, LayNF3eConsulta, LayNF3eEvento,
-             LayNF3eQRCode, LayNF3eURLConsulta);
+             LayNF3eQRCode, LayNF3eURLConsulta, LayNF3eDistDFeInt);
 
 const
-  TLayOutNF3eArrayStrings: array[TLayOut] of string = ('NF3eStatusServico',
+  TLayOutArrayStrings: array[TLayOut] of string = ('NF3eStatusServico',
     'NF3eRecepcao', 'NF3eRecepcaoSinc', 'NF3eRetRecepcao', 'NF3eConsulta',
-    'NFComRecepcaoEvento', 'URL-QRCode', 'URL-ConsultaNF3e');
+    'NF3eRecepcaoEvento', 'URL-QRCode', 'URL-ConsultaNF3e', 'NF3eDistDFeInt');
 
 type
   TVersaoQrCode = (veqr000, veqr100, veqr200);
@@ -90,8 +90,7 @@ type
   TFinalidadeNF3e = (fnNormal, fnSubstituicao, fnAjuste);
 
 const
-  TFinalidadeNF3eArrayStrings: array[TFinalidadeNF3e] of string = ('1', '2',
-    '3');
+  TFinalidadeArrayStrings: array[TFinalidadeNF3e] of string = ('1', '2', '3');
 
 type
   TtpAcesso = (taGerador, taCativo, taLivre, taParcialmenteLivre,
@@ -228,20 +227,20 @@ const
   TuMedArrayStrings: array[TuMed] of string = ('1', '2');
 
 type
-  TuMedFat = (umfkW, umfkWh, umfkVAr, umfkVArh);
+  TuMedFat = (umfkW, umfkWh, umfkVAr, umfkVArh, umfkUN);
 
 const
-  TuMedFatArrayStrings: array[TuMedFat] of string = ('1', '2', '3', '4');
+  TuMedFatArrayStrings: array[TuMedFat] of string = ('1', '2', '3', '4', '5');
   TuMedFatDescArrayStrings: array[TuMedFat] of string = ('kW', 'kWh', 'kVAr',
-    'kVArh');
+    'kVArh', 'UN');
 
 type
-  TmotDifTarif = (mdtDecisaoJudicial, mdtDecisaoDistribuidora, mdtDesconto,
-                  mdtAlteracao);
+  TmotDifTarif = (mdtVazio, mdtDecisaoJudicial, mdtDecisaoDistribuidora,
+                  mdtDesconto, mdtAlteracao);
 
 const
-  TmotDifTarifArrayStrings: array[TmotDifTarif] of string = ('01', '02', '03',
-    '04');
+  TmotDifTarifArrayStrings: array[TmotDifTarif] of string = ('', '01', '02',
+    '03', '04');
 
 type
   TtpBand = (tbVerde, tbAmarela, tbVermelha1, tbVermelha2, tbEscassez);
@@ -272,10 +271,11 @@ const
   TtpGrMedArrayStrings: array[TtpGrMed] of string = ('01', '02', '03', '04', '05');
 
 type
-  TtpMotNaoLeitura = (tmNenhum, tmConsumidor, tmDistribuidora, tmIndependente);
+  TtpMotNaoLeitura = (tmNenhum, tmConsumidor, tmDistribuidora,
+                      tmIndependente);
 
 const
-  TtpMotNaoLeituraArrayStrings: array[TtpMotNaoLeitura] of string = ('0', '1',
+  TtpMotNaoLeituraArrayStrings: array[TtpMotNaoLeitura] of string = ('', '1',
     '2', '3');
 
 type
@@ -299,134 +299,56 @@ const
     '4', '5', '6');
 
 type
-  TIndicador = (tiSim, tiNao);
+  TIndicador = (tiVazio, tiSim, tiNao);
 
 const
-  TIndicadorArrayStrings: array[TIndicador] of string = ('1', '0');
+  TIndicadorArrayStrings: array[TIndicador] of string = ('', '1', '0');
 
 type
-  TCSTCofins = (cof01, cof02, cof03, cof04, cof05, cof06, cof07, cof08, cof09,
-                cof49, cof50, cof51, cof52, cof53, cof54, cof55, cof56, cof60,
-                cof61, cof62, cof63, cof64, cof65, cof66, cof67, cof70, cof71,
-                cof72, cof73, cof74, cof75, cof98, cof99);
+  TCSTCofins = (cof01, cof02, cof06, cof07, cof08, cof09, cof49);
 
 const
-  TCSTCofinsArrayStrings: array[TCSTCofins] of string = ('01', '02', '03', '04',
-    '05', '06', '07', '08', '09', '49', '50', '51', '52', '53', '54', '55', '56',
-    '60', '61', '62', '63', '64', '65', '66', '67', '70', '71', '72', '73', '74',
-    '75', '98', '99');
+  TCSTCofinsArrayStrings: array[TCSTCofins] of string = ('01', '02', '06', '07',
+    '08', '09', '49');
   TCSTCofinsDescArrayStrings: array[TCSTCofins] of string = (
     '01 - Operação Tributável com Alíquota Básica',
     '02 - Operação Tributável com Alíquota Diferenciada',
-    '03 - Operação Tributável com Alíquota por Unidade de Medida de Produto',
-    '04 - Operação Tributável Monofásica - Revenda a Alíquota Zero',
-    '05 - Operação Tributável por Substituição Tributária',
     '06 - Operação Tributável a Alíquota Zero',
     '07 - Operação Isenta da Contribuição',
     '08 - Operação sem Incidência da Contribuição',
     '09 - Operação com Suspensão da Contribuição',
-    '49 - Outras Operações de Saída',
-    '50 - Operação com Direito a Crédito - Vinculada Exclusivamente a Receita Tributada no Mercado Interno',
-    '51 - Operação com Direito a Crédito - Vinculada Exclusivamente a Receita Não Tributada no Mercado Interno',
-    '52 - Operação com Direito a Crédito - Vinculada Exclusivamente a Receita de Exportação',
-    '53 - Operação com Direito a Crédito - Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno',
-    '54 - Operação com Direito a Crédito - Vinculada a Receitas Tributadas no Mercado Interno e de Exportação',
-    '55 - Operação com Direito a Crédito - Vinculada a Receitas Não-Tributadas no Mercado Interno e de Exportação',
-    '56 - Operação com Direito a Crédito - Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno, e de Exportação',
-    '60 - Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita Tributada no Mercado Interno',
-    '61 - Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita Não-Tributada no Mercado Interno',
-    '62 - Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita de Exportação',
-    '63 - Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno',
-    '64 - Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas no Mercado Interno e de Exportação',
-    '65 - Crédito Presumido - Operação de Aquisição Vinculada a Receitas Não-Tributadas no Mercado Interno e de Exportação',
-    '66 - Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno, e de Exportação',
-    '67 - Crédito Presumido - Outras Operações',
-    '70 - Operação de Aquisição sem Direito a Crédito',
-    '71 - Operação de Aquisição com Isenção',
-    '72 - Operação de Aquisição com Suspensão',
-    '73 - Operação de Aquisição a Alíquota Zero',
-    '74 - Operação de Aquisição sem Incidência da Contribuição',
-    '75 - Operação de Aquisição por Substituição Tributária',
-    '98 - Outras Operações de Entrada',
-    '99 - Outras Operações');
+    '49 - Outras Operações de Saída');
 
 type
-  TCSTPis = (pis01, pis02, pis03, pis04, pis05, pis06, pis07, pis08, pis09,
-             pis49, pis50, pis51, pis52, pis53, pis54, pis55, pis56, pis60,
-             pis61, pis62, pis63, pis64, pis65, pis66, pis67, pis70, pis71,
-             pis72, pis73, pis74, pis75, pis98, pis99);
+  TCSTPis = (pis01, pis02, pis06, pis07, pis08, pis09, pis49);
 
 const
-  TCSTPisArrayStrings: array[TCSTPis] of string = ('01', '02', '03', '04', '05',
-    '06', '07', '08', '09', '49', '50', '51', '52', '53', '54', '55', '56', '60',
-    '61', '62', '63', '64', '65', '66', '67', '70', '71', '72', '73', '74', '75',
-    '98', '99');
+  TCSTPisArrayStrings: array[TCSTPis] of string = ('01', '02', '06', '07', '08',
+    '09', '49');
   TCSTPisDescArrayStrings: array[TCSTPis] of string = (
     '01 - Operação Tributável com Alíquota Básica',
     '02 - Operação Tributável com Alíquota Diferenciada',
-    '03 - Operação Tributável com Alíquota por Unidade de Medida de Produto',
-    '04 - Operação Tributável Monofásica - Revenda a Alíquota Zero',
-    '05 - Operação Tributável por Substituição Tributária',
     '06 - Operação Tributável a Alíquota Zero',
     '07 - Operação Isenta da Contribuição',
     '08 - Operação sem Incidência da Contribuição',
     '09 - Operação com Suspensão da Contribuição',
-    '49 - Outras Operações de Saída',
-    '50 - Operação com Direito a Crédito - Vinculada Exclusivamente a Receita Tributada no Mercado Interno',
-    '51 - Operação com Direito a Crédito - Vinculada Exclusivamente a Receita Não Tributada no Mercado Interno',
-    '52 - Operação com Direito a Crédito - Vinculada Exclusivamente a Receita de Exportação',
-    '53 - Operação com Direito a Crédito - Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno',
-    '54 - Operação com Direito a Crédito - Vinculada a Receitas Tributadas no Mercado Interno e de Exportação',
-    '55 - Operação com Direito a Crédito - Vinculada a Receitas Não-Tributadas no Mercado Interno e de Exportação',
-    '56 - Operação com Direito a Crédito - Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno, e de Exportação',
-    '60 - Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita Tributada no Mercado Interno',
-    '61 - Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita Não-Tributada no Mercado Interno',
-    '62 - Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita de Exportação',
-    '63 - Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno',
-    '64 - Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas no Mercado Interno e de Exportação',
-    '65 - Crédito Presumido - Operação de Aquisição Vinculada a Receitas Não-Tributadas no Mercado Interno e de Exportação',
-    '66 - Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno, e de Exportação',
-    '67 - Crédito Presumido - Outras Operações',
-    '70 - Operação de Aquisição sem Direito a Crédito',
-    '71 - Operação de Aquisição com Isenção',
-    '72 - Operação de Aquisição com Suspensão',
-    '73 - Operação de Aquisição a Alíquota Zero',
-    '74 - Operação de Aquisição sem Incidência da Contribuição',
-    '75 - Operação de Aquisição por Substituição Tributária',
-    '98 - Outras Operações de Entrada',
-    '99 - Outras Operações');
+    '49 - Outras Operações de Saída');
 
 type
-  TCSTIcms = (cst00, cst10, cst20, cst30, cst40, cst41, cst45, cst50, cst51,
-              cst60, cst70, cst80, cst81, cst90, cstPart10, cstPart90,
-              cstRep41, cstVazio, cstICMSOutraUF, cstICMSSN, cstRep60);
+  TCSTIcms = (cst00, cst10, cst20, cst40, cst41, cst51, cst60, cst90);
 
 const
-  TCSTIcmsArrayStrings: array[TCSTIcms] of string = ('', '00', '10', '20', '30',
-    '40', '41', '45', '50', '51', '60', '70', '80', '81', '90', '90', 'SN', '10',
-    '90', '41', '60');
+  TCSTIcmsArrayStrings: array[TCSTIcms] of string = ('00', '10', '20', '40',
+    '41', '51', '60', '90');
   TCSTIcmsDescArrayStrings: array[TCSTIcms] of string = (
-    'VAZIO',
-    '00 - TRIBUTAÇÃO NORMAL DO ICMS',
-    '10 - TRIBUTAÇÃO COM COBRANÇA DO ICMS POR SUBST. TRIBUTÁRIA',
-    '20 - TRIBUTAÇÃO COM REDUÇÃO DE BC DO ICMS',
-    '30 - TRIBUTAÇÃO ISENTA E COM COBRANÇA DO ICMS POR SUBST. TRIBUTÁRIA',
-    '40 - ICMS ISENÇÃO',
-    '41 - ICMS NÃO TRIBUTADO',
-    '45 - ICMS ISENTO, NÃO TRIBUTADO OU DIFERIDO',
-    '50 - ICMS SUSPENSÃO',
-    '51 - ICMS DIFERIDO',
-    '60 - ICMS COBRADO POR SUBSTITUIÇÃO TRIBUTÁRIA',
-    '70 - TRIBUTAÇÃO COM REDUÇÃO DE BC E COBRANÇA DO ICMS POR SUBST. TRIBUTÁRIA',
-    '80 - RESPONSABILIDADE DO RECOLHIMENTO DO ICMS ATRIBUÍDO AO TOMADOR OU 3° POR ST',
-    '81 - ICMS DEVIDO À OUTRA UF',
-    '90 - ICMS OUTROS',
-    '90 - ICMS DEVIDO A UF DE ORIGEM DA PRESTACAO, QUANDO DIFERENTE DA UF DO EMITENTE',
-    '90 - SIMPLES NACIONAL',
-    '10 - TRIBUTADA E COM COBRANÇA DO ICMS POR SUBSTITUIÇÃO TRIBUTÁRIA - PARTILHA',
-    '90 - OUTROS - PARTILHA',
-    '41 - NÃO TRIBUTADO - REPASSE',
-    '60 - COBRADO ANTERIORMENTE POR SUBSTITUIÇÃO TRIBUTÁRIA - REPASSE');
+    '00 - Tributado Integralmente',
+    '10 - Tributada e com cobrança do ICMS por substituição tributária',
+    '20 - Tributação com BC reduzida do ICMS',
+    '40 - Tributação Isenta',
+    '41 - ICMS não Tributado',
+    '51 - Diferimento',
+    '60 - ICMS cobrado anteriormente por substituição tributária',
+    '90 - ICMS Outros');
 
 type
   TindIEDest = (inContribuinte, inIsento, inNaoContribuinte);
@@ -437,8 +359,10 @@ const
 {
   Declaração das funções de conversão
 }
+function StrToTpEventoNF3e(out ok: boolean; const s: string): TpcnTpEvento;
+
 function LayOutToServico(const t: TLayOut): string;
-function ServicoToLayOut(out ok: Boolean; const s: string): TLayOut;
+function ServicoToLayOut(const s: string): TLayOut;
 
 function LayOutToSchema(const t: TLayOut): TSchemaNF3e;
 
@@ -446,123 +370,121 @@ function SchemaNF3eToStr(const t: TSchemaNF3e): string;
 function StrToSchemaNF3e(const s: string): TSchemaNF3e;
 function SchemaEventoToStr(const t: TSchemaNF3e): string;
 
-function StrToVersaoNF3e(out ok: Boolean; const s: string): TVersaoNF3e;
+function StrToVersaoNF3e(const s: string): TVersaoNF3e;
 function VersaoNF3eToStr(const t: TVersaoNF3e): string;
 
-function DblToVersaoNF3e(out ok: Boolean; const d: Real): TVersaoNF3e;
-function VersaoNF3eToDbl(const t: TVersaoNF3e): Real;
+function DblToVersaoNF3e(const d: Double): TVersaoNF3e;
+function VersaoNF3eToDbl(const t: TVersaoNF3e): Double;
 
 function VersaoQrCodeToStr(const t: TVersaoQrCode): string;
-function StrToVersaoQrCode(out ok: Boolean; const s: string): TVersaoQrCode;
-function VersaoQrCodeToDbl(const t: TVersaoQrCode): Real;
+function StrToVersaoQrCode(const s: string): TVersaoQrCode;
+function VersaoQrCodeToDbl(const t: TVersaoQrCode): Double;
 
 function finNF3eToStr(const t: TFinalidadeNF3e): string;
-function StrTofinNF3e(out ok: Boolean; const s: string): TFinalidadeNF3e;
+function StrTofinNF3e(const s: string): TFinalidadeNF3e;
 
 function tpAcessoToStr(const t: TtpAcesso): string;
-function StrTotpAcesso(out ok: Boolean; const s: string): TtpAcesso;
+function StrTotpAcesso(const s: string): TtpAcesso;
 
 function tpClasseToStr(const t: TtpClasse): string;
-function StrTotpClasse(out ok: Boolean; const s: string): TtpClasse;
+function StrTotpClasse(const s: string): TtpClasse;
 function tpClasseToDesc(const t: TtpClasse): string;
 
 function tpSubClasseToStr(const t: TtpSubClasse): string;
-function StrTotpSubClasse(out ok: Boolean; const s: string): TtpSubClasse;
+function StrTotpSubClasse(const s: string): TtpSubClasse;
 
 function tpFaseToStr(const t: TtpFase): string;
-function StrTotpFase(out ok: Boolean; const s: string): TtpFase;
+function StrTotpFase(const s: string): TtpFase;
 function tpFaseToDesc(const t: TtpFase): string;
 
 function tpGrpTensaoToStr(const t: TtpGrpTensao): string;
-function StrTotpGrpTensao(out ok: Boolean; const s: string): TtpGrpTensao;
+function StrTotpGrpTensao(const s: string): TtpGrpTensao;
 
 function tpModTarToStr(const t: TtpModTar): string;
-function StrTotpModTar(out ok: Boolean; const s: string): TtpModTar;
+function StrTotpModTar(const s: string): TtpModTar;
 
 function MotSubToStr(const t: TmotSub): string;
-function StrToMotSub(out ok: Boolean; const s: string): TmotSub;
+function StrToMotSub(const s: string): TmotSub;
 
 function tpGrContratToStr(const t: TtpGrContrat): string;
-function StrTotpGrContrat(out ok: Boolean; const s: string): TtpGrContrat;
+function StrTotpGrContrat(const s: string): TtpGrContrat;
 
 function tpPosTarToStr(const t: TtpPosTar): string;
-function StrTotpPosTar(out ok: Boolean; const s: string): TtpPosTar;
+function StrTotpPosTar(const s: string): TtpPosTar;
 
 function tpPartCompToStr(const t: TtpPartComp): string;
-function StrTotpPartComp(out ok: Boolean; const s: string): TtpPartComp;
+function StrTotpPartComp(const s: string): TtpPartComp;
 
 function tpAjusteToStr(const t: TtpAjuste): string;
-function StrTotpAjuste(out ok: Boolean; const s: string): TtpAjuste;
+function StrTotpAjuste(const s: string): TtpAjuste;
 
 function MotAjusteToStr(const t: TmotAjuste): string;
-function StrToMotAjuste(out ok: Boolean; const s: string): TmotAjuste;
+function StrToMotAjuste(const s: string): TmotAjuste;
 
 function tpAtoToStr(const t: TtpAto): string;
-function StrTotpAto(out ok: Boolean; const s: string): TtpAto;
+function StrTotpAto(const s: string): TtpAto;
 
 function tpTarifToStr(const t: TtpTarif): string;
-function StrTotpTarif(out ok: Boolean; const s: string): TtpTarif;
+function StrTotpTarif(const s: string): TtpTarif;
 
 function cPosTarifToStr(const t: TcPosTarif): string;
-function StrTocPosTarif(out ok: Boolean; const s: string): TcPosTarif;
+function StrTocPosTarif(const s: string): TcPosTarif;
 
 function uMedToStr(const t: TuMed): string;
-function StrTouMed(out ok: Boolean; const s: string): TuMed;
+function StrTouMed(const s: string): TuMed;
 
 function uMedFatToStr(const t: TuMedFat): string;
-function StrTouMedFat(out ok: Boolean; const s: string): TuMedFat;
+function StrTouMedFat(const s: string): TuMedFat;
 function uMedFatToDesc(const t: TuMedFat): string;
 
 function motDifTarifToStr(const t: TmotDifTarif): string;
-function StrTomotDifTarif(out ok: Boolean; const s: string): TmotDifTarif;
+function StrTomotDifTarif(const s: string): TmotDifTarif;
 
 function tpBandToStr(const t: TtpBand): string;
-function StrTotpBand(out ok: Boolean; const s: string): TtpBand;
+function StrTotpBand(const s: string): TtpBand;
 
 function motDifBandToStr(const t: TmotDifBand): string;
-function StrTomotDifBand(out ok: Boolean; const s: string): TmotDifBand;
+function StrTomotDifBand(const s: string): TmotDifBand;
 
 function indOrigemQtdToStr(const t: TindOrigemQtd): string;
-function StrToindOrigemQtd(out ok: Boolean; const s: string): TindOrigemQtd;
+function StrToindOrigemQtd(const s: string): TindOrigemQtd;
 
 function tpGrMedToStr(const t: TtpGrMed): string;
-function StrTotpGrMed(out ok: Boolean; const s: string): TtpGrMed;
+function StrTotpGrMed(const s: string): TtpGrMed;
 
 function tpMotNaoLeituraToStr(const t: TtpMotNaoLeitura): string;
-function StrTotpMotNaoLeitura(out ok: Boolean; const s: string): TtpMotNaoLeitura;
+function StrTotpMotNaoLeitura(const s: string): TtpMotNaoLeitura;
 
 function tpProcToStr(const t: TtpProc): string;
-function StrTotpProc(out ok: Boolean; const s: string): TtpProc;
+function StrTotpProc(const s: string): TtpProc;
 
 function tpLancToStr(const t: TtpLanc): string;
-function StrTotpLanc(out ok: Boolean; const s: string): TtpLanc;
+function StrTotpLanc(const s: string): TtpLanc;
 
 function tpFonteEnergiaToStr(const t: TtpFonteEnergia): string;
-function StrTotpFonteEnergia(out ok: Boolean; const s: string): TtpFonteEnergia;
+function StrTotpFonteEnergia(const s: string): TtpFonteEnergia;
 
 function SiteAutorizadorToStr(const t: TSiteAutorizador): string;
-function StrToSiteAutorizator(out ok: Boolean; const s: string): TSiteAutorizador;
+function StrToSiteAutorizator(const s: string): TSiteAutorizador;
 
 function TIndicadorToStr(const t: TIndicador): string;
-function StrToTIndicador(out ok: boolean; const s: string): TIndicador;
+function StrToTIndicador(const s: string): TIndicador;
 
 function CSTCOFINSToStrTagPosText(const t: TCSTCofins): string;
 function CSTCOFINSToStr(const t: TCSTCofins): string;
-function StrToCSTCOFINS(out ok: boolean; const s: string): TCSTCofins;
+function StrToCSTCOFINS(const s: string): TCSTCofins;
 
 function CSTPISToStrTagPosText(const t: TCSTPis): string;
 function CSTPISToStr(const t: TCSTPis): string;
-function StrToCSTPIS(out ok: boolean; const s: string): TCSTPis;
+function StrToCSTPIS(const s: string): TCSTPis;
 
 function CSTICMSToStr(const t: TCSTIcms): string;
-function StrToCSTICMS(out ok: boolean; const s: string): TCSTIcms;
+function StrToCSTICMS(const s: string): TCSTIcms;
 function CSTICMSToStrTagPos(const t: TCSTIcms): string;
 function CSTICMSToStrTagPosText(const t: TCSTIcms): string;
 
 function indIEDestToStr(const t: TindIEDest ): string;
-function StrToindIEDest(out ok: boolean; const s: string): TindIEDest;
-
-function StrToTpEventoNF3e(out ok: boolean; const s: string): TpcnTpEvento;
+function StrToindIEDest(const s: string): TindIEDest;
 
 implementation
 
@@ -570,18 +492,33 @@ uses
   typinfo,
   ACBrBase;
 
-function LayOutToServico(const t: TLayOut): string;
-begin
-  result := TLayOutNF3eArrayStrings[t];
-end;
-
-function ServicoToLayOut(out ok: Boolean; const s: string): TLayOut;
+function StrToTpEventoNF3e(out ok: boolean; const s: string): TpcnTpEvento;
 begin
   Result := StrToEnumerado(ok, s,
-    ['NF3eStatusServico', 'NF3eRecepcao', 'NF3eRecepcaoSinc', 'NF3eRetRecepcao',
-     'NF3eConsulta', 'NF3eInutilizacao', 'NF3eRecepcaoEvento', 'NF3eDistribuicaoDFe'],
-    [LayNF3eStatusServico, LayNF3eRecepcao, LayNF3eRecepcaoSinc,
-     LayNF3eRetRecepcao, LayNF3eConsulta, LayNF3eEvento] );
+            ['-99999', '110111', '240140', '240150', '240170'],
+            [teNaoMapeado, teCancelamento, teAutorizadoSubstituicao,
+             teAutorizadoAjuste, teLiberacaoPrazoCancelado]);
+end;
+
+function LayOutToServico(const t: TLayOut): string;
+begin
+  result := TLayOutArrayStrings[t];
+end;
+
+function ServicoToLayOut(const s: string): TLayOut;
+var
+  idx: TLayOut;
+begin
+  for idx := Low(TLayOutArrayStrings) to High(TLayOutArrayStrings) do
+  begin
+    if (TLayOutArrayStrings[idx] = s) then
+    begin
+      result := idx;
+      exit;
+    end;
+  end;
+
+  raise EACBrException.CreateFmt('Valor string inválido para TVersaoNF3e: %s', [s]);
 end;
 
 function LayOutToSchema(const t: TLayOut): TSchemaNF3e;
@@ -592,7 +529,7 @@ begin
     LayNF3eRecepcaoSinc:  Result := schNF3e;
     LayNF3eRetRecepcao:   Result := schconsReciNF3e;
     LayNF3eConsulta:      Result := schconsSitNF3e;
-    LayNF3eEvento:        Result := schenvEvento;
+    LayNF3eEvento:        Result := schEventoNF3e;
   else
     Result := schErro;
   end;
@@ -629,13 +566,13 @@ begin
   Result := TSchemaNF3e( CodSchema );
 end;
 
-function StrToVersaoNF3e(out ok: Boolean; const s: string): TVersaoNF3e;
+function StrToVersaoNF3e(const s: string): TVersaoNF3e;
 var
   idx: TVersaoNF3e;
 begin
-  for idx := Low(TVersaoNF3eArrayStrings) to High(TVersaoNF3eArrayStrings) do
+  for idx := Low(TVersaoArrayStrings) to High(TVersaoArrayStrings) do
   begin
-    if (TVersaoNF3eArrayStrings[idx] = s) then
+    if (TVersaoArrayStrings[idx] = s) then
     begin
       result := idx;
       exit;
@@ -647,29 +584,29 @@ end;
 
 function VersaoNF3eToStr(const t: TVersaoNF3e): string;
 begin
-  result := TVersaoNF3eArrayStrings[t];
+  result := TVersaoArrayStrings[t];
 end;
 
- function DblToVersaoNF3e(out ok: Boolean; const d: Real): TVersaoNF3e;
- begin
-   ok := True;
+ function DblToVersaoNF3e(const d: Double): TVersaoNF3e;
+var
+  idx: TVersaoNF3e;
+begin
+  for idx := Low(TVersaoArrayDouble) to High(TVersaoArrayDouble) do
+  begin
+    if (TVersaoArrayDouble[idx] = d) then
+    begin
+      result := idx;
+      exit;
+    end;
+  end;
 
-   if (d = 1.0) then
-     Result := ve100
-   else
-   begin
-     Result := ve100;
-     ok := False;
-   end;
- end;
+  raise EACBrException.CreateFmt('Valor string inválido para TVersaoNF3e: %s',
+    [FormatFloat('0.00', d)]);
+end;
 
- function VersaoNF3eToDbl(const t: TVersaoNF3e): Real;
+ function VersaoNF3eToDbl(const t: TVersaoNF3e): Double;
  begin
-   case t of
-     ve100: Result := 1.00;
-   else
-     Result := 0;
-   end;
+  result := TVersaoArrayDouble[t];
  end;
 
 function VersaoQrCodeToStr(const t: TVersaoQrCode): string;
@@ -677,7 +614,7 @@ begin
   result := TVersaoQrCodeArrayStrings[t];
 end;
 
-function StrToVersaoQrCode(out ok: Boolean; const s: string): TVersaoQrCode;
+function StrToVersaoQrCode(const s: string): TVersaoQrCode;
 var
   idx: TVersaoQrCode;
 begin
@@ -693,34 +630,28 @@ begin
   raise EACBrException.CreateFmt('Valor string inválido para TVersaoQrCode: %s', [s]);
 end;
 
-function VersaoQrCodeToDbl(const t: TVersaoQrCode): Real;
+function VersaoQrCodeToDbl(const t: TVersaoQrCode): Double;
 begin
-  case t of
-    veqr000: Result := 0;
-    veqr100: Result := 1;
-    veqr200: Result := 2;
-  else
-    Result := 0;
-  end;
+  result := TVersaoQrCodeArrayDouble[t];
 end;
 
 function SchemaEventoToStr(const t: TSchemaNF3e): string;
 begin
-  result := TSchemaNF3eArrayStrings[t];
+  result := TSchemaArrayStrings[t];
 end;
 
 function finNF3eToStr(const t: TFinalidadeNF3e): string;
 begin
-  result := TFinalidadeNF3eArrayStrings[t];
+  result := TFinalidadeArrayStrings[t];
 end;
 
-function StrTofinNF3e(out ok: Boolean; const s: string): TFinalidadeNF3e;
+function StrTofinNF3e(const s: string): TFinalidadeNF3e;
 var
   idx: TFinalidadeNF3e;
 begin
-  for idx := Low(TFinalidadeNF3eArrayStrings) to High(TFinalidadeNF3eArrayStrings) do
+  for idx := Low(TFinalidadeArrayStrings) to High(TFinalidadeArrayStrings) do
   begin
-    if (TFinalidadeNF3eArrayStrings[idx] = s) then
+    if (TFinalidadeArrayStrings[idx] = s) then
     begin
       result := idx;
       exit;
@@ -735,7 +666,7 @@ begin
   result := TtpAcessoArrayStrings[t];
 end;
 
-function StrTotpAcesso(out ok: Boolean; const s: string): TtpAcesso;
+function StrTotpAcesso(const s: string): TtpAcesso;
 var
   idx: TtpAcesso;
 begin
@@ -756,7 +687,7 @@ begin
   result := TtpClasseArrayStrings[t];
 end;
 
-function StrTotpClasse(out ok: Boolean; const s: string): TtpClasse;
+function StrTotpClasse(const s: string): TtpClasse;
 var
   idx: TtpClasse;
 begin
@@ -782,7 +713,7 @@ begin
   result := TtpSubClasseArrayStrings[t];
 end;
 
-function StrTotpSubClasse(out ok: Boolean; const s: string): TtpSubClasse;
+function StrTotpSubClasse(const s: string): TtpSubClasse;
 var
   idx: TtpSubClasse;
 begin
@@ -803,7 +734,7 @@ begin
   result := TtpFaseArrayStrings[t];
 end;
 
-function StrTotpFase(out ok: Boolean; const s: string): TtpFase;
+function StrTotpFase(const s: string): TtpFase;
 var
   idx: TtpFase;
 begin
@@ -829,7 +760,7 @@ begin
   result := TtpGrpTensaoArrayStrings[t];
 end;
 
-function StrTotpGrpTensao(out ok: Boolean; const s: string): TtpGrpTensao;
+function StrTotpGrpTensao(const s: string): TtpGrpTensao;
 var
   idx: TtpGrpTensao;
 begin
@@ -850,7 +781,7 @@ begin
   result := TtpModTarArrayStrings[t];
 end;
 
-function StrTotpModTar(out ok: Boolean; const s: string): TtpModTar;
+function StrTotpModTar(const s: string): TtpModTar;
 var
   idx: TtpModTar;
 begin
@@ -871,7 +802,7 @@ begin
   result := TmotSubArrayStrings[t];
 end;
 
-function StrToMotSub(out ok: Boolean; const s: string): TmotSub;
+function StrToMotSub(const s: string): TmotSub;
 var
   idx: TmotSub;
 begin
@@ -892,7 +823,7 @@ begin
   result := TtpGrContratArrayStrings[t];
 end;
 
-function StrTotpGrContrat(out ok: Boolean; const s: string): TtpGrContrat;
+function StrTotpGrContrat(const s: string): TtpGrContrat;
 var
   idx: TtpGrContrat;
 begin
@@ -913,7 +844,7 @@ begin
   result := TtpPosTarArrayStrings[t];
 end;
 
-function StrTotpPosTar(out ok: Boolean; const s: string): TtpPosTar;
+function StrTotpPosTar(const s: string): TtpPosTar;
 var
   idx: TtpPosTar;
 begin
@@ -934,7 +865,7 @@ begin
   result := TtpPartCompArrayStrings[t];
 end;
 
-function StrTotpPartComp(out ok: Boolean; const s: string): TtpPartComp;
+function StrTotpPartComp(const s: string): TtpPartComp;
 var
   idx: TtpPartComp;
 begin
@@ -955,7 +886,7 @@ begin
   result := TtpAjusteArrayStrings[t];
 end;
 
-function StrTotpAjuste(out ok: Boolean; const s: string): TtpAjuste;
+function StrTotpAjuste(const s: string): TtpAjuste;
 var
   idx: TtpAjuste;
 begin
@@ -976,7 +907,7 @@ begin
   result := TmotAjusteArrayStrings[t];
 end;
 
-function StrToMotAjuste(out ok: Boolean; const s: string): TmotAjuste;
+function StrToMotAjuste(const s: string): TmotAjuste;
 var
   idx: TmotAjuste;
 begin
@@ -997,7 +928,7 @@ begin
   result := TtpAtoArrayStrings[t];
 end;
 
-function StrTotpAto(out ok: Boolean; const s: string): TtpAto;
+function StrTotpAto(const s: string): TtpAto;
 var
   idx: TtpAto;
 begin
@@ -1018,7 +949,7 @@ begin
   result := TtpTarifArrayStrings[t];
 end;
 
-function StrTotpTarif(out ok: Boolean; const s: string): TtpTarif;
+function StrTotpTarif(const s: string): TtpTarif;
 var
   idx: TtpTarif;
 begin
@@ -1039,7 +970,7 @@ begin
   result := TcPosTarifArrayStrings[t];
 end;
 
-function StrTocPosTarif(out ok: Boolean; const s: string): TcPosTarif;
+function StrTocPosTarif(const s: string): TcPosTarif;
 var
   idx: TcPosTarif;
 begin
@@ -1060,7 +991,7 @@ begin
   result := TuMedArrayStrings[t];
 end;
 
-function StrTouMed(out ok: Boolean; const s: string): TuMed;
+function StrTouMed(const s: string): TuMed;
 var
   idx: TuMed;
 begin
@@ -1081,7 +1012,7 @@ begin
   result := TuMedFatArrayStrings[t];
 end;
 
-function StrTouMedFat(out ok: Boolean; const s: string): TuMedFat;
+function StrTouMedFat(const s: string): TuMedFat;
 var
   idx: TuMedFat;
 begin
@@ -1107,7 +1038,7 @@ begin
   result := TmotDifTarifArrayStrings[t];
 end;
 
-function StrTomotDifTarif(out ok: Boolean; const s: string): TmotDifTarif;
+function StrTomotDifTarif(const s: string): TmotDifTarif;
 var
   idx: TmotDifTarif;
 begin
@@ -1128,7 +1059,7 @@ begin
   result := TtpBandArrayStrings[t];
 end;
 
-function StrTotpBand(out ok: Boolean; const s: string): TtpBand;
+function StrTotpBand(const s: string): TtpBand;
 var
   idx: TtpBand;
 begin
@@ -1149,7 +1080,7 @@ begin
   result := TmotDifBandArrayStrings[t];
 end;
 
-function StrTomotDifBand(out ok: Boolean; const s: string): TmotDifBand;
+function StrTomotDifBand(const s: string): TmotDifBand;
 var
   idx: TmotDifBand;
 begin
@@ -1170,7 +1101,7 @@ begin
   result := TindOrigemQtdArrayStrings[t];
 end;
 
-function StrToindOrigemQtd(out ok: Boolean; const s: string): TindOrigemQtd;
+function StrToindOrigemQtd(const s: string): TindOrigemQtd;
 var
   idx: TindOrigemQtd;
 begin
@@ -1191,7 +1122,7 @@ begin
   result := TtpGrMedArrayStrings[t];
 end;
 
-function StrTotpGrMed(out ok: Boolean; const s: string): TtpGrMed;
+function StrTotpGrMed(const s: string): TtpGrMed;
 var
   idx: TtpGrMed;
 begin
@@ -1212,7 +1143,7 @@ begin
   result := TtpMotNaoLeituraArrayStrings[t];
 end;
 
-function StrTotpMotNaoLeitura(out ok: Boolean; const s: string): TtpMotNaoLeitura;
+function StrTotpMotNaoLeitura(const s: string): TtpMotNaoLeitura;
 var
   idx: TtpMotNaoLeitura;
 begin
@@ -1233,7 +1164,7 @@ begin
   result := TtpProcArrayStrings[t];
 end;
 
-function StrTotpProc(out ok: Boolean; const s: string): TtpProc;
+function StrTotpProc(const s: string): TtpProc;
 var
   idx: TtpProc;
 begin
@@ -1254,7 +1185,7 @@ begin
   result := TtpLancArrayStrings[t];
 end;
 
-function StrTotpLanc(out ok: Boolean; const s: string): TtpLanc;
+function StrTotpLanc(const s: string): TtpLanc;
 var
   idx: TtpLanc;
 begin
@@ -1275,7 +1206,7 @@ begin
   result := TtpFonteEnergiaArrayStrings[t];
 end;
 
-function StrTotpFonteEnergia(out ok: Boolean; const s: string): TtpFonteEnergia;
+function StrTotpFonteEnergia(const s: string): TtpFonteEnergia;
 var
   idx: TtpFonteEnergia;
 begin
@@ -1296,7 +1227,7 @@ begin
   result := TSiteAutorizadorArrayStrings[t];
 end;
 
-function StrToSiteAutorizator(out ok: Boolean; const s: string): TSiteAutorizador;
+function StrToSiteAutorizator(const s: string): TSiteAutorizador;
 var
   idx: TSiteAutorizador;
 begin
@@ -1317,7 +1248,7 @@ begin
   result := TIndicadorArrayStrings[t];
 end;
 
-function StrToTIndicador(out ok: boolean; const s: string): TIndicador;
+function StrToTIndicador(const s: string): TIndicador;
 var
   idx: TIndicador;
 begin
@@ -1343,7 +1274,7 @@ begin
   result := TCSTCofinsArrayStrings[t];
 end;
 
-function StrToCSTCOFINS(out ok: boolean; const s: string): TCSTCofins;
+function StrToCSTCOFINS(const s: string): TCSTCofins;
 var
   idx: TCSTCofins;
 begin
@@ -1369,7 +1300,7 @@ begin
   result := TCSTPisArrayStrings[t];
 end;
 
-function StrToCSTPIS(out ok: boolean; const s: string): TCSTPIS;
+function StrToCSTPIS(const s: string): TCSTPIS;
 var
   idx: TCSTPIS;
 begin
@@ -1390,7 +1321,7 @@ begin
   result := TCSTIcmsArrayStrings[t];
 end;
 
-function StrToCSTICMS(out ok: boolean; const s: string): TCSTIcms;
+function StrToCSTICMS(const s: string): TCSTIcms;
 var
   idx: TCSTIcms;
 begin
@@ -1421,7 +1352,7 @@ begin
   result := TindIEDestArrayStrings[t];
 end;
 
-function StrToindIEDest(out ok: boolean; const s: string): TindIEDest;
+function StrToindIEDest(const s: string): TindIEDest;
 var
   idx: TindIEDest;
 begin
@@ -1435,14 +1366,6 @@ begin
   end;
 
   raise EACBrException.CreateFmt('Valor string inválido para TindIEDest: %s', [s]);
-end;
-
-function StrToTpEventoNF3e(out ok: boolean; const s: string): TpcnTpEvento;
-begin
-  Result := StrToEnumerado(ok, s,
-            ['-99999', '110111', '240140', '240150', '240170'],
-            [teNaoMapeado, teCancelamento, teAutorizadoSubstituicao,
-             teAutorizadoAjuste, teLiberacaoPrazoCancelado]);
 end;
 
 initialization

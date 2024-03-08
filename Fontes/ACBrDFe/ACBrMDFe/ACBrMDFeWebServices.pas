@@ -628,7 +628,7 @@ begin
 
   MDFeRetorno := TRetConsStatServ.Create('MDFe');
   try
-    MDFeRetorno.XmlRetorno := ParseText(AnsiString(FPRetWS), True, {$IfDef FPC}True{$Else}False{$EndIf});
+    MDFeRetorno.XmlRetorno := ParseText(FPRetWS);
     MDFeRetorno.LerXml;
 
     Fversao := MDFeRetorno.versao;
@@ -2158,6 +2158,8 @@ begin
             infEvento.detEvento.dtEnc := FEvento.Evento[i].InfEvento.detEvento.dtEnc;
             infEvento.detEvento.cUF   := FEvento.Evento[i].InfEvento.detEvento.cUF;
             infEvento.detEvento.cMun  := FEvento.Evento[i].InfEvento.detEvento.cMun;
+
+            infEvento.detEvento.indEncPorTerceiro := FEvento.Evento[i].InfEvento.detEvento.indEncPorTerceiro;
           end;
 
           teInclusaoCondutor:
@@ -2723,7 +2725,7 @@ begin
   FPRetWS := SeparaDados(FPRetornoWS, 'mdfeDistDFeInteresseResult');
 
   // Processando em UTF8, para poder gravar arquivo corretamente //
-  FretDistDFeInt.Leitor.Arquivo := FPRetWS;
+  FretDistDFeInt.Leitor.Arquivo := ParseText(FPRetWS);
   FretDistDFeInt.LerXml;
 
   for I := 0 to FretDistDFeInt.docZip.Count - 1 do
@@ -2770,12 +2772,13 @@ begin
 
   { Processsa novamente, chamando ParseTXT, para converter de UTF8 para a String
     nativa e Decodificar caracteres HTML Entity }
+  {
   FretDistDFeInt.Free;   // Limpando a lista
   FretDistDFeInt := TRetDistDFeInt.Create('MDFe');
 
   FretDistDFeInt.Leitor.Arquivo := ParseText(FPRetWS);
   FretDistDFeInt.LerXml;
-
+  }
   FPMsg := FretDistDFeInt.xMotivo;
   Result := (FretDistDFeInt.CStat = 137) or (FretDistDFeInt.CStat = 138);
 end;

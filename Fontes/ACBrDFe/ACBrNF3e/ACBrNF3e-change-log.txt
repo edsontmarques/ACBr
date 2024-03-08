@@ -42,6 +42,57 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+02/03/2024
+-- ACBrNF3eWebServices --
+[-] Corrigido a procedure DefinirMsgDados no que se refere a eventos.
+-- ACBrNF3eConversao --
+[-] Corrigido a nomenclatura de alguns enumerados usados no envio de eventos.
+-- ACBrNF3eXmlWriter --
+[*] Corrigido o tipo de conversão para a tag: cNF.
+-- ACBrNF3eEnvEvento --
+[-] Corrigido a geração do XML de evento.
+-- ACBrNF3eRetEnvEvento --
+[-] Corrigido o erro de AV.
+  Por: Italo Giurizzato Junior
+
+01/03/2024
+-- ACBrNF3eXmlReader --
+[*] Melhorias na leitura do XML.
+  Por: Italo Giurizzato Junior
+-- ACBrNF3eConversao --
+[-] Inclusão de enumerados para atender tags opcionais.
+-- ACBrNF3eXmlReader --
+[*] Alteração na forma de ler a assinatura do XML.
+-- ACBrNF3eXmlWriter --
+[-] Correções diversas pois estava gerando o XML da forma errada.
+  Por: Italo Giurizzato Junior
+-- ACBrNF3eXmlReader --
+[-] Correção na leitura de tags opcionais que contem AAAA-MM.
+  Por: Italo Giurizzato Junior
+
+28/02/2024
+-- Diversos --
+[*] Realizado diversos ajustes por conta de remoção do parâmentro de saída Ok
+    das funções de conversão.
+  Por: Italo Giurizzato Junior
+
+27/02/2024
+-- ACBrNF3eRetEnvEvento --
+[*] Removido o uso da função ACBrStr ao ler uma mensagem.
+  Por: Italo Giurizzato Junior
+
+23/02/2024
+-- ACBrNF3eConversao --
+[*] Ajustes nas funções: DblToVersaoNF3e, VersaoNF3eToDbl e VersaoQrCodeToDbl.
+  Por: Italo Giurizzato Junior
+
+20/02/2024
+-- Diversos --
+[*] Realizado diversos ajustes para atender NT 2024/001.
+    Atenção: o ambiente de homologação só vai estar disponível em 26/02/2024
+    e o de produção em 13/03/2024
+  Por: Italo Giurizzato Junior
+
 14/02/2024
 -- Diversos --
 [*] Realizado diversos ajustes para poder usar a nova unit: ACBrDFeComum.RetEnvio

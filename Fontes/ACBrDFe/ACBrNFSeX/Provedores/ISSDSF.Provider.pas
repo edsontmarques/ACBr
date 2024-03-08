@@ -1732,11 +1732,12 @@ function TACBrNFSeXWebserviceISSDSF.TratarXmlRetornado(
 begin
   Result := inherited TratarXmlRetornado(aXML);
 
-  Result := ParseText(AnsiString(Result), True, {$IfDef FPC}True{$Else}False{$EndIf});
+  Result := ParseText(Result);
   Result := RemoverDeclaracaoXML(Result);
   Result := RemoverIdentacao(Result);
   Result := RemoverCaracteresDesnecessarios(Result);
   Result := RemoverPrefixosDesnecessarios(Result);
+  Result := Trim(StringReplace(Result, '&', '&amp;', [rfReplaceAll]));
 end;
 
 end.

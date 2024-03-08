@@ -48,7 +48,6 @@ uses
 //  ACBrDFeConversao,
   ACBrNFComConversao,
   ACBrNFComProc,
-//  ACBrDFeComum.Signature,
   pcnSignature;
 
 type
@@ -1223,7 +1222,7 @@ end;
 function TinfNFCom.GetVersao: Real;
 begin
   if FVersao <= 0 then
-     Result := 2
+     Result := 1
   else
      Result := FVersao;
 end;
@@ -1231,7 +1230,7 @@ end;
 function TinfNFCom.GetVersaoStr: string;
 begin
   if FVersao <= 0 then
-    FVersao := 2;
+    FVersao := 1;
 
   Result := 'versao="' + FloatToString(FVersao, '.', '#0.00') + '"';
 end;

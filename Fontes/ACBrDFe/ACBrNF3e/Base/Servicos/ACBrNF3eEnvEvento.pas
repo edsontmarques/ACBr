@@ -45,6 +45,7 @@ uses
   {$IFEND}
   ACBrBase,
   pcnConversao,
+//  ACBrDFeComum.SignatureClass,
   pcnSignature,
   ACBrNF3eEventoClass, ACBrNF3eConsts;
 
@@ -192,7 +193,7 @@ begin
     sDoc := OnlyNumber(Evento.Items[i].InfEvento.CNPJ);
 
     if EstaVazio(sDoc) then
-      sDoc := ExtrairCNPJChaveAcesso(Evento.Items[i].InfEvento.chNF3e);
+      sDoc := ExtrairCNPJCPFChaveAcesso(Evento.Items[i].InfEvento.chNF3e);
 
     case Length( sDoc ) of
       14: begin
@@ -215,8 +216,11 @@ begin
     case Evento.Items[i].InfEvento.tpEvento of
       teCancelamento:
         begin
-          xEvento := '<nProt>' + Evento.Items[i].InfEvento.detEvento.nProt + '</nProt>' +
-                     '<xJust>' + Evento.Items[i].InfEvento.detEvento.xJust + '</xJust>';
+          xEvento := '<evCancNF3e>' +
+                       '<descEvento>' + Evento.Items[i].InfEvento.DescEvento + '</descEvento>' +
+                       '<nProt>' + Evento.Items[i].InfEvento.detEvento.nProt + '</nProt>' +
+                       '<xJust>' + Evento.Items[i].InfEvento.detEvento.xJust + '</xJust>' +
+                     '</evCancNF3e>';
         end;
     else
       xEvento := '';
@@ -238,7 +242,6 @@ begin
                '<nSeqEvento>' + IntToStr(Evento.Items[i].InfEvento.nSeqEvento) + '</nSeqEvento>' +
 
                '<detEvento versaoEvento="' + Versao + '">' +
-                 '<descEvento>' + Evento.Items[i].InfEvento.DescEvento + '</descEvento>' +
                    xEvento +
                '</detEvento>' +
 

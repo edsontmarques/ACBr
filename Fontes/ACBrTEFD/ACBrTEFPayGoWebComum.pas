@@ -44,7 +44,7 @@ resourcestring
   sPerVenctoCartao = 'VENCIMENTO CARTAO';
   sInfoRemovaCartao = 'REMOVER O CARTAO';
   sInfoPGWebLibAtualizaTrue = 'Atualização disponível para PGWebLib';
-  sInfoPGWebLibAtualizaFalse = 'PGWebLib atualizada';
+  sInfoPGWebLibAtualizaFalse = 'PGWebLib sem atualização';
   sErrLibJaInicializda = 'Biblioteca PGWebLib já foi inicializada';
   sErrLibNaoPermiteMudarPath = 'Path da PGWebLib deve ser %s';
   sErrEventoNaoAtribuido = 'Evento %s não atribuido';
@@ -559,6 +559,7 @@ type
     fInicializada: Boolean;
     fCarregada: Boolean;
     fEmTransacao: Boolean;
+    fIsDebug: Boolean;
     fPerguntarCartaoDigitadoAposCancelarLeitura: Boolean;
     fUsouPinPad: Boolean;
     fNomeAplicacao: String;
@@ -741,6 +742,7 @@ type
     function SetPGWebLibPermiteAtualiza(PermiteAtualizacao: Boolean): Boolean;
 
     property PathLib: String read fPathLib write SetPathLib;
+    property IsDebug: Boolean read fIsDebug write fIsDebug;
     property AtualizaPGWebLibAutomaticamente: Boolean read fAtualizaPGWebLibAutomaticamente write fAtualizaPGWebLibAutomaticamente default True;
     property DiretorioTrabalho: String read fDiretorioTrabalho write SetDiretorioTrabalho;
     property Carregada: Boolean read fCarregada;
@@ -1117,6 +1119,13 @@ begin
   fTempoTarefasAutomaticas := '';
   fUltimoQRCode := '';
 
+  {$IfDef DEBUG}
+   fIsDebug := True;
+  {$Else}
+   fIsDebug := False;
+  {$EndIf}
+
+  fPathLib := '';
   fSoftwareHouse := '';
   fNomeAplicacao := '';
   fVersaoAplicacao := '';
@@ -1149,6 +1158,7 @@ end;
 destructor TACBrTEFPGWebAPI.Destroy;
 begin
   //GravarLog('TACBrTEFPGWebAPI.Destroy');
+  fOnGravarLog := nil;
   DesInicializar;
   fDadosTransacao.Free;
   fParametrosAdicionais.Free;
@@ -1207,7 +1217,7 @@ begin
   if GetPGWebLibAtualiza then
     GravarLog(ACBrStr(sInfoPGWebLibAtualizaTrue))
   else
-    GravarLog(sInfoPGWebLibAtualizaFalse);
+    GravarLog(ACBrStr(sInfoPGWebLibAtualizaFalse));
 
   GravarLog('PW_iInit( '+fDiretorioTrabalho+' )');
   iRet := xPW_iInit(PAnsiChar(AnsiString(fDiretorioTrabalho)));
@@ -1362,13 +1372,18 @@ begin
   if (AStr <> '') then
   begin
     AnoStr := IntToStr(YearOf(Agora));
-    IdleProcTime := EncodeDateTime( StrToIntDef(Copy(AnoStr,1,2)+copy(AStr,1,2),0),  // YYYY
-                                    StrToIntDef(copy(AStr, 3,2),0),  // MM
-                                    StrToIntDef(copy(AStr, 5,2),0),  // DD
-                                    StrToIntDef(copy(AStr, 7,2),0),  // hh
-                                    StrToIntDef(copy(AStr, 9,2),0),  // nn
-                                    StrToIntDef(copy(AStr,11,2),0),  // ss
-                                    0 );
+    try
+      IdleProcTime := EncodeDateTime( StrToIntDef(Copy(AnoStr,1,2)+copy(AStr,1,2),0),  // YYYY
+                                      StrToIntDef(copy(AStr, 3,2),0),  // MM
+                                      StrToIntDef(copy(AStr, 5,2),0),  // DD
+                                      StrToIntDef(copy(AStr, 7,2),0),  // hh
+                                      StrToIntDef(copy(AStr, 9,2),0),  // nn
+                                      StrToIntDef(copy(AStr,11,2),0),  // ss
+                                      0 );
+    except
+      IdleProcTime := 0;
+    end;
+
     if (IdleProcTime <> 0) then
     begin
       if (IdleProcTime <= Agora) then
@@ -1377,7 +1392,7 @@ begin
       else if (IdleProcTime <> fTempoOcioso) then
       begin
         fTimerOcioso.Enabled := False;
-        fTimerOcioso.Interval := MilliSecondsBetween(Agora, IdleProcTime);
+        fTimerOcioso.Interval := min(MilliSecondsBetween(Agora, IdleProcTime), CMilissegundosOcioso);
         fTimerOcioso.Enabled := True;
       end;
 
@@ -1501,7 +1516,7 @@ begin
   iRet := PWRET_CANCEL;
   try
     try
-      MsgProcess := Trim(ObterInfo(PWINFO_PROCESSMSG));
+      MsgProcess := AnsiToNativeString(Trim(ObterInfo(PWINFO_PROCESSMSG)));
       if (MsgProcess <> '') then
         ExibirMensagem(MsgProcess, tmCliente);
 
@@ -1534,7 +1549,7 @@ begin
 
       case iRet of
         PWRET_OK: MsgError := '';
-        PWRET_CANCEL: MsgError := ObterInfo(PWINFO_CNCDSPMSG);
+        PWRET_CANCEL: MsgError := AnsiToNativeString(ObterInfo(PWINFO_CNCDSPMSG));
         PWRET_NOMANDATORY: MsgError := sErrPWRET_NOMANDATORY;
         PWRET_DLLNOTINIT: MsgError := sErrPWRET_DLLNOTINIT;
         PWRET_NOTINST: MsgError := sErrPWRET_NOTINST;
@@ -1801,6 +1816,7 @@ begin
 
   pszData := AllocMem(max(50, MaxLen));
   try
+    iRet := xPW_iPPAbort;
     iRet := xPW_iPPGetUserData(iMessageId, MinLen, MaxLen, TimeOutSec, pszData);
     GravarLog('  '+PWRETToString(iRet));
     case iRet of
@@ -1935,7 +1951,7 @@ begin
 
     if not ObterDadosDeParametrosAdicionais(AGetData) then
     begin
-      AMsg := Trim(AGetData.szMsgPrevia);
+      AMsg := AnsiToNativeString(Trim(AGetData.szMsgPrevia));
       if (AMsg <> '') then
         ExibirMensagem(AMsg, tmOperador, CMilissegundosMensagem);
 
@@ -1981,7 +1997,7 @@ begin
             iRet := RealizarOperacaoPinPad(AGetData, i, ppTestKey);
           PWDAT_DSPCHECKOUT:
           begin
-            AMsg := Trim(AGetData.szPrompt);
+            AMsg := AnsiToNativeString(Trim(AGetData.szPrompt));
             if (AMsg <> '') then
               ExibirMensagem(AMsg, tmCliente);
 
@@ -2002,7 +2018,7 @@ begin
               ExibirQRCode(DadosQRCode);
             end;
 
-            AMsg := Trim(AGetData.szPrompt);
+            AMsg := AnsiToNativeString(Trim(AGetData.szPrompt));
             if (AMsg <> '') then
               ExibirMensagem(AMsg, tmCliente);
 
@@ -2101,7 +2117,7 @@ begin
   try
     for i := 0 to AGetData.bNumOpcoesMenu-1 do
     begin
-      AOpcao := Trim(AGetData.vszTextoMenu[i]);
+      AOpcao := AnsiToNativeString(Trim(AGetData.vszTextoMenu[i]));
       if (AGetData.bTeclasDeAtalho = 1) then
         AOpcao := IntToStr(i+1)+' - '+AOpcao;
 
@@ -2110,7 +2126,7 @@ begin
 
     ItemSelecionado := AGetData.bItemInicial;
     GravarLog('  OnExibeMenu( '+AGetData.szPrompt+' )', True);
-    fOnExibeMenu(Trim(AGetData.szPrompt), SL, ItemSelecionado, Cancelado);
+    fOnExibeMenu(AnsiToNativeString(Trim(AGetData.szPrompt)), SL, ItemSelecionado, Cancelado);
     GravarLog('    Resposta: '+IntToStr(ItemSelecionado)+', Cancelado: '+BoolToStr(Cancelado, True));
 
     Cancelado := Cancelado or (ItemSelecionado < 0) or (ItemSelecionado >= AGetData.bNumOpcoesMenu);
@@ -2170,7 +2186,7 @@ begin
         if (ARespostaAnterior = '') then
         begin
           ARespostaAnterior := AResposta;
-          ADefinicaoCampo.Titulo := Trim(AGetData.szMsgConfirmacao);
+          ADefinicaoCampo.Titulo := AnsiToNativeString(Trim(AGetData.szMsgConfirmacao));
           AResposta := ADefinicaoCampo.ValorInicial;
           Continue;
         end
@@ -2454,7 +2470,7 @@ end;
 function TACBrTEFPGWebAPI.PW_GetDataToDefinicaoCampo(AGetData: TPW_GetData
   ): TACBrTEFPGWebAPIDefinicaoCampo;
 begin
-  Result.Titulo := Trim(AGetData.szPrompt);
+  Result.Titulo := AnsiToNativeString(Trim(AGetData.szPrompt));
   Result.MascaraDeCaptura := Trim(AGetData.szMascaraDeCaptura);
   Result.TiposEntradaPermitidos := TACBrTEFPGWebAPITiposEntrada(AGetData.bTiposEntradaPermitidos);
   Result.TamanhoMinimo := AGetData.bTamanhoMinimo;
@@ -2466,10 +2482,10 @@ begin
   Result.AceitaNulo := (AGetData.bAceitaNulo = 1);
   Result.ValorInicial := Trim(AGetData.szValorInicial);
   Result.bTeclasDeAtalho := (AGetData.bTeclasDeAtalho = 1);
-  Result.MsgValidacao := Trim(AGetData.szMsgValidacao);
-  Result.MsgConfirmacao := Trim(AGetData.szMsgConfirmacao);
-  Result.MsgDadoMaior := Trim(AGetData.szMsgDadoMaior);
-  Result.MsgDadoMenor := Trim(AGetData.szMsgDadoMenor);
+  Result.MsgValidacao := AnsiToNativeString(Trim(AGetData.szMsgValidacao));
+  Result.MsgConfirmacao := AnsiToNativeString(Trim(AGetData.szMsgConfirmacao));
+  Result.MsgDadoMaior := AnsiToNativeString(Trim(AGetData.szMsgDadoMaior));
+  Result.MsgDadoMenor := AnsiToNativeString(Trim(AGetData.szMsgDadoMenor));
   Result.TipoEntradaCodigoBarras := TACBrTEFPGWebAPITipoBarras(AGetData.bTipoEntradaCodigoBarras);
   Result.OmiteMsgAlerta := (AGetData.bOmiteMsgAlerta = 1);
 
@@ -2788,6 +2804,13 @@ begin
     s := 'PathPGWebLib';
    {$EndIf}
    Result := Trim(SysUtils.GetEnvironmentVariable(s));
+
+   if IsDebug then
+   begin
+    s := StringReplace(Result, 'PGWebLib'+PathDelim, 'PGWebLib'+PathDelim+'DEBUG'+PathDelim, []);
+    if FileExists(s) then
+      Result := s;
+   end;
   {$Else}
    Result := '';
   {$EndIf}

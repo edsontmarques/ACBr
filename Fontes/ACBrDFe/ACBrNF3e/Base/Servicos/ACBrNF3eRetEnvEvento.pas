@@ -44,6 +44,7 @@ uses
    System.Contnrs,
   {$IFEND}
   ACBrBase, ACBrXmlBase,
+//  ACBrDFeComum.SignatureClass,
   pcnSignature,
   ACBrNF3eEventoClass;
 
@@ -84,11 +85,13 @@ constructor TRetEventoNF3e.Create;
 begin
   inherited Create;
 
+  FretInfEvento := TRetInfEvento.Create;
   Fsignature := Tsignature.Create;
 end;
 
 destructor TRetEventoNF3e.Destroy;
 begin
+  FretInfEvento.Free;
   Fsignature.Free;
 
   inherited;
@@ -121,7 +124,7 @@ begin
           RetInfEvento.verAplic := ObterConteudoTag(ANodeAux.Childrens.FindAnyNs('verAplic'), tcStr);
           retInfEvento.cOrgao := ObterConteudoTag(ANodeAux.Childrens.FindAnyNs('cOrgao'), tcInt);
           retInfEvento.cStat := ObterConteudoTag(ANodeAux.Childrens.FindAnyNs('cStat'), tcInt);
-          retInfEvento.xMotivo := ACBrStr(ObterConteudoTag(ANodeAux.Childrens.FindAnyNs('xMotivo'), tcStr));
+          retInfEvento.xMotivo := ObterConteudoTag(ANodeAux.Childrens.FindAnyNs('xMotivo'), tcStr);
           RetInfEvento.chNF3e := ObterConteudoTag(ANodeAux.Childrens.FindAnyNs('chNF3e'), tcStr);
           RetInfEvento.tpEvento := StrToTpEventoNF3e(ok, ObterConteudoTag(ANodeAux.Childrens.FindAnyNs('tpEvento'), tcStr));
           RetInfEvento.xEvento := ObterConteudoTag(ANodeAux.Childrens.FindAnyNs('xEvento'), tcStr);
