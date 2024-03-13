@@ -1859,25 +1859,6 @@ begin
           Prod.indEscala:= StrToIndEscala(OK, INIRec.ReadString( sSecao,'indEscala' ,'') );
           Prod.CNPJFab  := INIRec.ReadString( sSecao,'CNPJFab'   ,'');
           Prod.cBenef   := INIRec.ReadString( sSecao,'cBenef'    ,'');
-
-          J := 1;
-          while true do
-          begin
-            sSecao := 'CredPresumido' + IntToStrZero(I,3) + IntToStrZero(J,1);
-            sFim     := INIRec.ReadString(sSecao, 'cCredPresumido', '');
-            if (sFim <> '') then
-              with Prod.CredPresumido.New do
-              begin
-                cCredPresumido := sFim;
-                pCredPresumido := StringToFloatDef(INIRec.ReadString(sSecao, 'pCredPresumido', ''), 0);
-                vCredPresumido := StringToFloatDef(INIRec.ReadString(sSecao, 'vCredPresumido', ''), 0);
-              end
-            else
-              Break;
-
-            Inc(J);
-          end;
-
           Prod.EXTIPI   := INIRec.ReadString( sSecao,'EXTIPI'      ,'');
           Prod.CFOP     := INIRec.ReadString( sSecao,'CFOP'     ,'');
           Prod.uCom     := INIRec.ReadString( sSecao,'uCom'  ,INIRec.ReadString( sSecao,'Unidade'  ,''));
@@ -1906,6 +1887,25 @@ begin
           vIPIDevol := StringToFloatDef( INIRec.ReadString(sSecao,'vIPIDevol','') ,0);
 
           Imposto.vTotTrib := StringToFloatDef( INIRec.ReadString(sSecao,'vTotTrib','') ,0);
+
+
+          J := 1;
+          while true do
+          begin
+            sSecao := 'CredPresumido' + IntToStrZero(I,3) + IntToStrZero(J,1);
+            sFim     := INIRec.ReadString(sSecao, 'cCredPresumido', '');
+            if (sFim <> '') then
+              with Prod.CredPresumido.New do
+              begin
+                cCredPresumido := sFim;
+                pCredPresumido := StringToFloatDef(INIRec.ReadString(sSecao, 'pCredPresumido', ''), 0);
+                vCredPresumido := StringToFloatDef(INIRec.ReadString(sSecao, 'vCredPresumido', ''), 0);
+              end
+            else
+              Break;
+
+            Inc(J);
+          end;
 
           J := 1;
           while true do
@@ -2476,7 +2476,7 @@ begin
       Total.ISSQNtot.vDescIncond := StringToFloatDef( INIRec.ReadString('ISSQNtot', 'vDescIncond', ''), 0);
       Total.ISSQNtot.vDescCond   := StringToFloatDef( INIRec.ReadString('ISSQNtot', 'vDescCond', ''), 0);
       Total.ISSQNtot.vISSRet     := StringToFloatDef( INIRec.ReadString('ISSQNtot', 'vISSRet', ''), 0);
-      Total.ISSQNtot.cRegTrib    := StrToRegTribISSQN( OK,INIRec.ReadString('ISSQNtot', 'cRegTrib', '1'));
+      Total.ISSQNtot.cRegTrib    := StrToRegTribISSQN( OK,INIRec.ReadString('ISSQNtot', 'cRegTrib', '0'));
 
       Total.retTrib.vRetPIS    := StringToFloatDef( INIRec.ReadString('retTrib','vRetPIS'   ,'') ,0);
       Total.retTrib.vRetCOFINS := StringToFloatDef( INIRec.ReadString('retTrib','vRetCOFINS','') ,0);
