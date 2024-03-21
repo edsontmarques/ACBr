@@ -42,10 +42,72 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+16/03/2024
+-- Diversos --
+[*] Inclusão do parâmetro AID na função LinkNFSe, que é utilizado pelo
+    provedor Infisc
+  Por: Italo Giurizzato Junior
+-- Diversos --
+[*] Inclusão do campo infAdicional utilizado pelo provedor MegaSoft.
+  Por: Arimateia Jr
+
+15/03/2024
+-- ACBrNFSeXServicos --
+[*] Trocado o http por https das URLs da cidade de Birigui/SP, o provedor continua o mesmo.
+  Por: FabioTellini
+-- IPM.Provider--
+[*] Alterado o valor padrão da propriedade UseCertificateHTTP para false para 
+    não solicitar o certificado digital.
+  Por: Datacamp
+-- Infisc.GravarXml--
+[*] Alteração visando gerar o grupo <dadosDaObra> independente do valor de
+    empreitadaGlobal.
+  Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[*] Corrige a URL de Biguacu/SC
+  Por: Diego Folieni
+-- ACBrNFSeXNotasFiscais --
+[*] Corrige a leitura dos campos DataEmissao, Competência e Vencimento na rotina de leitura de INI
+  Por: Diego Folieni
+-- AssessorPublico.LerXml--
+[*] Correção no tipo de conversão da tag SITUACAO.
+  Por: Ray Hildebrant
+-- PRODAUB.Provider --
+[*] Alteração visando assinar o pedido de cancelamento e com o ID exigido pelo 
+    provedor.
+  Por: Italo Giurizzato Junior
+-- ACBrNFSeXLerXml/Centi.LerXml--
+[*] Ajustes na leitura da tag ItemListaServico, o provedor Centi retorna no formato
+    xx.xx.xx 
+  Por: Diego Reckziegel
+-- Governa.LerXml--
+[*] Correção na leitura do XML, não estava lendo corretamente diversos campos.
+  Por: Diego Reckziegel
+-- ACBrNFSeXServicos --
+[*] A cidade de Pontes e Lacerda/MT trocou de provedor, agora é Betha.
+  Por: Diego Reckziegel
+
+14/03/2024
+-- ACBrNFSeXServicos --
+[*] Remove URL de homologação indevida para o município de Nova Itaberaba/SC
+  Por: Diego Folieni
+[+] Incluida a cidade de Bastos/SP, provediro é o Pronim na versão 2.03
+  Por: ASManager 
+-- Publica.Provider --
+[*] Incluído no PrepararConsultarNFSe a checagem dos tipo de consulta e mostrar
+    a mensagem "Serviço não implementado pelo Provedor." para os tipos de consulta
+    que não existe no webservice do provedor.
+  Por: Italo Giurizzato Junior
+
+13/03/2024
+-- Diversos --
+[*] Melhorias no código usando o FixInsight (ainda não ficou 100%).
+  Por: Italo Giurizzato Junior
+
 12/03/2024
 -- Infisc.GravarXml --
 [*] Alteração visando gerar a tag CodigoPais do tomador independente se o tomador é
-    estrageiro ou não.
+    estrangeiro ou não.
   Por: Italo Giurizzato Junior
 
 11/03/2024
