@@ -44,6 +44,19 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+27/03/2024
+-- ACBrNFeXmlReader --
+[*] Correções para evitar erro de validação do XML quando carrega e re-gera o arquivo.
+  Por: Diego Folieni
+-- Diversos --
+[*] Adequa a leitura e geração dos campos do grupo gCred no INI e no XML a versão 1.62 da NT2019/001
+  Por: Diego Folieni
+
+21/03/2024
+-- ACBrNFeWebServices --
+[*] Adiciona chamada a UTF8ToNativeString quando usa ParseText para corrigir problemas de conversão de acentuação
+  Por: Diego Folieni
+
 11/03/2024
 -- pcnNFeR --
 [*] Ajustes para a leitura correta da tag indDeduzDeson.

@@ -231,11 +231,8 @@ begin
   begin
     ConsultarNFSe.DocElemento := 'ConsultarNfseFaixaEnvio';
 
-    with GerarNFSe do
-    begin
-      InfElemento := 'LoteRps';
-      DocElemento := 'GerarNfseEnvio';
-    end;
+    GerarNFSe.InfElemento := 'LoteRps';
+    GerarNFSe.DocElemento := 'GerarNfseEnvio';
 
     DadosCabecalho := GetCabecalho('');
   end;
@@ -421,7 +418,7 @@ begin
                                '<NumeroLote>' + Response.NumeroLote + '</NumeroLote>' +
                                '<Cnpj>' + OnlyNumber(Emitente.CNPJ) + '</Cnpj>' +
                                '<InscricaoMunicipal>' +
-                                  OnlyNumber(Emitente.InscMun) +
+                                  OnlyAlphaNum(Emitente.InscMun) +
                                '</InscricaoMunicipal>' +
                                '<QuantidadeRps>' +
                                   IntToStr(TACBrNFSeX(FAOwner).NotasFiscais.Count) +

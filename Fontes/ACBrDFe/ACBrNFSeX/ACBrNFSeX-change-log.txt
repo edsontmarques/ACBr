@@ -42,6 +42,57 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+28/03/2024
+-- ACBrNFSeXServicos --
+[*] Adiciona o parametroExtra eletron=1 para a cidade de Rio Negro/PR, provedor é o IPM.
+  Por: C4Dev 
+[*] A cidade de São Felix do Araguaia/MT trocou de provedor, agora é Fiorilli.
+  Por: tryideas sistemas
+[*] Alterado as URLs da cidade de Pará de Minas/MG, o provedor continua o mesmo.
+  Por: Geovane
+
+26/03/2024
+-- ACBrNFSeXServicos --
+[+] Incluída a cidade de Guarabira/PB, o provedor é Elmar.
+  Por: Prime Software
+-- Diversos --
+[+] Implementado o provedor Elmar (versão 2.02 da ABRASF) que atende a cidade 
+    de Guarabira/PB. Devemos gerar o XML de envio do Lote, salvar em disco e 
+    por fim através do portal importar o XML.
+  Por: Italo Giurizzato Junior
+-- ACBrNFSeXProviderABRASFv1, ACBrNFSeXProviderABRASFv2 --
+[*] Adiciona nas rotinas de tratamento de retorno das consultas que devolvem NFSe, a leitura da informação de cancelamento e substituição das NFSes segundo layout ABRASF.
+  Por: Diego Folieni
+-- ACBrNFSeXDANFSeRLSimplISS --
+[*] Alteração visando usar a propriedade DetalharServico.
+  Por: Felipe Aron
+-- SmarAPD --
+[+] Incluído a propriedade para assinar o XML do pedido de Consulta ao Lote 
+    na versão 2.03
+  Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[+] Incluída a cidade de Ibirite/MG, o provedor é SiapNet.
+  Por: SMF
+[*] Correção na URL de consulta a nota por RPS da cidade de Birigui/SP.
+  Por: Verissimo
+[*] A cidade de Anchieta/ES trocou para versão 2.04, o provedor continua o mesmo.
+  Por: Sistema Auditor
+-- Diversos --
+[*] Ajustes para realizar a leitura e montagem correta do LinkNFSe, 
+    que é utilizado pelo provedor Infisc.
+  Por: Italo Giurizzato Junior
+
+25/03/2024
+-- Infisc.Gravar --
+[*] Alterado a condição para gerar ou não o grupo DadosDaObra.
+  Por: locodosul
+-- ACBrNFSeXServicos --
+[*] A cidade de Jacinto Machado/SC trocou de provedor, agora é IPM na versão 1.01
+  Por: Mario Inacio 
+-- ACBrNFSeXNotasFiscais --
+[*] Altera forma como é preenchida a DataEmissao e Competencia na geração do INI e também adiciona CodigoVerificacao na geração do INI.
+  Por: Diego Folieni
+
 16/03/2024
 -- Diversos --
 [*] Inclusão do parâmetro AID na função LinkNFSe, que é utilizado pelo
