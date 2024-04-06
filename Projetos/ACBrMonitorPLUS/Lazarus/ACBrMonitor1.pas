@@ -210,6 +210,7 @@ type
     btnImprimir: TButton;
     btnImprimirCTe: TButton;
     btnImprimirMDFe: TButton;
+    btnIntegrador: TPanel;
     //btnIntegrador: TPanel;
     btnInutilizar: TButton;
     btnInutilizarCTe: TButton;
@@ -365,6 +366,7 @@ type
     cbxAdicionaLiteral: TCheckBox;
     cbxAjustarAut: TCheckBox;
     cbxBolMotorRelatorio: TComboBox;
+    cbxNomeLongoNFSe: TCheckBox;
     cbxMontarPathSchemas: TCheckBox;
     cbxAmbiente: TComboBox;
     cbxAtualizarXMLCancelado: TCheckBox;
@@ -481,6 +483,7 @@ type
     ckIBGEAcentos: TCheckBox;
     ckIBGEUTF8: TCheckBox;
     ckMemoria: TCheckBox;
+    ckNFCeUsarIntegrador: TCheckBox;
     //ckNFCeUsarIntegrador: TCheckBox;
     ckSalvar: TCheckBox;
     cbxConsCNPJProvedor: TComboBox;
@@ -1630,6 +1633,7 @@ type
     procedure cbxImpDescPorcChange(Sender: TObject);
     procedure cbXMLSignLibChange(Sender: TObject);
     procedure cbxModeloSATChange(Sender: TObject);
+    procedure cbxNomeLongoNFSeClick(Sender: TObject);
     procedure cbxPastaMensalClick(Sender: TObject);
     procedure cbxPortaChange(Sender: TObject);
     procedure cbxRedeProxyChange(Sender: TObject);
@@ -2353,7 +2357,7 @@ begin
   { Criando lista motor impressão boleto disponiveis}
   cbxBolMotorRelatorio.Items.Clear;
   cbxBolMotorRelatorio.AddItem('Fortes Reports', ACBrBoletoFCFortes1);
-  cbxBolMotorRelatorio.AddItem('FDPF', ACBrBoletoFPDF1);
+  cbxBolMotorRelatorio.AddItem('FPDF', ACBrBoletoFPDF1);
 
 
   { Criando lista de Layouts de Boleto disponiveis }
@@ -4566,6 +4570,11 @@ begin
   ValidarConfigSAT;
 end;
 
+procedure TFrmACBrMonitor.cbxNomeLongoNFSeClick(Sender: TObject);
+begin
+
+end;
+
 procedure TFrmACBrMonitor.cbxPastaMensalClick(Sender: TObject);
 begin
   cbxEmissaoPathNFe.Enabled := cbxPastaMensal.Checked;
@@ -5933,6 +5942,7 @@ begin
     cbxConsultarAposCancelar.Checked   := ConsultarAposCancelar;
     edtNomePrefeitura.Text             := NomePrefeitura;
     edtCNPJPrefeitura.Text             := CNPJPrefeitura;
+    cbxNomeLongoNFSe.Checked           := NomeLongoNFSe;
   end;
 
   {Parametro DFe}
@@ -7226,6 +7236,7 @@ begin
       ConsultarAposCancelar  := cbxConsultarAposCancelar.Checked;
       NomePrefeitura         := edtNomePrefeitura.Text;
       CNPJPrefeitura         := edtCNPJPrefeitura.Text;
+      NomeLongoNFSe          := cbxNomeLongoNFSe.Checked;
     end;
 
     { Parametros DFe }
@@ -8028,6 +8039,16 @@ begin
         if pos('NFSE.SETAUTENTICACAONFSE',uppercase(Linha)) > 0 then
            Linha2 := 'NFSE.SETAUTENTICACAONFSE('+fscmd.Params(0)+', '+ TrataDadosSensiveis(fscmd.Params(1))+', '+
                   TrataDadosSensiveis(fscmd.Params(2))+', '+ TrataDadosSensiveis(fscmd.Params(3))+', '+ TrataDadosSensiveis(fscmd.Params(4))+')';
+
+        if pos('BOLETO.ENVIAREMAILBOLETO',uppercase(Linha)) > 0 then
+           Linha2 := 'BOLETO.EnviarEmailBoleto('+fscmd.Params(0)+', '+
+                                                 fscmd.Params(1)+', '+
+                                                 fscmd.Params(2)+', '+
+                                                 fscmd.Params(3)+', '+
+                                                 TrataDadosSensiveis(fscmd.Params(4))+')';
+
+
+
 
 
         //Log Comando Linha2 contem dados sensiveis
@@ -12076,7 +12097,7 @@ begin
 
     with TConfiguracoesNFSe(Configuracoes).Arquivos do
     begin
-      NomeLongoNFSe := True;
+      NomeLongoNFSe := cbxNomeLongoNFSe.Checked;
       EmissaoPathNFSe := cbxEmissaoPathNFe.Checked;
       PathNFSe := edtPathNFe.Text;
       PathGer := edtPathNFe.Text;
@@ -12222,8 +12243,8 @@ procedure TFrmACBrMonitor.ValidarIntegradorNFCe(ChaveNFe: String = '');
 var
   Modelo: Integer;
 begin
-  raise Exception.Create('Integrador depreciado');
-
+  //raise Exception.Create('Integrador depreciado');
+  ACBrNFe1.Integrador := nil;
 
 end;
 

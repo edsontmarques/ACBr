@@ -306,6 +306,7 @@ type
     FSerieRps: string;
     FTipoRps: string;
     FPagina: Integer;
+    FCnpjCpfToma: string;
   public
     constructor Create;
 
@@ -319,6 +320,7 @@ type
     property SerieRps: string read FSerieRps write FSerieRps;
     property TipoRps: string read FTipoRps write FTipoRps;
     property Pagina: Integer read FPagina write FPagina;
+    property CnpjCpfToma: string read FCnpjCpfToma write FCnpjCpfToma;
   end;
 
   TInfCancelamento = class
@@ -1120,6 +1122,7 @@ begin
         FPRetorno := NativeStringToUTF8(FPRetorno);
       end;
 
+      FPRetorno := StringReplace(FPRetorno, '<?xml version="1.0" ?>', '', [rfReplaceAll]);
       FPRetorno := '<?xml version="1.0" encoding="UTF-8"?>' + FPRetorno;
     end;
 
@@ -1767,6 +1770,7 @@ begin
   FDtEmissao := 0;
   FTipoRps := '';
   FPagina := 0;
+  FCnpjCpfToma := '';
 end;
 
 function TInfConsultaLinkNFSe.LerFromIni(const AIniStr: string): Boolean;
@@ -1792,6 +1796,7 @@ begin
     NumeroRps := INIRec.ReadInteger(sSecao, 'NumeroRps', 0);
     SerieRps := INIRec.ReadString(sSecao, 'SerieRps', '');
     TipoRps := INIRec.ReadString(sSecao, 'TipoRps', '');
+    CnpjCpfToma := INIRec.ReadString(sSecao, 'CnpjCpfToma', '');
     Pagina := INIRec.ReadInteger(sSecao, 'Pagina', 0);
 
     Result := True;

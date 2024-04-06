@@ -32,71 +32,43 @@
 
 {$I ACBr.inc}
 
-unit pcnConsFoto;
+unit ACBrONE.Consts;
 
 interface
 
 uses
-  SysUtils, Classes,
-  ACBrDFeConsts,
-  pcnConversao, pcnGerador, ACBrUtil.Base,
-  pcnONEConsts;
+  SysUtils;
 
-type
+const
+  NAME_SPACE_ONE  = 'xmlns="http://www.portalfiscal.inf.br/one"';
 
-  TConsFoto = class
-  private
-    FGerador: TGerador;
-    FtpAmb: TpcnTipoAmbiente;
-    FverAplic: String;
-    FNSULeitura: String;
-    FVersao: String;
-  public
-    constructor Create;
-    destructor Destroy; override;
-    function GerarXML: Boolean;
-
-    property Gerador: TGerador       read FGerador    write FGerador;
-    property tpAmb: TpcnTipoAmbiente read FtpAmb      write FtpAmb;
-    property verAplic: String        read FverAplic   write FverAplic;
-    property NSULeitura: String      read FNSULeitura write FNSULeitura;
-    property Versao: String          read FVersao     write FVersao;
-  end;
+resourcestring
+  DSC_verAplic = 'Versão do Aplicativo';
+  DSC_tpMan = 'Tipo de Manutenção';
+  DSC_CNPJOper = 'CNPJ do Operador';
+  DSC_cEQP = 'Código do Equipamento';
+  DSC_xEQP = 'Descrição do Equipamento';
+  DSC_cUF = 'Código IBGE da UF';
+  DSC_tpSentido = 'Tipo de Sentido';
+  DSC_Latitude = 'Latitude';
+  DSC_Longitude = 'Longitude';
+  DSC_tpEQP = 'Tipo de Equipamento';
+  DSC_tpTransm = 'Tipo de Transmissão';
+  DSC_Placa = 'Placa';
+  DSC_tpVeiculo = 'Tipo de Veiculo';
+  DSC_Velocidade = 'Velocidade do Veiculo';
+  DSC_foto = 'Foto';
+  DSC_IndicadorConfianca = 'Indicador de Confiança do Equipamento';
+  DSC_PesoBrutoTotal = 'Peso Bruto Total';
+  DSC_NroEixos = 'Numero de Eixos do Veiculo';
+  DSC_tpDist = 'Tipo de Distribuição';
+  DSC_ULTNSU = 'Último NSU recebido pela Empresa';
+  DSC_NSUFin = 'NSU Final';
+  DSC_xREFCOMPL = 'Detalhe da Localização do Equiplamento';
+  DSC_NSULeitura = 'NSU Geral da leitura';
+  DSC_DataRef = 'Data de Referencia';
 
 implementation
-
-{ TConsFoto }
-
-constructor TConsFoto.Create;
-begin
-  FGerador := TGerador.Create;
-end;
-
-destructor TConsFoto.Destroy;
-begin
-  FGerador.Free;
-
-  inherited;
-end;
-
-function TConsFoto.GerarXML: Boolean;
-var
-  sNSULei: string;
-begin
-  Gerador.ArquivoFormatoXML := '';
-
-  sNSULei := IntToStrZero(StrToInt64Def(NSULeitura, 0), 15);
-
-  Gerador.wGrupo('oneConsFoto ' + NAME_SPACE_ONE + ' versao="' + Versao + '"');
-
-  Gerador.wCampo(tcStr, 'EP03', 'tpAmb     ', 01, 01, 1, tpAmbToStr(tpAmb), DSC_TPAMB);
-  Gerador.wCampo(tcStr, 'EP04', 'verAplic  ', 01, 20, 1, verAplic, DSC_verAplic);
-  Gerador.wCampo(tcStr, 'EP05', 'NSULeitura', 15, 15, 1, sNSULei, DSC_NSULeitura);
-
-  Gerador.wGrupo('/oneConsFoto');
-
-  Result := (Gerador.ListaDeAlertas.Count = 0);
-end;
 
 end.
 

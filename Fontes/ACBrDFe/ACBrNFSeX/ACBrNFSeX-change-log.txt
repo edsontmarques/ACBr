@@ -42,9 +42,62 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+05/04/2024
+-- ACBrNFSeXServicos --
+[*] Alterado a URL e a versão da cidade de Pomerode/SC, o provedor continua o mesmo.
+  Por: Astrogildo
+[+] Incluída a cidade de Ibirapuita/RS, o provedor é Fiorilli
+  Por: BSSoft
+-- ACBrNFSeXDANFSeRLRetrato.lfm --
+[*][*] TK-5203 / 5203-1  Ajustado a Discriminação dos Serviços para melhor exibição.
+https://www.projetoacbr.com.br/forum/topic/76760-texto-no-campo-discrimina%C3%A7%C3%A3o-dos-servi%C3%A7os-da-danfs-e-est%C3%A1-cortando/
+  Por: Daniel de Morais InfoCotidiano
+-- ACBrNFSeXServicos --
+[*] Alterado a URL e a versão da cidade de Serra/ES, o provedor continua o mesmo.
+-- Futurize.Provider --
+[*] Alterado a configuração para que o modo de envio automatico seja o Unitário.
+-- SmarAPD.LerXml --
+[*] Melhorias no código usando o FixInsight (ainda não ficou 100%).
+  Por: Italo Giurizzato Junior
+
+04/04/2024
+-- ACBrNFSeXWebservicesResponse/EL.Provider --
+[+] Incluido a propriedade idRps que é utilizado pelo provedor EL.
+  Por: Italo Giurizzato Junior
+
+03/04/2024
+-- DataSmart.GravarXml --
+[*] Alteração visando deixar a tag OutrasInformacoes como opcional.
+  Por: Italo Giurizzato Junior
+
+02/04/2024
+-- ACBrNFSeXServicos --
+[*] A cidade de Itanhaem/SP mudou as URLs, mas o provedor continua o mesmo.
+  Por: Luiz Henrique Teshima
+-- Diversos --
+[+] Implementado o método ConsultarLinkNFSe no provedor GeisWeb.
+  Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[*] A cidade de Gramado/RS trocou de provedor, agora é IPM versão 2.04
+  Por: Enéias Rodrigo
+[+] Incluida as cidades de Carmo da Mata/MG - provedor NFSeBrasil e 
+    Rosana/SP - provedor Fiorilli.
+[*] A cidade de Alfenas/MG mudou a versão e as URLs o provedor continua o mesmo.
+  Por: Fabio Luiz Binhara
+[*] A cidade de Jaú/SP mudou o URL o provedor continua o mesmo.
+  Por: Thiago ND/Ronaldo Negreiros Danieli/Edson/Antonio Paulo Mangili
+[*] As cidades de Quatro Pontes/PR e Lindoeste/PR trocaram de provedor, agora é Publica.
+  Por: Alex Heinen
+[*] Adicionado o Params: SubVersao para a cidade de Sertaozinho/SP e alterado
+    a versão para 2.04 e a URL de produção.
+  Por: Italo Giurizzato Junior
+-- SmarAPD.Provider --
+[+] Acrescentado a leitura do Params: SubVersao para a versão 2.04
+  Por: Italo Giurizzato Junior
+
 28/03/2024
 -- ACBrNFSeXServicos --
-[*] Adiciona o parametroExtra eletron=1 para a cidade de Rio Negro/PR, provedor é o IPM.
+[*] Adicionado o parametroExtra eletron=1 para a cidade de Rio Negro/PR, provedor é o IPM.
   Por: C4Dev 
 [*] A cidade de São Felix do Araguaia/MT trocou de provedor, agora é Fiorilli.
   Por: tryideas sistemas

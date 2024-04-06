@@ -3,7 +3,7 @@
 {  Biblioteca multiplataforma de componentes Delphi para interação com equipa- }
 { mentos de Automação Comercial utilizados no Brasil                           }
 {                                                                              }
-{ Direitos Autorais Reservados (c) 2023 Daniel Simoes de Almeida               }
+{ Direitos Autorais Reservados (c) 2020 Daniel Simoes de Almeida               }
 {                                                                              }
 { Colaboradores nesse arquivo: Italo Giurizzato Junior                         }
 {                                                                              }
@@ -32,71 +32,83 @@
 
 {$I ACBr.inc}
 
-unit pcnConsPlaca;
+unit ACBrONE.RetManutencaoEQP;
 
 interface
 
 uses
   SysUtils, Classes,
-  ACBrDFeConsts,
-  pcnConversao, pcnGerador, ACBrUtil.Base,
-  pcnONEConsts;
+  {$IF DEFINED(HAS_SYSTEM_GENERICS)}
+   System.Generics.Collections, System.Generics.Defaults,
+  {$ELSEIF DEFINED(DELPHICOMPILER16_UP)}
+   System.Contnrs,
+  {$IFEND}
+  ACBrBase,
+  ACBrXmlBase;
 
 type
+  { TRetManutencaoEQP }
 
-  TConsPlaca = class
+  TRetManutencaoEQP = class(TObject)
   private
-    FGerador: TGerador;
-    FtpAmb: TpcnTipoAmbiente;
-    FverAplic: String;
-    FPlaca: String;
-    FVersao: String;
-    FdtRef: TDateTime;
+    Fversao: string;
+    FtpAmb: TACBrTipoAmbiente;
+    FverAplic: string;
+    FcStat: Integer;
+    FxMotivo: string;
+    FdhResp: TDateTime;
+    FNSUMovto: string;
+    FXML: AnsiString;
+    FXmlRetorno: string;
   public
-    constructor Create;
-    destructor Destroy; override;
-    function GerarXML: Boolean;
+    function LerXml: Boolean;
 
-    property Gerador: TGerador       read FGerador    write FGerador;
-    property tpAmb: TpcnTipoAmbiente read FtpAmb      write FtpAmb;
-    property verAplic: String        read FverAplic   write FverAplic;
-    property Placa: String           read FPlaca      write FPlaca;
-    property Versao: String          read FVersao     write FVersao;
-    property dtRef: TDateTime        read FdtRef      write FdtRef;
+    property versao: string           read Fversao   write Fversao;
+    property tpAmb: TACBrTipoAmbiente read FtpAmb    write FtpAmb;
+    property verAplic: string         read FverAplic write FverAplic;
+    property cStat: Integer           read FcStat    write FcStat;
+    property xMotivo: string          read FxMotivo  write FxMotivo;
+    property dhResp: TDateTime        read FdhResp   write FdhResp;
+    property NSUMovto: string         read FNSUMovto write FNSUMovto;
+    property XML: AnsiString          read FXML      write FXML;
+
+    property XmlRetorno: string read FXmlRetorno write FXmlRetorno;
   end;
 
 implementation
 
-{ TConsPlaca }
+uses
+  ACBrXmlDocument;
 
-constructor TConsPlaca.Create;
+{ TRetManutencaoEQP }
+
+function TRetManutencaoEQP.LerXml: Boolean;
+var
+  Document: TACBrXmlDocument;
+  ANode: TACBrXmlNode;
+  ok: Boolean;
 begin
-  FGerador := TGerador.Create;
-end;
+  Document := TACBrXmlDocument.Create;
 
-destructor TConsPlaca.Destroy;
-begin
-  FGerador.Free;
+  try
+    Document.LoadFromXml(XmlRetorno);
 
-  inherited;
-end;
+    ANode := Document.Root;
 
-function TConsPlaca.GerarXML: Boolean;
-begin
-  Gerador.ArquivoFormatoXML := '';
-
-  Gerador.wGrupo('oneConsPorPlaca ' + NAME_SPACE_ONE + ' versao="' + Versao + '"');
-
-  Gerador.wCampo(tcStr, 'EP03', 'tpAmb     ', 01, 01, 1, tpAmbToStr(tpAmb), DSC_TPAMB);
-  Gerador.wCampo(tcStr, 'EP04', 'verAplic  ', 01, 20, 1, verAplic, DSC_verAplic);
-  Gerador.wCampo(tcStr, 'EP06', 'placa     ', 07, 07, 1, Placa, DSC_Placa);
-  Gerador.wCampo(tcDat, 'EP07', 'dtRef     ', 10, 10, 0, FdtRef, DSC_DataRef);
-  Gerador.wCampo(tcStr, 'EP08', 'indCompRet', 01, 01, 1, '1');
-
-  Gerador.wGrupo('/oneConsPorPlaca');
-
-  Result := (Gerador.ListaDeAlertas.Count = 0);
+    if ANode <> nil then
+    begin
+      versao := ObterConteudoTag(ANode.Attributes.Items['versao']);
+      tpAmb := StrToTipoAmbiente(ok, ObterConteudoTag(ANode.Childrens.FindAnyNs('tpAmb'), tcStr));
+      verAplic := ObterConteudoTag(ANode.Childrens.FindAnyNs('verAplic'), tcStr);
+      cStat := ObterConteudoTag(ANode.Childrens.FindAnyNs('cStat'), tcInt);
+      xMotivo := ObterConteudoTag(ANode.Childrens.FindAnyNs('xMotivo'), tcStr);
+      dhResp := ObterConteudoTag(ANode.Childrens.FindAnyNs('dhResp'), tcDatHor);
+      NSUMovto := ObterConteudoTag(ANode.Childrens.FindAnyNs('NSUMovto'), tcStr);
+    end;
+  finally
+    Result := True;
+    FreeAndNil(Document);
+  end;
 end;
 
 end.
-
