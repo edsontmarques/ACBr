@@ -347,6 +347,9 @@ begin
 
   ConfigGeral.DetalharServico := True;
 
+  ConfigGeral.Particularidades.PermiteMaisDeUmServico := True;
+  ConfigGeral.Particularidades.PermiteTagOutrasInformacoes := True;
+
   with ConfigAssinar do
   begin
     Rps := False;
@@ -364,12 +367,9 @@ begin
 
   with ConfigMsgDados do
   begin
-    with XmlRps do
-    begin
-      xmlns := ConfigWebServices.Producao.XMLNameSpace;
+    XmlRps.xmlns := ConfigWebServices.Producao.XMLNameSpace;
 
-      SetXmlNameSpace(xmlns);
-    end;
+    SetXmlNameSpace(XmlRps.xmlns);
 
     DadosCabecalho := GetCabecalho(XmlRps.xmlns);
   end;

@@ -112,10 +112,13 @@ begin
     Identificador := '';
     CancPreencherCodVerificacao := True;
     DetalharServico := True;
+    ConsultaPorFaixaPreencherNumNfseFinal := True;
 
     Autenticacao.RequerLogin := True;
 
     ServicosDisponibilizados.EnviarUnitario := False;
+
+    Particularidades.PermiteMaisDeUmServico := True;
   end;
 
   with ConfigWebServices do
@@ -621,6 +624,7 @@ begin
   Result := RemoverDeclaracaoXML(Result);
   Result := RemoverPrefixosDesnecessarios(Result);
   Result := RemoverCaracteresDesnecessarios(Result);
+  Result := StringReplace(Result, '&', '&amp;', [rfReplaceAll]);
 end;
 
 end.

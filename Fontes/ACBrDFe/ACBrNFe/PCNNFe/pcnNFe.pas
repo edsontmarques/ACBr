@@ -232,14 +232,14 @@ type
   TinfNFe = class(TObject)
   private
     FID: String;
-    FVersao: Real;
-    function GetVersaoStr: String;
-    function GetVersao: Real;
+    FVersao: Double;
+//    function GetVersaoStr: String;
+//    function GetVersao: Real;
   public
     procedure Assign(Source: TinfNFe);
     property ID: String read FID write FID;
-    property Versao: Real read GetVersao write FVersao;
-    property VersaoStr: String read GetVersaoStr;
+    property Versao: Double read FVersao write FVersao;
+//    property VersaoStr: String read GetVersaoStr;
   end;
 
   TIde = class(TObject)
@@ -1247,7 +1247,7 @@ type
     FmotRedAdRem: TmotRedAdRem;
     FvICMSMonoOp: Currency;
     FqBCMonoRet: Currency;
-    FindDeduzDeson: TIndicador;
+    FindDeduzDeson: TIndicadorEx;
     FcBenefRBC: string;
   public
     constructor Create;
@@ -1320,7 +1320,7 @@ type
     property vICMSMonoRet: Currency read FvICMSMonoRet write FvICMSMonoRet;
     property qBCMonoRet: Currency read FqBCMonoRet write FqBCMonoRet;
 
-    property indDeduzDeson: TIndicador read FindDeduzDeson write FindDeduzDeson default tiNao;
+    property indDeduzDeson: TIndicadorEx read FindDeduzDeson write FindDeduzDeson default tieNenhum;
     property cBenefRBC: string read FcBenefRBC write FcBenefRBC;
   end;
 
@@ -3285,7 +3285,7 @@ begin
   ID     := Source.ID;
   Versao := Source.Versao;
 end;
-
+{
 function TinfNFe.GetVersao: Real;
 begin
   if FVersao <= 0 then
@@ -3301,7 +3301,7 @@ begin
   else
      Result := 'versao="'+FloatToString(FVersao,'.','#0.00')+'"';
 end;
-
+}
 { TveicProd }
 
 procedure TveicProd.Assign(Source: TveicProd);
@@ -3780,7 +3780,8 @@ end;
 constructor TICMS.Create;
 begin
   inherited Create;
-  FindDeduzDeson := tiNao;
+
+  FindDeduzDeson := tieNenhum;
 end;
 
 { TIPI }

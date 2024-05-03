@@ -32,7 +32,7 @@ namespace ACBrLib.NFe
         /// </summary>
         public decimal vPag { get; set; }
 
-        public DateTime dPag { get; set; }
+        public DateTime? dPag { get; set; }
 
         /// <summary>
         /// Grupo Opcional
@@ -56,7 +56,7 @@ namespace ACBrLib.NFe
         /// <para>04=Sorocred</para>
         /// <para>99=Outros</para>
         /// </summary>
-        public BandeiraCartao tBand { get; set; }
+        public BandeiraCartao? tBand { get; set; }
 
         /// <summary>
         /// Número de autorização da operação cartão de crédito e/ou débito

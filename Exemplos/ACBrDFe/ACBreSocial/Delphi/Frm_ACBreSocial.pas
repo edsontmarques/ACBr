@@ -6121,6 +6121,17 @@ begin
               vrInden := 3250.55;
               vrBaseIndenFGTS := 6785.22;
               pagDiretoResc := snfNao;
+
+              with idePeriodo.New do
+              begin
+                perRef := '2012-07';
+
+                with baseCalculo do
+                begin
+                  vrBcCpMensal := 0;
+                  vrBcCp13 := 10000;
+                end;
+              end;
             end;
           end;
         end;
@@ -7011,6 +7022,7 @@ begin
         Add('');
         Add('Código Retorno: ' + IntToStr(Status.cdResposta));
         Add('Mensagem: ' + Status.descResposta);
+        Add('Arquivo Salvo: ' + ACBreSocial1.WebServices.EnvioLote.PathNome);
 
         if Status.cdResposta in [201, 202] then
         begin
@@ -7072,6 +7084,7 @@ begin
         Add('');
         Add('Código Retorno: ' + IntToStr(Status.cdResposta));
         Add('Mensagem: ' + Status.descResposta);
+        Add('Arquivo Salvo: ' + ACBreSocial1.WebServices.EnvioLote.PathNome);
 
         if Status.cdResposta in [201, 202] then
         begin
@@ -7141,6 +7154,7 @@ begin
     memoLinhas.Add('');
     memoLinhas.Add('Código Retorno: ' + IntToStr(vRetornoConsultaLote.Status.cdResposta));
     memoLinhas.Add('Mensagem: ' + vRetornoConsultaLote.Status.descResposta);
+    memoLinhas.Add('Arquivo Salvo: ' + ACBreSocial1.WebServices.ConsultaLote.PathNome);
 
     if vRetornoConsultaLote.Status.cdResposta in [201, 202] then
     begin
@@ -7284,6 +7298,7 @@ begin
         Add('');
         Add('Código Retorno: ' + IntToStr(Status.cdResposta));
         Add('Mensagem: ' + Status.descResposta);
+        Add('Arquivo Salvo: ' + ACBreSocial1.WebServices.ConsultaIdentEventos.PathNome);
         Add('');
         Add('Qtde Total de Eventos na Consulta: ' + IntToStr(RetIdentEvts.qtdeTotEvtsConsulta));
         Add('dhUltimo Evento Retornado: ' + DateTimeToStr(RetIdentEvts.dhUltimoEvtRetornado));
@@ -7337,6 +7352,7 @@ begin
         Add('');
         Add('Código Retorno: ' + IntToStr(Status.cdResposta));
         Add('Mensagem: ' + Status.descResposta);
+        Add('Arquivo Salvo: ' + ACBreSocial1.WebServices.ConsultaIdentEventos.PathNome);
         Add('');
         Add('Qtde Total de Eventos na Consulta: ' + IntToStr(RetIdentEvts.qtdeTotEvtsConsulta));
         Add('dhUltimo Evento Retornado: ' + DateTimeToStr(RetIdentEvts.dhUltimoEvtRetornado));
@@ -7384,6 +7400,7 @@ begin
         Add('');
         Add('Código Retorno: ' + IntToStr(Status.cdResposta));
         Add('Mensagem: ' + Status.descResposta);
+        Add('Arquivo Salvo: ' + ACBreSocial1.WebServices.ConsultaIdentEventos.PathNome);
         Add('');
         Add('Qtde Total de Eventos na Consulta: ' + IntToStr(RetIdentEvts.qtdeTotEvtsConsulta));
         Add('dhUltimo Evento Retornado: ' + DateTimeToStr(RetIdentEvts.dhUltimoEvtRetornado));
@@ -7432,6 +7449,7 @@ begin
         Add('');
         Add('Código Retorno: ' + IntToStr(Status.cdResposta));
         Add('Mensagem: ' + Status.descResposta);
+        Add('Arquivo Salvo: ' + ACBreSocial1.WebServices.DownloadEventos.PathNome);
 
         for i := 0 to arquivo.Count - 1 do
         begin

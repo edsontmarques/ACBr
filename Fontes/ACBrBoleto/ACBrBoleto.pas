@@ -1255,7 +1255,7 @@ type
     fValorDesconto        : Currency;
     fValorDesconto2       : Currency;
     fValorDesconto3       : Currency;
-    fValorMoraJuros       : Currency;
+    fValorMoraJuros       : Real;
     fValorIOF             : Currency;
     fValorOutrasDespesas  : Currency;
     fValorOutrosCreditos  : Currency;
@@ -1388,7 +1388,7 @@ type
      property ValorDesconto        : Currency read fValorDesconto         write fValorDesconto;
      property ValorDesconto2       : Currency read fValorDesconto2        write fValorDesconto2;
      property ValorDesconto3       : Currency read fValorDesconto3        write fValorDesconto3;
-     property ValorMoraJuros       : Currency read fValorMoraJuros        write fValorMoraJuros;
+     property ValorMoraJuros       : Real     read fValorMoraJuros        write fValorMoraJuros;
      property ValorIOF             : Currency read fValorIOF              write fValorIOF;
      property ValorOutrasDespesas  : Currency read fValorOutrasDespesas   write fValorOutrasDespesas;
      property ValorOutrosCreditos  : Currency read fValorOutrosCreditos   write fValorOutrosCreditos;
@@ -4075,6 +4075,7 @@ begin
             EspecieDoc          := IniBoletos.ReadString(Sessao,'Especie',EspecieDoc);
             Carteira            := trim(IniBoletos.ReadString(Sessao,'Carteira',''));
             NossoNumero         := IniBoletos.ReadString(Sessao,'NossoNumero','');
+            NossoNumeroCorrespondente  := IniBoletos.ReadString(Sessao,'NossoNumeroCorrespondente','');            
             ValorDocumento      := IniBoletos.ReadFloat(Sessao,'ValorDocumento',ValorDocumento);
             Sacado.NomeSacado   := IniBoletos.ReadString(Sessao,'Sacado.NomeSacado','');
             Sacado.CNPJCPF      := OnlyNumber(IniBoletos.ReadString(Sessao,'Sacado.CNPJCPF',''));
@@ -4329,6 +4330,7 @@ begin
            IniRetorno.WriteString(wSessao,'NumeroDocumento',ListadeBoletos[I].NumeroDocumento);
            IniRetorno.WriteString(wSessao,'DataProcessamento',DateToStr(ListadeBoletos[I].DataProcessamento));
            IniRetorno.WriteString(wSessao,'NossoNumero',ListadeBoletos[I].NossoNumero);
+           IniRetorno.WriteString(wSessao,'NossoNumeroCorrespondente',ListadeBoletos[I].NossoNumeroCorrespondente);
            IniRetorno.WriteString(wSessao,'Carteira',ListadeBoletos[I].Carteira);
            IniRetorno.WriteFloat(wSessao,'ValorDocumento',ListadeBoletos[I].ValorDocumento);
            IniRetorno.WriteString(wSessao,'DataOcorrencia',DateToStr(ListadeBoletos[I].DataOcorrencia));

@@ -209,27 +209,28 @@ begin
 
   FConfiguracoes := TACBrNFe(TNotasFiscais(Collection).ACBrNFe).Configuracoes;
 
+  FNFe.Ide.tpNF    := tnSaida;
+  FNFe.Ide.indPag  := ipVista;
+  FNFe.Ide.verProc := 'ACBrNFe';
+
+  FNFe.Emit.EnderEmit.xPais := 'BRASIL';
+  FNFe.Emit.EnderEmit.cPais := 1058;
+  FNFe.Emit.EnderEmit.nro := 'SEM NUMERO';
+
+  FNFe.Dest.EnderDest.xPais := 'BRASIL';
+  FNFe.Dest.EnderDest.cPais := 1058;
+  {
   with TACBrNFe(TNotasFiscais(Collection).ACBrNFe) do
   begin
     FNFe.Ide.modelo := StrToInt(ModeloDFToStr(Configuracoes.Geral.ModeloDF));
     FNFe.infNFe.Versao := VersaoDFToDbl(Configuracoes.Geral.VersaoDF);
-
-    FNFe.Ide.tpNF    := tnSaida;
-    FNFe.Ide.indPag  := ipVista;
-    FNFe.Ide.verProc := 'ACBrNFe'; // 'ACBr'+ ModeloDFIntegerToPrefixo(FNFe.Ide.modelo);
     FNFe.Ide.tpAmb   := Configuracoes.WebServices.Ambiente;
     FNFe.Ide.tpEmis  := Configuracoes.Geral.FormaEmissao;
 
     if Assigned(DANFE) then
       FNFe.Ide.tpImp := DANFE.TipoDANFE;
-
-    FNFe.Emit.EnderEmit.xPais := 'BRASIL';
-    FNFe.Emit.EnderEmit.cPais := 1058;
-    FNFe.Emit.EnderEmit.nro := 'SEM NUMERO';
-
-    FNFe.Dest.EnderDest.xPais := 'BRASIL';
-    FNFe.Dest.EnderDest.cPais := 1058;
   end;
+  }
 end;
 
 destructor NotaFiscal.Destroy;
@@ -1760,6 +1761,7 @@ begin
       Dest.xNome             := INIRec.ReadString(  sSecao,'xNome'  ,INIRec.ReadString(  sSecao,'NomeRazao'  ,''));
       Dest.indIEDest         := StrToindIEDest(OK,INIRec.ReadString( sSecao,'indIEDest','1'));
       Dest.IE                := INIRec.ReadString(  sSecao,'IE'         ,'');
+      Dest.IM                := INIRec.ReadString(  sSecao,'IM'         ,'');
       Dest.ISUF              := INIRec.ReadString(  sSecao,'ISUF'       ,'');
       Dest.Email             := INIRec.ReadString(  sSecao,'Email'      ,'');
 
@@ -2260,7 +2262,7 @@ begin
                 ICMS.motRedAdRem := StrTomotRedAdRem(OK, INIRec.ReadString(sSecao,'motRedAdRem','0'));
                 ICMS.qBCMonoRet := StringToFloatDef( INIRec.ReadString(sSecao,'qBCMonoRet','') ,0);
                 ICMS.vICMSMonoOp := StringToFloatDef( INIRec.ReadString(sSecao,'vICMSMonoOp','') ,0);
-                ICMS.indDeduzDeson := StrToTIndicador(OK, INIRec.ReadString(sSecao,'indDeduzDeson','0'));
+                ICMS.indDeduzDeson := StrToTIndicadorEx(OK, INIRec.ReadString(sSecao,'indDeduzDeson', ''));
               end;
             end;
 
@@ -3303,7 +3305,7 @@ begin
               INIRec.WriteString(sSecao, 'motRedAdRem', motRedAdRemToStr(ICMS.motRedAdRem));
               INIRec.WriteFloat(sSecao, 'qBCMonoRet', ICMS.qBCMonoRet);
               INIRec.WriteFloat(sSecao, 'vICMSMonoOp', ICMS.vICMSMonoOp);
-              INIRec.WriteString(sSecao, 'indDeduzDeson', TIndicadorToStr(ICMS.indDeduzDeson));
+              INIRec.WriteString(sSecao, 'indDeduzDeson', TIndicadorExToStr(ICMS.indDeduzDeson));
             end;
             sSecao := 'ICMSUFDEST' + IntToStrZero(I + 1, 3);
             with ICMSUFDest do
@@ -3827,6 +3829,14 @@ begin
 {$EndIf}
 
     TimeZoneConf.Assign( Configuracoes.WebServices.TimeZoneConf );
+
+    {
+      Ao gerar o XML as tags e atributos tem que ser exatamente os da configuração
+    }
+    FNFeW.VersaoDF := Configuracoes.Geral.VersaoDF;
+    FNFeW.ModeloDF := Configuracoes.Geral.ModeloDF;
+    FNFeW.tpAmb := Configuracoes.WebServices.Ambiente;
+    FNFeW.tpEmis := Configuracoes.Geral.FormaEmissao;
 
     FNFeW.idCSRT := Configuracoes.RespTec.IdCSRT;
     FNFeW.CSRT   := Configuracoes.RespTec.CSRT;

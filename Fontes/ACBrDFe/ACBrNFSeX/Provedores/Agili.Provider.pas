@@ -134,22 +134,19 @@ begin
     DetalharServico := True;
     NumMinRpsEnviar := 2;
 
-    with Autenticacao do
-    begin
-      RequerCertificado := False;
-      RequerChaveAcesso := True;
-    end;
+    Autenticacao.RequerCertificado := False;
+    Autenticacao.RequerChaveAcesso := True;
 
-    with ServicosDisponibilizados do
-    begin
-      EnviarLoteAssincrono := True;
-      EnviarUnitario := True;
-      ConsultarLote := True;
-      ConsultarRps := True;
-      ConsultarFaixaNfse := True;
-      CancelarNfse := True;
-      SubstituirNfse := True;
-    end;
+    ServicosDisponibilizados.EnviarLoteAssincrono := True;
+    ServicosDisponibilizados.EnviarUnitario := True;
+    ServicosDisponibilizados.ConsultarLote := True;
+    ServicosDisponibilizados.ConsultarRps := True;
+    ServicosDisponibilizados.ConsultarFaixaNfse := True;
+    ServicosDisponibilizados.CancelarNfse := True;
+    ServicosDisponibilizados.SubstituirNfse := True;
+
+    Particularidades.PermiteTagOutrasInformacoes := True;
+    Particularidades.PermiteMaisDeUmServico := True;
   end;
 
   SetXmlNameSpace('http://www.agili.com.br/nfse_v_1.00.xsd');
@@ -423,13 +420,13 @@ begin
 
         AuxNode := ANode;
         AuxNode := AuxNode.Childrens.FindAnyNs('DeclaracaoPrestacaoServico');
-        if not Assigned(AuxNode) or (AuxNode = nil) then Exit;
+        if not Assigned(AuxNode) then Exit;
 
         AuxNode := AuxNode.Childrens.FindAnyNs('Rps');
-        if not Assigned(AuxNode) or (AuxNode = nil) then Exit;
+        if not Assigned(AuxNode) then Exit;
 
         AuxNode := AuxNode.Childrens.FindAnyNs('IdentificacaoRps');
-        if not Assigned(AuxNode) or (AuxNode = nil) then Exit;
+        if not Assigned(AuxNode) then Exit;
 
         NumRps := ObterConteudoTag(AuxNode.Childrens.FindAnyNs('Numero'), tcStr);
 
@@ -549,10 +546,10 @@ begin
             begin
               ANode := ANodeArray[i];
               AuxNode := ANode.Childrens.FindAnyNs('DeclaracaoPrestacaoServico');
-              if not Assigned(AuxNode) or (AuxNode = nil) then Exit;
+              if not Assigned(AuxNode) then Exit;
 
               AuxNode := AuxNode.Childrens.FindAnyNs('Rps');
-              if not Assigned(AuxNode) or (AuxNode = nil) then Exit;
+              if not Assigned(AuxNode) then Exit;
 
               AuxNode := AuxNode.Childrens.FindAnyNs('IdentificacaoRps');
 
@@ -697,10 +694,10 @@ begin
           begin
             ANode := ANodeArray[i];
             AuxNode := ANode.Childrens.FindAnyNs('DeclaracaoPrestacaoServico');
-            if not Assigned(AuxNode) or (AuxNode = nil) then Exit;
+            if not Assigned(AuxNode) then Exit;
 
             AuxNode := AuxNode.Childrens.FindAnyNs('Rps');
-            if not Assigned(AuxNode) or (AuxNode = nil) then Exit;
+            if not Assigned(AuxNode) then Exit;
 
             AuxNode := AuxNode.Childrens.FindAnyNs('IdentificacaoRps');
 
@@ -838,10 +835,10 @@ begin
             begin
               ANode := ANodeArray[i];
               AuxNode := ANode.Childrens.FindAnyNs('DeclaracaoPrestacaoServico');
-              if not Assigned(AuxNode) or (AuxNode = nil) then Exit;
+              if not Assigned(AuxNode) then Exit;
 
               AuxNode := AuxNode.Childrens.FindAnyNs('Rps');
-              if not Assigned(AuxNode) or (AuxNode = nil) then Exit;
+              if not Assigned(AuxNode) then Exit;
 
               AuxNode := AuxNode.Childrens.FindAnyNs('IdentificacaoRps');
 
@@ -1063,10 +1060,10 @@ begin
             begin
               ANode := ANodeArray[i];
               AuxNode := ANode.Childrens.FindAnyNs('DeclaracaoPrestacaoServico');
-              if not Assigned(AuxNode) or (AuxNode = nil) then Exit;
+              if not Assigned(AuxNode) then Exit;
 
               AuxNode := AuxNode.Childrens.FindAnyNs('Rps');
-              if not Assigned(AuxNode) or (AuxNode = nil) then Exit;
+              if not Assigned(AuxNode) then Exit;
 
               AuxNode := AuxNode.Childrens.FindAnyNs('IdentificacaoRps');
 

@@ -361,14 +361,13 @@ begin
     ConsultaNFSe := False;
     FormatoArqRecibo := tfaTxt;
 
-    with ServicosDisponibilizados do
-    begin
-      EnviarLoteAssincrono := True;
-      ConsultarSituacao := True;
-      ConsultarLote := True;
-      ConsultarServicoTomado := True;
-      CancelarNfse := True;
-    end;
+    ServicosDisponibilizados.EnviarLoteAssincrono := True;
+    ServicosDisponibilizados.ConsultarSituacao := True;
+    ServicosDisponibilizados.ConsultarLote := True;
+    ServicosDisponibilizados.ConsultarServicoTomado := True;
+    ServicosDisponibilizados.CancelarNfse := True;
+
+    Particularidades.PermiteMaisDeUmServico := True;
   end;
 
   with ConfigMsgDados do
@@ -832,9 +831,12 @@ begin
           Response.Data := EncodeDataHora(Trim(Copy(Dados[1], 13, 8)), 'YYYYMMDD');
 
         if (FAOwner.Configuracoes.WebServices.AmbienteCodigo = 1) then
-        begin
-          Response.Link := 'https://www.barueri.sp.gov.br/nfe/xmlNFe.ashx?codigoautenticidade=' + Response.Protocolo + '&numdoc=' + Trim(Copy(Dados[1], 94, 14));
-        end;
+          Response.Link := 'https://www.barueri.sp.gov.br/nfe/xmlNFe.ashx'
+        else
+          Response.Link := 'https://testeeiss.barueri.sp.gov.br/nfe/xmlNFe.ashx';
+
+        Response.Link := Response.Link + '?codigoautenticidade=' +
+                 Response.Protocolo + '&numdoc=' + Trim(Copy(Dados[1], 94, 14));
 
         if NaoEstaVazio(Response.Link) then
         begin

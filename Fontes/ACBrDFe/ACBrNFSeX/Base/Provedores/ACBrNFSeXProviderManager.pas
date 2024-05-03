@@ -190,6 +190,7 @@ uses
   ISSSaoPaulo.Provider,
   Prescon.Provider,
   PriMax.Provider,
+  Sam.Provider,
   Siappa.Provider,
   Siat.Provider,
   SigISS.Provider,
@@ -499,6 +500,8 @@ begin
           end;
         end;
 
+      proSam:    Result := TACBrNFSeProviderSam.Create(ACBrNFSe);
+
       proSaatri:
         begin
           case Versao of
@@ -536,6 +539,7 @@ begin
         begin
           case Versao of
             ve100: Result := TACBrNFSeProviderSigISS.Create(ACBrNFSe);
+            ve101: Result := TACBrNFSeProviderSigISS101.Create(ACBrNFSe);
             ve103: Result := TACBrNFSeProviderSigISS103.Create(ACBrNFSe);
           else
             Result := nil;

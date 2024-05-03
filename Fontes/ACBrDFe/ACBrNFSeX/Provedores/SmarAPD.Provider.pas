@@ -172,6 +172,9 @@ begin
     ServicosDisponibilizados.ConsultarLote := True;
     ServicosDisponibilizados.ConsultarLinkNfse := True;
     ServicosDisponibilizados.CancelarNfse := True;
+
+    Particularidades.PermiteTagOutrasInformacoes := True;
+    Particularidades.PermiteMaisDeUmServico := True;
   end;
 
   with ConfigAssinar do
@@ -980,13 +983,19 @@ procedure TACBrNFSeProviderSmarAPD204.Configuracao;
 begin
   inherited Configuracao;
 
+  SubVersao := StrToIntDef(ConfigGeral.Params.ValorParametro('SubVersao'), 0);
+
   with ConfigAssinar do
   begin
-    Rps := True;
+    Rps := (SubVersao = 0);
     LoteRps := True;
+    ConsultarLote := True;
+    ConsultarNFSeRps := True;
     CancelarNFSe := True;
     RpsGerarNFSe := True;
     RpsSubstituirNFSe := True;
+
+    IncluirURI := Rps and LoteRps;
   end;
 
   with ConfigWebServices do
@@ -1001,8 +1010,6 @@ begin
 
     DadosCabecalho := GetCabecalho('');
   end;
-
-  SubVersao := StrToIntDef(ConfigGeral.Params.ValorParametro('SubVersao'), 0);
 end;
 
 function TACBrNFSeProviderSmarAPD204.CriarGeradorXml(

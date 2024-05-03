@@ -146,7 +146,8 @@ type
                   teAtorInteressadoNFe, teComprEntregaCTe, teCancComprEntregaCTe,
                   teConfirmaServMDFe, teAlteracaoPagtoServMDFe,
                   teCancPrestDesacordo, teInsucessoEntregaCTe,
-                  teCancInsucessoEntregaCTe);
+                  teCancInsucessoEntregaCTe, teInsucessoEntregaNFe,
+                  teCancInsucessoEntregaNFe);
 
   TpcnIndicadorEmissor = (ieTodos, ieRaizCNPJDiferente);
   TpcnIndicadorContinuacao = (icNaoPossuiMaisDocumentos, icPossuiMaisDocumentos);
@@ -202,6 +203,7 @@ type
   TtpIntegra = (tiNaoInformado, tiPagIntegrado, tiPagNaoIntegrado);
 
   TIndicador = (tiSim, tiNao);
+  TIndicadorEx = (tieNenhum, tieSim, tieNao);
 
   TpcnTipoNFe = (tnEntrada, tnSaida);
 
@@ -224,7 +226,7 @@ type
   end;
 
 const
-  TpcnTpEventoString : array[0..73] of String =('-99999', '110110', '110111',
+  TpcnTpEventoString : array[0..75] of String =('-99999', '110110', '110111',
                                                 '210200', '210210', '210220',
                                                 '210240', '110112', '110113',
                                                 '110114', '110160', '310620',
@@ -248,7 +250,8 @@ const
                                                 '310112', '110130', '110131',
                                                 '110150', '610130', '610131',
                                                 '110117', '110118', '610111',
-                                                '110190', '110191');
+                                                '110190', '110191', '110192',
+                                                '110193');
 
   DFeUF: array[0..26] of String =
   ('AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA',
@@ -425,6 +428,9 @@ function StrTotpIntegra(out ok: boolean; const s: string): TtpIntegra;
 
 function TIndicadorToStr(const t: TIndicador): string;
 function StrToTIndicador(out ok: boolean; const s: string): TIndicador;
+
+function TIndicadorExToStr(const t: TIndicadorEx): string;
+function StrToTIndicadorEx(out ok: boolean; const s: string): TIndicadorEx;
 
 function tpNFToStr(const t: TpcnTipoNFe): String;
 function StrToTpNF(out ok: Boolean; const s: String): TpcnTipoNFe;
@@ -1760,6 +1766,16 @@ end;
 function StrToTIndicador(out ok: boolean; const s: string): TIndicador;
 begin
   Result := StrToEnumerado(ok, s, ['1', '0'], [tiSim, tiNao]);
+end;
+
+function TIndicadorExToStr(const t: TIndicadorEx): string;
+begin
+  Result := EnumeradoToStr(t, ['', '1', '0'], [tieNenhum, tieSim, tieNao]);
+end;
+
+function StrToTIndicadorEx(out ok: boolean; const s: string): TIndicadorEx;
+begin
+  Result := StrToEnumerado(ok, s, ['', '1', '0'], [tieNenhum, tieSim, tieNao]);
 end;
 
 function tpNFToStr(const t: TpcnTipoNFe): String;

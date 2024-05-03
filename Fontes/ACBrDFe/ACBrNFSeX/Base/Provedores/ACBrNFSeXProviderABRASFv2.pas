@@ -294,6 +294,9 @@ begin
     SalvarXmlNfse(ANota);
 
     AResumo.NomeArq := ANota.NomeArq;
+    AResumo.Link := ANota.NFSe.Link;
+
+    Response.Link := ANota.NFSe.Link;
 
     Result := True; // Processado com sucesso pois retornou a nota
   end;
@@ -372,6 +375,9 @@ begin
     SalvarXmlNfse(ANota);
 
     AResumo.NomeArq := ANota.NomeArq;
+    AResumo.Link := ANota.NFSe.Link;
+
+    Response.Link := ANota.NFSe.Link;
 
     Result := True; // Processado com sucesso pois retornou a nota
   end;
@@ -386,6 +392,13 @@ var
   TagEnvio, Prefixo, PrefixoTS: string;
   I: Integer;
 begin
+  if EstaVazio(Response.NumeroLote) then
+  begin
+    AErro := Response.Erros.New;
+    AErro.Codigo := Cod111;
+    AErro.Descricao := ACBrStr(Desc111);
+  end;
+
   if TACBrNFSeX(FAOwner).NotasFiscais.Count <= 0 then
   begin
     AErro := Response.Erros.New;
@@ -2527,16 +2540,16 @@ end;
 procedure TACBrNFSeProviderABRASFv2.LerCancelamento(const ANode: TACBrXmlNode;
   const Response: TNFSeWebserviceResponse);
 var
-  AuxNode: TACBrXmlNode;
+  AuxNode, ANodeNfseCancelamento: TACBrXmlNode;
 begin
-  AuxNode := ANode.Childrens.FindAnyNs('NfseCancelamento');
+  ANodeNfseCancelamento := ANode.Childrens.FindAnyNs('NfseCancelamento');
 
-  if AuxNode <> nil then
+  if ANodeNfseCancelamento <> nil then
   begin
-    AuxNode := AuxNode.Childrens.FindAnyNs('Confirmacao');
+    AuxNode := ANodeNfseCancelamento.Childrens.FindAnyNs('Confirmacao');
 
     if AuxNode = nil then
-      AuxNode := AuxNode.Childrens.FindAnyNs('ConfirmacaoCancelamento');
+      AuxNode := ANodeNfseCancelamento.Childrens.FindAnyNs('ConfirmacaoCancelamento');
 
     if Assigned(AuxNode) then
     begin

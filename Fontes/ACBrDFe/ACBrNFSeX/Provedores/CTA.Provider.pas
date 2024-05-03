@@ -129,11 +129,11 @@ begin
     Autenticacao.RequerCertificado := False;
     Autenticacao.RequerChaveAcesso := True;
 
-    with ServicosDisponibilizados do
-    begin
-      EnviarLoteAssincrono := True;
-      CancelarNfse := True;
-    end;
+    ServicosDisponibilizados.EnviarLoteAssincrono := True;
+    ServicosDisponibilizados.CancelarNfse := True;
+
+    Particularidades.PermiteTagOutrasInformacoes := True;
+    Particularidades.PermiteMaisDeUmServico := True;
   end;
 
   with ConfigWebServices do
