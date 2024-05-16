@@ -184,6 +184,7 @@ begin
     ConsultaNFSe := False;
     DetalharServico := True;
     FormatoArqEnvioSoap := tfaTxt;
+    ImprimirOptanteSN := False;
 
     Autenticacao.RequerLogin := True;
 
@@ -1370,11 +1371,13 @@ end;
 function TACBrNFSeXWebserviceIPM.TratarXmlRetornado(const aXML: string): string;
 var
   jDocument, JSonErro: TACBrJSONObject;
-  Codigo, Mensagem: string;
+  Codigo, Mensagem, Xml: string;
 begin
-  if (Pos('{"', aXML) > 0) and (Pos('":"', aXML) > 0) then
+  Xml := ConverteXMLtoUTF8(aXml);
+
+  if (Pos('{"', Xml) > 0) and (Pos('":"', Xml) > 0) then
   begin
-    jDocument := TACBrJSONObject.Parse(aXML);
+    jDocument := TACBrJSONObject.Parse(Xml);
     JSonErro := jDocument.AsJSONObject['retorno'];
 
     if not Assigned(JSonErro) then Exit;
@@ -1394,11 +1397,11 @@ begin
   end
   else
   begin
-    Result := inherited TratarXmlRetornado(aXML);
+    Result := inherited TratarXmlRetornado(Xml);
 
     Result := AjustarRetorno(Result);
 
-    if Pos('<retorno>', Result) = 0 then
+    if not StringIsXML(Result) then
     begin
       Result := '<retorno>' +
                   '<mensagem>' +
@@ -1485,11 +1488,13 @@ function TACBrNFSeXWebserviceIPM101.TratarXmlRetornado(
   const aXML: string): string;
 var
   jDocument, JSonErro: TACBrJSONObject;
-  Codigo, Mensagem: string;
+  Codigo, Mensagem, Xml: string;
 begin
-  if (Pos('{"', aXML) > 0) and (Pos('":"', aXML) > 0) then
+  Xml := ConverteXMLtoUTF8(aXml);
+
+  if (Pos('{"', Xml) > 0) and (Pos('":"', Xml) > 0) then
   begin
-    jDocument := TACBrJSONObject.Parse(aXML);
+    jDocument := TACBrJSONObject.Parse(Xml);
     JSonErro := jDocument.AsJSONObject['retorno'];
 
     if not Assigned(JSonErro) then Exit;
@@ -1509,11 +1514,11 @@ begin
   end
   else
   begin
-    Result := inherited TratarXmlRetornado(aXML);
+    Result := inherited TratarXmlRetornado(Xml);
 
     Result := AjustarRetorno(Result);
 
-    if Pos('<retorno>', Result) = 0 then
+    if not StringIsXML(Result) then
     begin
       Result := '<retorno>' +
                   '<mensagem>' +
@@ -1803,11 +1808,13 @@ function TACBrNFSeXWebserviceIPM204.TratarXmlRetornado(
   const aXML: string): string;
 var
   jDocument, JSonErro: TACBrJSONObject;
-  Codigo, Mensagem: string;
+  Codigo, Mensagem, Xml: string;
 begin
-  if (Pos('{"', aXML) > 0) and (Pos('":"', aXML) > 0) then
+  Xml := ConverteXMLtoUTF8(aXml);
+
+  if (Pos('{"', Xml) > 0) and (Pos('":"', Xml) > 0) then
   begin
-    jDocument := TACBrJSONObject.Parse(aXML);
+    jDocument := TACBrJSONObject.Parse(Xml);
     JSonErro := jDocument.AsJSONObject['retorno'];
 
     if not Assigned(JSonErro) then Exit;
@@ -1827,7 +1834,7 @@ begin
   end
   else
   begin
-    Result := inherited TratarXmlRetornado(aXML);
+    Result := inherited TratarXmlRetornado(Xml);
 
     Result := AjustarRetorno(Result);
 

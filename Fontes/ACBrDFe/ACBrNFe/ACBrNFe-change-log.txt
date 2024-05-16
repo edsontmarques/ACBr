@@ -45,6 +45,24 @@ Símbolo : Significado
 [-]     : Correção de Bug (assim esperamos)
 
 
+14/05/2024
+-- ACBrNFe.EnvEvento/pcnEnvEventoNFe --
+[*] Alinhando as mesmas correções feitas na unit atual na nova unit.
+   Por: Italo Giurizzato Junior
+
+09/05/2024
+-- Diversos --
+[*] Ajustes realizados com base nos testes unitários
+   Por: Italo Giurizzato Junior
+
+08/05/2024
+-- ACBrNFeNotasFiscais --
+[*] Reversão da alteração que visava o uso das configurações na geração do XML.
+   Por: Italo Giurizzato Junior
+-- ACBrNFeXmlWriter/pcnNFe/pcnNFeW.pas --
+[*] Comentado as linhas que usa os dados de configuração na geração do XML.
+   Por: Italo Giurizzato Junior
+
 30/04/2024
 -- Diversos --
 [+] Implementação dos eventos: Insucesso na Entrega da NF-e e Cancelamento do

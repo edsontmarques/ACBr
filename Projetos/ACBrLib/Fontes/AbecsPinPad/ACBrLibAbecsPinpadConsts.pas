@@ -43,8 +43,23 @@ const
   CLibAbecsPinpadNome = 'ACBrLibAbecsPinpad';
   CLibAbecsPinpadVersao = '0.0.0.0';
 
+  CSessaoRespAbecsPinpad = 'Resposta';
+  CSessaoRespAbecsPinpadGIN = 'RespostaGIN';
+  CSessaoRespAbecsPinpadGIX = 'RespostaGIX';
+  CSessaoRespAbecsPinpadGCD = 'RespostaGCD';
+  CSessaoRespAbecsPinpadCEX = 'RespostaCEX';
+  CSessaoRespAbecsPinpadMNU = 'RespostaMNU';
+  CSessaoRespAbecsPinpadLoadMedia = 'RespostaLoadMedia';
+  CSessaoRespAbecsPinpadLMF = 'RespostaLMF';
+
   CSessaoAbecsPinpad = 'AbecsPinpad';
   CSessaoAbecsPinpadDevice = 'AbecsPinpad_Device';
+
+  CChavePortaPinpad = 'PortaPinpad';
+  CChaveTimeOutPinpad = 'TimeOut';
+  CChaveLogFile = 'LogFile';
+  CChaveMsgAlign = 'MsgAlign';
+  CChaveMsgWordWrap = 'MsgWordWrap';
 
 implementation
 

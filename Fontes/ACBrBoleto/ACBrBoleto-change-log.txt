@@ -49,6 +49,45 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+15/05/2024
+-- ACBrBoletoRet_Sicredi_APIV2 --
+[*]TK-5455 - Adicionado a propriedade no retorno ValorMulta
+  https://www.projetoacbr.com.br/forum/topic/77787-retorno-da-consulta-de-boleto-sicredi-via-webservice/
+  por christian@adminfo.com.br /verificado Daniel Morais InfoCotidiano
+
+15/05/2024
+-- ACBrBoletoRet_Itau_API --
+[-]TK-5452 - Corrigido ler OBJ qdo existir no retorno da inclusao  
+  https://www.projetoacbr.com.br/forum/topic/77609-erro-ao-registrar-boleto-ita%C3%BAapi/page/2/
+  por Daniel Morais InfoCotidiano
+
+15/05/2024
+-- ACBrBoletoW_Itau_API --
+[-]TK-5452 - Corrigido array nos dados_individuais_boleto 
+  https://www.projetoacbr.com.br/forum/topic/77609-erro-ao-registrar-boleto-ita%C3%BAapi/page/2/
+  por Allan Hilário /Verificado Daniel Morais InfoCotidiano
+
+15/05/2024
+-- ACBrBancoBrasil --
+[-]TK-5451 - Corrigido posição 225/227 que estava gerando espacos ao inves de zeros.
+  https://discord.com/channels/798697718800318484/809129039159230514/1240272260162654289
+  por Daniel de Morais InfoCotidiano
+
+13/05/2024
+-- ACBrBoletoW_Inter_API --
+[-]TK-5429 - Corrigido para evitar o AV que foi reportado realizando consulta detalhe.
+  https://www.projetoacbr.com.br/forum/topic/77706-retorno-cobranca-boleto-pix-inter/#comment-502065
+  por Daniel de Morais InfoCotidiano
+  
+-- ACBrBancoInter.pas -- 
+[+]Geração do nosso número banco Inter - Carteira 110 - ACBR Boleto
+  por Victor H Gonzales - Pandaaa
+
+
+06/05/2024
+[*]TK-5402 ACBrBoleto - Mensagens Automáticas de Juros
+  por Victor H Gonzales - Pandaaa
+
 02/05/2024
 -- ACBrBoleto, ACBrBoletoRetorno, ACBrBoletoW_Inter_API, ACBrBoletoRet_Inter_API --
 [*]TK-5016 e 5016-1 Integração API INTER V3 Pix Refatoração ACBrJSON

@@ -42,6 +42,88 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+15/05/2024
+-- ISSNet.Provider/MetropolisWeb.Provider --
+[*] Alterado a sequencia de caracteres para quebra de linha nas tags que permitem 
+    um texto longo como é o caso da tag Discriminacao.
+  Por: Bruno
+-- BHISS.Provider --
+[*] Ajustes no PrepararConsultaNFSe pois estava permitindo o uso de tipos de
+    consultas que não existe no provedor alem de gerar uma mensagem de erro
+    que não condizia com a realidade.
+  Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[+] Incluida a cidade de Serrinha/BA, provedor é o Ginfes.
+  Por: JhonatasZtha
+[+] Incluida a cidade de Cristalina/GO, provedor é o Sigep versão 2.00
+  Por: ddSilva
+[+] Incluida a cidade de Rio Paranaiba/MG, provedor é o Governa versão 1.01
+  Por: ddSilva
+
+14/05/2024
+-- Diversos --
+[*] Implementado o Parâmetro: ImprimirOpcaoSN (ConfigGeral),
+    se True imprimi no DANFSE a informação sobre a Opção Simples Nacional
+    caso contrario não imprimi.
+  Por: Italo Giurizzato Junior
+-- ISSRecife.Provider/BHISS.Provider --
+[*] Alteração na quebra de linha.
+  Por: Bruno
+-- ACBrNFSeXServicos --
+[*] Incluído a URL de homologação para a cidade de Serra/ES.
+  Por: Caio
+-- ACBrNFSeXWebserviceBase/IPM.Provider --
+[*] Ajustes e correção ao obter o XML retornado pelo webservice.
+  Por: Italo Giurizzato Junior
+-- ISSJoinville.Provider --
+[*] Correção na URL do SoapAction.
+  Por: Italo Giurizzato Junior
+-- AssessorPublico.Provider --
+[*] Alteração visando usar o Mês/Ano da data de Emissão do RPS ao montar o XML de
+    envio.
+  Por: Italo Giurizzato Junior/Heber Germano
+-- AssessorPublico.LerXml --
+[*] Alteração visando ler o conteudo da tag DATAVENCIMENTO.
+  Por: Italo Giurizzato Junior
+-- AssessorPublico.GravarXml --
+[*] Alteração visando gerar a tag DATAVENCIMENTO no XML do RPS.
+  Por: Concept Automação
+-- ACBrNFSeXServicos --
+[*] A URL de produção e homologação para Cascavel/PR é a mesma, provedor é o IPM.
+  Por: IvoSilva
+[*] Alteração de versão da cidade de Macae/RJ, o provedor continua o mesmo.
+  Por: BFBraz
+[+] Incluida a cidade de Ibicoara/BA, provedor é o EL na versão 2.04
+  Por: C4Dev
+
+13/05/2024
+-- ACBrNFSeXServicos --
+[+] Incluida a cidade de Sao Roque do Canaa/ES, provedor é o EL na versão 2.04
+  Por: Eduardo Casotti
+
+10/05/2024
+-- ACBrNFSeXServicos --
+[*] Alteração de versão da cidade de Cunha Pora/SC, o provedor continua o mesmo.
+  Por: Léo
+[*] Alteração no URL para acessar a nota da cidade de Sao Domingos/GO.
+  Por: João Paulo Alcântara
+[*] Alteração na cidade de Abaetetuba/PA, o provedor correto é Desenvolve.
+  Por: Luan Carvalho
+
+09/05/2024
+-- Sudoeste.Provider --
+[*] Melhora a função que lê as informações da lista de erros e adiciona parâmetro para incluir numNFSeFinal
+    na consulta de NFSe por faixa.
+  Por: Italo Giurizzato Junior / Diego Folieni
+
+07/05/2024
+-- ACBrNFSeXServicos --
+[+] Incluída a cidade de Abaetetuba/PA, o provedor é MegaSoft.
+  Por: Luan Carvalho
+[+] Incluída a cidade de Morrinhos/GO, o provedor é Prodata versão 2.01.
+  Por: Michel Laudrup
+[*] A cidade de Canarana/MT trocou de provedor, agora é Coplan.
+  Por: Maiquel
 
 03/05/2024
 -- ISSRio.Provider --

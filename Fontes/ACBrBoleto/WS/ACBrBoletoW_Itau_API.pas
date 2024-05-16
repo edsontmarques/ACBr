@@ -308,8 +308,8 @@ begin
                         PadLeft(LDAC, 1, '0');
 
     LConsulta := TStringList.Create;
-    LConsulta.Delimiter := '&';
     try
+      LConsulta.Delimiter := '&';
       case Boleto.Configuracoes.WebService.Operacao of
         tpConsulta,tpConsultaDetalhe :
           begin
@@ -333,8 +333,8 @@ begin
                           LNossoNumero+'/baixa');
           end;
       end;
-    finally
       Result := LConsulta.DelimitedText;
+    finally
       LConsulta.Free;
     end;
   end;
@@ -377,17 +377,19 @@ end;
 procedure TBoletoW_Itau_API.GerarDadosIndividuaisBoleto(AJson: TACBrJSONObject);
 var
   LJsonDados: TACBrJSONObject;
+  LJsonArray : TACBrJSONArray;
 begin
   if Assigned(ATitulo) and Assigned(AJson) then
   begin
     LJsonDados    := TACBrJSONObject.Create;
+    LJsonArray    := TACBrJSONArray.Create;
     LJsonDados.AddPair('numero_nosso_numero', ATitulo.NossoNumero);
     LJsonDados.AddPair('data_vencimento', FormatDateBr(ATitulo.Vencimento, 'YYYY-MM-DD'));
     LJsonDados.AddPair('valor_titulo', IntToStrZero(round(ATitulo.ValorDocumento * 100), 17));
     LJsonDados.AddPair('texto_uso_beneficiario', '0');
-    LJsonDados.AddPair('texto_seu_numero', ATitulo.NossoNumero);
-
-    AJson.AddPair('dados_individuais_boleto', LJsonDados);
+    LJsonDados.AddPair('texto_seu_numero', IfThen(ATitulo.SeuNumero <> '',  ATitulo.SeuNumero, ATitulo.NossoNumero));
+    LJsonArray.AddElementJSON(LJsonDados);
+    AJson.AddPair('dados_individuais_boleto', LJsonArray);
   end;
 end;
 
@@ -606,15 +608,11 @@ begin
   if Assigned(ATitulo) and Assigned(AJson) then
   begin
     LJsonDados := TACBrJSONObject.Create;
-    try
-      LJsonDados.AddPair('etapa_processo_boleto', IfThen(OAuth.Ambiente=taHomologacao,'validacao','efetivacao'));
-      LJsonDados.AddPair('codigo_canal_operacao', 'API');
-      GeraIdBeneficiario(LJsonDados);
-      GeraDadoBoleto(LJsonDados);
-      AJson.AddPair('data',LJsonDados);
-    finally
-      LJsonDados.Free;
-    end;
+    LJsonDados.AddPair('etapa_processo_boleto', IfThen(OAuth.Ambiente=taHomologacao,'validacao','efetivacao'));
+    LJsonDados.AddPair('codigo_canal_operacao', 'API');
+    GeraIdBeneficiario(LJsonDados);
+    GeraDadoBoleto(LJsonDados);
+    AJson.AddPair('data',LJsonDados);
   end;
 end;
 
@@ -625,25 +623,19 @@ begin
   if Assigned(ATitulo) then
   begin
     LJson := TACBrJSONObject.Create;
-    try
-
-      if Boleto.Cedente.CedenteWS.IndicadorPix then
-      begin
-        LJson.AddPair('etapa_processo_boleto', IfThen(OAuth.Ambiente=taHomologacao,'simulacao','efetivacao'));
-        GeraIdBeneficiario(LJson);
-        GeraDadoBoleto(LJson);
-        GerarDadosQrCode(LJson);
-      end
-      else
-      begin
-        GerarData(LJson);
-      end;
-
-      FPDadosMsg := LJson.ToJSON;
-
-    finally
-      LJson.Free;
+    if Boleto.Cedente.CedenteWS.IndicadorPix then
+    begin
+      LJson.AddPair('etapa_processo_boleto', IfThen(OAuth.Ambiente=taHomologacao,'simulacao','efetivacao'));
+      GeraIdBeneficiario(LJson);
+      GeraDadoBoleto(LJson);
+      GerarDadosQrCode(LJson);
+    end
+    else
+    begin
+      GerarData(LJson);
     end;
+
+    FPDadosMsg := LJson.ToJSON;
   end;
 end;
 
@@ -734,7 +726,7 @@ begin
 
 procedure TBoletoW_Itau_API.RequisicaoBaixa;
 begin
-  // Sem Payload - Define Método GET
+  FPDadosMsg := '{}';
 end;
 
 procedure TBoletoW_Itau_API.RequisicaoConsulta;
@@ -768,23 +760,19 @@ begin
   if Assigned(ATitulo) and Assigned(AJson) then
   begin
     LJsonDados := TACBrJSONObject.Create;
-    try
-      if Length(OnlyNumber(ATitulo.Sacado.CNPJCPF)) < 12 then
-      begin
-        LJsonDados.AddPair('codigo_tipo_pessoa', 'F');
-        LJsonDados.AddPair('numero_cadastro_pessoa_fisica', OnlyNumber(ATitulo.Sacado.CNPJCPF));
-      end
-      else
-      begin
-        LJsonDados.AddPair('codigo_tipo_pessoa','J');
-        LJsonDados.AddPair('numero_cadastro_nacional_pessoa_juridica', OnlyNumber(ATitulo.Sacado.CNPJCPF));
-      end;
 
-      AJson.AddPair('tipo_pessoa', LJsonDados);
-
-    finally
-      LJsonDados.Free;
+    if Length(OnlyNumber(ATitulo.Sacado.CNPJCPF)) < 12 then
+    begin
+      LJsonDados.AddPair('codigo_tipo_pessoa', 'F');
+      LJsonDados.AddPair('numero_cadastro_pessoa_fisica', OnlyNumber(ATitulo.Sacado.CNPJCPF));
+    end
+    else
+    begin
+      LJsonDados.AddPair('codigo_tipo_pessoa','J');
+      LJsonDados.AddPair('numero_cadastro_nacional_pessoa_juridica', OnlyNumber(ATitulo.Sacado.CNPJCPF));
     end;
+
+    AJson.AddPair('tipo_pessoa', LJsonDados);
   end;
 end;
 
@@ -951,7 +939,7 @@ begin
       LJsonArray.AddElementJSON(LJsonDesconto2);
     end;
 
-    AJson.AddPair('desconto',LJsonArray);
+    AJson.AddPair('desconto ',LJsonArray);
   end;
 end;
 

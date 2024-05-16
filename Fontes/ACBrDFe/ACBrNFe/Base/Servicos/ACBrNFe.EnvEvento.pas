@@ -716,7 +716,8 @@ begin
   Result.AppendChild(AddNode(tcStr, 'P32', 'tpMotivo', 1, 1, 1,
                       tpMotivoToStr(Evento[Idx].InfEvento.detEvento.tpMotivo)));
 
-  Result.AppendChild(AddNode(tcStr, 'P33', 'xJustMotivo', 25, 250, 0,
+  if Evento[Idx].InfEvento.detEvento.tpMotivo = tmOutro then
+    Result.AppendChild(AddNode(tcStr, 'P33', 'xJustMotivo', 25, 250, 0,
                                  Evento[Idx].FInfEvento.detEvento.xJustMotivo));
 
   Result.AppendChild(AddNode(tcDe6, 'P34', 'latGPS', 1, 10, 0,
@@ -976,7 +977,7 @@ begin
 
       if RetEventoNFe.InfEvento.detEvento.autXML.Count > 0 then
       begin
-        InfEvento.detEvento.autXML[0].CNPJCPF := RetEventoNFe.InfEvento.detEvento.autXML[0].CNPJCPF;
+        InfEvento.detEvento.autXML.New.CNPJCPF := RetEventoNFe.InfEvento.detEvento.autXML[0].CNPJCPF;
       end;
 
       // Insucesso na Entrega

@@ -242,7 +242,7 @@ end;
 
 function TCTeW.GerarXml: Boolean;
 var
-  Gerar: Boolean;
+  Gerar, Ok: Boolean;
   xProtCTe, VersaoStr: String;
 begin
   // Carrega Layout que sera utilizado para gera o txt
@@ -254,11 +254,15 @@ begin
   {
     Os campos abaixo tem que ser os mesmos da configuração
   }
+{
   CTe.infCTe.Versao := VersaoCTeToDbl(VersaoDF);
   CTe.Ide.modelo := StrToInt(ModeloCTeToStr(ModeloDF));
   CTe.Ide.tpAmb := tpAmb;
   CTe.ide.tpEmis := tpEmis;
+}
+  ModeloDF :=  StrToModeloCTe(Ok, IntToStr(CTe.ide.modelo));
 
+  VersaoDF :=  DblToVersaoCTe(Ok, CTe.infCTe.Versao);
   VersaoStr := 'versao="' + FloatToString(CTe.infCTe.Versao, '.', '#0.00') + '"';
 
   FChaveCTe := GerarChaveAcesso(CTe.ide.cUF, CTe.ide.dhEmi, CTe.emit.CNPJ, CTe.ide.serie,
