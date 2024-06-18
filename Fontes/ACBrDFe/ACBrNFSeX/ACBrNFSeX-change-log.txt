@@ -42,6 +42,260 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+14/06/2024
+-- ACBrNFSeXServicos --
+[*] Incluído o Params Assinar para a cidade de Botucatu/SP.
+  Por: Milton Campanhã
+[+] Incluída a cidade de São José do Norte/RS, provedor é o Pronim.
+  Por: Ricardo P
+-- Diversos --
+[*] Alterações visando a leitura do arquivo INI dos campos: 
+    NomeFantasia, PontoReferencia e DDD, essas informações são usadas pelo
+    provedor IPM.
+  Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[*] A cidade de Martinho Campos/MG trocou de provedor, agora é Fiorilli.
+  Por: Pedro A. Araújo
+[*] A cidade de Ijui/RS, trocou a URL mas o provedor continua o mesmo.
+  Por: Valter Kettner/C4Dev
+[+] Incluída a cidade de Balneario Picarras/SC, provedor é o IPM.
+  Por: Tiago Musselini
+
+13/06/2024
+-- ACBrNFSeXServicos --
+[*] A cidade de Carmo do Rio Claro/MG, trocou de provedor, agora é: Fiorilli.
+  Por: João Antônio
+-- SigISSWeb.LerXml --
+[*] Provedor SigISSWeb - Preencher a NaturezaOperacao com base no IssRetido ao ler o xml da NFSe.
+  Por: Renato Rubinho
+
+11/06/2024
+-- ACBrNFSeXNotasFiscais --
+[+] Incluído na leitura da seção [IdendificacaoNFSe] os campos utilizados pelo
+    provedor Infisc.
+    Campos incluídos: ModeloNFSe, refNF, TipoEmissao (N = Normal ou C = Contingencia), 
+    Canhoto (0 = Nenhum, 1 = Cabeçalho ou 2 = Rodapé) e 
+    EmpreitadaGlobal (1 = Construcao Civil ou 2 = Outros).
+[+] Incluído na leitura da seção [Tomador] o campo utilizado pelo provedor IPM.
+    Campo Incluído: EnderecoInformado (0 = Não, 1 = Sim ou vazio para não gerar a tag).
+  Por: Italo Giurizzato Junior
+
+10/06/2024
+-- ACBrNFSeXServicos --
+[*] A cidade de Campestre/MG, trocou de provedor, agora é: GestaoISS.
+  Por: Jéter Rabelo Ferreira
+[*] A cidade de Uberlandia/MG, trocou de provedor, agora é: PRODAUB.
+  Por: Italo Giurizzato Junior
+[+] Incluida a cidade de Sao Gonçalo dos Campos/BA, provedor é o Sudoeste.
+  Por: DeveloperATS
+
+07/06/2024
+-- ACBrNFSeXServicos --
+[*] A cidade de Governador Valadares/MG trocou de provedor, agora é ISSIntel
+  Por: Valter Patrick
+-- ACBrNFSeXDANFSeRLRetrato.dfm --
+[*] Alteração na fonte do campo discriminação para apresentar o texto por inteiro
+    tanto na tela, papel e PDF.
+  Por: Italo Giurizzato Junior
+-- IPM.GravarXml --
+[*] Ao gerar o XML se o tomador for estrangeiro devemos gerar a tag <cidade> com
+    o nome da cidade e não com o código.
+  Por: Cristiano DB
+-- IPM.LerXml --
+[*] Alteração na leitura do XML visando identificar se o tomador é estrangeiro ou não
+    e fazer a leitura das tags de forma correta.
+  Por: Italo Giurizzato Junior
+-- EL.Provider --
+[*] Possível solução para gerar e salvar o XML da nota ao realizar as consultas.
+    O XML do RPS deve ser previamente carregado antes das consultas.
+  Por: Italo Giurizzato Junior
+
+06/06/2024
+-- ACBrNFSeXServicos --
+[+] Incluida a cidade de Pombal/PB, provedor é o Elmar.
+  Por: Arimateia Jr
+[*] Alterado as URLs da cidade de Nova Odessa/SP, o provedor continua o mesmo.
+  Por: fppp09
+[+] Incluida as cidades de Miracema do Tocantins/TO e Colmeia/TO, provedor é o MegaSoft.
+  Por: Emanuel - Quality
+[+] Incluida a cidade de Santa Maria do Herval/RS, provedor é o Tecnos.
+  Por: Nícolas Dörr
+[*] Alterado as URLs da cidade de Arapongas/PR, o provedor continua o mesmo.
+  Por: Marcelo T/Italo Giurizzato Junior
+-- Diversos --
+[*] Realizado algumas alterações para atender o provedor SystemPro, 
+    requer mais testes com credenciais de um prestador de serviço da
+    cidade que usa o provedor.
+  Por: Italo Giurizzato Junior
+
+05/06/2024
+-- ACBrNFSeXServicos --
+[*] Alterado de http para https as URLs da cidade de Lucelia/SP.
+  Por: Italo Giurizzato Junior
+-- ISSLegal.Provider --
+[*] Incluido no TratarXmlRetornado a chamada para remover a declaração do XML.
+  Por: Pedro A. Araújo
+-- Governa.GravarXml/Governa.LerXml --
+[*] Ao gerar e ler a tag tsVlrDsc passou a utilizar o campo DescontoIncondicional
+    que é o correto.
+  Por: Diego Reckziegel
+-- ACBrNFSeXServicos --
+[*] A cidade de Martinho Campos/MG trocou de provedor, agora é ISSLegal.
+  Por: Pedro A. Araújo
+[+] Incluida a cidade de Nossa Senhora do Livramento/MT, provedor é o Fiorilli.
+  Por: Robson pds
+[*] A cidade de Curitiba/PR trocou a URL, o provedor continua o EL.
+  Por: Marcio Patyk
+[*] A cidade de Candelaria/RS correção na versão, o correto é 1.01
+  Por: Italo Giurizzato Junior
+
+03/06/2024
+-- SigISS.Provider --
+[*] Possível solução para o erro de UTF-8
+  Por: Italo Giurizzato Junior
+
+31/05/2024
+-- ACBrNFSeXServicos --
+[*] A cidade de Ibatiba/ES trocou a URL e a versão, o provedor continua o EL.
+  Por: Filipe Novaes - Alterdata
+[+] Incluida a cidade de Carbonita/MG, provedor é o EL.
+  Por: João Antônio
+[*] A cidade de São Borja/RS trocou de provedor, agora é Infisc.
+  Por: Michael D Belmonte/Italo Giurizzato Junior
+[*] A cidade de Funilândia/MG trocou de provedor, agora é GestaoISS.
+  Por: Jovito
+-- Siappa.Provider --
+[*] Correção no tratamento da quebra de linha do provedor Siappa.
+  Por: Renato Rubinho
+
+29/05/2024
+-- ACBrNFSeXServicos --
+[*] Incluida as URLs de produção e homologação do Link para a cidade de Sertaozinho/SP.
+  Por: Weber de Paula
+-- SigISSWeb.Provider --
+[*] Incluida em Configuracoes a linha para definir a quebra de linha como sendo
+    o "|".
+  Por: Bruno
+
+28/05/2024
+-- ACBrNFSeXServicos --
+[+] Incluida a cidade de Anicuns/GO, provedor é o MegaSoft.
+  Por: Lemuel
+[+] Incluida a cidade de Diamantina/MG, provedor é o eReceita.
+  Por: João Antônio
+
+27/05/2024
+-- ACBrNFSeXServicos --
+[*] Incluida a versão 2.00 para a cidade de Pedro Afonso/TO, provedor é o Megasoft.
+  Por: maxdatasistema
+-- Saatri.Provider --
+[*] Provedor requer Login/Senha para autenticação
+  Por: Diego Folieni
+
+24/05/2024
+-- ACBrNFSeXLerXml_ABRASFv2/ACBrNFSeXDANFSeRLRetrato --
+[*] Alteração visando a leitura a tag referente a Taxa de Turismo bem como a 
+    sua impressão no DANFSE.
+  Por: Eloildo Vieira
+-- ACBrNFSeXServicos --
+[+] Incluída a cidade de Breves/PA, provedor é o Isaneto.
+  Por: Italo Giurizzato Junior
+
+23/05/2024
+-- ACBrNFSeXServicos --
+[+] Incluída a cidade de Paragominas/PA, provedor é o Desenvolve.
+[+] Incluída a cidade de Itapipoca/CE, provedor é o SpeedGov.
+[+] Incluída a cidade de Maranguape/CE, provedor é o SpeedGov.
+[+] Incluída a cidade de Patos/PB, provedor é o WebISS.
+[+] Incluída a cidade de São Cristovão/SE, provedor é o WebISS.
+[*] A cidade de Bocaiuva do Sul/PR trocou de provedor, agora é EloTech
+  Por: Italo Giurizzato Junior
+[*] A cidade de Viamao/RS trocou a URL, o provedor continua o mesmo.
+  Por: Italo Giurizzato Junior/SHARMAQ
+-- SiapNet.LerXml --
+[+] Sobre escrito as procedures: LerEnderecoPrestadorServico, LerEnderecoTomador e LerServico,
+    visando o uso da função GerarDigitoMunicipio.
+  Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[+] Incluída a cidade de Cacapava/SP, provedor é o Conam.
+  Por: Alexandre de Paula
+[+] Incluída a cidade de Barra do Pirai/RJ, provedor é o WebISS.
+  Por: Alexandre de Paula
+[+] Incluída a cidade de Cidade Ocidental/GO, provedor é o Prodata.
+  Por: Diego Folieni
+
+22/05/2024
+-- ACBrNFSeXServicos --
+[+] Incluída a cidade de Nova Santa Helena/MT, provedor é o Agili.
+  Por: Diego Reckziegel
+[+] Incluída a cidade de Piratininga/SP, provedor é o Fiorilli.
+  Por: Italo Giurizzato Junior/Alecio Ferreira
+[+] Incluída a cidade de Japeri/RJ, provedor é o SiapNet.
+  Por: Italo Giurizzato Junior
+[+] Incluída a cidade de Fartura/SP, provedor é o Fiorilli.
+  Por: Willians wsac
+[*] Alterada a URL da cidade de Uruguaiana/RS, provedor e versão ainda são os mesmos.
+  Por: Bill Barsch
+[*] Alterada a URL da cidade de Vacaria/RS, provedor e versão ainda são os mesmos.
+  Por: André Lucca
+[*] Alterada a URL da cidade de Soledade/RS, provedor e versão ainda são os mesmos.
+  Por: Doglas Sumpf
+
+21/05/2024
+-- ACBrNFSeXServicos --
+[+] Incluída a cidade de Itacoatiara/AM, provedor é o Fiorilli.
+[+] Incluída a cidade de Gragança/PA, provedor é o Bauhaus.
+[+] Incluída a cidade de Abreu e Lima/PE, provedor é o Tributus.
+[+] Incluída a cidade de Sao Lourenco da Mata/PE, provedor é o Tributus.
+[+] Incluída a cidade de Igarassu/PE, provedor é o Tinus.
+[+] Incluída a cidade de Santa Cruz do Capibaribe/PE, provedor é o Tinus.
+  Por: Italo Giurizzato Junior
+[*] A cidade de Planalto Alegre/SC, mudou a versão e as URLs o provedor é o mesmo.
+  Por: Delcio
+[*] A cidade de Itabirito/MG, mudou de http para https, o provedor é o mesmo.
+  Por: Developer ATS
+[*] A cidade de Tres Cachoeiras/RS, mudou a URLs o provedor é o mesmo.
+  Por: Mario Inacio
+[*] A cidade de Botucatu/SP mudou de provedor, agora é Fiorilli.
+  Por: Milton Campanhã
+
+-- EL.Provider --
+[*] Alterado os arquivos de envio para que eles já contenham a URL de namespace.
+  Por: Italo Giurizzato Junior
+
+20/05/2024
+-- ACBrNFSeXDANFSeRLRetrato.dfm --
+[*] Removida linha que tem o propriedade: StyleElements, para poder compatibilizar com o Delphi 7 e Lazarus.
+-- IPM.Provider.pas --
+[*] Tratamento quando o provedor IPM devolver apenas a mensagem de erro, não contida em um xml.
+  Por: Renato Rubinho
+  
+17/05/2024
+-- ACBrNFSeXServicos --
+[+] Incluida a cidade de Tailandia/PA, provedor é o Fiorilli.
+[+] Incluida a cidade de Santana/AP, provedor é o Fiorilli.
+[+] Incluida a cidade de Codó/MA, provedor é o Fiorilli.
+  Por: Italo Giurizzato Junior
+
+16/05/2024
+-- ACBrNFSeXServicos --
+[*] A cidade de Taubate/SP, incluída as URL de produção e homologação do SoapAction.
+  Por: Italo Giurizzato Junior
+[*] A cidade de Guanhaes/MG mudou para a versão 2.04, provedor ainda é o EL
+  Por: Facil Sistemas Ltda
+[-] Corrigida a URL de homologação da cidade de São José/SC.
+  Por: Willian Carminatt
+[*] A cidade de Caratinga/MG, mudou a URL de produção, o provedor continua o mesmo.
+  Por: João Antônio
+[+] Incluida a cidade de Iomere/SC, provedor é o Betha.
+  Por: Metasis Sistemas
+[*] A cidade de Taubate/SP, mudou para a versão 2.04 o provedor 
+    continua o mesmo.
+  Por: administrativo@ncpc.com.br
+[*] A cidade de Santa Maria de Jetiba/ES, mudou para a versão 2.04 o provedor 
+    continua o mesmo.
+  Por: Italo Giurizzato Junior
+
 15/05/2024
 -- ISSNet.Provider/MetropolisWeb.Provider --
 [*] Alterado a sequencia de caracteres para quebra de linha nas tags que permitem 

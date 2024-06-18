@@ -71,7 +71,8 @@ type
     function CriarServiceClient(const AMetodo: TMetodo): TACBrNFSeXWebservice; override;
 
     function GerarXMLNota(const AXmlRps: String; const Response: TNFSeWebserviceResponse): String;
-    procedure MontarXMLNFSe(const ANode: TACBrXmlNode; const Response: TNFSeWebserviceResponse);
+    procedure MontarXMLNFSe(const ANode: TACBrXmlNode;
+      const Response: TNFSeWebserviceResponse; AResumo: TNFSeResumoCollectionItem);
 
     function PrepararRpsParaLote(const aXml: string): string; override;
 
@@ -99,6 +100,9 @@ type
   public
     function SimNaoToStr(const t: TnfseSimNao): string; override;
     function StrToSimNao(out ok: boolean; const s: string): TnfseSimNao; override;
+
+    function SimNaoOpcToStr(const t: TnfseSimNaoOpc): string; override;
+    function StrToSimNaoOpc(out ok: boolean; const s: string): TnfseSimNaoOpc; override;
 
     function CondicaoPagToStr(const t: TnfseCondicaoPagamento): string; override;
     function StrToCondicaoPag(out ok: boolean; const s: string): TnfseCondicaoPagamento; override;
@@ -292,7 +296,8 @@ begin
   end;
 end;
 
-procedure TACBrNFSeProviderIPM.MontarXMLNFSe(const ANode: TACBrXmlNode; const Response: TNFSeWebserviceResponse);
+procedure TACBrNFSeProviderIPM.MontarXMLNFSe(const ANode: TACBrXmlNode;
+  const Response: TNFSeWebserviceResponse; AResumo: TNFSeResumoCollectionItem);
 var
   AuxNode: TACBrXmlNode;
   NumRps, LXmlNota: String;
@@ -318,6 +323,8 @@ begin
       begin
         ANota.XmlNfse := LXmlNota;
         SalvarXmlNfse(ANota);
+
+        AResumo.NomeArq := ANota.NomeArq;
       end;
     end;
   end;
@@ -409,6 +416,19 @@ begin
   Result := StrToEnumerado(ok, s,
                            ['0', '1', 'N', 'S'],
                            [snNao, snSim, snNao, snSim]);
+end;
+
+function TACBrNFSeProviderIPM.SimNaoOpcToStr(const t: TnfseSimNaoOpc): string;
+begin
+  Result := EnumeradoToStr(t, ['0', '1', ''], [snoNao, snoSim, snoNenhum]);
+end;
+
+function TACBrNFSeProviderIPM.StrToSimNaoOpc(out ok: boolean;
+  const s: string): TnfseSimNaoOpc;
+begin
+  Result := StrToEnumerado(ok, s,
+                           ['0', '1', 'N', 'S', ''],
+                           [snoNao, snoSim, snoNao, snoSim, snoNenhum]);
 end;
 
 function TACBrNFSeProviderIPM.CondicaoPagToStr(
@@ -559,8 +579,7 @@ begin
         AResumo.Situacao := Response.Situacao;
         AResumo.DescSituacao := Response.DescSituacao;
 
-        MontarXMLNFSe(ANode, Response);
-
+        MontarXMLNFSe(ANode, Response, AResumo);
       end;
     except
       on E:Exception do
@@ -707,7 +726,7 @@ begin
         AResumo.Situacao := Response.Situacao;
         AResumo.DescSituacao := Response.DescSituacao;
 
-        MontarXMLNFSe(ANode, Response);
+        MontarXMLNFSe(ANode, Response, AResumo);
       end;
     except
       on E:Exception do
@@ -882,8 +901,7 @@ begin
         AResumo.Situacao := Response.Situacao;
         AResumo.DescSituacao := Response.DescSituacao;
 
-        MontarXMLNFSe(ANode, Response);
-
+        MontarXMLNFSe(ANode, Response, AResumo);
       end;
     except
       on E:Exception do
@@ -1077,8 +1095,7 @@ begin
         AResumo.Situacao := Response.Situacao;
         AResumo.DescSituacao := Response.DescSituacao;
 
-        MontarXMLNFSe(ANode, Response);
-
+        MontarXMLNFSe(ANode, Response, AResumo);
       end;
     except
       on E:Exception do
@@ -1338,8 +1355,7 @@ begin
         AResumo.Situacao := Response.Situacao;
         AResumo.DescSituacao := Response.DescSituacao;
 
-        MontarXMLNFSe(ANode, Response);
-
+        MontarXMLNFSe(ANode, Response, AResumo);
       end;
     except
       on E:Exception do
@@ -1365,7 +1381,21 @@ begin
   if i > 0 then
     Result := Copy(Retorno, 1, i -1) + '</retorno>'
   else
-    Result := Retorno;
+  begin
+//    Result := ConverteXMLtoUTF8(Retorno);
+//    Result := RemoverDeclaracaoXML(Result);
+//    Result := ConverteXMLtoNativeString(Retorno);
+
+    if Pos('<', Retorno) = 0 then
+      Result := '<retorno>' +
+                  '<mensagem>' +
+                    '<codigo>999</codigo>' +
+                    '<Mensagem>' + Retorno + '</Mensagem>' +
+                  '</mensagem>' +
+                '</retorno>'
+    else
+      Result := Retorno;
+  end;
 end;
 
 function TACBrNFSeXWebserviceIPM.TratarXmlRetornado(const aXML: string): string;
@@ -1374,6 +1404,7 @@ var
   Codigo, Mensagem, Xml: string;
 begin
   Xml := ConverteXMLtoUTF8(aXml);
+  Xml := RemoverDeclaracaoXML(Xml);
 
   if (Pos('{"', Xml) > 0) and (Pos('":"', Xml) > 0) then
   begin
@@ -1481,7 +1512,18 @@ begin
   if i > 0 then
     Result := Copy(Retorno, 1, i -1) + '</retorno>'
   else
-    Result := Retorno;
+  begin
+//    Result := RemoverDeclaracaoXML(Retorno);
+    if Pos('<', Retorno) = 0 then
+      Result := '<retorno>' +
+                  '<mensagem>' +
+                    '<codigo>999</codigo>' +
+                    '<Mensagem>' + Retorno + '</Mensagem>' +
+                  '</mensagem>' +
+                '</retorno>'
+    else
+      Result := Retorno;
+  end;
 end;
 
 function TACBrNFSeXWebserviceIPM101.TratarXmlRetornado(
@@ -1491,6 +1533,7 @@ var
   Codigo, Mensagem, Xml: string;
 begin
   Xml := ConverteXMLtoUTF8(aXml);
+  Xml := RemoverDeclaracaoXML(Xml);
 
   if (Pos('{"', Xml) > 0) and (Pos('":"', Xml) > 0) then
   begin
@@ -1643,7 +1686,18 @@ begin
   if i > 0 then
     Result := Copy(Retorno, 1, i -1) + '</retorno>'
   else
-    Result := Retorno;
+  begin
+//    Result := ConverteXMLtoNativeString(Retorno);
+    if Pos('<', Retorno) = 0 then
+      Result := '<retorno>' +
+                  '<mensagem>' +
+                    '<codigo>999</codigo>' +
+                    '<Mensagem>' + Retorno + '</Mensagem>' +
+                  '</mensagem>' +
+                '</retorno>'
+    else
+      Result := Retorno;
+  end;
 end;
 
 function TACBrNFSeXWebserviceIPM204.Recepcionar(const ACabecalho,
@@ -1811,6 +1865,7 @@ var
   Codigo, Mensagem, Xml: string;
 begin
   Xml := ConverteXMLtoUTF8(aXml);
+  Xml := RemoverDeclaracaoXML(Xml);
 
   if (Pos('{"', Xml) > 0) and (Pos('":"', Xml) > 0) then
   begin

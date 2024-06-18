@@ -151,6 +151,7 @@ begin
 
   try
     try
+      Result := False;
       if XmlRetorno = '' then Exit;
 
       Document.LoadFromXml(XmlRetorno);
@@ -173,7 +174,7 @@ begin
         begin
           Item := dadosCsc.New;
 
-          Item.idCsc     := ObterConteudoTag(ANodes[i].Childrens.FindAnyNs('idCsc'), tcInt);
+          Item.idCsc := ObterConteudoTag(ANodes[i].Childrens.FindAnyNs('idCsc'), tcInt);
           Item.codigoCsc := ObterConteudoTag(ANodes[i].Childrens.FindAnyNs('codigoCsc'), tcStr);
         end;
       end;

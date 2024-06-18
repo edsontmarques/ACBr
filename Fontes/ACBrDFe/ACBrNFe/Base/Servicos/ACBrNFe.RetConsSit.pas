@@ -5,7 +5,7 @@
 {                                                                              }
 { Direitos Autorais Reservados (c) 2024 Daniel Simoes de Almeida               }
 {                                                                              }
-{ Colaboradores nesse arquivo: Italo Jurisato Junior                           }
+{ Colaboradores nesse arquivo: Italo Giurizzato Junior                         }
 {                                                                              }
 {  Você pode obter a última versão desse arquivo na pagina do  Projeto ACBr    }
 { Componentes localizado em      http://www.sourceforge.net/projects/acbr      }
@@ -46,7 +46,6 @@ uses
   pcnConversao,
   pcnNFeConsts,
   ACBrBase, ACBrXmlBase,
-//  pcnProcNFe,
   ACBrDFeComum.Proc,
   ACBrNFe.RetEnvEvento;
 
@@ -175,6 +174,7 @@ begin
 
   try
     try
+      Result := False;
       if XmlRetorno = '' then Exit;
 
       Document.LoadFromXml(XmlRetorno);
@@ -268,7 +268,7 @@ begin
         end;
       end;
 
-      Result := True;
+//      Result := True;
     except
       Result := False;
     end;
@@ -300,12 +300,14 @@ end;
 constructor TRetEventoNFeCollectionItem.Create;
 begin
   inherited Create;
+
   FRetEventoNFe := TRetEventoNFe.Create;
 end;
 
 destructor TRetEventoNFeCollectionItem.Destroy;
 begin
   FRetEventoNFe.Free;
+
   inherited;
 end;
 
