@@ -157,11 +157,6 @@ type
   TpcnDestinoOperacao = (doInterna, doInterestadual, doExterior);
   TpcnConsumidorFinal = (cfNao, cfConsumidorFinal);
   TpcnPresencaComprador = (pcNao, pcPresencial, pcInternet, pcTeleatendimento, pcEntregaDomicilio, pcPresencialForaEstabelecimento, pcOutros);
-  (*TpcnFormaPagamento = (fpDinheiro, fpCheque, fpCartaoCredito, fpCartaoDebito, fpCreditoLoja,
-                        fpValeAlimentacao, fpValeRefeicao, fpValePresente, fpValeCombustivel,
-                        fpDuplicataMercantil, fpBoletoBancario, fpDepositoBancario,
-                        fpPagamentoInstantaneo, fpTransfBancario, fpProgramaFidelidade,
-                        fpSemPagamento, fpRegimeEspecial, fpOutro);*) //antes da IT 2024.002 v1.00
   TpcnFormaPagamento = (fpDinheiro, fpCheque, fpCartaoCredito, fpCartaoDebito, fpCreditoLoja,
                         fpValeAlimentacao, fpValeRefeicao, fpValePresente, fpValeCombustivel,
                         fpDuplicataMercantil, fpBoletoBancario, fpDepositoBancario,
@@ -1336,13 +1331,13 @@ begin
     result := xPag
   else
     result := EnumeradoToStr(t,  ['Dinheiro', 'Cheque', 'Cartão de Crédito',
-                                'Cartão de Débito', 'Private Label',
+                                'Cartão de Débito', 'Cartão da Loja (Private Label)',
                                 'Vale Alimentação', 'Vale Refeição', 'Vale Presente',
                                 'Vale Combustível', 'Duplicata Mercantil',
                                 'Boleto Bancário', 'Deposito Bancário',
-                                'Pagamento Instantâneo (PIX) - Dinâmico', 'Transferência Bancária',
+                                'PIX - Dinâmico', 'Transferência Bancária',
                                 'Programa Fidelidade', 'Sem Pagamento',
-                                'Regime Especial NFF', 'Outro', 'Pagamento Instantâneo (PIX) - Estático',
+                                'Regime Especial NFF', 'Outro', 'PIX - Estático',
                                 'Crédito em Loja', 'Falha de hardware do sistema emissor'],
                               [fpDinheiro, fpCheque, fpCartaoCredito, fpCartaoDebito,
                                fpCreditoLoja, fpValeAlimentacao, fpValeRefeicao,

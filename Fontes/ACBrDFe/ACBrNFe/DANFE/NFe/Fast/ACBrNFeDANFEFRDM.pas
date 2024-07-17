@@ -2113,7 +2113,7 @@ begin
     begin
       if DANFEClassOwner.FIndexImpressaoIndividual > 0  then
       begin
-        NFe := TACBrNFe(DANFEClassOwner.ACBrNFe).NotasFiscais[DANFEClassOwner.FIndexImpressaoIndividual].NFe;
+        NFe := TACBrNFe(DANFEClassOwner.ACBrNFe).NotasFiscais[DANFEClassOwner.FIndexImpressaoIndividual-1].NFe;
         CarregaDadosNFe;
         Result := frxReport.PrepareReport( DANFEClassOwner.FIndexImpressaoIndividual > 0 );
       end else
@@ -2122,8 +2122,6 @@ begin
         begin
           NFe := TACBrNFe(DANFEClassOwner.ACBrNFe).NotasFiscais[I].NFe;
           CarregaDadosNFe;
-
-          //Result := frxReport.PrepareReport( not (i > 0) );
           Result := frxReport.PrepareReport( not (i > 0) );
         end;
       end;
@@ -2397,7 +2395,7 @@ end;
 
 procedure TACBrNFeFRClass.ImprimirDANFE(ANFE: TNFe);
 begin
-  DANFEClassOwner.FIndexImpressaoIndividual := 0;
+  DANFEClassOwner.FIndexImpressaoIndividual := -1;
   if PrepareReport(ANFE) then
   begin
     if DANFEClassOwner.MostraPreview then
@@ -2415,7 +2413,7 @@ var
   NomeArq: String;
   I : Integer;
 begin
-  for I := 0 to TACBrNFe(DANFEClassOwner.ACBrNFe).NotasFiscais.Count -1 do
+  for I := 1 to TACBrNFe(DANFEClassOwner.ACBrNFe).NotasFiscais.Count do
   begin
     DANFEClassOwner.FIndexImpressaoIndividual := I;
     if PrepareReport(ANFE) then
