@@ -113,6 +113,7 @@ implementation
 
 uses
   strutils, dateutils, typinfo, synautil, synacode,
+  {$IfDef FPC}ctypes,{$EndIf}
   ACBrOpenSSLUtils,
   ACBrUtil.FilesIO,
   ACBrUtil.Strings,

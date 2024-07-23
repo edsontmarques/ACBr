@@ -42,6 +42,65 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+23/07/2024
+-- Conam.GravarXml --
+[*] Alteração para que o valor de RetFonte seja "NAO" para quando IssRetido tenha
+    os valores stNormal e stDevidoForaMunicipioNaoRetido.
+   Por: Bruno
+-- ACBrNFSeXWebserviceBase --
+[*] Alterações na função: ConverteANSIparaUTF8, agora ela realiza a conversão sem
+    verficar se o XML esta ou não em UTF-8.
+   Por: Italo Giurizzato Junior
+
+22/07/2024
+-- PadraoNacional.LerXml.pas --
+[*] Ajustes quando o existir o conteudo da tag xTribNac ele utilizar o valor devolvido;
+   Ele estava pegando do TabServicos.ini
+   Por: Daniel Morais 
+
+19/07/2024
+-- Centi.LerXml/Centi.Provider --
+[*] Ajustes na leitura do XML da nota e acrescentado um override da função
+    StrToSimNao.
+   Por: Diego Reckziegel
+-- ACBrNFSeXServicos --
+[*] A cidade de Triunfo/ES mudou as URLs, o provedor continua o 
+    mesmo: Pronim.
+   Por: C4 Dev
+[+] Incluída a cidade de Itaguara/MG, o provedor é Betha versão 2.02
+   Por: João Antônio
+
+18/07/2024
+-- Diversos --
+[*] Alterações visando eliminar regras de negócios do gerador de relatório
+    Fast Report.
+   Por: Italo Giurizzato Junior
+-- TabServicos --
+[+] Incluído o serviço 16.02
+   Por: C Almeida 79
+-- ACBrNFSeXServicos --
+[+] Incluída a cidade de Campinapolis/MT, o provedor é Agili.
+[+] Incluída a cidade de Novo São Joaquim/MT, o provedor é Agili.
+[+] Incluída a cidade de Pontal do Araguaia/MT, o provedor é Fiorilli.
+   Por: Márcio Baroni
+-- ACBrNFSeXClass/SoftPlan.GravarXml/SoftPlan.LerXml/SoftPlan.Provider --
+[*] Alteração visando a leitura e impressão da descrição do CNAE.
+   Por: Italo Giurizzato Junior/Diego Folieni/Pandaa
+-- ACBrNFSeXServicos --
+[+] Incluída a cidade de Santo Antonio dos Lopes/MA, o provedor é CTAConsult.
+   Por: Diego Reckziegel
+[*] A cidade de São José do Rio Claro/MT trocou de provedor, agora é Coplan.
+   Por: Diego Reckziegel
+[*] A cidade de São Mateus/ES mudou para a versão 2.04, o provedor continua o 
+    mesmo: EL.
+   Por: Data Lider
+[*] A cidade de Socorro/SP trocou de provedor, agora é GovDigital.
+   Por: Daniel Afonso
+
+17/07/2024
+-- ACBrNFSeXServicos --
+[*] Incluído o Params: ParametroExtra para a cidade de São Bento do Sul/SC.
+   Por: C4 Dev
 
 15/07/2024
 -- Diversos --
