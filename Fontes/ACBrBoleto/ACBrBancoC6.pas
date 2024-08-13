@@ -154,7 +154,7 @@ begin
    fpModuloMultiplicadorInicial := 2;
    fpModuloMultiplicadorFinal   := 7;
    fpCodParametroMovimento      := '';
-   fpCodigosMoraAceitos         := '0';
+   fpCodigosMoraAceitos         := '01';
 end;
 
 function TACBrBancoC6.MontarCampoNossoNumero (
@@ -924,6 +924,8 @@ begin
       + Copy(ARetorno[0], 127, 2)
       + '/'
       + Copy(ARetorno[0], 129, 2), 0, 'DD/MM/YY');
+
+  LBoleto.NumeroArquivo := StrToIntDef(Copy(ARetorno[0],22,5),0);
 
   if LBoleto.LeCedenteRetorno then
   begin

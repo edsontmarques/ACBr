@@ -37,8 +37,10 @@ unit ACBrTEFAPI;
 interface
 
 uses
-  Classes, SysUtils,
-  ACBrBase, ACBrTEFAPIComum;
+  Classes,
+  SysUtils,
+  ACBrBase,
+  ACBrTEFAPIComum;
 
 type
   TACBrTEFAPITipo = ( tefApiNenhum,
@@ -81,7 +83,8 @@ type
                                  valdDuplaDigitacao,
                                  valdSenhaGerente,
                                  valdSenhaLojista,
-                                 valdSenhaTecnica);
+                                 valdSenhaTecnica,
+                                 valdQuantidadeParcelas);
 
     TACBrTEFAPITipoBarras = ( tbQualquer,
                               tbDigitado,
@@ -230,7 +233,9 @@ implementation
 
 uses
   TypInfo,
-  ACBrTEFAPIPayGoWeb, ACBrTEFAPICliSiTef, ACBrTEFAPIElgin;
+  ACBrTEFAPIPayGoWeb,
+  ACBrTEFAPICliSiTef,
+  ACBrTEFAPIElgin;
 
 { TACBrTEFAPIClass }
 

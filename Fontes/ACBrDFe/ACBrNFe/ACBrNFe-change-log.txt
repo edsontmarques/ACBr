@@ -44,6 +44,35 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+12/08/2024
+-- ACBrNFeNotasFiscais --
+[*] Ajuste para considerar o valor do ICMS Mono Retenção no ValidarRegrasdeNegocio.
+   Por: Italo Giurizzato Junior
+
+02/08/2024
+-- ACBrNFeNotasFiscais --
+[*] Alterado o nome da nova unit responsável pela leitura do XML da NF-e/NFC-e.
+[*] Remoção das units: ACBrNFeXmlReader, ACBrNFeXmlWriter, pcnAdmCSCNFCe, 
+    pcnConsSitNFe, pcnEnvEventoNFe, pcnEventoNFe, pcnInutNFe, pcnRetAdmCSCNFCe, 
+    pcnRetConsSitNFe, pcnRetEnvEventoNFe, pcnRetInutNFe.
+   Por: Italo Giurizzato Junior
+
+31/07/2024
+-- Diversos --
+[*] Ajustes para o envio correto dos eventos: ECONF e Cancelamento de 
+    Conciliação Financeira
+   Por: Italo Giurizzato Junior
+
+26/07/2024
+-- ACBrNFeDANFeEventoRLRetrato --
+[*] Revisado a impressão de todos os eventos.
+   Por: Italo Giurizzato Junior
+
+25/07/2024
+-- ACBrNFe.EnvEvento --
+[*] Ajuste visando sanar problema com a xCondUso acentuada no evento de Ator Interessado.
+ Por: Diego Folieni
+
 17/07/2024
 -- pcnNFeW, ACBrNFeXmlWriter --
 [*] Altera rotinas de geração do XML tornando os campos qBCMono, qBCMonoReten e qBCMonoRet obrigatórios em seus respectivos CSTs.

@@ -42,6 +42,127 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+
+13/08/2024
+-- NFSeBrasil.Provider, Giap.Provider, GeisWeb.Provider --
+[*] #TK-5090: Ajustes visando corrigir erro de conversão na leitura das respostas.
+  Por: Diego Folieni
+
+12/08/2024
+-- Betha.Provider --
+[*] #TK-5850: Alteração visando corrigir erro de assinatura ao realizar mais de um cancelamento em sequência.
+  Por: Diego Folieni
+-- Giss.Provider --
+[*] Mais alterações para deixar o provedor funcional
+  Por: Italo Giurizzato Junior
+
+09/08/2024
+-- ISSCampinas.Provider --
+[*] TK-5844: Corrige o namespace dos métodos RecepcionarLoteRPSSincrono e ConsultarNFSeFaixa.
+  Por: Diego Folieni
+-- ACBrNFSeXServicos -
+[*] Adiciona o parâmetro versão para a cidade de São Pedro da Aldeia
+  Por: Diego Folieni
+
+08/08/2024
+-- Giss.GravarXml/Giss.Provider --
+[*] Diversas alterações para deixar o provedor funcional - TK-5831
+  Por: Italo Giurizzato Junior/Diego Folieni
+-- EloTech.Provider --
+[*] Alteração nas funções de conversão da propriedade RegimeEspecialTributacao - TK-5832
+  Por: Ramon Valentim
+-- ACBrNFSeXServicos --
+[*] Incluída as URLs de homologação da cidade de Sete Lagoas/MT, o provedor é Libre.
+   Por: Arimateia Jr
+[+] Incluída a cidade de Agua Azul do Norte/PA, o provedor é Fiorilli - TK-5829.
+   Por: Joemil
+[*] Alterado as URLs da cidade de Mirassol D Oeste/MT, o provedor é mesmo - TK-5839.
+   Por: Diego Reckziegel
+
+07/08/2024
+-- ISSSaoPaulo.Provider --
+[*] #TK-5774 - Alteração para que conte corretamente a quantidade de notas no retorno da ConsultarNFSeServicoTomadoPorTomador
+  Por: Diego Folieni 
+-- ACBrNFSeXServicos --
+[+] Incluída a cidade de Chapadao do Sul/MS, o provedor é Fiorilli - TK-5820.
+[+] Incluída a cidade de Ubirata/PR, o provedor é Pronim - TK-5819.
+   Por: eazschornack, Higor, Júlio Cavalcanti 
+
+06/08/2024
+-- ACBrNFSeXServicos --
+[+] Incluída a cidade de Faxinalzinho/RS, o provedor é DataSmart- TK-5838.
+   Por: Willian Delan
+
+05/08/2024
+-- ISSFortaleza.Provider --
+[*] O provedor esta retornando o XML no formato ANSI, feita a alteração visando
+    converter o XML para o formato UTF-8.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXGravarXml_ABRASFv1 --
+[*] Alteração visando tomadores do exterior.
+   Por: Alexandre Felippeto Henzen
+-- ACBrNFSeXServicos --
+[*] Alterado o link de impressão da cidade de Jaú/SP.
+   Por: Ronaldo Negreiros Danieli
+[*] Alterado para a versão 2.03 do layout para a cidade de Franca/SP.
+   Por: Cleber HHP
+
+01/08/2024
+-- ACBrNFSeXNotasFiscais --
+[*] Adiciona na leitura e na escrita do INI o campo ValorTotalNotaFiscal
+   Por: Diego Folieni
+-- EloTeck.Provider --
+[*] Reescrita as funções de conversão do Regime Especial de Tributação.
+   Por: Jaisson
+-- ACBrNFSeXServicos --
+[*] A cidade de Franca/SP, trocou de provedor, agora é SilTecnologia versão 2.04
+   Por: Cleber HHP
+[+] Incluída a cidade de Nova Brasilandia D Oeste/RO, o provedor é EloTech.
+   Por: Bill Barsch
+[+] Incluída a cidade de Humaita/AM, o provedor é CTAConsult.
+   Por: Destak
+
+29/07/2024
+-- ACBrNFSeXDANFSeFR --
+[-] Não estava identificando o provedor configurado pelo código do municipio.
+-- ACBrNFSeXDANFSeRLISSNet --
+[*] O campo Natureza da Operação no DANFSE na verdade apresenta o conteúdo do
+    campo ExigibilidadeISS.
+-- MegaSoft.Provider --
+[*] Alterado o valor do parâmetro ImprimirOptanteSN para false pois esse provedor
+    não retorna no XML da NFS-e a tag OptanteSimplesNacional.
+   Por: Italo Giurizzato Junior
+
+26/07/2024
+-- ACBrNFSeXGravarXml/ACBrNFSeXLerXml --
+[*] Padronização na geração e leitura dos itens no formato tabulado e Json na 
+    tag Discriminacao.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[+] Incluída a cidade de Jaragua/GO, o provedor é MegaSoft
+   Por: Danilo Martins Xavier
+-- ACBrNFSeXGravarXml_ABRASFv2/MegaSoft.GravarXml --
+[*] Ajustes na posição que o provedor gera a tag <Cep>.
+   Por: Italo Giurizzato Junior
+-- DSF.Provider --
+[*] Alteração visando tratar o XML retornado, pois o provedor esta retornando
+    os XML com codificação em ANSI em vez UTF-8.
+   Por: Italo Giurizzato Junior
+
+25/07/2024
+-- SigISSWeb.Provider --
+[*] Alteração visando tratar o XML retornado, pois o provedor esta retornando
+    os XML com codificação em ANSI em vez UTF-8.
+   Por: Italo Giurizzato Junior
+
+24/07/2024
+-- ACBrNFSeXDANFSeRLISSNet --
+[-] Corrigido a impressão do campo Responsável pela Retenção.
+   Por: Italo Giurizzato Junior
+-- Diversos --
+[+] Implementado a versão 2.03 da ABRASF para o provedor ISSCampinas.
+   Por: Daniel Afonso/Italo Giurizzato Junior
+
 23/07/2024
 -- Conam.GravarXml --
 [*] Alteração para que o valor de RetFonte seja "NAO" para quando IssRetido tenha

@@ -418,9 +418,9 @@ begin
 
   if Evento[Idx].InfEvento.detEvento.tpAutorizacao = taPermite then
     Result.AppendChild(AddNode(tcStr, 'HP28', 'xCondUso', 1, 255, 1,
-      'O emitente ou destinatário da NF-e, declara que permite o transportador ' +
+      ACBrStr('O emitente ou destinatário da NF-e, declara que permite o transportador ' +
       'declarado no campo CNPJ/CPF deste evento a autorizar os transportadores ' +
-      'subcontratados ou redespachados a terem acesso ao download da NF-e'));
+      'subcontratados ou redespachados a terem acesso ao download da NF-e')));
 end;
 
 function TEventoNFe.Gerar_Evento_CancComprEntrega(Idx: Integer): TACBrXmlNode;
@@ -798,16 +798,16 @@ begin
 
       Result[i].AppendChild(AddNode(tcStr, 'P29', 'UFPag', 2, 2, 1,
                    Evento[Idx].InfEvento.detEvento.detPag[i].UFPag, DSC_UFPAG));
-    end;
 
-    Result[i].AppendChild(AddNode(tcStr, 'P30', 'CNPJIF', 14, 14, 0,
+      Result[i].AppendChild(AddNode(tcStr, 'P30', 'CNPJIF', 14, 14, 0,
                  Evento[Idx].InfEvento.detEvento.detPag[i].CNPJIF, DSC_CNPJIF));
 
-    Result[i].AppendChild(AddNode(tcStr, 'P31', 'tBand', 02, 02, 0,
-      BandeiraCartaoToStr(Evento[Idx].InfEvento.detEvento.detPag[i].tBand), DSC_TBAND));
+      Result[i].AppendChild(AddNode(tcStr, 'P31', 'tBand', 02, 02, 0,
+        BandeiraCartaoToStr(Evento[Idx].InfEvento.detEvento.detPag[i].tBand), DSC_TBAND));
 
-    Result[i].AppendChild(AddNode(tcStr, 'P32', 'cAut', 01, 128, 0,
+      Result[i].AppendChild(AddNode(tcStr, 'P32', 'cAut', 01, 128, 0,
                      Evento[Idx].InfEvento.detEvento.detPag[i].cAut, DSC_CAUT));
+    end;
 
     if (Evento[Idx].InfEvento.detEvento.detPag[i].CNPJReceb <> '') or
        (Evento[Idx].InfEvento.detEvento.detPag[i].UFReceb <> '') then
@@ -905,7 +905,9 @@ begin
 
   Result.AppendChild(AddNode(tcStr, 'HP16', 'verEvento', 1, 4, 1, Versao));
 
-  if Evento[Idx].InfEvento.tpEvento = teAtorInteressadoNFe then
+  FOpcoes.RetirarAcentos := True;
+
+  if Evento[Idx].InfEvento.tpEvento in [teAtorInteressadoNFe, teCancConcFinanceira] then
     FOpcoes.RetirarAcentos := False;  // Não funciona sem acentos
 
   case Evento[Idx].InfEvento.tpEvento of

@@ -366,6 +366,8 @@ type
     cbxAdicionaLiteral: TCheckBox;
     cbxAjustarAut: TCheckBox;
     cbxBolMotorRelatorio: TComboBox;
+    cbxImprimeNNFFormatadoNFCe: TCheckBox;
+    cbxImprimeNNFFormatadoNFe: TCheckBox;
     cbxNomeLongoNFSe: TCheckBox;
     cbxMontarPathSchemas: TCheckBox;
     cbxAmbiente: TComboBox;
@@ -5769,10 +5771,11 @@ begin
     CarregarListaDeCidades(UFtoCUF(UF));
     cbxBOLUF.ItemIndex                := cbxBOLUF.Items.IndexOf(UF);
     edtBOLCodCidade.Caption           := IntToStr(CodCidade);
+    cbxEmitCidade.Text                := cidade;
     if ( CodCidade = 0 ) then
     begin
-      if ( cbxEmitCidade.Items.IndexOf(Cidade) > 0 ) and (fcMunList.IndexOf(IntToStr(CodCidade)) > 0 ) then
-        cbxEmitCidade.ItemIndex           := FcMunList.IndexOf(IntToStr(CodCidade))
+      if ( cbxEmitCidade.Items.IndexOf(Cidade) > 0 ) and (fcMunList.IndexOf(Cidade) > 0 ) then
+         cbxEmitCidade.ItemIndex  := FcMunList.IndexOf(IntToStr(cbxEmitCidade.Items.IndexOf(Cidade)))
       else
       begin
         cbxEmitCidade.Items.Add(Cidade);
@@ -5782,7 +5785,7 @@ begin
       end;
     end
     else
-      cbxEmitCidade.ItemIndex           := FcMunList.IndexOf(IntToStr(CodCidade));
+      cbxEmitCidade.ItemIndex := cbxEmitCidade.Items.IndexOf(Cidade);
 
     edtBOLComplemento.Text            := Complemento;
 
@@ -6103,6 +6106,7 @@ begin
       fspeNFCeMargemDir.Value             := MargemDir;
       fspeNFCeMargemEsq.Value             := MargemEsq ;
       fspeLarguraNFCe.Value               := LarguraBobina;
+      cbxImprimeNNFFormatadoNFCe.Checked  := ImprimeNNFFormatadoNFCe;
     end;
 
     with Impressao.NFCe.Emissao.DANFCeTipoPagto do
@@ -6163,6 +6167,7 @@ begin
       rgInfAdicProduto.ItemIndex          := ExibirBandInforAdicProduto;
       cbxExibirLogoEmCima.Checked         := LogoEmCima;
       cbxImprimeInscSuframa.Checked       := ImprimeInscSuframa;
+      cbxImprimeNNFFormatadoNFe.Checked   := ImprimeNNFFormatadoNFe;
       cbxExpandirDadosAdicionaisAuto.Checked:= ExpandirDadosAdicionaisAuto;
       cbxImprimeContinuacaoDadosAdicionaisPrimeiraPagina.Checked:= ImprimeContinuacaoDadosAdicionaisPrimeiraPagina;
       rgImprimeDescAcrescItemNFe.ItemIndex:= ImprimeDescAcrescItemNFe;
@@ -7384,6 +7389,7 @@ begin
         MargemDir                  := fspeNFCeMargemDir.Value;
         MargemEsq                  := fspeNFCeMargemEsq.Value;
         LarguraBobina              := fspeLarguraNFCe.Value;
+        ImprimeNNFFormatadoNFCe    := cbxImprimeNNFFormatadoNFCe.Checked;
       end;
 
       with Impressao.NFCe.Emissao.DANFCeTipoPagto do
@@ -7443,6 +7449,7 @@ begin
         ExibirBandInforAdicProduto     := rgInfAdicProduto.ItemIndex;
         LogoEmCima                     := cbxExibirLogoEmCima.Checked;
         ImprimeInscSuframa             := cbxImprimeInscSuframa.Checked;
+        ImprimeNNFFormatadoNFe         := cbxImprimeNNFFormatadoNFe.Checked;
         ExpandirDadosAdicionaisAuto    := cbxExpandirDadosAdicionaisAuto.Checked;
         ImprimeContinuacaoDadosAdicionaisPrimeiraPagina := cbxImprimeContinuacaoDadosAdicionaisPrimeiraPagina.Checked;
         ImprimeDescAcrescItemNFe   := rgImprimeDescAcrescItemNFe.ItemIndex;
@@ -11227,6 +11234,7 @@ begin
 
     if ACBrNFe1.DANFE = ACBrNFeDANFeRL1 then
     begin
+      ACBrNFeDANFeRL1.FormatarNumeroDocumento := cbxImprimeNNFFormatadoNFe.Checked;
       ACBrNFeDANFeRL1.Fonte.Nome := TNomeFonte(rgTipoFonte.ItemIndex);
       ACBrNFeDANFeRL1.Fonte.TamanhoFonteDemaisCampos := speFonteCampos.Value;
       ACBrNFeDANFeRL1.Fonte.TamanhoFonteEndereco     := speFonteEndereco.Value;
@@ -11255,6 +11263,7 @@ begin
     end
     else if ACBrNFe1.DANFE = ACBrNFeDANFCeFortesA4_1 then
     begin
+      ACBrNFeDANFCeFortesA4_1.FormatarNumeroDocumento := cbxImprimeNNFFormatadoNFCe.Checked;
       ACBrNFeDANFCeFortesA4_1.ExibeInforAdicProduto := TinfAdcProd(rgInfAdicProduto.ItemIndex);
       ACBrNFeDANFCeFortesA4_1.ImprimeDescAcrescItem := cbxImprimirDescAcresItemNFCe.Checked;
       ACBrNFeDANFCeFortesA4_1.ImprimeTotalLiquido   := cbxImprimirDescAcresItemNFCe.Checked;
@@ -11276,6 +11285,7 @@ begin
     end
     else if ACBrNFe1.DANFE = ACBrNFeDANFCeFortes1 then
     begin
+      ACBrNFeDANFCeFortes1.FormatarNumeroDocumento := cbxImprimeNNFFormatadoNFCe.Checked;
       ACBrNFeDANFCeFortes1.ImprimeDescAcrescItem := cbxImprimirDescAcresItemNFCe.Checked;
       ACBrNFeDANFCeFortes1.ImprimeTotalLiquido   := cbxImprimirDescAcresItemNFCe.Checked;
       ACBrNFeDANFCeFortes1.MargemInferior        := fspeNFCeMargemInf.Value;
@@ -11310,6 +11320,7 @@ begin
     end
     else if ACBrNFe1.DANFE = ACBrNFeDANFeESCPOS1 then
     begin
+      ACBrNFeDANFeESCPOS1.FormatarNumeroDocumento:= cbxImprimeNNFFormatadoNFe.Checked;
       ACBrNFeDANFeESCPOS1.PosPrinter.Modelo := TACBrPosPrinterModelo(cbxModelo.ItemIndex);
       ACBrNFeDANFeESCPOS1.PosPrinter.Device.Porta := cbxPorta.Text;
       ACBrNFeDANFeESCPOS1.ImprimeEmUmaLinha := cbxImprimirItem1LinhaNFCe.Checked;
