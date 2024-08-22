@@ -670,13 +670,11 @@ begin
       RespRetorno := TRetornoBoleto.Create(Config.TipoResposta, Config.CodResposta);
       try
         RespRetorno.Processar(BoletoDM.ACBrBoleto1);
-        Resposta := ACBrStr(RespRetorno.Gerar);
         Resposta := RespRetorno.Gerar;
       Finally
         RespRetorno.Free;
       end;
 
-      Resposta := IfThen(Config.CodResposta = codAnsi, ACBrUTF8ToAnsi(Resposta), Resposta );
       MoverStringParaPChar(Resposta, sResposta, esTamanho);
       Result := SetRetorno(ErrOK, Resposta);
 
@@ -836,8 +834,7 @@ begin
     BoletoDM.Travar;
     try
       Resposta := '';
-      Resposta := ListaBancos;
-      Resposta := IfThen(Config.CodResposta = codAnsi, ACBrUTF8ToAnsi(Resposta), Resposta);
+      Resposta := ConverterStringSaida(ListaBancos);
       MoverStringParaPChar(Resposta, sResposta, esTamanho);
       Result := SetRetorno(ErrOK, Resposta);
     finally
@@ -861,8 +858,7 @@ begin
     BoletoDM.Travar;
     try
       Resposta := '';
-      Resposta := ListaCaractTitulo();
-      Resposta := IfThen(Config.CodResposta = codAnsi, ACBrUTF8ToAnsi(Resposta), Resposta);
+      Resposta := ConverterStringSaida(ListaCaractTitulo());
       MoverStringParaPChar(Resposta, sResposta, esTamanho);
       Result := SetRetorno(ErrOK, Resposta);
     finally
@@ -886,8 +882,7 @@ begin
     BoletoDM.Travar;
     try
       Resposta := '';
-      Resposta := ListaOcorrencias();
-      Resposta := IfThen(Config.CodResposta = codAnsi, ACBrUTF8ToAnsi(Resposta), Resposta);
+      Resposta := ConverterStringSaida(ListaOcorrencias());
       MoverStringParaPChar(Resposta, sResposta, esTamanho);
       Result := SetRetorno(ErrOK, Resposta);
     finally
@@ -911,8 +906,7 @@ begin
     BoletoDM.Travar;
     try
       Resposta := '';
-      Resposta := ListaOcorrenciasEX();
-      Resposta := IfThen(Config.CodResposta = codAnsi, ACBrUTF8ToAnsi(Resposta), Resposta);
+      Resposta := ConverterStringSaida(ListaOcorrenciasEX());
       MoverStringParaPChar(Resposta, sResposta, esTamanho);
       Result := SetRetorno(ErrOK, Resposta);
     finally
@@ -964,8 +958,7 @@ begin
     BoletoDM.Travar;
     try
       Resposta := '';
-      Resposta := BoletoDM.ACBrBoleto1.Banco.CodigosMoraAceitos;
-      Resposta := IfThen(Config.CodResposta = codAnsi, ACBrUTF8ToAnsi(Resposta), Resposta);
+      Resposta := ConverterStringSaida(BoletoDM.ACBrBoleto1.Banco.CodigosMoraAceitos);
       MoverStringParaPChar(Resposta, sResposta, esTamanho);
       Result := SetRetorno(ErrOK, Resposta);
     finally
@@ -1028,8 +1021,8 @@ begin
     BoletoDM.Travar;
     try
       Resposta := '';
-      Resposta := BoletoDM.ACBrBoleto1.Banco.MontarCampoNossoNumero(BoletoDM.ACBrBoleto1.ListadeBoletos[Indice]);
-      Resposta := IfThen(Config.CodResposta = codAnsi, ACBrUTF8ToAnsi(Resposta), Resposta);
+      Resposta := ConverterStringSaida(
+        BoletoDM.ACBrBoleto1.Banco.MontarCampoNossoNumero(BoletoDM.ACBrBoleto1.ListadeBoletos[Indice]) );
       MoverStringParaPChar(Resposta, sResposta, esTamanho);
       Result := SetRetorno(ErrOK, Resposta);
     finally
@@ -1067,8 +1060,8 @@ begin
     try
       Resposta := '';
       ABarras  := BoletoDM.ACBrBoleto1.Banco.MontarCodigoBarras(BoletoDM.ACBrBoleto1.ListadeBoletos[Indice]);
-      Resposta := BoletoDM.ACBrBoleto1.Banco.MontarLinhaDigitavel(ABarras, BoletoDM.ACBrBoleto1.ListadeBoletos[Indice]);
-      Resposta := IfThen(Config.CodResposta = codAnsi, ACBrUTF8ToAnsi(Resposta), Resposta);
+      Resposta := ConverterStringSaida(
+        BoletoDM.ACBrBoleto1.Banco.MontarLinhaDigitavel(ABarras, BoletoDM.ACBrBoleto1.ListadeBoletos[Indice]) );
       MoverStringParaPChar(Resposta, sResposta, esTamanho);
       Result := SetRetorno(ErrOK, Resposta);
     finally
@@ -1103,8 +1096,8 @@ begin
     BoletoDM.Travar;
     try
       Resposta := '';
-      Resposta := BoletoDM.ACBrBoleto1.Banco.MontarCodigoBarras(BoletoDM.ACBrBoleto1.ListadeBoletos[Indice]);
-      Resposta := IfThen(Config.CodResposta = codAnsi, ACBrUTF8ToAnsi(Resposta), Resposta);
+      Resposta := ConverterStringSaida(
+        BoletoDM.ACBrBoleto1.Banco.MontarCodigoBarras(BoletoDM.ACBrBoleto1.ListadeBoletos[Indice]) );
       MoverStringParaPChar(Resposta, sResposta, esTamanho);
       Result := SetRetorno(ErrOK, Resposta);
     finally
@@ -1140,7 +1133,7 @@ var
    ICaractTitulo : TACBrCaracTitulo;
    SCaractTitulo : String;
 begin
-
+   Result := '';
    for ICaractTitulo := Low(TACBrCaracTitulo) to high(TACBrCaracTitulo) do
    begin
      SCaractTitulo := GetEnumName( TypeInfo(TACBrCaracTitulo), Integer(ICaractTitulo) );
@@ -1157,6 +1150,7 @@ var
    ITipoOcorrencia : TACBrTipoOcorrencia;
    SOcorrencia     : String;
 begin
+  Result := '';
   for ITipoOcorrencia := Low(TACBrTipoOcorrencia) to High(TACBrTipoOcorrencia) do
   begin
     SOcorrencia := GetEnumName( TypeInfo(TACBrTipoOcorrencia), Integer(ITipoOcorrencia) ) ;
@@ -1173,7 +1167,7 @@ var
    SOcorrencia     : String;
    ValorIndice     : Integer;
 begin
-
+  Result := '';
   for ITipoOcorrencia := Low(TACBrTipoOcorrencia) to High(TACBrTipoOcorrencia) do
   begin
     ValorIndice := Integer(ITipoOcorrencia);

@@ -42,6 +42,37 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+21/08/2024
+-- Giap.LerXml --
+[*] #TK-5886: Alteração visando obter a descrição do item de serviço.
+  Por: Microsys Sistemas
+-- ACBrNFSeXServicos --
+[*] #TK-5884: Alterado para versão 1.00 da cidade de Lontras/SC, o provedor é o mesmo.
+  Por: Adriano Wolff
+[*] #TK-5885: Alterado para versão 2.03 da cidade de Ijui/RS, o provedor é o mesmo.
+  Por: Maiquel
+
+19/08/2024
+-- ACBrNFSeXServicos --
+[+] #TK-5881: Incluída a cidade de Aguas Frias/SC, o provedor é Pronim versão 2.02
+  Por: Willian Delan
+[+] #TK-5880: Incluída a cidade de Ipameri/GO, o provedor é Prodata.
+  Por: João Antônio
+
+16/08/2024
+-- ISSRio.Provider
+[*] Ajustes no TratarRetornoEmitir para fazer a leitura correta do XML de retorno.
+  Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[*] #TK-5868: A cidade de Estrela/RS mudou a URL de produção o provedor continua o mesmo.
+  Por: Daniel Ostoic programador DNA
+[*] #TK-5847: A cidade de Massaranduba/SC mudou de versão e URLs o provedor continua o mesmo.
+-- IPM.GravarXml --
+[*] #TK-5847: Alteração visando aparecer o RPS no portal de homologação do provedor.
+  Por: Ramon Valentim da Silva
+-- ACBrNFSeXProviderABRASFv2/ISSCampinas.Provider/ISSGoiania.Provider/ISSVitoria.Provider
+[*] #TK-5864: Possível solução para a leitura correta das mensagens de erro.
+  Por: Italo Giurizzato Junior
 
 13/08/2024
 -- NFSeBrasil.Provider, Giap.Provider, GeisWeb.Provider --

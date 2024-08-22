@@ -36,7 +36,9 @@
 unit ACBrBoleto;
 
 interface
-uses Classes,
+
+uses
+      Classes,
      {$IFNDEF NOGUI}
        Graphics,
      {$ENDIF}
@@ -1327,7 +1329,7 @@ type
      function GerarPDF : string; overload;
      procedure GerarPDF(AStream: TStream); overload;
      procedure EnviarEmail(const sPara, sAssunto: String; sMensagem: TStrings;
-      EnviaPDF: Boolean; sCC: TStrings = Nil; Anexos: TStrings = Nil);
+      EnviaPDF: Boolean; sCC: TStrings = Nil; Anexos: TStrings = Nil;AReplyTo: TStrings=nil);
 
      property ACBrBoleto        : TACBrBoleto read fACBrBoleto;
      property LocalPagamento    : String      read fLocalPagamento    write fLocalPagamento;
@@ -1530,7 +1532,7 @@ type
     procedure GerarJPG;
 
     procedure EnviarEmail(const sPara, sAssunto: String; sMensagem: TStrings;
-      EnviaPDF: Boolean; sCC: TStrings = Nil; Anexos: TStrings = Nil);
+      EnviaPDF: Boolean; sCC: TStrings = Nil; Anexos: TStrings = Nil; AReplyTo: TStrings = Nil);
 
     procedure AdicionarMensagensPadroes(Titulo : TACBrTitulo; AStringList: TStrings);
 
@@ -2048,8 +2050,19 @@ const
 
 implementation
 
-Uses {$IFNDEF NOGUI}Forms,{$ENDIF} Math, dateutils, strutils,  ACBrBoletoWS,
-     ACBrUtil.Base, ACBrUtil.Strings, ACBrUtil.DateTime, ACBrUtil.Math,ACBrUtil.XMLHTML,
+Uses {$IFNDEF NOGUI}Forms,{$ENDIF}
+     Math,
+     DateUtils,
+     StrUtils,
+     blcksock,
+
+     ACBrBoletoWS,
+     ACBrUtil.Base,
+     ACBrUtil.Strings,
+     ACBrUtil.DateTime,
+     ACBrUtil.Math,
+     ACBrUtil.XMLHTML,
+
      ACBrBancoBradesco,
      ACBrBancoBrasil,
      ACBrBancoAmazonia,
@@ -2976,7 +2989,7 @@ begin
 end;
 
 procedure TACBrTitulo.EnviarEmail(const sPara, sAssunto: String;
-  sMensagem: TStrings; EnviaPDF: Boolean; sCC: TStrings; Anexos: TStrings);
+  sMensagem: TStrings; EnviaPDF: Boolean; sCC: TStrings; Anexos: TStrings; AReplyTo: TStrings);
 begin
   if not Assigned(ACBrBoleto.ACBrBoletoFC) then
     raise Exception.Create( ACBrStr('Nenhum componente "ACBrBoletoFC" associado' ) );
@@ -2989,7 +3002,7 @@ begin
 
   ACBrBoleto.ACBrBoletoFC.IndiceImprimirIndividual :=  fACBrBoleto.ListadeBoletos.IndexOf(Self);
   try
-    ACBrBoleto.EnviarEmail(sPara, sAssunto, sMensagem, EnviaPDF, sCC, Anexos);
+    ACBrBoleto.EnviarEmail(sPara, sAssunto, sMensagem, EnviaPDF, sCC, Anexos, AReplyTo);
   finally
     ACBrBoleto.ACBrBoletoFC.IndiceImprimirIndividual:= -1;
   end;
@@ -3411,7 +3424,7 @@ begin
 end;
 
 procedure TACBrBoleto.EnviarEmail(const sPara, sAssunto: String;
-  sMensagem: TStrings; EnviaPDF: Boolean; sCC: TStrings; Anexos: TStrings);
+  sMensagem: TStrings; EnviaPDF: Boolean; sCC: TStrings; Anexos: TStrings;AReplyTo: TStrings );
 var
   i: Integer;
   EMails: TStringList;
@@ -4055,9 +4068,15 @@ begin
         CedenteWS.KeyUser                   := IniBoletos.ReadString(CWebService,'KeyUser', CedenteWS.KeyUser);
         CedenteWS.IndicadorPix              := IniBoletos.ReadBool(CWebService,'IndicadorPix', CedenteWS.IndicadorPix);
         CedenteWS.Scope                     := IniBoletos.ReadString(CWebService,'Scope', CedenteWS.Scope);
+
         Configuracoes.WebService.Ambiente   := TpcnTipoAmbiente(IniBoletos.ReadInteger(CWebService,'Ambiente', Integer(Configuracoes.WebService.Ambiente)));
         Configuracoes.WebService.SSLHttpLib := TSSLHttpLib(IniBoletos.ReadInteger(CWebService,'SSLHttpLib', Integer(Configuracoes.WebService.SSLHttpLib)));
+        Configuracoes.WebService.SSLCryptLib := TSSLCryptLib( IniBoletos.ReadInteger(CWebService,'SSLCryptLib',Integer(Configuracoes.WebService.SSLCryptLib)));
+        Configuracoes.WebService.SSLXmlSignLib:= TSSLXmlSignLib( IniBoletos.ReadInteger(CWebService,'SSLXmlSignLib',Integer(Configuracoes.WebService.SSLXmlSignLib)));
+        Configuracoes.WebService.SSLType := TSSLType( IniBoletos.ReadInteger(CWebService,'SSLType',Integer(Configuracoes.WebService.SSLType)));
 
+
+        Configuracoes.WebService.Senha := IniBoletos.ReadString(CWebService,'Senha',Configuracoes.WebService.Senha);
         if IniBoletos.ValueExists(CWebService,'ArquivoCRT') then
           Configuracoes.WebService.ArquivoCRT := IniBoletos.ReadString(CWebService,'ArquivoCRT', Configuracoes.WebService.ArquivoCRT);
 
@@ -4396,10 +4415,15 @@ begin
        IniRetorno.WriteString(CWebService,'Scope',Cedente.CedenteWS.Scope);
        IniRetorno.WriteInteger(CWebService,'Ambiente',Integer(Configuracoes.WebService.Ambiente));
        IniRetorno.WriteInteger(CWebService,'SSLHttpLib',Integer(Configuracoes.WebService.SSLHttpLib));
+       IniRetorno.WriteInteger(CWebService,'SSLCryptLib',Integer(Configuracoes.WebService.SSLCryptLib));
+       IniRetorno.WriteInteger(CWebService,'SSLXmlSignLib',Integer(Configuracoes.WebService.SSLXmlSignLib));
+       IniRetorno.WriteInteger(CWebService,'SSLType',Integer(Configuracoes.WebService.SSLType));
+
 
        IniRetorno.WriteString(CWebService,'ArquivoCRT', Configuracoes.WebService.ArquivoCRT);
        IniRetorno.WriteString(CWebService,'ArquivoKEY', Configuracoes.WebService.ArquivoKEY);
        IniRetorno.WriteString(CWebService,'ArquivoPFX', Configuracoes.WebService.ArquivoPFX);
+       IniRetorno.WriteString(CWebService,'Senha', Configuracoes.WebService.Senha);
 
        if not SomenteConfig then
        begin
