@@ -42,6 +42,61 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+29/08/2024
+-- Equiplano.Provider --
+[*] #TK-5889: Incluído no TratarXmlRetornado a substituição do "&" por "&amp;"
+    para que a leitura de nomes do prestadores e tomadores sejam feitas corretamente
+    quando possuirem o caracter "&" no nome. 
+  Por: Italo Giurizzato Junior
+-- ACBrNFSeXDANFSeRLRetrato --
+[*] #TK-5856: Alteração no tamanho da banda rlbISSQN para evitar a impressão de
+    2 páginas.
+  Por: Natanael Sanches
+-- ACBrNFSeXServicos --
+[*] #TK-5909: Incluída a cidade de Nova Monte Verde/MT, o provedor é Agili.
+  Por: C4Dev
+[*] #TK-5908: Alterado a versão para 1.01 da cidade de Estrela/RS, o provedor é o mesmo.
+  Por: Daniel Ostoic
+[*] #TK-5910: Incluída a cidade de Aiuruoca/MG, o provedor é Futurize.
+  Por: Bill Barsch
+
+28/08/2024
+-- ACBrNFSeXServicos --
+[*] #TK-5905: A cidade de Silva Jardim/RJ trocou de provedor, agora é Pronim versão 2.03 
+  Por: Gabriel Bobello
+-- ISSIntel.GravarXml --
+[*] #TK-5904: Alterado a condição que determina se a Aliquota vai ser obrigatória ou
+    opcional.
+-- IPM.Provider --
+[*] #TK-5907: Para a versão 1.00 o parâmetro UseCertificateHTTP fica condicionado aos Params
+    Assinar informados no arquivo ACBrNFSeXServicos.ini
+  Por: Italo Giurizzato Junior
+-- Giss.GravarXML --
+[*] Altera as ocorrências do CodigoPais do grupo serviço para que seja opcional.
+  Por: Diego Folieni
+-- ACBrNFSeXProviderABRASFv2, SmarPD.Provider --
+[*] #TK-5895: Ajustes visando correta exibição do retorno das consultas de serviço tomado e prestado
+  Por: Diego Folieni
+
+26/08/2024
+-- IPM.LerXml --
+[*] Ajustes para a leitura correta do Total Liquido da Nota.
+  Por: Farnetani
+
+22/08/2024
+-- IPM.LerXml --
+[*] Ajustes para a leitura correta dos campos: MunicipioPrestacaoServico e
+    MunicipioIncidencia
+  Por: Italo Giurizzato Junior
+-- SigISS.Provider --
+[*] #TK-5869: Ajustes na leitura de mensagens de erro, para identificar 
+    corretamente os alertas.
+  Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[*] Alterado para versão 2.04 bem como a URL da cidade de Marechal Floriano/ES, 
+    o provedor é o mesmo.
+  Por: Italo Giurizzato Junior
+
 21/08/2024
 -- Giap.LerXml --
 [*] #TK-5886: Alteração visando obter a descrição do item de serviço.
