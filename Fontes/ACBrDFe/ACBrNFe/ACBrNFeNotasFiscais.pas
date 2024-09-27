@@ -2762,6 +2762,16 @@ begin
         Inc(I);
       end;
 
+      sSecao := 'infNFeSupl';
+      if INIRec.SectionExists(sSecao) then
+      begin
+        with infNFeSupl do
+        begin
+          qrCode := INIRec.ReadString(sSecao, 'qrCode','');
+          urlChave := INIRec.ReadString(sSecao, 'urlChave','');
+        end;
+      end;
+
       sSecao := 'infRespTec';
       if INIRec.SectionExists(sSecao) then
       begin
@@ -3701,6 +3711,9 @@ begin
         end;
       end;
 
+      INIRec.WriteString('infNFeSupl', 'qrCode', infNFeSupl.qrCode);
+      INIRec.WriteString('infNFeSupl', 'urlChave', infNFeSupl.urlChave);
+
       INIRec.WriteString('infRespTec', 'CNPJ', infRespTec.CNPJ);
       INIRec.WriteString('infRespTec', 'xContato', infRespTec.xContato);
       INIRec.WriteString('infRespTec', 'email', infRespTec.email);
@@ -3816,11 +3829,13 @@ begin
     FNFeW.Opcoes.CamposFatObrigatorios := Configuracoes.Geral.CamposFatObrigatorios;
     FNFeW.Opcoes.ForcarGerarTagRejeicao938 := Configuracoes.Geral.ForcarGerarTagRejeicao938;
     FNFeW.Opcoes.ForcarGerarTagRejeicao906 := Configuracoes.Geral.ForcarGerarTagRejeicao906;
+    FNFeW.Opcoes.QuebraLinha := Configuracoes.WebServices.QuebradeLinha;
 {$Else}
     FNFeW.Gerador.Opcoes.FormatoAlerta  := Configuracoes.Geral.FormatoAlerta;
     FNFeW.Gerador.Opcoes.RetirarAcentos := Configuracoes.Geral.RetirarAcentos;
     FNFeW.Gerador.Opcoes.RetirarEspacos := Configuracoes.Geral.RetirarEspacos;
     FNFeW.Gerador.Opcoes.IdentarXML := Configuracoes.Geral.IdentarXML;
+    FNFeW.Gerador.Opcoes.QuebraLinha := Configuracoes.WebServices.QuebradeLinha;
     FNFeW.Opcoes.NormatizarMunicipios  := Configuracoes.Arquivos.NormatizarMunicipios;
     FNFeW.Opcoes.PathArquivoMunicipios := Configuracoes.Arquivos.PathArquivoMunicipios;
     FNFeW.Opcoes.CamposFatObrigatorios := Configuracoes.Geral.CamposFatObrigatorios;
