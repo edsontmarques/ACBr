@@ -43,6 +43,41 @@ Símbolo : Significado
 [-]     : Correção de Bug (assim esperamos)
 
 
+30/09/2024
+-- iiBrasil.GravarXml/Infisc.GravarXml/IPM.GravarXml/ISSBarueri.GravarXml --
+-- ISSCambe.GravarXml/ISSCampinas.GravarXml/ISSCuritiba.GravarXml/ISSDigital.GravarXml --
+-- ISSDSF.GravarXml/ISSe.GravarXml/ISSGoiania.GravarXml/ISSJoinville.GravarXml --
+-- ISSLencois.GravarXml/ISSNet.GravarXml/ISSPortoVelho.GravarXml/ISSRecife.GravarXml --
+-- ISSRio.GravarXml/ISSSalvador.GravarXml/ISSSaoPaulo.GravarXml --
+-- ISSSJP.GravarXml/ISSVitoria.GravarXml --
+[*] Remoção de units declaradas em uses e não utilizadas.
+  Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[*] #TK-6027 - A cidade de Itu/SP vai mudar para o provedor Giss.
+    A data prevista é 31/10/2024, já se enconta no arquivo INI a nova URL comentada.
+   Por: Carlos Júnior
+[+] #TK-6034 - Incluída a cidade de Carnaubal/CE, o provedor é SpeedGov.
+   Por: Luiz Vaz
+-- fintelISS.GravarXml/Fiorilli.GravarXml/Fisco.GravarXml/Futurize.GravarXml --
+-- GeisWeb.GravarXml/GestaoISS.GravarXml/Giap.GravarXml/Ginfes.GravarXml --
+-- Giss.GravarXml/GovDigital.GravarXml/Governa.GravarXml --
+[*] Remoção de units declaradas em uses e não utilizadas.
+  Por: Italo Giurizzato Junior
+
+27/09/2024
+-- Fiorilli.GravarXML --
+[*] #TK-6033: Altera o número de ocorrências do código país tomador para tornar opcional
+   Por: Matheus Faria
+-- ACBrNFSeXServicos --
+[+] #TK-6026 - Incluída a cidade de Guarani/MG, o provedor é Futurize.
+   Por: Everson Clei
+[+] #TK-6031 - Incluída a cidade de Turvo/PR, o provedor é Equiplano.
+   Por: Anderson Grolli
+[*] #TK-6032 - A cidade de Ituporanga/SC mudou a URL, o provedor continua o mesmo.
+   Por: Prime Software
+[*] #TK-6030 - A cidade de Xangri-Lá/RS mudou a URL, o provedor continua o mesmo.
+   Por: Igor AcertSoft
+
 26/09/2024
 -- ACBrNFSeXServicos --
 [+] #TK-6024 - Incluída a cidade de Arceburgo/MG, o provedor é SimplISS.
