@@ -414,7 +414,7 @@ uses
   ACBrUtil.Strings,
   ACBrUtil.XMLHTML
   {$IFDEF UPDATE_SCREEN_CURSOR}
-    ,Controls, Forms
+    ,VCL.Controls, VCL.Forms
   {$ENDIF};
 
 function GetURLBasePath(const URL: String): String;
