@@ -295,7 +295,7 @@ begin
     case ModeloDF of
       moGTVe: Gerador.wGrupo('GTVeProc ' + VersaoStr + ' ' + NAME_SPACE_CTE, '');
       moCTeOS: Gerador.wGrupo('cteOSProc ' + VersaoStr + ' ' + NAME_SPACE_CTE, '');
-      moCTeSimp: Gerador.wGrupo('cteProcSimp ' + VersaoStr + ' ' + NAME_SPACE_CTE, '');
+      moCTeSimp: Gerador.wGrupo('cteSimpProc ' + VersaoStr + ' ' + NAME_SPACE_CTE, '');
     else
       Gerador.wGrupo('cteProc ' + VersaoStr + ' ' + NAME_SPACE_CTE, '');
     end;
@@ -382,7 +382,7 @@ begin
     case ModeloDF of
       moGTVe: Gerador.wGrupo('/GTVeProc');
       moCTeOS: Gerador.wGrupo('/cteOSProc');
-      moCTeSimp: Gerador.wGrupo('/cteProcSimp');
+      moCTeSimp: Gerador.wGrupo('/cteSimpProc');
     else
       Gerador.wGrupo('/cteProc');
     end;
@@ -707,7 +707,8 @@ begin
         if (trim(CTe.Compl.xCaracAd) <> '') or (trim(CTe.Compl.xCaracSer) <> '') or
            (trim(CTe.Compl.fluxo.xOrig) <> '') or (CTe.Compl.fluxo.pass.Count > 0) or
            (trim(CTe.Compl.fluxo.xDest) <> '') or (trim(CTe.Compl.fluxo.xRota) <> '') or
-           (CTe.Compl.ObsCont.Count > 0) or (CTe.Compl.ObsFisco.Count > 0) then
+           (trim(CTe.Compl.xObs) <> '') or (CTe.Compl.ObsCont.Count > 0) or
+           (CTe.Compl.ObsFisco.Count > 0) then
         begin
           Gerador.wGrupo('compl', '#059');
           Gerador.wCampo(tcStr, '#060', 'xCaracAd ', 01, 15, 0, CTe.Compl.xCaracAd, DSC_XCARACAD);
@@ -965,7 +966,11 @@ begin
 
     GeraIE;
 
-    Gerador.wCampo(tcStr, '#068', 'xNome', 02, 60, 1, CTe.toma.xNome, DSC_XNOME);
+    if (CTe.ide.tpCTe in [tcCTeSimp, tcSubstCTeSimpl]) and (CTe.Ide.tpAmb = taHomologacao) then
+      Gerador.wCampo(tcStr, '#068', 'xNome', 02, 60, 1, xRazao4, DSC_XNOME)
+    else
+      Gerador.wCampo(tcStr, '#068', 'xNome', 02, 60, 1, CTe.toma.xNome, DSC_XNOME);
+
     Gerador.wCampo(tcStr, '#069', 'xFant', 02, 60, 0, CTe.toma.xFant, DSC_XFANT);
     Gerador.wCampo(tcStr, '#070', 'fone ', 07, 12, 0, OnlyNumber(CTe.toma.fone), DSC_FONE);
 

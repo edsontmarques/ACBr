@@ -1155,9 +1155,9 @@ begin
                 ((NFe.Emit.CRT <> crtSimplesNacional) and (Imposto.ICMS.CST in [cst10, cst30, cst60, cst70, cst90]))) then
               AdicionaErro('806-Rejeição: Operação com ICMS-ST sem informação do CEST [nItem: '+IntToStr(Prod.nItem)+']');           }
 
-            GravaLog('Validar: 856-Obrigatória a informação do campo vPart (id: LA03d) para produto "210203001 – GLP" (tag:cProdANP) [nItem: '+IntToStr(Prod.nItem)+']');
+{            GravaLog('Validar: 856-Obrigatória a informação do campo vPart (id: LA03d) para produto "210203001 – GLP" (tag:cProdANP) [nItem: '+IntToStr(Prod.nItem)+']');
             if (Prod.comb.cProdANP = 210203001) and (Prod.comb.vPart <= 0) then
-              AdicionaErro('856-Rejeição: Campo valor de partida não preenchido para produto GLP [nItem: '+IntToStr(Prod.nItem)+']');
+              AdicionaErro('856-Rejeição: Campo valor de partida não preenchido para produto GLP [nItem: '+IntToStr(Prod.nItem)+']'); }
 
 {            GravaLog('Validar: 858-Grupo ICMS60 (id:N08) informado indevidamente nas operações com os produtos combustíveis sujeitos a repasse interestadual [nItem: '+IntToStr(Prod.nItem)+']');
             if (Prod.comb.cProdANP = '210203001') and (Imposto.ICMS.CST = cst60 and Imposto.ICMS.vICMSSTDest <= 0) then
@@ -2783,6 +2783,22 @@ begin
           fone     := INIRec.ReadString(sSecao, 'fone', '');
         end;
       end;
+
+      sSecao := 'defensivo';
+      if INIRec.SectionExists(sSecao) then
+      begin
+        agropecuario.defensivo.nReceituario := INIRec.ReadString(sSecao, 'nReceituario', '');
+        agropecuario.defensivo.CPFRespTec := INIRec.ReadString(sSecao, 'CPFRespTec', '');
+      end;
+
+      sSecao := 'guiaTransito';
+      if INIRec.SectionExists(sSecao) then
+      begin
+        agropecuario.guiaTransito.UFGuia := INIRec.ReadString(sSecao, 'UFGuia', '');
+        agropecuario.guiaTransito.tpGuia := StrToTtpGuia(INIRec.ReadString(sSecao, 'tpGuia', ''));
+        agropecuario.guiaTransito.serieGuia := INIRec.ReadString(sSecao, 'serieGuia', '');
+        agropecuario.guiaTransito.nGuia := INIRec.ReadString(sSecao, 'nGuia', '0');
+      end;
     end;
 
     GerarXML;
@@ -3718,6 +3734,20 @@ begin
       INIRec.WriteString('infRespTec', 'xContato', infRespTec.xContato);
       INIRec.WriteString('infRespTec', 'email', infRespTec.email);
       INIRec.WriteString('infRespTec', 'fone', infRespTec.fone);
+
+      if Trim(agropecuario.defensivo.nReceituario) <> '' then
+      begin
+        INIRec.WriteString('defensivo', 'nReceituario', agropecuario.defensivo.nReceituario);
+        INIRec.WriteString('defensivo', 'CPFRespTec', agropecuario.defensivo.CPFRespTec);
+      end;
+
+      if agropecuario.guiaTransito.tpGuia <> tpgNenhum then
+      begin
+        INIRec.WriteString('guiaTransito', 'UFGuia', agropecuario.guiaTransito.UFGuia);
+        INIRec.WriteString('guiaTransito', 'tpGuia', TtpGuiaToStr(agropecuario.guiaTransito.tpGuia));
+        INIRec.WriteString('guiaTransito', 'serieGuia', agropecuario.guiaTransito.serieGuia);
+        INIRec.WriteString('guiaTransito', 'nGuia', agropecuario.guiaTransito.nGuia);
+      end;
 
       INIRec.WriteString('procNFe', 'tpAmb', TpAmbToStr(procNFe.tpAmb));
       INIRec.WriteString('procNFe', 'verAplic', procNFe.verAplic);

@@ -49,6 +49,47 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+23/10/2024
+-- ACBrBancoBradesco.pas --
+[*] TK-6136 Ajustes no Bradesco LerNossoNumeroCompleto
+https://www.projetoacbr.com.br/forum/topic/80255-arquivo-cnab-retorno-bradesco-237-carteira-09-nossonumero-n%C3%A3o-esta-retornando-o-d%C3%ADgito-completo
+	por Daniel de Morais / Victor Gonzales Pandaaaa
+
+17/10/2024
+-- ACBrBoletoW_C6.pas --
+[*] Ajustes no C6 tpAltera
+	por Victor Gonzales Pandaaaa / Daniel de Morais
+
+15/10/2024
+-- ACBrBoletoW_Itau_API --
+[-] TK-6101 Executado um clear no header para resolver o problema.
+	https://www.projetoacbr.com.br/forum/topic/80113-ita%C3%BA-api-retorno-header-fields-too-large/
+	por Daniel de Morais
+
+11/10/2024
+-- ACBrBoletoRet_Itau_API --
+[-] TK-6077 Alterado o tratamento da data retorno para funcionar com D7 Iso8601ToDateTime Ajustado Data Baixa 
+	https://www.projetoacbr.com.br/forum/topic/79807-boleto-itau-consulta-via-ws-n%C3%A3o-retorna-data-de-pagamento/#comment-518124
+	por Daniel de Morais
+
+10/10/2024
+-- ACBrBancoCaixa --
+[*] TK-6043 Ajustado para gerar msg no segmento R e S CNAB 240
+	https://www.projetoacbr.com.br/forum/topic/79960-n%C3%A3o-consigo-fazer-aparecer-mensagem-no-boleto-da-caixa-cnab-240
+	por Daniel de Morais
+
+10/10/2024
+-- ACBrBoletoRet_Itau_API --
+[-] TK-6077 Alterado o tratamento da data retorno para funcionar com D7 Iso8601ToDateTime
+	https://www.projetoacbr.com.br/forum/topic/79807-boleto-itau-consulta-via-ws-n%C3%A3o-retorna-data-de-pagamento/#comment-518124
+	por Daniel de Morais
+
+02/10/2024
+-- ACBrBancoBradescoMoneyPlus --
+[*] TK-6011 Novas especies de documento layout Investimentos
+	https://www.projetoacbr.com.br/forum/topic/79863-erro-na-esp%C3%A9cie-doc-no-money-plus
+	por Daniel de Morais
+
 30/09/2024
 -- ACBrBoletoW_Itau_API --
 [*] TK-5969 Verificado enumerado jurosMora
