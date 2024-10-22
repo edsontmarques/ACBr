@@ -46,6 +46,21 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+18/10/2024
+-- Diversos --
+[*] Correções e inclusão de novos campos (Informações) que constam no retorno (grupo Infos).
+  Por: Italo Giurizzato Junior
+
+17/10/2024
+-- Diversos --
+[*] Correções e inclusão de novos campos para apresentar as informações retornadas.
+  Por: Italo Giurizzato Junior
+
+09/10/2024
+-- Diversos --
+[*] Refactoring no componente.
+  Por: Italo Giurizzato Junior
+
 21/03/2024
 -- ACBrANeWebServices --
 [*] Adiciona chamada a UTF8ToNativeString quando usa ParseText para corrigir problemas de conversão de acentuação

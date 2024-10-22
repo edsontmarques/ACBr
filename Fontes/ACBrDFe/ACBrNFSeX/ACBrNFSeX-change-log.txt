@@ -43,6 +43,195 @@ Símbolo : Significado
 [-]     : Correção de Bug (assim esperamos)
 
 
+21/10/2024
+-- ACBrNFSeXServicos --
+[*] #TK-6135: Incluída a cidade de Iraceminha/SC, o provedor é Betha versão 1.00
+   Por: Willian Delan
+[*] #TK-6133: Incluída a cidade de Mirandopolis/SP, o provedor é Fiorilli.
+[*] #TK-6133: A cidade de Guararapes/SP, mudou a URL de produção o provedor continua o mesmo.
+   Por: Moreira
+[*] #TK-6130: Incluída a cidade de Candoi/PR, o provedor é Equiplano.
+[*] #TK-6130: Incluída a cidade de Honorio Serpa/PR, o provedor é IPM versão 2.04
+[*] #TK-6130: Incluída a cidade de Porto Barreiro/PR, o provedor é Equiplano.
+[*] #TK-6130: A cidade de Clevelandia/PR, mudou de provedor agora é IPM versão 2.04
+[*] #TK-6130: A cidade de Mariopolis/PR, mudou a URL de produção o provedor continua o mesmo.
+   Por: Limber Software
+[*] #TK-6129: A cidade de Castelo/ES, mudou a versão e a URL de produção, o provedor continua o
+    mesmo.
+   Por: christian@adminfo.com.br
+
+18/10/2024
+-- ACBrNFSeXGravarXml --
+[*] #TK-6121: Na função GerarTabulado trocado o FloatToStr por FloatToString para considerar o
+    DecimalChar configurado.
+   Por: Diego Reckziegel
+-- ACBrNFSeXServicos --
+[*] #TK-6119: Incluída a cidade Espigão D'Oeste/RO, o provedor é Fiorilli.
+   Por: Artur Alencar
+[*] #TK-6120: A cidade Tres Cachoeiras/RS trocou a URL de produção, mas o provedor continua o
+    mesmo.
+   Por: Mario Inacio
+[*] #TK-6126: A cidade Inhumas/Go trocou de provedor, agora é Sigep.
+   Por: Polidata_2024
+
+17/10/2024
+-- ACBrNFSeXNotasFiscais --
+[*] Alteração nos métodos que geram e fazem a leitura do arquivo INI para contemplar o campo
+    DataInicioAtividade.
+   Por: Italo Giurizzato Junior
+
+16/10/2024
+-- EL.GravarXML --
+[*] #TK-6111: Adiciona leitura do parâmetro NaoDividir100 na config de geração do XML
+   Por: Diego Folieni
+-- Giss.GravarXml --
+[*] Incluída a propriedade de configuração para que a aliquota seja dividida por 100.
+   Por: Paula Zamboni de Campos da
+-- NFEletronica.GravarXml/NFEletronica.Provider --
+[*] Alteração visando gerar o XML do RPS conforme as exigências do provedor e ajustes no 
+    TratarRetornorEmitir visando obter o numero da NFS-e retornado pela API.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXNotasFiscais/WebFisco.GravarXml --
+[*] Alteração visando formatar as tags que contem CNPJ/CPF tanto do Prestador quanto do Tomador,
+    o provedor exige que seja feito dessa forma.
+[*] Alteração nos métodos que geram e fazem a leitura do arquivo INI para contemplar campos
+    especificos do provedor WebFisco.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[*] #TK-6111: Reverte a alteração que adiciona o Params:NaoDividir100 para Manhuaçu/MG
+   Por: Diego Folieni
+[*] #TK-6111: Adiciona Params:NaoDividir100 para o município de Manhuacu/MG
+   Por: tryideas sistemas
+[*] #TK-6108 - A cidade de Nova Friburgo/RJ, mudou a URL de produção, o provedor continua o mesmo.
+   Por: João Augusto Bueno Araujo
+-- ISSBarueri.LerXML --
+[*] #TK-6110: Altera ordem de leitura dos grupos para preencher corretamente o ValorTotalNotaFiscal.
+   Por: Diego Folieni
+
+14/10/2024
+-- ACBrNFSeXNotasFiscais --
+[*] Alteração nos métodos que geram e faz a leitura do arquivo INI visando identificar se os dados
+    no arquivo INI é do RPS ou da NFS-e.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXClass --
+[*] Definido um valor padrão para o campo TomadorExterior como sendo snNao.
+   Por: Italo Giurizzato Junior
+-- Simple.GravarXml --
+[*] Alteração visando gerar a tag sTipoTomador se o campo TomadorExterior for snSim.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[*] #TK-6097 - A cidade de Camacari/BA, mudou a URL de produção, o provedor continua o mesmo.
+   Por: João Antônio
+-- SmarAPD.GravarXml --
+[*] #TK-6094 - Alterado a função NumeroNFSeInformado para suportar numero de NFS-e com o ano no inicio
+    (exemplo: 202400000000034).
+   Por: Quality Automação
+
+11/10/2024
+-- Equiplano.LerXml --
+[*] #TK-6078 - Ajustes para a leitura correta do XML da nota, problemas na leitura
+    do código do item da lista de serviços .
+   Por: PC Bonetti
+-- Diversos --
+[+] Incluído o campo tpXML na classe NFSe cujo valor diz se o XML lido é de um 
+    RPS ou NFS-e.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[+] #TK-6083 - Incluída a cidade de Taiobeiras/MG, o provedor é EL versão 2.04.
+   Por: Grabriel Bobello
+[*] #TK-6079 - A cidade de Cabo Frio/RJ mudou de provedor, agora é ISSIntel
+   Por: João Antônio
+
+10/10/2024
+-- ACBrNFSeX/ACBrNFSeXProviderABRASFv2/ACBrNFSeXWebserviceBase --
+[+] Incluído o campo CodMunicipio na classe de Informações de cancelamento, para
+    que possamos informar corretamente o código IBGE do município, pois alguns 
+    provedores exigem que o código deseja do município de incidencia e não do 
+    prestador.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[+] #TK-6072 - Incluída a cidade de Vera Cruz/SP, o provedor é Fiorilli.
+   Por: Fabio Tellini
+
+08/10/2024
+-- WebFisco.GravarXml --
+[*] Alteração visando não ter mais CNPJ de Prefeitura e Prestador fixos para o 
+    ambiente de produção.
+  Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[+] #TK-6064 - Incluída a cidade de Sao Goncalo do Sapucai/MG, o provedor é IPM.
+   Por: Marcos Giordani
+[*] #TK-6065 - A cidade de São Francisco do Sul/SC mudou as URLs, o provedor continua o mesmo.
+   Por: Gabriel Bobello
+-- Diversos --
+[*] Realizado alguns ajustes para atender o provedor NFEletronica.
+  Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[*] #TK-6055 - A cidade de Petrópolis/RJ mudou de provedor, agora é Bauhaus.
+   Por: Mauro Augusto Souza Lima
+
+04/10/2024
+-- TcheInfo.GravarXml/Tecnos.GravarXml/Thema.GravarXml/Tinus.GravarXml --
+-- Tiplan.GravarXml/Tributus.GravarXml/VersaTecnologia.GravarXml --
+-- Virtual.GravarXml/WebFisco.GravarXml/WebISS.GravarXml --
+[*] Remoção de units declaradas em uses e não utilizadas.
+  Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[*] #TK-6053 - A cidade de Belford Roxo/RJ mudou a porta da URL de produção, 
+    o provedor continua o mesmo.
+   Por: Anderson Grolli
+[*] A cidade de Laranjal Paulista/SP mudou as URL, o provedor continua o mesmo.
+   Por: Junior NBJ
+
+03/10/2024
+-- NFEletronica.Provider --
+[+] Implementado os métodos de Consultas e Cancelamento, fica faltando agora
+    as rotinas que tratam dos retornos dos métodos.
+  Por: Italo Giurizzato Junior
+-- RLZ.GravarXml/Saatri.GravarXml/SafeWeb.GravarXml/SH3.GravarXml --
+-- Siam.GravarXml/SiapNet.GravarXml/Siappa.GravarXml/SiapSistemas.GravarXml --
+-- SigCorp.GravarXml/Sigep.GravarXml/SigISS.GravarXml/SigISSWeb.GravarXml --
+-- SilTecnologia.GravarXml/SimplISS.GravarXml/SisPMJP.GravarXml --
+-- Sistemas4R.GravarXml/SmarAPD.GravarXml/SoftPlan.GravarXml --
+-- SpeedGov.GravarXml/Sudoeste.GravarXml/SystemPro.GravarXml --
+[*] Remoção de units declaradas em uses e não utilizadas.
+  Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[*] A cidade de Sao Francisco do Sul/SC mudou a versão e as URL, o provedor continua
+    o mesmo.
+   Por: Alex Leiva
+[*] Incluído o novo provedor e a nova URL de produção para a cidade de Muriaé/MG,
+    mas essa alteração só deve ser efetivada a partir do dia 31/10/2024.
+   Por: Paulo R G Oliveira
+
+02/10/2024
+-- Lexsom.GravarXml/Link3.GravarXml/MegaSoft.GravarXml/Mitra.GravarXml --
+-- ModernizacaoPublica.GravarXml/NFEletronica.Provider/NFSeBrasil.GravarXml --
+-- NotaInteligente.GravarXml/PadraoNacional.GravarXml/Prescon.GravarJson --
+-- Prodata.GravarXml/Pronim.GravarXml/Publica.GravarXml --
+[*] Remoção de units declaradas em uses e não utilizadas.
+  Por: Italo Giurizzato Junior
+-- Diversos --
+[*] #TK-6045 - Alteração visando a possibilidade de não imprimir a data/hora de impressão
+    no DANFSE com base se o usuário foi informado ou não.
+  Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[*] Incluído o novo provedor e a nova URL de produção para a cidade de Umuarama/PR,
+    mas essa alteração só deve ser efetivada a partir do dia 31/10/2024.
+   Por: Italo Giurizzato Junior
+[+] Incluída a cidade de Recreio/MG, o provedor é ISSLegal.
+   Por: AltC Sistemas
+[+] Incluída a cidade de Franco da Rocha/SP, o provedor é SigCorp.
+-- SigCorp.Provider --
+[*] Alterações visando atender a cidade de Franco da Rocha, pois esta usa 
+    uma variação do webservice.
+   Por: Italo Giurizzato Junior
+[+] #TK-6039 - Incluída a cidade de Santana de Parnaiba/SP, o provedor é NFEletronica.
+   Por: Rodrigo Alvim
+-- Diversos --
+[+] Implementado o provedor NFEletronica que segue a versão 1 do layout da ABRASF.
+  Por: Italo Giurizzato Junior
+
 30/09/2024
 -- iiBrasil.GravarXml/Infisc.GravarXml/IPM.GravarXml/ISSBarueri.GravarXml --
 -- ISSCambe.GravarXml/ISSCampinas.GravarXml/ISSCuritiba.GravarXml/ISSDigital.GravarXml --
