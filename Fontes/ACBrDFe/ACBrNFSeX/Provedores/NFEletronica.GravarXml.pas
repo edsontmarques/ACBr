@@ -76,62 +76,6 @@ procedure TNFSeW_NFEletronica.Configuracao;
 begin
   inherited Configuracao;
 
-  // Propriedades de Formatação de informações
-  // elas requerem que seja declarado em uses a unit: ACBrXmlBase
-  {
-  FormatoEmissao     := tcDatHor;
-  FormatoCompetencia := tcDatHor;
-
-  FormatoAliq := tcDe4;
-  }
-
-(*
-  NrMinExigISS := 1;
-  NrMaxExigISS := 1;
-
-  // Numero de Ocorrencias Minimas de uma tag
-  // se for  0 só gera a tag se o conteudo for diferente de vazio ou zero
-  // se for  1 sempre vai gerar a tag
-  // se for -1 nunca gera a tag
-
-  // Por padrão as tags abaixo são opcionais
-  NrOcorrComplTomador := 0;
-  NrOcorrOutrasRet := 0;
-  NrOcorrAliquota := 0;
-  NrOcorrValorPis := 0;
-  NrOcorrValorCofins := 0;
-  NrOcorrValorInss := 0;
-  NrOcorrValorIr := 0;
-  NrOcorrValorCsll := 0;
-  NrOcorrValorIss := 0;
-  NrOcorrBaseCalc := 0;
-  NrOcorrDescIncond := 0;
-  NrOcorrDescCond := 0;
-  NrOcorrValLiq := 0;
-  NrOcorrCodigoCnae := 0;
-  NrOcorrCodTribMun := 0;
-  NrOcorrMunIncid := 0;
-  NrOcorrCodigoPaisTomador := 0;
-  NrOcorrRazaoSocialInterm := 0;
-  NrOcorrValorDeducoes := 0;
-  NrOcorrValorISSRetido_1 := 0;
-
-  // Por padrão as tags abaixo são obrigatórias
-  NrOcorrOptanteSN := 1;
-  NrOcorrIncentCult := 1;
-  NrOcorrStatus := 1;
-  NrOcorrItemListaServico := 1;
-  NrOcorrNaturezaOperacao := 1;
-
-  // Por padrão as tags abaixo não devem ser geradas
-  NrOcorrRespRetencao := -1;
-  NrOcorrIdCidade := -1;
-  NrOcorrValorISSRetido_2 := -1;
-  NrOcorrValorTotalRecebido := -1;
-  NrOcorrInscEstTomador := -1;
-  NrOcorrInformacoesComplemetares := -1;
-  NrOcorrRegimeEspecialTributacao := -1;
-*)
   DivAliq100  := True;
 
   FormatoEmissao := tcDat;
@@ -191,8 +135,8 @@ begin
   Result.AppendChild(AddNode(tcDe2, '#13', 'ValorServicos', 1, 15, 1,
                              NFSe.Servico.Valores.ValorServicos, DSC_VSERVICO));
 
-  Result.AppendChild(AddNode(tcStr, '#20', 'IssRetido', 1, 1, 1,
-    FpAOwner.SituacaoTributariaToStr(NFSe.Servico.Valores.IssRetido), DSC_INDISSRET));
+  Result.AppendChild(AddNode(tcDe2, '#20', 'IssRetido', 1, 15, 1,
+                           NFSe.Servico.Valores.ValorIssRetido, DSC_INDISSRET));
 
   Result.AppendChild(AddNode(tcDe2, '#18', 'ValorIR', 1, 15, 1,
                                         NFSe.Servico.Valores.ValorIr, DSC_VIR));

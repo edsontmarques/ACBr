@@ -138,21 +138,21 @@ uses
 procedure TBoletoW_Itau_API.DefinirURL;
 begin
 
-  FPURL := IfThen(Boleto.Configuracoes.WebService.Ambiente = taProducao, C_URL, C_URL_HOM);
+  FPURL := IfThen(Boleto.Configuracoes.WebService.Ambiente = tawsProducao, C_URL, C_URL_HOM);
   case Boleto.Configuracoes.WebService.Operacao of
     tpInclui:
       begin
         if Boleto.Cedente.CedenteWS.IndicadorPix then
-         FPURL := IfThen(Boleto.Configuracoes.WebService.Ambiente = taProducao, C_URL_PIX, C_URL_PIX_HOM) + '/boletos_pix'
+         FPURL := IfThen(Boleto.Configuracoes.WebService.Ambiente = tawsProducao, C_URL_PIX, C_URL_PIX_HOM) + '/boletos_pix'
         else
-         FPURL := IfThen(Boleto.Configuracoes.WebService.Ambiente = taProducao, C_URL, C_URL_HOM) + '/boletos';
+         FPURL := IfThen(Boleto.Configuracoes.WebService.Ambiente = tawsProducao, C_URL, C_URL_HOM) + '/boletos';
       end;
 
     tpConsulta:
-      FPURL := IfThen(Boleto.Configuracoes.WebService.Ambiente = taProducao, C_URL_CONSULTA, C_URL_HOM) + '/boletos?' + DefinirParametros;
+      FPURL := IfThen(Boleto.Configuracoes.WebService.Ambiente = tawsProducao, C_URL_CONSULTA, C_URL_HOM) + '/boletos?' + DefinirParametros;
 
     tpConsultaDetalhe:
-      FPURL := IfThen(Boleto.Configuracoes.WebService.Ambiente = taProducao,
+      FPURL := IfThen(Boleto.Configuracoes.WebService.Ambiente = tawsProducao,
         C_URL_CONSULTA, C_URL_HOM) + '/boletos?' + DefinirParametros;
 
     tpAltera:
@@ -363,7 +363,7 @@ end;
 
 function TBoletoW_Itau_API.ValidaAmbiente: Integer;
 begin
-  Result := StrToIntDef(IfThen(Boleto.Configuracoes.WebService.Ambiente = taProducao, '1', '2'), 2);
+  Result := StrToIntDef(IfThen(Boleto.Configuracoes.WebService.Ambiente = tawsProducao, '1', '2'), 2);
 end;
 
 procedure TBoletoW_Itau_API.GeraIdBeneficiario(AJson: TACBrJSONObject);
@@ -638,7 +638,7 @@ begin
   if Assigned(ATitulo) and Assigned(AJson) then
   begin
     LJsonDados := TACBrJSONObject.Create;
-    LJsonDados.AddPair('etapa_processo_boleto', IfThen(OAuth.Ambiente=taHomologacao,'validacao','efetivacao'));
+    LJsonDados.AddPair('etapa_processo_boleto', IfThen(OAuth.Ambiente=tawsProducao,'efetivacao','validacao'));
     LJsonDados.AddPair('codigo_canal_operacao', 'API');
     GeraIdBeneficiario(LJsonDados);
     GeraDadoBoleto(LJsonDados);
@@ -655,7 +655,7 @@ begin
     LJson := TACBrJSONObject.Create;
     if Boleto.Cedente.CedenteWS.IndicadorPix then
     begin
-      LJson.AddPair('etapa_processo_boleto', IfThen(OAuth.Ambiente=taHomologacao,'simulacao','efetivacao'));
+      LJson.AddPair('etapa_processo_boleto', IfThen(OAuth.Ambiente=tawsProducao,'efetivacao', 'simulacao'));
       GeraIdBeneficiario(LJson);
       GeraDadoBoleto(LJson);
       GerarDadosQrCode(LJson);
@@ -938,41 +938,44 @@ end;
 
 procedure TBoletoW_Itau_API.GerarDesconto(AJson: TACBrJSONObject);
 var
+  LJsonDados: TACBrJSONObject;
   LJsonDesconto,LJsonDesconto2: TACBrJSONObject;
-  LJsonArray : TACBrJSONArray;
+  LJsonArray: TACBrJSONArray;
 begin
-  if Assigned(ATitulo) and Assigned(AJson) then
+  if Assigned(ATitulo) and Assigned(AJson) and (ATitulo.DataDesconto > 0) then
   begin
+    LJsonDados := TACBrJSONObject.Create;
     LJsonDesconto := TACBrJSONObject.Create;
     LJsonArray := TACBrJSONArray.Create;
-    LJsonDesconto.AddPair('codigo_tipo_desconto', TipoDescontoToString(ATitulo.TipoDesconto));
-    if ATitulo.DataDesconto > 0 then
-    begin
-      LJsonDesconto.AddPair('data_desconto', FormatDateTime('yyyy-mm-dd', ATitulo.DataDesconto));
-      if ((Integer(ATitulo.TipoDesconto)) in [1, 3, 4]) then
-        LJsonDesconto.AddPair('valor_desconto', IntToStrZero(round(ATitulo.ValorDesconto * 100), 17))
-      else
-        LJsonDesconto.AddPair('percentual_desconto', IntToStrZero(round(ATitulo.ValorDesconto * 100000), 12));
-    end;
+
+    // O tipo de desconto é fora do array do desconto. Alteração solicitada pela área de T.I. do Itaú
+    // Alteração realizada por Luciano Rodrigues Pereira em 05/11/2024 14:42H
+    LJsonDados.AddPair('codigo_tipo_desconto', TipoDescontoToString(ATitulo.TipoDesconto));
+    // Array do desconto
+    LJsonDesconto.AddPair('data_desconto', FormatDateTime('yyyy-mm-dd', ATitulo.DataDesconto));
+    if ((Integer(ATitulo.TipoDesconto)) in [1, 3, 4]) then
+      LJsonDesconto.AddPair('valor_desconto', IntToStrZero(round(ATitulo.ValorDesconto * 100), 17))
+    else
+      LJsonDesconto.AddPair('percentual_desconto', IntToStrZero(round(ATitulo.ValorDesconto * 100000), 12));
     LJsonArray.AddElementJSON(LJsonDesconto);
 
     // Desconto2
     if ATitulo.ValorDesconto2 > 0 then
     begin
       LJsonDesconto2 := TACBrJSONObject.Create;
-      LJsonDesconto.AddPair('codigo_tipo_desconto', TipoDescontoToString(ATitulo.TipoDesconto2));
       if ATitulo.DataDesconto2 > 0 then
       begin
-        LJsonDesconto.AddPair('data_desconto', FormatDateTime('yyyy-mm-dd', ATitulo.DataDesconto2));
+        LJsonDesconto2.AddPair('data_desconto', FormatDateTime('yyyy-mm-dd', ATitulo.DataDesconto2));
         if ((Integer(ATitulo.TipoDesconto2)) in [1, 3, 4]) then
-          LJsonDesconto.AddPair('valor_desconto', IntToStrZero(round(ATitulo.ValorDesconto2 * 100), 17))
+          LJsonDesconto2.AddPair('valor_desconto', IntToStrZero(round(ATitulo.ValorDesconto2 * 100), 17))
         else
-          LJsonDesconto.AddPair('percentual_desconto', IntToStrZero(round(ATitulo.ValorDesconto2 * 100000), 12));
+          LJsonDesconto2.AddPair('percentual_desconto', IntToStrZero(round(ATitulo.ValorDesconto2 * 100000), 12));
       end;
       LJsonArray.AddElementJSON(LJsonDesconto2);
     end;
-
-    AJson.AddPair('desconto ',LJsonArray);
+    // alteração realizada conforme solicitado pelo Itaú
+    LJsonDados.AddPair('descontos', LJsonArray);
+    AJson.AddPair('desconto', LJsonDados);
   end;
 end;
 
@@ -1239,10 +1242,10 @@ begin
 
   if Assigned(OAuth) then
   begin
-    if OAuth.Ambiente = taHomologacao then
-      OAuth.URL := C_URL_OAUTH_HOM
+    if OAuth.Ambiente = tawsProducao then
+      OAuth.URL := C_URL_OAUTH_PROD
     else
-      OAuth.URL := C_URL_OAUTH_PROD;
+      OAuth.URL := C_URL_OAUTH_HOM;
 
     OAuth.Payload := True;
   end;

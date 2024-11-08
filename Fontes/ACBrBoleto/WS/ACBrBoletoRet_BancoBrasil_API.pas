@@ -101,6 +101,7 @@ begin
   ARetornoWS.HTTPResultCode  := HTTPResultCode;
   ARetornoWS.JSONEnvio       := EnvWs;
   ARetornoWS.Header.Operacao := LTipoOperacao;
+  ARetornoWS.DadosRet.IDBoleto.NossoNum := ACBrTitulo.NossoNumero;
 
   if RetWS <> '' then
   begin
@@ -168,6 +169,9 @@ begin
             ARetornoWS.DadosRet.IDBoleto.CodBarras      := LJsonObject.AsString['codigoBarraNumerico'];
             ARetornoWS.DadosRet.IDBoleto.LinhaDig       := LJsonObject.AsString['linhaDigitavel'];
             ARetornoWS.DadosRet.IDBoleto.NossoNum       := LJsonObject.AsString['numero'];
+
+            if ARetornoWS.DadosRet.IDBoleto.NossoNum = '' then
+              ARetornoWS.DadosRet.IDBoleto.NossoNum := ACBrTitulo.NossoNumero;
 
             ARetornoWS.DadosRet.TituloRet.CodBarras     := ARetornoWS.DadosRet.IDBoleto.CodBarras;
             ARetornoWS.DadosRet.TituloRet.LinhaDig      := ARetornoWS.DadosRet.IDBoleto.LinhaDig;
@@ -363,7 +367,8 @@ begin
   LListaRetorno := ACBrBoleto.CriarRetornoWebNaLista;
   LListaRetorno.HTTPResultCode := HTTPResultCode;
   LListaRetorno.JSONEnvio      := EnvWs;
-
+  If Assigned(ACBrTitulo) then
+    LListaRetorno.DadosRet.IDBoleto.NossoNum := ACBrTitulo.NossoNumero;
   if RetWS <> '' then
   begin
     try
@@ -410,6 +415,9 @@ begin
             LListaRetorno.DadosRet.IDBoleto.CodBarras      := '';
             LListaRetorno.DadosRet.IDBoleto.LinhaDig       := '';
             LListaRetorno.DadosRet.IDBoleto.NossoNum       := LItemObject.AsString['numeroBoletoBB'];
+
+            if LListaRetorno.DadosRet.IDBoleto.NossoNum = '' then
+              LListaRetorno.DadosRet.IDBoleto.NossoNum := ACBrTitulo.NossoNumero;
 
             LListaRetorno.DadosRet.TituloRet.CodBarras      := LListaRetorno.DadosRet.IDBoleto.CodBarras;
             LListaRetorno.DadosRet.TituloRet.LinhaDig       := LListaRetorno.DadosRet.IDBoleto.LinhaDig;
@@ -468,9 +476,7 @@ end;
 
 function TRetornoEnvio_BancoBrasil_API.RetornoEnvio(const AIndex: Integer): Boolean;
 begin
-
   Result:=inherited RetornoEnvio(AIndex);
-
 end;
 
 function TRetornoEnvio_BancoBrasil_API.TrataNossoNumero(
