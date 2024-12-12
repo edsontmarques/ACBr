@@ -529,6 +529,9 @@ type
     TCompCancelaNegativacaoAutomatica
   );
 
+  {Identificação da Integradora}
+  TACBrIntegradoraBoleto = (tibNenhum, tibKobana);
+
   {TACBrOcorrencia}
   TACBrOcorrencia = class
   private
@@ -890,6 +893,8 @@ type
     fIdentDistribuicao: TACBrIdentDistribuicao;
     fOperacao: string;
     FPIX               : TACBrBoletoChavePIX;
+    fCodigoFlash   : String;
+    FIntegradoraBoleto: TACBrIntegradoraBoleto;
     procedure SetAgencia(const AValue: String);
     procedure SetCNPJCPF ( const AValue: String ) ;
     procedure SetConta(const AValue: String);
@@ -923,11 +928,13 @@ type
     property UF          : String  read fUF          write fUF;
     property CEP         : String  read fCEP         write fCEP;
     property Telefone    : String  read fTelefone    write fTelefone;
+    property CodigoFlash : String  read fCodigoFlash write FCodigoFlash;
     property DigitoVerificadorAgenciaConta  : String read fDigitoVerificadorAgenciaConta write fDigitoVerificadorAgenciaConta;
     property CedenteWS: TACBrCedenteWS read fCedenteWS;
     property IdentDistribuicao: TACBrIdentDistribuicao read fIdentDistribuicao  write fIdentDistribuicao default tbClienteDistribui;
     property Operacao: string read fOperacao write fOperacao;
     property PIX: TACBrBoletoChavePIX read FPIX write FPIX;
+    property IntegradoraBoleto: TACBrIntegradoraBoleto read FIntegradoraBoleto write FIntegradoraBoleto;
   end;
 
   { TACBrDataPeriodo }
@@ -1498,6 +1505,7 @@ type
     fPrefixArqRemessa : string;
     fOnAntesAutenticar:  TACBrWebServiceOnAntesAutenticar;
     fOnDepoisAutenticar: TACBrWebServiceOnDepoisAutenticar;
+    FKeySoftwareHouse: String;
 
     procedure SetACBrBoletoFC(const Value: TACBrBoletoFCClass);
     procedure SetMAIL(AValue: TACBrMail);
@@ -1590,6 +1598,8 @@ type
     property Configuracoes: TConfiguracoes       read fConfiguracoes          write fConfiguracoes;
     property OnAntesAutenticar : TACBrWebServiceOnAntesAutenticar  read fOnAntesAutenticar  write fOnAntesAutenticar;
     property OnDepoisAutenticar: TACBrWebServiceOnDepoisAutenticar read fOnDepoisAutenticar write fOnDepoisAutenticar;
+    property KeySoftwareHouse: String 			     read FKeySoftwareHouse 	    write FKeySoftwareHouse;
+
   end;
 
   {TACBrBoletoFCClass}
@@ -3959,6 +3969,8 @@ begin
         DigitoVerificadorAgenciaConta := IniBoletos.ReadString(CCedente,'DigitoVerificadorAgenciaConta', DigitoVerificadorAgenciaConta);
         IdentDistribuicao := TACBrIdentDistribuicao(IniBoletos.ReadInteger(CCedente,'IdentDistribuicao', Integer(IdentDistribuicao)));
         Operacao          := IniBoletos.ReadString(CCedente,'Operacao', Operacao);
+        CodigoFlash       := IniBoletos.ReadString(CCedente,'CodigoFlash',CodigoFlash);
+        IntegradoraBoleto:= TACBrIntegradoraBoleto(IniBoletos.ReadInteger(CCedente,'IntegradoraBoleto', Integer(IntegradoraBoleto) ));
 
         PIX.Chave        :=  IniBoletos.ReadString(CCedente,'PIX.Chave','');
         PIX.TipoChavePIX :=  TACBrPIXTipoChave(IniBoletos.ReadInteger(CCedente,'PIX.TipoChavePIX', 0 ));
@@ -4150,6 +4162,7 @@ begin
             TipoDesconto := TACBrTipoDesconto(IniBoletos.ReadInteger(Sessao,'TipoDesconto',0));
             TipoDesconto2 := TACBrTipoDesconto(IniBoletos.ReadInteger(Sessao,'TipoDesconto2',0));
             TipoDesconto3 := TACBrTipoDesconto(IniBoletos.ReadInteger(Sessao,'TipoDesconto3',0));
+            CodigoDesconto := TACBrCodigoDesconto(IniBoletos.ReadInteger(Sessao,'CodigoDesconto',0));
             CarteiraEnvio:= TACBrCarteiraEnvio(IniBoletos.ReadInteger(Sessao,'CarteiraEnvio', 0));
             MultaValorFixo := IniBoletos.ReadBool(Sessao,'MultaValorFixo',False);
 
@@ -4383,8 +4396,10 @@ begin
        IniRetorno.WriteInteger(CCedente,'IdentDistribuicao',Integer(Cedente.IdentDistribuicao));
        IniRetorno.WriteInteger(CCedente,'ResponEmissao',Integer(Cedente.ResponEmissao));
        IniRetorno.WriteString(CCedente,'Operacao',Cedente.Operacao);
+       IniRetorno.WriteString(CCedente,'CodigoFlash',Cedente.CodigoFlash);
 
-
+       IniRetorno.WriteInteger(CCedente,'IntegradoraBoleto',Integer(Cedente.IntegradoraBoleto));
+       
        IniRetorno.WriteString(CCedente,'PIX.Chave',Cedente.PIX.Chave);
        IniRetorno.WriteInteger(CCedente,'PIX.TipoChavePIX',Integer(Cedente.PIX.TipoChavePIX));
 
@@ -5329,7 +5344,7 @@ begin
                 else
                  begin
                    //Apos o 1º motivo os 00 significam que não existe mais motivo
-                   if CodMotivo <> 0 then
+                  if (not(VarIsNumeric(CodMotivo)) or (CodMotivo <> 0)) then
                    begin
                       MotivoRejeicaoComando.Add(IfThen(copy(Linha,MotivoLinha,2) = '  ','00',copy(Linha,MotivoLinha,2)));
                       if VarIsNumeric(CodMotivo) then

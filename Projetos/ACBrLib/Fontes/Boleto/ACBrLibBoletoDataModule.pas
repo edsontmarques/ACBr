@@ -128,7 +128,7 @@ begin
     wVersaoArquivo := LibConfig.BoletoBancoConfig.LayoutVersaoArquivo;
     wVersaoLote := LibConfig.BoletoBancoConfig.LayoutVersaoLote;
     CasasDecimaisMoraJuros := LibConfig.BoletoBancoConfig.CasasDecimaisMoraJuros;
-    //DensidadeGravacao := LibConfig.BoletoBancoConfig.DensidadeGravacao;
+    DensidadeGravacao := LibConfig.BoletoBancoConfig.DensidadeGravacao;
     CIP := LibConfig.BoletoBancoConfig.CIP;
   end;
 
@@ -177,6 +177,7 @@ begin
     DigitoVerificadorAgenciaConta := LibConfig.BoletoCedenteConfig.DigitoVerificadorAgenciaConta;
     IdentDistribuicao := LibConfig.BoletoCedenteConfig.IdentDistribuicao;
     Operacao := LibConfig.BoletoCedenteConfig.Operacao;
+    CodigoFlash := LibConfig.BoletoCedenteConfig.CodigoFlash;
     PIX.Chave := LibConfig.BoletoCedenteConfig.PIXChave;
     PIX.TipoChavePIX := LibConfig.BoletoCedenteConfig.PIXTipoChave;
   end;
@@ -196,7 +197,7 @@ begin
       Arquivos.NomeArquivoLog := LibConfig.BoletoConfigWS.NomeArquivoLog;
       Arquivos.PathGravarRegistro := LibConfig.BoletoConfigWS.PathGravarRegistro;
 
-      WebService.Ambiente := LibConfig.BoletoDFeConfigWS.WebServices.Ambiente;
+      WebService.Ambiente := LibConfig.BoletoConfigWS.Ambiente;
       WebService.Operacao := LibConfig.BoletoConfigWS.Operacao;
       WebService.VersaoDF := LibConfig.BoletoConfigWS.VersaoDF;
       WebService.ArquivoCRT:= LibConfig.BoletoConfigWS.ArquivoCRT;

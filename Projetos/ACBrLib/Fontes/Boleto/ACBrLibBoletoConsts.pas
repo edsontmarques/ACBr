@@ -67,6 +67,7 @@ const
   CChaveOrientacaoBanco = 'OrientacaoBanco';
   CChaveTipoCobranca = 'TipoCobranca';
   CChaveCasasDecimaisMoraJuros = 'CasasDecimaisMoraJuros';
+  CChaveDensidadeGravacao = 'DensidadeGravacao';
   CChaveCIP = 'CIP';
 
   CSessaoBoletoCedenteConfig = 'BoletoCedenteConfig';
@@ -96,6 +97,7 @@ const
   CChaveDigitoVerificadorAgenciaConta= 'DigitoVerificadorAgenciaConta';
   CChaveIdentDistribuicao= 'IdentDistribuicao';
   CChaveOperacao= 'Operacao';
+  CChaveCodigoFlash= 'CodigoFlash';
   CChavePIX = 'ChavePIX';
   CTipoChavePix = 'TipoChavePIX';
 

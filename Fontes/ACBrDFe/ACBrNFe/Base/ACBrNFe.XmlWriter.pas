@@ -36,7 +36,8 @@ interface
 
 uses
   Classes, SysUtils,
-  pcnNFe, pcnGerador, pcnConversao, pcnNFeConsts,
+  pcnNFe, pcnGerador, pcnConversao,
+  ACBrNFe.Consts,
   pcnConversaoNFe,
   ACBrXmlDocument, ACBrXmlWriter, ACBrXmlBase;
 
@@ -1806,30 +1807,30 @@ var
 
   function OcorrenciasVICMSSubstituto : Integer;
   begin
-	if (TNFeXmlWriterOptions(Opcoes).ForcarGerarTagRejeicao938 = fgtSempre) or
-	   ((TNFeXmlWriterOptions(Opcoes).ForcarGerarTagRejeicao938 = fgtSomenteProducao) and (NFe.Ide.tpAmb = pcnConversao.taProducao)) or
-	   ((TNFeXmlWriterOptions(Opcoes).ForcarGerarTagRejeicao938 = fgtSomenteHomologacao) and (NFe.Ide.tpAmb = pcnConversao.taHomologacao))  then
-	begin
-	  Result := 1;
-	end
-	else
-	begin
-	  Result := 0;
-	end;
+    if (TNFeXmlWriterOptions(Opcoes).ForcarGerarTagRejeicao938 = fgtSempre) or
+       ((TNFeXmlWriterOptions(Opcoes).ForcarGerarTagRejeicao938 = fgtSomenteProducao) and (NFe.Ide.tpAmb = pcnConversao.taProducao)) or
+       ((TNFeXmlWriterOptions(Opcoes).ForcarGerarTagRejeicao938 = fgtSomenteHomologacao) and (NFe.Ide.tpAmb = pcnConversao.taHomologacao))  then
+    begin
+      Result := 1;
+    end
+    else
+    begin
+      Result := 0;
+    end;
   end;
 
   function OcorrenciasICMSEfetivo : Integer;
   begin
-	if (NFe.Ide.indFinal = cfConsumidorFinal) and ((TNFeXmlWriterOptions(Opcoes).ForcarGerarTagRejeicao906 = fgtSempre) or
-	   ((TNFeXmlWriterOptions(Opcoes).ForcarGerarTagRejeicao906 = fgtSomenteProducao) and (NFe.Ide.tpAmb = pcnConversao.taProducao)) or
-	   ((TNFeXmlWriterOptions(Opcoes).ForcarGerarTagRejeicao906 = fgtSomenteHomologacao) and (NFe.Ide.tpAmb = pcnConversao.taHomologacao)))  then
-	begin
-	  Result := 1;
-	end
-	else
-	begin
-	  Result := 0;
-	end;
+    if (NFe.Ide.indFinal = cfConsumidorFinal) and ((TNFeXmlWriterOptions(Opcoes).ForcarGerarTagRejeicao906 = fgtSempre) or
+       ((TNFeXmlWriterOptions(Opcoes).ForcarGerarTagRejeicao906 = fgtSomenteProducao) and (NFe.Ide.tpAmb = pcnConversao.taProducao)) or
+       ((TNFeXmlWriterOptions(Opcoes).ForcarGerarTagRejeicao906 = fgtSomenteHomologacao) and (NFe.Ide.tpAmb = pcnConversao.taHomologacao)))  then
+    begin
+      Result := 1;
+    end
+    else
+    begin
+      Result := 0;
+    end;
   end;
 
 begin
@@ -2229,21 +2230,33 @@ begin
           begin
             if NFe.infNFe.Versao >= 2 then
             begin
+              // Se um dos campos abaixo for maior que zero os 4 devem ser
+              // gerados no XML com exceção do vICMSSubstituto que é opcional
               if (NFe.Det[i].Imposto.ICMS.vBCSTRET > 0) or
-                (NFe.Det[i].Imposto.ICMS.vICMSSTRET > 0) then
+                 (NFe.Det[i].Imposto.ICMS.pST > 0) or
+                 (NFe.Det[i].Imposto.ICMS.vICMSSubstituto > 0) or
+                 (NFe.Det[i].Imposto.ICMS.vICMSSTRET > 0) or
+                 (OcorrenciasVICMSSubstituto > 0) then
               begin
                 xmlNode.AppendChild(AddNode(tcDe2, 'N26', 'vBCSTRet',
                   01, 15, 1, NFe.Det[i].Imposto.ICMS.vBCSTRET, DSC_VBCSTRET));
 
                 if (NFe.infNFe.Versao >= 4) then
-                  xmlNode.AppendChild(
-                    AddNode(FormatoValor4ou2, 'N26.1',
+                begin
+                  xmlNode.AppendChild(AddNode(FormatoValor4ou2, 'N26.1',
                     'pST', 01, IfThen(Usar_tcDe4, 07, 05), 1,
                     NFe.Det[i].Imposto.ICMS.pST, DSC_PST));
+
+                  // Algumas UF estão exigindo o campo abaixo preenchido mesmo quando for zero.
+                  xmlNode.AppendChild(AddNode(tcDe2, 'N26b',
+                    'vICMSSubstituto', 01, 15, OcorrenciasVICMSSubstituto,
+                    NFe.Det[i].Imposto.ICMS.vICMSSubstituto, DSC_VICMSSUBSTITUTO));
+                end;
 
                 xmlNode.AppendChild(AddNode(tcDe2, 'N27', 'vICMSSTRet',
                   01, 15, 1, NFe.Det[i].Imposto.ICMS.vICMSSTRET, DSC_VICMSSTRET));
               end;
+
               if (NFe.infNFe.Versao >= 4) then
               begin
                 if (NFe.Det[i].Imposto.ICMS.vBCFCPSTRet > 0) or (NFe.Det[i].Imposto.ICMS.pFCPSTRet > 0) or (NFe.Det[i].Imposto.ICMS.vFCPSTRet > 0) then
@@ -2601,7 +2614,13 @@ begin
           end;
           csosn500:
           begin //10g
-            if (NFe.Ide.indFinal <> cfConsumidorFinal) and (NFe.Ide.modelo = 55) then
+            // Se um dos campos abaixo for maior que zero os 4 devem ser
+            // gerados no XML com exceção do vICMSSubstituto que é opcional
+            if (NFe.Det[i].Imposto.ICMS.vBCSTRET > 0) or
+               (NFe.Det[i].Imposto.ICMS.pST > 0) or
+               (NFe.Det[i].Imposto.ICMS.vICMSSubstituto > 0) or
+               (NFe.Det[i].Imposto.ICMS.vICMSSTRET > 0) or
+               (OcorrenciasVICMSSubstituto > 0) then
             begin
               xmlNode.AppendChild(AddNode(tcDe2, 'N26', 'vBCSTRet', 01, 15, 1, NFe.Det[i].Imposto.ICMS.vBCSTRET, DSC_VBCSTRET));
 

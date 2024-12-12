@@ -173,6 +173,7 @@ type
     FDigitoVerificadorAgenciaConta: String;
     FIdentDistribuicao: TACBrIdentDistribuicao;
     FOperacao: String;
+    FCodigoFlash : String;
     FPIXChave: String;
     FPIXTipoChave : TACBrPIXTipoChave;
 
@@ -208,9 +209,10 @@ type
     property DigitoVerificadorAgenciaConta : String read FDigitoVerificadorAgenciaConta   write FDigitoVerificadorAgenciaConta;
     property IdentDistribuicao: TACBrIdentDistribuicao read FIdentDistribuicao  write FIdentDistribuicao;
     property Operacao: string read FOperacao write FOperacao;
-    property PIXChave         :String read FPIXChave write FPIXChave;
+    property CodigoFlash      : String read fCodigoFlash write FCodigoFlash;
+	property PIXChave         :String read FPIXChave write FPIXChave;
     property PIXTipoChave     : TACBrPIXTipoChave read FPIXTipoChave write FPIXTipoChave;
-
+    
   end;
 
   { TBoletoFCFortesConfig }
@@ -265,6 +267,7 @@ type
     FLogNivel: TNivelLog;
     FNomeArquivoLog: String;
     FPathGravarRegistro: String;
+    FAmbiente: TTipoAmbienteWS;
     FOperacao: TOperacao;
     FVersaoDF: String;
     FUseCertificateHTTP: Boolean;
@@ -280,6 +283,7 @@ type
     property LogNivel: TNivelLog read FLogNivel write FLogNivel;
     property NomeArquivoLog: String read FNomeArquivoLog write FNomeArquivoLog;
     property PathGravarRegistro: String read FPathGravarRegistro write FPathGravarRegistro;
+    property Ambiente: TTipoAmbienteWS read FAmbiente write FAmbiente;
     property Operacao: TOperacao read FOperacao write FOperacao;
     property VersaoDF: String read FVersaoDF write FVersaoDF;
     property UseCertificateHTTP: Boolean read FUseCertificateHTTP write FUseCertificateHTTP;
@@ -358,9 +362,10 @@ begin
   FLogNivel := logNenhum;
   FNomeArquivoLog:= '';
   FPathGravarRegistro:= '';
+  FAmbiente:= tawsHomologacao;
   FOperacao:= tpInclui;
   FVersaoDF:= '1.2';
-  FUseCertificateHTTP:= False;
+  FUseCertificateHTTP:= True;
   FArquivoCRT:= '';
   FArquivoKEY:= '';
 
@@ -371,6 +376,7 @@ begin
   LogNivel := TNivelLog(AIni.ReadInteger(CSessaoBoletoWebService, CChaveLogNivel, Integer(LogNivel)));
   NomeArquivoLog:= AIni.ReadString(CSessaoBoletoWebService, CChaveNomeArquivoLog, NomeArquivoLog);
   PathGravarRegistro:= AIni.ReadString(CSessaoBoletoWebService, CChavePathGravarRegistro, PathGravarRegistro );
+  Ambiente:= TTipoAmbienteWS(AIni.ReadInteger(CSessaoBoletoWebService, CChaveAmbiente, Integer(Ambiente)));
   Operacao:= TOperacao( AIni.ReadInteger(CSessaoBoletoWebService, CChaveOperacao, integer(Operacao) ) );
   VersaoDF:= AIni.ReadString(CSessaoBoletoWebService, CChaveVersaoDF, VersaoDF );
   UseCertificateHTTP:= AIni.ReadBool(CSessaoBoletoWebService, CChaveUseCertificateHTTP, UseCertificateHTTP );
@@ -383,6 +389,7 @@ begin
   AIni.WriteInteger(CSessaoBoletoWebService, CChaveLogNivel, Integer(LogNivel));
   AIni.WriteString(CSessaoBoletoWebService, CChaveNomeArquivoLog, NomeArquivoLog);
   AIni.WriteString(CSessaoBoletoWebService, CChavePathGravarRegistro, PathGravarRegistro );
+  AIni.WriteInteger(CSessaoBoletoWebService, CChaveAmbiente, Integer(Ambiente));
   AIni.WriteInteger(CSessaoBoletoWebService, CChaveOperacao, integer(Operacao) );
   AIni.WriteString(CSessaoBoletoWebService, CChaveVersaoDF, VersaoDF );
   AIni.WriteBool(CSessaoBoletoWebService, CChaveUseCertificateHTTP, UseCertificateHTTP );
@@ -627,6 +634,7 @@ begin
   FOperacao := '';
   FPIXChave:= '';
   FPIXTipoChave := tchNenhuma;
+  FCodigoFlash := '';
 end;
 
 procedure TBoletoCedenteConfig.LerIni(const AIni: TCustomIniFile);
@@ -667,6 +675,7 @@ begin
   DigitoVerificadorAgenciaConta:= AIni.ReadString(CSessaoBoletoCedenteConfig, CChaveDigitoVerificadorAgenciaConta, DigitoVerificadorAgenciaConta);
   IdentDistribuicao:= TACBrIdentDistribuicao(AIni.ReadInteger(CSessaoBoletoCedenteConfig, CChaveIdentDistribuicao, integer(FIdentDistribuicao)));
   Operacao:= AIni.ReadString(CSessaoBoletoCedenteConfig, CChaveOperacao, Operacao);
+  CodigoFlash:= AIni.ReadString(CSessaoBoletoCedenteConfig, CChaveCodigoFlash, CodigoFlash );
   PIXChave:= AIni.ReadString(CSessaoBoletoCedenteConfig, CChavePIX, PIXChave);
   PIXTipoChave := TACBrPIXTipoChave(AIni.ReadInteger(CSessaoBoletoCedenteConfig, CTipoChavePix, Integer(PIXTipoChave)));
 end;
@@ -699,6 +708,7 @@ begin
   AIni.WriteString(CSessaoBoletoCedenteConfig, CChaveDigitoVerificadorAgenciaConta, DigitoVerificadorAgenciaConta );
   AIni.WriteInteger(CSessaoBoletoCedenteConfig, CChaveIdentDistribuicao, integer(FIdentDistribuicao));
   AIni.WriteString(CSessaoBoletoCedenteConfig, CChaveOperacao, Operacao);
+  AIni.WriteString(CSessaoBoletoCedenteConfig, CChaveCodigoFlash, CodigoFlash );
   AIni.WriteString(CSessaoBoletoCedenteConfig, CChavePIX, PIXChave);
   AIni.WriteInteger(CSessaoBoletoCedenteConfig, CTipoChavePix, integer(PIXTipoChave));
 end;
@@ -728,7 +738,7 @@ begin
   OrientacaoBanco:= StringReplace(AIni.ReadString(CSessaoBoletoBancoConfig, CChaveOrientacaoBanco, OrientacaoBanco), '|', sLineBreak, [rfReplaceAll]);
   TipoCobranca:= TACBrTipoCobranca( AIni.ReadInteger(CSessaoBoletoBancoConfig, CChaveTipoCobranca, integer(TipoCobranca)));
   CasasDecimaisMoraJuros:= AIni.ReadInteger(CSessaoBoletoBancoConfig, CChaveCasasDecimaisMoraJuros, CasasDecimaisMoraJuros);
-  //DensidadeGravacao:= AIni.ReadString(CSessaoBoletoBancoConfig, CChaveDensidadeGravacao, DensidadeGravacao);
+  DensidadeGravacao:= AIni.ReadString(CSessaoBoletoBancoConfig, CChaveDensidadeGravacao, DensidadeGravacao);
   CIP:= AIni.ReadString(CSessaoBoletoBancoConfig, CChaveCIP, CIP);
 end;
 
@@ -743,7 +753,7 @@ begin
   AIni.WriteString(CSessaoBoletoBancoConfig, CChaveOrientacaoBanco, StringReplace(OrientacaoBanco,sLineBreak,'|',[rfReplaceAll]));
   AIni.WriteInteger(CSessaoBoletoBancoConfig, CChaveTipoCobranca, integer(TipoCobranca) );
   AIni.WriteInteger(CSessaoBoletoBancoConfig, CChaveCasasDecimaisMoraJuros, CasasDecimaisMoraJuros);
-  //AIni.WriteString(CSessaoBoletoBancoConfig, CChaveDensidadeGravacao, DensidadeGravacao);
+  AIni.WriteString(CSessaoBoletoBancoConfig, CChaveDensidadeGravacao, DensidadeGravacao);
   AIni.WriteString(CSessaoBoletoBancoConfig, CChaveCIP, CIP);
 
 end;

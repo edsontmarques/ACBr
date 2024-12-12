@@ -117,8 +117,7 @@ procedure TBoletoW_Banrisul.DefinirURL;
 var
    DevAPP, ID, NConvenio: String;
 begin
-   FPURL := IfThen(Boleto.Configuracoes.WebService.Ambiente = tawsProducao, C_URL,
-     C_URL_HOM);
+   FPURL := IfThen(Boleto.Configuracoes.WebService.Ambiente in [tawsProducao, tawsHomologacao], C_URL, C_URL_HOM);
 
    if ATitulo <> nil then
       ID := OnlyNumber(ATitulo.ACBrBoleto.Banco.MontarCampoNossoNumero(ATitulo));
@@ -196,13 +195,13 @@ begin
    if Assigned(ATitulo) then
       FPKeyUser := '';
 
-   FPHeaders.Clear;
-   FPHeaders.Add('bergs-beneficiario: ' + trim(Boleto.Cedente.Convenio));
+   ClearHeaderParams;
+   AddHeaderParam('bergs-beneficiario', trim(Boleto.Cedente.Convenio));
 
    if Assigned(Boleto) then
    begin
       if Boleto.Configuracoes.WebService.Operacao = tpBaixa then
-         FPHeaders.Add('bergs-ambiente: ' + ValidaAmbiente);
+         AddHeaderParam('bergs-ambiente', ValidaAmbiente);
    end;
 
 end;
@@ -456,7 +455,8 @@ begin
             case ATitulo.CodigoMoraJuros of
                cjValorDia:    ATitulo.CodigoMora := '1';
                cjTaxaMensal:  ATitulo.CodigoMora := '2';
-               cjIsento:      ATitulo.CodigoMora := '3';
+            else
+              ATitulo.CodigoMora := '3';
             end;
          end;
 
@@ -472,6 +472,10 @@ begin
 
          AJson.AddPair('juros', LJsonJurosObject);
 
+      end else
+      begin
+        LJsonJurosObject.AddPair('valor', 3);
+        AJson.AddPair('juros', LJsonJurosObject);
       end;
    end;
 end;
@@ -643,7 +647,7 @@ begin
 
    if Assigned(OAuth) then
    begin
-      OAuth.URL := IfThen(OAuth.Ambiente = tawsProducao, C_URL_OAUTH_PROD, C_URL_OAUTH_HOM);
+      OAuth.URL := IfThen(OAuth.Ambiente in [tawsProducao,tawsHomologacao], C_URL_OAUTH_PROD, C_URL_OAUTH_HOM);
       OAuth.Payload := True;
    end;
 end;

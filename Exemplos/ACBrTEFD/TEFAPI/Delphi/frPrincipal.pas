@@ -54,64 +54,16 @@ type
     btImprimir: TBitBtn;
     btIncluirPagamentos: TBitBtn;
     btExcluirPagamento: TBitBtn;
-    btLerParametros: TBitBtn;
     btLimparImpressora: TBitBtn;
     btMudaPagina: TBitBtn;
     btMsgPinPad: TButton;
     btOperacao: TBitBtn;
     btEfetuarPagamentos: TBitBtn;
-    btProcuraImpressoras: TSpeedButton;
-    btSalvarParametros: TBitBtn;
-    btSerial: TSpeedButton;
-    btTestarPosPrinter: TBitBtn;
-    btTestarTEF: TBitBtn;
     btObterCPF: TButton;
-    cbConfirmarAutomaticamente: TCheckBox;
-    cbAutoAtendimento: TCheckBox;
-    cbImprimirViaReduzida: TCheckBox;
     cbSimularErroNoDoctoFiscal: TCheckBox;
-    cbSuportaDesconto: TCheckBox;
-    cbSuportaSaque: TCheckBox;
-    cbxGP: TComboBox;
-    cbxTransacaoPendente: TComboBox;
-    cbxModeloPosPrinter: TComboBox;
-    cbxPagCodigo: TComboBox;
-    cbxPorta: TComboBox;
-    cbxQRCode: TComboBox;
     cbEnviarImpressora: TCheckBox;
-    cbxImpressaoViaCliente: TComboBox;
-    cbxTransacaoPendenteInicializacao: TComboBox;
-    edCNPJEstabelecimento: TEdit;
-    edCNPJSwHouse: TEdit;
-    edLog: TEdit;
-    edNomeAplicacao: TEdit;
-    edRazaoSocialEstabelecimento: TEdit;
-    edRazaoSocialSwHouse: TEdit;
-    edVersaoAplicacao: TEdit;
-    gbConfigImpressora: TGroupBox;
-    gbConfigTEF: TGroupBox;
     gbPagamentos: TGroupBox;
-    GroupBox1: TGroupBox;
-    GroupBox2: TGroupBox;
     imgQRCode: TImage;
-    Label1: TLabel;
-    Label10: TLabel;
-    Label11: TLabel;
-    Label12: TLabel;
-    Label14: TLabel;
-    Label15: TLabel;
-    Label16: TLabel;
-    Label17: TLabel;
-    Label18: TLabel;
-    Label19: TLabel;
-    Label21: TLabel;
-    Label25: TLabel;
-    Label26: TLabel;
-    Label27: TLabel;
-    Label28: TLabel;
-    Label29: TLabel;
-    Label7: TLabel;
-    Label9: TLabel;
     lMensagemCliente: TLabel;
     lMensagemOperador: TLabel;
     lNumOperacao: TLabel;
@@ -121,7 +73,6 @@ type
     lURLTEF: TLabel;
     mImpressao: TMemo;
     mLog: TMemo;
-    pConfigImpSwHouseEstab: TPanel;
     pQRCode: TPanel;
     pImpressoraBotes: TPanel;
     pImpressao: TPanel;
@@ -129,7 +80,6 @@ type
     pMensagemCliente: TPanel;
     pMensagemOperador: TPanel;
     pPrincipal: TPanel;
-    pConfiguracao: TPanel;
     pLogs: TPanel;
     pBotoesPagamentos: TPanel;
     pSimulador: TPanel;
@@ -146,10 +96,6 @@ type
     Label6: TLabel;
     pOperacao: TPanel;
     pgPrincipal: TPageControl;
-    SbArqLog: TSpeedButton;
-    seColunas: TSpinEdit;
-    seEspLinhas: TSpinEdit;
-    seLinhasPular: TSpinEdit;
     sbLimparLog: TSpeedButton;
     Splitter1: TSplitter;
     sgPagamentos: TStringGrid;
@@ -161,6 +107,72 @@ type
     seValorInicialVenda: TEdit;
     seTotalDesconto: TEdit;
     seTotalAcrescimo: TEdit;
+    PageControl1: TPageControl;
+    tsConfigTEF: TTabSheet;
+    pConfiguracao: TPanel;
+    gbConfigTEF: TGroupBox;
+    Label11: TLabel;
+    SbArqLog: TSpeedButton;
+    Label9: TLabel;
+    Label1: TLabel;
+    Label10: TLabel;
+    Label12: TLabel;
+    Label18: TLabel;
+    cbSuportaDesconto: TCheckBox;
+    cbSuportaSaque: TCheckBox;
+    cbImprimirViaReduzida: TCheckBox;
+    edLog: TEdit;
+    btTestarTEF: TBitBtn;
+    cbxQRCode: TComboBox;
+    cbConfirmarAutomaticamente: TCheckBox;
+    cbxGP: TComboBox;
+    cbAutoAtendimento: TCheckBox;
+    btSalvarParametros: TBitBtn;
+    btLerParametros: TBitBtn;
+    cbxImpressaoViaCliente: TComboBox;
+    cbxTransacaoPendente: TComboBox;
+    cbxTransacaoPendenteInicializacao: TComboBox;
+    pConfigImpSwHouseEstab: TPanel;
+    GroupBox1: TGroupBox;
+    Label14: TLabel;
+    Label16: TLabel;
+    Label19: TLabel;
+    Label15: TLabel;
+    edRazaoSocialSwHouse: TEdit;
+    edNomeAplicacao: TEdit;
+    edVersaoAplicacao: TEdit;
+    edCNPJSwHouse: TEdit;
+    GroupBox2: TGroupBox;
+    Label17: TLabel;
+    Label21: TLabel;
+    edRazaoSocialEstabelecimento: TEdit;
+    edCNPJEstabelecimento: TEdit;
+    tsConfigImpressora: TTabSheet;
+    gbConfigImpressora: TGroupBox;
+    Label25: TLabel;
+    Label26: TLabel;
+    Label27: TLabel;
+    Label28: TLabel;
+    Label7: TLabel;
+    Label29: TLabel;
+    btSerial: TSpeedButton;
+    btProcuraImpressoras: TSpeedButton;
+    seLinhasPular: TSpinEdit;
+    seEspLinhas: TSpinEdit;
+    seColunas: TSpinEdit;
+    cbxModeloPosPrinter: TComboBox;
+    cbxPorta: TComboBox;
+    cbxPagCodigo: TComboBox;
+    btTestarPosPrinter: TBitBtn;
+    gbDadosTerminal: TGroupBox;
+    Label8: TLabel;
+    edCodTerminal: TEdit;
+    Label20: TLabel;
+    edPortaPinPad: TEdit;
+    Label23: TLabel;
+    edEnderecoServidor: TEdit;
+    Label24: TLabel;
+    edCodEmpresa: TEdit;
     procedure ACBrTEFAPI1QuandoDetectarTransacaoPendente(
       RespostaTEF: TACBrTEFResp; const MsgErro: String);
     procedure ACBrTEFAPI1QuandoExibirMensagem(const Mensagem: String;
@@ -590,7 +602,7 @@ begin
       ImprimirRelatorio( '</ce>'+
                          '<qrcode_largura>8</qrcode_largura>'+
                          '<qrcode>'+DadosQRCode+'</qrcode>'+
-                         '</lf>');
+                         '</lf>' + '</lf>' + '</lf>' + '</lf>');
 
     Exit;
   end;
@@ -914,6 +926,7 @@ begin
     FormObtemCampo.Resposta := DefinicaoCampo.ValorInicial;
     FormObtemCampo.Ocultar := DefinicaoCampo.OcultarDadosDigitados;
     FormObtemCampo.Mascara := DefinicaoCampo.MascaraDeCaptura;
+    FormObtemCampo.NaoRemoverMascaraResposta := DefinicaoCampo.NaoRemoverMascaraResposta;
     FormObtemCampo.btVoltar.Visible := False;  // PayGoWeb não suporta Voltar;
 
     if (pos('R$', DefinicaoCampo.MascaraDeCaptura) > 0) or
@@ -1032,6 +1045,11 @@ begin
     edRazaoSocialEstabelecimento.Text := INI.ReadString('Estabelecimento', 'RazaoSocial', edRazaoSocialEstabelecimento.Text);
     edCNPJEstabelecimento.Text := INI.ReadString('Estabelecimento', 'CNPJ', edCNPJEstabelecimento.Text);
 
+    edCodTerminal.Text := INI.ReadString('Terminal', 'CodTerminal', edCodTerminal.Text);
+    edCodEmpresa.Text := INI.ReadString('Terminal', 'CodEmpresa', edCodEmpresa.Text);
+    edPortaPinPad.Text := INI.ReadString('Terminal', 'PortaPinPad', edPortaPinPad.Text);
+    edEnderecoServidor.Text := INI.ReadString('Terminal', 'EnderecoServidor', edEnderecoServidor.Text);
+
     cbxModeloPosPrinter.ItemIndex := INI.ReadInteger('PosPrinter', 'Modelo', 1);
     cbxPorta.Text := INI.ReadString('PosPrinter','Porta',ACBrPosPrinter1.Porta);
     cbxPagCodigo.ItemIndex := INI.ReadInteger('PosPrinter','PaginaDeCodigo', 2);
@@ -1071,6 +1089,11 @@ begin
 
     INI.WriteString('Estabelecimento', 'RazaoSocial', edRazaoSocialEstabelecimento.Text);
     INI.WriteString('Estabelecimento', 'CNPJ', edCNPJEstabelecimento.Text);
+
+    INI.WriteString('Terminal', 'CodTerminal', edCodTerminal.Text);
+    INI.WriteString('Terminal', 'CodEmpresa', edCodEmpresa.Text);
+    INI.WriteString('Terminal', 'PortaPinPad', edPortaPinPad.Text);
+    INI.WriteString('Terminal', 'EnderecoServidor', edEnderecoServidor.Text);
 
     INI.WriteInteger('PosPrinter', 'Modelo', cbxModeloPosPrinter.ItemIndex);
     INI.WriteString('PosPrinter','Porta', cbxPorta.Text);
@@ -1853,6 +1876,11 @@ begin
 
   ACBrTEFAPI1.DadosEstabelecimento.RazaoSocial := edRazaoSocialEstabelecimento.Text;
   ACBrTEFAPI1.DadosEstabelecimento.CNPJ := edCNPJEstabelecimento.Text;
+
+  ACBrTEFAPI1.DadosTerminal.CodTerminal := edCodTerminal.Text;
+  ACBrTEFAPI1.DadosTerminal.CodEmpresa := edCodEmpresa.Text;
+  ACBrTEFAPI1.DadosTerminal.PortaPinPad := edPortaPinPad.Text;
+  ACBrTEFAPI1.DadosTerminal.EnderecoServidor := edEnderecoServidor.Text;
 
   case cbxQRCode.ItemIndex of
     0: ACBrTEFAPI1.ExibicaoQRCode := qrapiNaoSuportado;

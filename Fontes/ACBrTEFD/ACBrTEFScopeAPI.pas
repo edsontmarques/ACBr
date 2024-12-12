@@ -1,33 +1,33 @@
 {******************************************************************************}
 { Projeto: Componentes ACBr                                                    }
-{  Biblioteca multiplataforma de componentes Delphi para intera√ß√£o com equipa- }
-{ mentos de Automa√ß√£o Comercial utilizados no Brasil                           }
+{  Biblioteca multiplataforma de componentes Delphi para interaÁ„o com equipa- }
+{ mentos de AutomaÁ„o Comercial utilizados no Brasil                           }
 {                                                                              }
 { Direitos Autorais Reservados (c) 2024 Daniel Simoes de Almeida               }
 {                                                                              }
 { Colaboradores nesse arquivo:                                                 }
 {                                                                              }
-{  Voc√™ pode obter a √∫ltima vers√£o desse arquivo na pagina do  Projeto ACBr    }
+{  VocÍ pode obter a ˙ltima vers„o desse arquivo na pagina do  Projeto ACBr    }
 { Componentes localizado em      http://www.sourceforge.net/projects/acbr      }
 {                                                                              }
-{  Esta biblioteca √© software livre; voc√™ pode redistribu√≠-la e/ou modific√°-la }
-{ sob os termos da Licen√ßa P√∫blica Geral Menor do GNU conforme publicada pela  }
-{ Free Software Foundation; tanto a vers√£o 2.1 da Licen√ßa, ou (a seu crit√©rio) }
-{ qualquer vers√£o posterior.                                                   }
+{  Esta biblioteca È software livre; vocÍ pode redistribuÌ-la e/ou modific·-la }
+{ sob os termos da LicenÁa P˙blica Geral Menor do GNU conforme publicada pela  }
+{ Free Software Foundation; tanto a vers„o 2.1 da LicenÁa, ou (a seu critÈrio) }
+{ qualquer vers„o posterior.                                                   }
 {                                                                              }
-{  Esta biblioteca √© distribu√≠da na expectativa de que seja √∫til, por√©m, SEM   }
-{ NENHUMA GARANTIA; nem mesmo a garantia impl√≠cita de COMERCIABILIDADE OU      }
-{ ADEQUA√á√ÉO A UMA FINALIDADE ESPEC√çFICA. Consulte a Licen√ßa P√∫blica Geral Menor}
-{ do GNU para mais detalhes. (Arquivo LICEN√áA.TXT ou LICENSE.TXT)              }
+{  Esta biblioteca È distribuÌda na expectativa de que seja ˙til, porÈm, SEM   }
+{ NENHUMA GARANTIA; nem mesmo a garantia implÌcita de COMERCIABILIDADE OU      }
+{ ADEQUA«√O A UMA FINALIDADE ESPECÕFICA. Consulte a LicenÁa P˙blica Geral Menor}
+{ do GNU para mais detalhes. (Arquivo LICEN«A.TXT ou LICENSE.TXT)              }
 {                                                                              }
-{  Voc√™ deve ter recebido uma c√≥pia da Licen√ßa P√∫blica Geral Menor do GNU junto}
-{ com esta biblioteca; se n√£o, escreva para a Free Software Foundation, Inc.,  }
-{ no endere√ßo 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.          }
-{ Voc√™ tamb√©m pode obter uma copia da licen√ßa em:                              }
+{  VocÍ deve ter recebido uma cÛpia da LicenÁa P˙blica Geral Menor do GNU junto}
+{ com esta biblioteca; se n„o, escreva para a Free Software Foundation, Inc.,  }
+{ no endereÁo 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.          }
+{ VocÍ tambÈm pode obter uma copia da licenÁa em:                              }
 { http://www.opensource.org/licenses/lgpl-license.php                          }
 {                                                                              }
-{ Daniel Sim√µes de Almeida - daniel@projetoacbr.com.br - www.projetoacbr.com.br}
-{       Rua Coronel Aureliano de Camargo, 963 - Tatu√≠ - SP - 18270-170         }
+{ Daniel Simıes de Almeida - daniel@projetoacbr.com.br - www.projetoacbr.com.br}
+{       Rua Coronel Aureliano de Camargo, 963 - TatuÌ - SP - 18270-170         }
 {******************************************************************************}
 
 {$I ACBr.inc}
@@ -52,198 +52,633 @@ const
   CScopeINi = 'scope.ini';
 
 resourcestring
-  sErrLibJaInicializda = 'Biblioteca ScopeAPI j√° foi inicializada';
-  sErrDirTrabalhoInvalido = 'Diret√≥rio de Trabalho n√£o encontrado: %s';
-  sErrScopeINIInvalido = 'Arquivo de Configura√ß√£o ' + CScopeINI + ' n√£o encontrado em: %s';
-  sErrEndServNaoEncontrado = 'Endere√ßo do Servidor n√£o encontrado em '+CScopeINi;
-  sErrEndServNaoInformado = 'Endere√ßo do Servidor n√£o informada em "EnderecoIP"';
-  sErrPortServNaoInformado = 'Porta do Servidor n√£o informada em "PortTCP"';
-  sErrNaoConectado = 'N√£o conectado ao Servidor Scope';
-  sErrSemSessao = 'Sess√£O TEF n√£o foi aberta';
+  sErrLibJaInicializda = 'Biblioteca ScopeAPI j· foi inicializada';
+  sErrDirTrabalhoInvalido = 'DiretÛrio de Trabalho n„o encontrado: %s';
+  sErrScopeINIInvalido = 'Arquivo de ConfiguraÁ„o ' + CScopeINI + ' n„o encontrado em: %s';
+  sErrEndServNaoEncontrado = 'EndereÁo do Servidor n„o encontrado em '+CScopeINi;
+  sErrEndServNaoInformado = 'EndereÁo do Servidor n„o informada em "EnderecoIP"';
+  sErrPortServNaoInformado = 'Porta do Servidor n„o informada em "PortTCP"';
+  sErrNaoConectado = 'N„o conectado ao Servidor Scope';
+  sErrSemSessao = 'Sess„o TEF n„o foi aberta';
+  sErrEventoNaoAtribuido = 'Evento %s n„o atribuido';
+  sErrTransacaoNaoIniciada = 'TransaÁ„o n„o foi iniciada';
+  sErrTransacaoJaIniciada = 'TransaÁ„o j· foi iniciada';
 
-  sMsgAbrindoConexao = 'Abrindo comunica√ß√£o...'+sLineBreak+'Empresa: %s, Filial %s';
+  sMsgAbrindoConexao = 'Abrindo comunicaÁ„o...'+sLineBreak+'Empresa: %s, Filial %s';
   sMsgConctadoAoServidor = 'Conectado Scope em: %s';
   sMsgDesconectado = 'Desconectado Scope';
-  sMsgInicioSessaoTEF = 'Iniciando sess√£o TEF';
-  sMsgTransacaoDesfeita = 'A TRANSA√á√ÉO TEF ANTERIOR FOI DESFEITA.'+sLineBreak+'RETER O CUPOM TEF.';
+  sMsgInicioSessaoTEF = 'Iniciando sess„o TEF';
+  sMsgTransacaoEmAndamento = 'TransaÁ„o em Andamento %s';
+  sMsgTransacaoCompleta = 'TransaÁ„o Completa';
+  sMsgTransacaoDesfeita = 'A TRANSA«√O TEF ANTERIOR FOI DESFEITA.'+sLineBreak+'RETER O CUPOM TEF.';
 
 const
-  SCO_SUCESSO = 0;
-  PC_OK = 0;
+  CINTERVALO_COLETA = 200;
 
-  PP_NAO_UTILIZA = 0;
-  PP_INTERFACE_LIB_VISA = 1;
+
+  {--------------------------------------------------------------------------------------------
+  		 Codigos/erros devolvidos pelo Scope
+  --------------------------------------------------------------------------------------------}
+  RCS_SUCESSO                                 = $0000;
+
+  RCS_COD_AUTORIZADORA_NAO_NUMERICO           = $0100;
+  RCS_ALC_RESTRICAO_CLIENTE                   = $0101;
+  RCS_ALC_JACONSULTOU_BANCOAG_IGUAIS          = $0102;
+  RCS_ALC_JACONSULTOU_BANCOAG_DIFERENTES      = $0103;
+  RCS_COD_GAR_NAO_AUTORIZADA                  = $0104;
+  RCS_COMPRE_SAQUE_APROVADO_PARCIAL           = $0105;
+  RCS_VOUCHER_APROVADO_PARCIAL                = $0106;
+  RCS_APROVADO_COM_PREMIO                     = $0107;
+
+  RCS_AUTO_ERRO_CRD_RLV_INVALIDO              = $F900;
+  RCS_AUTO_ERRO_CRD_TRK_INVALIDA              = $F901;
+  RCS_AUTO_ERRO_CRD_INVALIDO                  = $F902;
+  RCS_AUTO_ERRO_CRD_VALIDADE                  = $F903;
+  RCS_AUTO_ERRO_PARM_INVALIDO                 = $F904;
+
+  RCS_ERRO_PARM_1                             = $FA01;
+  RCS_ERRO_PARM_2                             = $FA02;
+  RCS_ERRO_PARM_3                             = $FA03;
+  RCS_ERRO_PARM_4                             = $FA04;
+  RCS_ERRO_PARM_5                             = $FA05;
+
+  RCS_THREAD_API_NOT_INIT                     = $FB01;
+  RCS_ERRO_CRIA_SERV                          = $FB02;
+  RCS_ERRO_CRITICA_MSG                        = $FB03;
+  RCS_ERRO_MONTA_MSG                          = $FB04;
+  RCS_ERRO_ARQ_TEF                            = $FB05;
+  RCS_ERRO_CONTEXTO_TEF                       = $FB06;
+  RCS_ERRO_TOTAL_TEF                          = $FB07;
+  RCS_ERRO_ARQ_CICLO_TEF                      = $FB08;
+  RCS_ERRO_NUM_MAX_TEF_SESSAO                 = $FB09;
+  RCS_ERRO_MONTANDO_CONFIRMACAO               = $FB0A;
+  RCS_ERRO_MONTANDO_DESFAZIMENTO              = $FB0B;
+  RCS_ERRO_CRIPTOGRAFIA                       = $FB0C;
+
+  RCS_PRIMEIRO_COLETA_DADOS                   = $FC00;
+  RCS_COLETAR_CARTAO                          = $FC00;
+
+  RCS_MOSTRA_INFO_AGUARDA_CONF                = $FCFF;
+  RCS_ULTIMO_COLETA_DADOS                     = $FCFF;
+
+  RCS_TRN_EM_ANDAMENTO                        = $FE00;
+  RCS_API_NAO_INICIALIZADA                    = $FE01;
+  RCS_API_JA_INICIALIZADA                     = $FE02;
+  RCS_EXISTE_TRN_SUSPENSA                     = $FE03;
+  RCS_NAO_EXISTE_TRN_SUSPENSA                 = $FE04;
+  RCS_API_NAO_FEZ_TRN                         = $FE05;
+  RCS_POS_JA_LOGADO                           = $FE06;
+  RCS_PROTOCOLO_NAO_SUPORTADO                 = $FE07;
+  RCS_POS_NAO_CADASTRADO                      = $FE08;
+  RCS_SRV_NOT_CFG                             = $FE09;
+  RCS_NAO_HA_PDVS_DISPONIVEIS                 = $FE0A;
+  RCS_PROTOCOLO_INCOMPATIVEL                  = $FE0B;
+  RCS_NAO_PODE_DESFAZER_TRN_ENCERRADA         = $FE0C;
+  RCS_NAO_HA_CAMPOS_SALVOS                    = $FE0D;
+
+  RCS_SERVER_OFF                              = $FF00;
+  RCS_ACQUIRER_OFF                            = $FF01;
+  RCS_CANCELADA_PELO_OPERADOR                 = $FF02;
+  RCS_BIN_SERV_INV                            = $FF03;
+  RCS_TRN_JA_CANCELADA                        = $FF04;
+  RCS_TRN_NOT_FOUND_BD                        = $FF05;
+  RCS_TRN_NAO_REVERSIVEL                      = $FF06;
+  RCS_PARMS_INCOMPATIVEIS                     = $FF07;
+  RCS_ERRO_BD                                 = $FF08;
+  RCS_TIMEOUT_BD                              = $FF09;
+  RCS_BD_OFFLINE                              = $FF0A;
+  RCS_ABORTADA_PELO_APLICATIVO                = $FF0B;
+  RCS_TRN_NAO_IMPLEMENTADA                    = $FF0C;
+  RCS_HANDLE_INVALIDO                         = $FF0D;
+  RCS_TX_SERV_INVALIDA                        = $FF0E;
+  RCS_TX_SERV_EXCEDE_LIM                      = $FF0F;
+  RCS_DADO_INVALIDO                           = $FF10;
+  RCS_NAO_EXITE_CUPOM_VALIDO                  = $FF11;
+  RCS_AREA_RESERVADA_INSUFICIENTE             = $FF12;
+  RCS_ERRO_LIMITE                             = $FF13;
+  RCS_TRN_DESFEITA                            = $FF14;
+  RCS_DIGITACAO_NAO_PERMITIDA                 = $FF15;
+  RCS_MEMORIA_INSUFICIENTE                    = $FF16;
+  RCS_SERVICE_CODE_INVALIDO                   = $FF17;
+  RCS_DATA_INVALIDA                           = $FF18;
+  RCS_CARTAO_VENCIDO                          = $FF19;
+  RCS_CARTAO_INVALIDO                         = $FF1A;
+  RCS_DESFAZIMENTO_NAO_DISPONIVEL             = $FF1B;
+  RCS_ERRO_IMPRESSAO_CUPOM                    = $FF1C;
+  RCS_SESSAO_MTEF_EM_ANDAMENTO                = $FF1D;
+  RCS_TRANSACAO_JA_EFETUADA                   = $FF1E;
+  RCS_INSERIR_CARTAO_CHIP                     = $FF1F;
+  RCS_CONTROLE_OBRIGATORIO                    = $FF20;
+  RCS_PRE_AUTORIZACAO_OBRIGATORIA             = $FF21;
+  RCS_SERVICO_NAO_CONFIGURADO                 = $FF22;
+  RCS_SERVICO_NAO_DEFINIDO                    = $FF23;
+  RCS_NUM_PARCELAS_INVALIDAS                  = $FF24;
+  RCS_VALOR_INVALIDO                          = $FF25;
+  RCS_BIN_SERV_INV_VISANET                    = $FF26;
+  RCS_ESTADO_NAO_DEFINIDO                     = $FF27;
+  RCS_OPERACAO_NAO_PERMITIDA                  = $FF28;
+  RCS_CNPG_CPF_INVALIDO                       = $FF29;
+  RCS_ERRO_DAC_BLK1                           = $FF2A;
+  RCS_ERRO_DAC_BLK2                           = $FF2B;
+  RCS_ERRO_DAC_BLK3                           = $FF2C;
+  RCS_ERRO_DAC_BLK4                           = $FF2D;
+  RCS_AID_INVALIDO                            = $FF2E;
+  RCS_DISPONIVEL2                             = $FF2F;
+  RCS_AUT_RETORNOU_DADOS_INVALIDOS            = $FF30;
+  RCS_CONTA_NAO_PERMITIDA                     = $FF31;
+  RCS_CONTA_VENCIDA                           = $FF32;
+  RCS_NAO_EXISTE_RESUMO                       = $FF33;
+  RCS_CODBAR_INVALIDO                         = $FF34;
+  RCS_ERRO_DAC                                = $FF35;
+  RCS_ERRO_FINALIZACAO_TRN_ANTERIOR           = $FF36;
+  RCS_SERVICO_INVERTIDO                       = $FF37;
+  RCS_CARTAO_NAO_PERMITIDO                    = $FF38;
+  RCS_SCPC_CPF_ONLY                           = $FF39;
+  RCS_ERRO_INTERNO_EXECUCAO_COLETA            = $FF3A;
+  RCS_LISTA_NAO_DISPONIVEL                    = $FF3B;
+  RCS_ERRO_LEITURA_CARTAO                     = $FF3C;
+  RCS_CONTROLE_INVALIDO                       = $FF3D;
+  RCS_ERRO_AO_ENVIAR_MSG_SERVIDOR             = $FF3E;
+  RCS_INTERFACE_SAB_NAO_INICIALIZADA          = $FF3F;
+  RCS_ERRO_DADOS_AINDA_NAO_DISPONIVEIS        = $FF40;
+  RCS_ERRO_DADOS_INDISPONIVEIS                = $FF41;
+  RCS_SERVIDOR_SAB_OFF                        = $FF42;
+  RCS_ERRO_CONEXAO_SCOPE_E_SAB                = $FF43;
+  RCS_ERRO_NSU_RECEBIDO                       = $FF44;
+  RCS_ERRO_LOGON_PDV                          = $FF45;
+  RCS_ERRO_PROCESSAMENTO_CHIP                 = $FF46;
+  RCS_OPERADORA_INVALIDA                      = $FF47;
+  RCS_DADOS_RECARGA_NAO_ENCONTRADOS           = $FF48;
+  RCS_CANCELADA_PELO_CLIENTE                  = $FF49;
+  RCS_APROVADA_OFFLINE                        = $FF50;
+  RCS_VERSAO_BD_INCOMPATIVEL                  = $FF51;
+  RCS_FORA_PRAZO                              = $FF52;
+  RCS_MENSAGEM_INVALIDA                       = $FF53;
+  RCS_PINPAD_AINDA_NAO_FOI_ABERTO             = $FF54;
+  RCS_PINPAD_JA_FOI_ABERTO                    = $FF55;
+  RCS_ESTADO_INVALIDO                         = $FF56;
+  RCS_PP_COMPARTILHADO_NAO_CONFIGURADO        = $FF57;
+  RCS_PP_COMPARTILHADO_NAO_TRABALHA_VISA2000  = $FF58;
+  RCS_USO_EXCLUSIVO_INTERFACE_COLETA          = $FF59;
+  RCS_AREA_ATRIBUTOS_SERV_INSUFICIENTE        = $FF5A;
+  RCS_SCOPE_CONFIGURADO_PP_COMPARTILHADO      = $FF5B;
+  RCS_SCOPE_NAO_CONFIGURADO_PP_COMPARTILHADO  = $FF5C;
+  RCS_ERRO_ABERTURA_PERIFERICO                = $FF5D;
+  RCS_ERRO_DESMONTA_ISO                       = $FF5E;
+  RCS_BANDEIRA_NAO_CONFIGURADA                = $FF5F;
+  RCS_FUNCAO_NAO_DISPONIVEL                   = $FF60;
+  RCS_VALOR_MIN_PARC_INVALIDO                 = $FF61;
+  RCS_VALOR_NAO_DISPONIVEL                    = $FF62;
+  RCS_NUMTEL_INVALIDO                         = $FF63;
+  RCS_DDD_INVALIDO                            = $FF64;
+  RCS_ERRO_REDE_MODELO_2                      = $FF65;
+  RCS_ERRO_REDE_MODELO_3                      = $FF66;
+  RCS_PROMPTS_NAO_ENCONTRADOS                 = $FF67;
+  RCS_USE_REIMPRESSAO_OFFLINE                 = $FF68;
+  RCS_CONTRATO_SUSPENSO                       = $FF69;
+  RCS_PERMITE_SOMENTE_DIGITADO                = $FF6A;
+  RCS_NOT_FOUND                               = $FF6B;
+  RCS_CODEAN128_INVALIDO                      = $FF6C;
+  RCS_MOBILE_NAO_PERMITIDA                    = $FF6D;
+  RCS_ACQUIRER_TIMEOUT                        = $FF6E;
+  RCS_ERRO_ARQ_CONTEXTO                       = $FF6F;
+  RCS_PLACA_INVALIDA                          = $FF70;
+  RCS_CONSULTA_BRADESCO_NAO_HABILITADA        = $FF71;
+  RCS_CODIGO_BANDEIRA_MAIOR_255               = $FF72;
+  RCS_REDE_INICIANDO                          = $FF73;
+  RCS_PINPAD_NAO_SUPORTADO_PERFIL             = $FF74;
+  RCS_ERRO_ESTATISTICA_REDECARD               = $FF75;
+  RCS_PINPAD_TABELAS_VAZIAS                   = $FF76;
+  RCS_ERRO_CONFIG_PDV                         = $FF96;
+
+  RCS_ERRO_GENERICO                           = $FFFF;
+
+
+  {--------------------------------------------------------------------------------------------
+  		 Define as teclas que podem ser habilitadas
+  --------------------------------------------------------------------------------------------}
+  T_CANCELA = $01;
+  T_PROXIMO = $02;
+  T_RETORNA = $04;
+
+
+  {--------------------------------------------------------------------------------------------
+  		 Codigos devolvidos pelas funcoes de acesso ao PIN-Pad Compartilhado
+  --------------------------------------------------------------------------------------------}
+  PC_OK                       = 0; // Operacao efetuada com sucesso - parametros de retorno(OUTPUT) contem dados validos.
+  PC_PROCESSING               = 1; // Em processamento. Deve-se chamar a funcao novamente ou PC_Abort para finalizar.
+  PC_NOTIFY                   = 2; // Em processamento. Deve-se apresentar no "checkout" uma mensagem retornada pela funcao e chama-la novamente ou PC_Abort para finalizar.
+  PC_F1                       = 4; // Pressionada tecla de funcao #1.
+  PC_F2                       = 5; // Pressionada tecla de funcao #2.
+  PC_F3                       = 6; // Pressionada tecla de funcao #3.
+  PC_F4                       = 7; // Pressionada tecla de funcao #4.
+  PC_BACKSP                   = 8; // Pressionada tecla de apagar (backspace)
+
+  // Status de 10 a 29 : Erros basicos da biblioteca
+  PC_INVCALL                  = 10; // Chamada invalida ? funcao. Operacoes previas sao necessarias.
+  PC_INVPARM                  = 11; // Parametro invalido passado a funcao.
+  PC_TIMEOUT                  = 12; // Esgotado o tempo maximo estipulado para a operacao.
+  PC_CANCEL                   = 13; // Operacao cancelada pelo operador.
+
+  PC_ALREADYOPEN              = 14; // Pinpad ja aberto.
+  PC_NOTOPEN                  = 15; // Pinpad nao foi aberto.
+  PC_EXECERR                  = 16; // Erro interno de execucao - problema de implementao da biblioteca (software).
+  PC_INVMODEL                 = 17; // Funcao nao suportada pelo modelo de pinpad.
+  PC_NOFUNC                   = 18; // Funcao nao disponivel na Biblioteca do pinpad.
+  PC_ERRMANDAT                = 19; // Ausencia de dado mandatorio para o processamento.
+  PC_TABEXP                   = 20; // Tabelas expiradas (pelo "time-stamp").
+  PC_TABERR                   = 21; // Erro ao tentar gravar tabelas (falta de espaco, por exemplo)
+  PC_NOAPPLIC                 = 22; // Aplicacao da rede adquirente nao existe no pinpad.
+
+  // 23 a 29 Reservado para uso futuro
+  // Status de 30 a 39 : Erros de comunicacao/protocolo com o pinpad
+  PC_PORTERR                  = 30; // Erro de comunicacao: porta serial do pinpad provavelmente ocupada.
+  PC_COMMERR                  = 31; // Erro de comunicacao: pinpad provavelmente desconectado ou problemas com a interface serial.
+  PC_UNKNOWNSTAT              = 32; // Status informado pelo pinpad nao e conhecido.
+  PC_RSPERR                   = 33; // Mensagem recebida do pinpad possui formato invalido.
+  PC_COMMTOUT                 = 34; // Tempo esgotado ao esperar pela resposta do pinpad (no caso decomandos nao blocantes).
+
+  // 35 a 39 Reservado para uso futuro
+  // Status de 40 a 49 : Erros b?sicos reportados pelo pinpad
+  PC_INTERR                   = 40; // Erro interno do pinpad.
+  PC_MCDATAERR                = 41; // Erro de leitura do cartao magnetico.
+  PC_ERRPIN                   = 42; // Erro na captura do PIN - Master Key pode nao estar presente.
+  PC_NOCARD                   = 43; // Nao ha cartao inteligente presente no acoplador.
+  PC_PINBUSY                  = 44; // Pinpad nao pode processar a captura de PIN temporariamente devido a questoes de seguranca (como quando e atingido o limite de capturas dentro de um intervalo de tempo).
+
+  // 45 a 49 Reservado para uso futuro.
+  // Status de 50 a 59 : Erros de processamento de cart?o com chip (SAM)
+  PC_SAMERR                   = 50; // Erro generico no modulo SAM.
+  PC_NOSAM                    = 51; // SAM ausente, "mudo", ou com erro de comunicacao.
+  PC_SAMINV                   = 52; // SAM invalido, desconhecido ou com problemas.
+
+  // 53 a 59 Reservado para uso futuro.
+  // Status de 60 a 99 : Erros de processamento de cartao com chip (usuario)
+  PC_DUMBCARD                 = 60; // Cartao nao responde ("mudo") ou chip nao presente.
+  PC_ERRCARD                  = 61; // Erro de comunica??o do pinpad com o cart?o inteligente.
+  PC_CARDINV                  = 62; // Cartao do tipo invalido ou desconhecido, nao pode ser tratado (nao EMV nem TIBC v1).
+  PC_CARDBLOCKED              = 63; // Cartao bloqueado por numero excessivo de senhas incorretas (somente para Easy-Entry TIBC v1).
+  PC_CARDNAUTH                = 64; // Cartao TIBC v1 nao autenticado pelo modulo SAM (somente para Easy-Entry TIBC v1).
+  PC_CARDEXPIRED              = 65; // Cartao TIBC v1 expirado (somente para Easy-Entry TIBC v1).
+  PC_CARDERRSTRUCT            = 66; // Cartao com erro de estrutura - arquivos estao faltando.
+  PC_CARDINVALIDAT            = 67; // Cartao foi invalidado.
+                                    // Se o cartao for TIBC v1, quando selecao de arquivo ou ATR retornar status 6284.
+                                    // Se o cartao for EMV, quando selecao de aplicacao retornar status 6A81.
+  PC_CARDPROBLEMS             = 68;  // Cartao com problemas. Esse status e valido para muitas
+                                     // ocorrencias no processamento de cartoes TIBC v1 e EMV onde o
+                                     // cartao nao se comporta conforme o esperado e a transacao deve ser finalizada.
+  PC_CARDINVDATA              = 69; // O cartao, seja TIBC v1 ou EMV, comporta-se corretamente porem possui dados invalidos ou inconsistentes.
+  PC_CARDAPPNAV	              = 70; // Cartao sem nenhuma aplicacao disponivel para as condicoes pedidas (ou cartao e reconhecido como TIBC v1 ou EMV mas nao
+                                    // possui nenhuma aplicacao compativel com a requerida).
+  PC_CARDAPPNAUT              = 71; // Somente para cartao EMV. A aplicacao selecionada nao pode ser
+                                    // utilizada neste terminal pois o Get Processing Options retornou status 6985.
+  PC_NOBALANCE                = 72; // Somente para aplicacao de moedeiro. O saldo do moedeiro e insuficiente para a operacao.
+  PC_LIMITEXC                 = 73; // Somente para aplicacao de moedeiro. O limite maximo para a operacao foi excedido.
+  PC_CARDNOTEFFECT            = 74; // Cartao ainda nao efetivo.
+  PC_VCINVCURR                = 75; // Moeda ?nv?lida.
+  PC_ERRFALBACK               = 76; // Erro de alto nivel no cartao EMV que e passivel de Fallback.
+
+  // 77 a 99 Reservado para uso futuro.
+   // 200 a 299 Reservado para uso do Scope
+  PC_RESERVADO                = 200; // Transacao negada na funcao PP_GoOnChip()
+  PC_TRN_NEGADA_CHIP          = 201; // Transacao negada na funcao PP_GoOnChip()
+  PC_MEM_NAO_ALOCADA          = 202; // Memoria nao alocada para a estrutura do pinpad compartilhado
+  PC_ERRO_ALOCANDO_MEMORIA    = 203; // Erro alocando memoria
+  PC_MEMORIA_INSUFICIENTE     = 204; // Memoria insuficiente para receber os dados
+  PC_JA_ABERTO_VIA_SCOPE      = 205; // Pinpad ja aberto via Scope
+  PC_MKEY_NAO_DEFINIDA        = 206; // Nao foi possivel definir a Master Key a ser utilizada
+  PC_ESTADO_NAO_DEFINIDO      = 207; // Nao foi possivel definir o Estado de coleta no PIN-Pad
+  PC_ERRO_PRM_GET_PIN         = 208; // Erro no parametro da funcao GetPIN
+  PC_PINPAD_NAO_CONFIGURADO   = 209; // Pinpad nao configurado
+  PC_DISPLAY_NAO_PERMITIDO    = 210; // Display nao permitido neste momento ou situacao
+  PC_NAO_ABERTO_APP           = 211; // Pinpad nao foi aberto pela aplicacao
+  PC_TIMEOUT_USER             = 212; // Timeout do cliente/usuario
+  PC_DATA_NOT_FOUND           = 213; // Dado no chip nao encontrado
+
+  PC_COMANDA_VAZIA            = 214; // Comanda nao possui itens
+  PC_COMANDA_INVALIDA         = 215; // A Leitura da comanda apresentou erros
+  PC_PINPAD_TABELAS_VAZIAS    = 216; // As tabelas do pinpad estao vazias
+
+  // 213 a 299 Reservado para uso futuro.
+  PC_MAX_ERRO                 = 300; // Indica o fim da tabela de erros
+
+  {--------------------------------------------------------------------------------------------
+  		Tipo de aplicacao do PIN-Pad Compartilhado
+  --------------------------------------------------------------------------------------------}
+  PC_APL_CREDITO  = 1; // Aplicacao de Credito
+  PC_APL_DEBITO	  = 2; // Aplicacao de Debito
+  PC_APL_QUALQUER = 99; // Qualquer aplicacao
+
+
+  {--------------------------------------------------------------------------------------------
+  		Retornos do Par‚metro "Config" do mÈtodo "ScopeConsultaPP"
+  --------------------------------------------------------------------------------------------}
+  PPCONF_MODO_NONE    = 0;    // Pinpad
+  PPCONF_MODO_COMPART = 1;    // Pinpad compartilhado
+  PPCONF_MODO_ABECS   = 2;    // Pinpad ABECS
+
+  {--------------------------------------------------------------------------------------------
+  		Valores v·lidos para Par‚metro "Canal" do mÈtodo "ScopePPOpenSecure"
+  --------------------------------------------------------------------------------------------}
+  CANAL_COMM_NONE      = 0;  // Conforme configuracao do scope.ini
+  CANAL_COMM_SERIAL    = 1;  // Comunicacao serial
+  CANAL_COMM_USB       = 2;  // Comunicacao USB
+  CANAL_COMM_BLUETOOTH = 3;  // Comunicacao Bluetooth
+
+
+  {--------------------------------------------------------------------------------------------
+  		Valores v·lidos para Par‚metro "id" do mÈtodo "ScopeConfigura"
+  --------------------------------------------------------------------------------------------}
+  CFG_CANCELAR_OPERACAO_PINPAD     = 1;   // Permite cancelar a interacao (leitura do cartao, senha e ...) no pinpad (default: desabilitado)
+  CFG_OBTER_SERVICOS               = 2;   // Permite retornar o estado TC_OBTEM_SERVICOS durante o fluxo de TEF (default: desabilitado)
+  CFG_NAO_ABRIR_DIGITADO_COM_PP    = 4;   // Permite nao abrir o digitado na leitura do cartao com o PP Compartilhado (default: desabilitado)
+  CFG_DEVOLVER_SENHA_CRIPTOGRAFADA = 8;   // Permite devolver a senha criptografada com a master key da Itautec (default: desabilitado, ou seja, devolve senha aberta)
+  CFG_IMPRESSORA_CARBONADA         = 16;  // Permite configurar a impressora como carbonada para nao imprimir 2a via... (default: desabilitado, ou seja, no cupom exibira 1a e 2a via)
+  CFG_ARMAZENA_EM_QUEDA            = 32;  // Armazena dados da coleta para recuperar em queda de energia. (default: desabilitado)
+  CFG_MASCARAR_DADOS               = 64;  // Configura se mascaramento de dados pelo ObtemCampo esta habilitado. (default: habilitado)
+  CFG_ATUALIZA_TRANSACAO_EM_QUEDA  = 128; // Permite confirmar/desfazer a transacao em caso de queda de energia. (default: desabilitado, ou seja, sempre desfazer)
+  CFG_PERMITIR_SAQUE               = 256; // Habilita coleta de saque em operacoes de Debito A Vista da rede Cielo
+  CFG_COLETA_RECARGA_PP	           = 512; // Permite desabilitar a coleta do ddd e telefone no pinpad em recarga de celular (default: conforme configuracao do SCOPECNF)
+
+  {--------------------------------------------------------------------------------------------
+  		Valores v·lidos para Par‚metro "Param" do mÈtodo "ScopeConfigura"
+  --------------------------------------------------------------------------------------------}
+  OP_DESABILITA	  = 0;
+  OP_HABILITA     = 1;
+  OP_SOMENTE_PCI  = 2;
+
+  {--------------------------------------------------------------------------------------------
+  		Define os estados para a interface coleta
+  --------------------------------------------------------------------------------------------}
+  TC_CARTAO                          = $FC00;
+  TC_VALIDADE_CARTAO                 = $FC01;
+  TC_IMPRIME_CUPOM                   = $FC02;
+  TC_CPF_CGC                         = $FC03;
+  TC_BANCO                           = $FC04;
+  TC_AGENCIA                         = $FC05;
+  TC_NUMERO_CHEQUE                   = $FC06;
+  TC_BOM_PARA                        = $FC07;
+  TC_IMPRIME_CHEQUE                  = $FC08;
+  TC_DECIDE_AVISTA                   = $FC09;
+  TC_DECIDE_P_ADM_EST                = $FC0A;
+  TC_DECIDE_P_DATADO                 = $FC0B;
+  TC_DECIDE_P_AVISTA                 = $FC0C;
+  TC_DECIDE_D_E_PARC                 = $FC0D;
+  TC_QTDE_PARCELAS                   = $FC0E;
+  TC_DECIDE_P_FINANC                 = $FC0F;
+  TC_DIA_MES                         = $FC10;
+  TC_SENHA                           = $FC11;
+  TC_CONTROLE                        = $FC12;
+  TC_FORMA_PAGAMENTO                 = $FC13;
+  TC_PRIMEIRO_VENCIMENTO             = $FC14;
+  TC_VALOR_ENTRADA                   = $FC15;
+  TC_FORMA_ENTRADA                   = $FC16;
+  TC_CONTA_CORRENTE                  = $FC17;
+  TC_ULTIMOS_DIGITOS                 = $FC18;
+  TC_REIMPRESSAO_COMPROVANTE         = $FC19;
+  TC_DECISAO_C_PARC                  = $FC1A;
+  TC_IMPRIME_CONSULTA                = $FC1B;
+  TC_DECISAO_CONT                    = $FC1C;
+  TC_DECIDE_ULTIMO                   = $FC1D;
+  TC_NUMERO_CHEQUE_CDC               = $FC1E;
+  TC_QTD_DIAS                        = $FC1F;
+  TC_NUM_PRE_AUTORIZACAO             = $FC20;
+  TC_DIA_MES_FECHADO                 = $FC21;
+  TC_IMPRIME_NOTA_PROMISSORIA        = $FC22;
+  TC_CEP                             = $FC23;
+  TC_NUMERO_ENDERECO                 = $FC24;
+  TC_COMPLEMENTO                     = $FC25;
+  TC_PLANO_PAGAMENTO                 = $FC26;
+  TC_CICLOS_A_PULAR                  = $FC27;
+  TC_NRO_ITEM                        = $FC28;
+  TC_CVV_CVC_2                       = $FC29;
+  TC_AUSENCIA_CVV_CVC_2              = $FC2A;
+  TC_DECIDE_GARANTIA                 = $FC2B;
+  TC_DECIDE_RISCO                    = $FC2C;
+  TC_COLETA_VALOR_SAQUE              = $FC2D;
+  TC_COLETA_VALOR_RECARGA            = $FC2E;
+  TC_COLETA_COD_LOC_TELEFONE         = $FC2F;
+  TC_COLETA_NUM_TELEFONE             = $FC30;
+  TC_COLETA_DIG_VERIFICADOR          = $FC31;
+  TC_COLETA_DDMMAA                   = $FC32;
+  TC_COLETA_VALOR_TX_SERVICO         = $FC33;
+  TC_COLETA_VALOR                    = $FC34;
+  TC_DECIDE_SAQUE                    = $FC35;
+  TC_DECIDE_SAQUE_SIMULADO           = $FC36;
+  TC_DECIDE_SALDO_EXTRATO            = $FC37;
+  TC_DECIDE_RESUMIDO_SEGVIA          = $FC38;
+  TC_DECIDE_CONSULTA_RESGATE         = $FC39;
+  TC_COLETA_NSU_HOST                 = $FC3A;
+  TC_COLETA_SERVICO                  = $FC3B;
+  TC_COLETA_COD_REDE                 = $FC3C;
+
+  TC_DECIDE_RESGATE_AVULSO           = $FC40;
+  TC_COLETA_DDMMAAAA                 = $FC41;
+  TC_COLETA_AUT_MEDICAMENTO          = $FC42;
+  TC_COLETA_REG_MEDICAMENTO          = $FC43;
+  TC_DISP_LISTA_MEDICAMENTO          = $FC44;
+  TC_EXIBE_MSG                       = $FC45;
+  TC_IMPRIME_CUPOM_PARCIAL           = $FC46;
+  TC_COLETA_QTD_PARC_ACEITA1         = $FC47;
+  TC_COLETA_COD_BARRAS               = $FC48;
+  TC_COLETA_COD_CONSULTA_PBM         = $FC49;
+  TC_COLETA_CRM_MEDICO               = $FC4A;
+  TC_COLETA_COD_UF_CRM_MEDICO        = $FC4B;
+  TC_COLETA_SEGURO                   = $FC4C;
+  TC_DECIDE_CARTAO                   = $FC4D;
+  TC_COLETA_DADOS_TOKORO             = $FC4E;
+  TC_DECIDE_PAG_APOS_VENC            = $FC4F;
+  TC_COLETA_DECIDE_COL_SENHA         = $FC50;
+  TC_IMPRIME_CUPOM_PROMOCIONAL       = $FC51;
+  TC_COLETA_UTILIZA_SALDO            = $FC52;
+  TC_COLETA_CODIGO_MATERIAL          = $FC53;
+  TC_COLETA_PLANO                    = $FC54;
+  TC_DECIDE_PAGTO_CHEQUE             = $FC55;
+  TC_DECIDE_CONFIRMA_TRN             = $FC56;
+  TC_DECIDE_PAGTO_ROTATIVO           = $FC57;
+  TC_COLETA_CMC7                     = $FC58;
+  TC_DECIDE_DIN_TEF                  = $FC59;
+  TC_COLETA_TEF_EXT_COD_GRUPO        = $FC5A;
+  TC_COLETA_TEF_EXT_COD_REDE         = $FC5B;
+  TC_COLETA_TEF_EXT_COD_ESTAB        = $FC5C;
+  TC_COLETA_TEF_EXT_NSU_HOST         = $FC5D;
+  TC_COLETA_TEF_EXT_DDMMAAAA         = $FC5E;
+  TC_DECIDE_CONSULTA                 = $FC5F;
+  TC_CONTA_PERMITIDA_CONTINUA        = $FC60;
+  TC_COLETA_COD_BANDEIRA             = $FC61;
+  TC_DECIDE_CONTA_FATURA             = $FC62;
+  TC_COLETA_VALOR_TOTAL              = $FC63;
+  TC_COLETA_RG                       = $FC64;
+  TC_DECIDE_RETENTATIVA              = $FC65;
+  TC_CPF                             = $FC66;
+  TC_COLETA_ENDERECO                 = $FC67;
+  TC_COLETA_ANDAR                    = $FC68;
+  TC_COLETA_CONJUNTO                 = $FC69;
+  TC_COLETA_BLOCO                    = $FC6A;
+  TC_COLETA_BAIRRO                   = $FC6B;
+  TC_COLETA_AUT_OU_CARTAO            = $FC6C;
+  TC_COLETA_DATA_EMISSAO_CARTAO      = $FC6D;
+  TC_COLETA_PLANO_INFOCARDS          = $FC6E;
+  TC_COLETA_NUM_CUPOM_FISCAL         = $FC6F;
+  TC_COLETA_OPERADORA                = $FC70;
+  TC_COLETA_DADOS_SAB                = $FC71;
+  TC_COLETA_NUM_TELEFONE_COM_DV      = $FC72;
+  TC_COLETA_DADOS_TRN_FORCADA_SAB    = $FC73;
+  TC_DECIDE_SERVICO_TECNICO          = $FC74;
+  TC_COLETA_NUMERO_OS                = $FC75;
+  TC_COLETA_ID_TECNICO               = $FC76;
+  TC_COLETA_COD_OCORRENCIA           = $FC77;
+  TC_COLETA_EPS_CREDENCIADA          = $FC78;
+  TC_DECIDE_VALOR_ENTRADA            = $FC79;
+  TC_DECIDE_COLETA_VALOR_1aPARCELA   = $FC7A;
+  TC_COLETA_VALOR_1aPARCELA          = $FC7B;
+  TC_COLETA_DADOS_ADICIONAIS         = $FC7C;
+  TC_COLETA_CANCELA_TRANSACAO        = $FC7D;
+  TC_GO_ON_CHIP                      = $FC7E;
+  TC_RETIRA_CARTAO                   = $FC7F;
+  TC_COLETA_VALOR_TAXA_EMBARQUE      = $FC80;
+  TC_EXIBE_MSG_SALDO                 = $FC81;
+  TC_EXIBE_MSG_RETORNA_FLUXO         = $FC82;
+  TC_EXIBE_MSG_AGUARDA_OPERADOR      = $FC83;
+  TC_OBTEM_SERVICOS                  = $FC84;
+  TC_CARTAO_DIGITADO                 = $FC85;
+  TC_COLETA_COD_PRODUTO              = $FC86;
+  TC_EXIBE_MENU                      = $FC87;
+  TC_DECIDE_INSS                     = $FC88;
+  TC_COLETA_CONTRATO                 = $FC89;
+  TC_COLETA_DATA_CLIENTE_DESDE       = $FC8A;
+  TC_DISP_VALOR                      = $FC8B;
+  TC_COLETA_DATA_TRN_ORIG            = $FC8C;
+  TC_COLETA_NSU_TRN_ORIG             = $FC8D;
+  TC_EXIBE_DADOS_CANC                = $FC8E;
+  TC_DECIDE_VIAS_REIMPRESSAO         = $FC8F;
+  TC_COLETA_DDD_PP                   = $FC90;
+  TC_COLETA_NUM_TEL_PP               = $FC91;
+  TC_COLETA_NUM_TELEFONE_COM_DV_PP   = $FC92;
+  TC_COLETA_REDIGITACAO_RECARGA_PP   = $FC93;
+  TC_TRANSACAO_APROVADA_PARCIAL      = $FC94;
+  TC_COLETA_VALOR_PARCELAS           = $FC95;
+  TC_PRIMEIRA_PARCELA_30_60          = $FC96;
+  TC_DECIDE_CDC_PARCELE_MAIS         = $FC97;
+  TC_DECIDE_VENDAS_PAGAMENTOS        = $FC98;
+  TC_DECIDE_AVISTA_CJUROS            = $FC99;
+  TC_COLETA_TEF_EXT_NUMERO_CARTAO    = $FC9A;
+  TC_TIPO_SERVICO_COMBUSTIVEL        = $FC9B;
+  TC_MATRICULA                       = $FC9C;
+  TC_QUANTIDADE_COMBUSTIVEL          = $FC9D;
+  TC_HODOMETRO                       = $FC9E;
+  TC_PLACA_VEICULO                   = $FC9F;
+  TC_COLETA_CEL_COD_ATIVACAO         = $FCA0;
+  TC_EXIBE_MENU_RESGATE_PREMIO       = $FCA1;
+  TC_CONFIRMA_OPCAO_RESGATE_PREMIO   = $FCA2;
+  TC_CLIENTE_CONFIRMA_RESGATE        = $FCA3;
+  TC_NRO_RESGATE_PREMIO              = $FCA4;
+  TC_COLETA_NRO_VOUCHER              = $FCA5;
+  TC_DECIDE_DARF_GPS                 = $FCA6;
+  TC_DECIDE_TIPO_DARF                = $FCA7;
+  TC_COLETA_CODIGO_RECEITA           = $FCA8;
+  TC_COLETA_NUMERO_REFERENCIA        = $FCA9;
+  TC_COLETA_VALOR_JUROS              = $FCAA;
+  TC_CPF_PORTADOR                    = $FCAB;
+  TC_CNPJ                            = $FCAC;
+  TC_COLETA_PERCENTUAL               = $FCAD;
+  TC_COLETA_MMAAAA                   = $FCAE;
+  TC_COLETA_NUMERO_IDENTIFICADOR     = $FCAF;
+  TC_COLETA_VALOR_INSS               = $FCB0;
+  TC_COLETA_RECEITA_BRUTA            = $FCB1;
+  TC_CONTA_PERMIT_CONT_BRAD_TIT      = $FCB2;
+  TC_COLETA_VALOR_ACRESCIMO          = $FCB3;
+  TC_COLETA_VALOR_DEDUCAO            = $FCB4;
+  TC_COLETA_REDIGITA_DDD_PP          = $FCB5;
+  TC_COLETA_CARTAO_DIGITADO_PP       = $FCB6;
+  TC_COLETA_DIG_FINAIS_CARTAO_PP     = $FCB7;
+  TC_COLETA_TIPO_CONSULTA            = $FCB8;
+  TC_CONFIRMA_CARTAO_DIGITADO_PP     = $FCB9;
+  TC_VALIDA_SAQUE_AUTOMACAO          = $FCBA;
+  TC_SAQUE_PP_EM_ANDAMENTO           = $FCBB;
+  TC_COLETA_DDD_NUMTEL_PP            = $FCBC;
+  TC_REDIGITA_DDD_NUMTEL_PP          = $FCBD;
+  TC_COLETA_DADOS_ECF                = $FCBE;
+  TC_COLETA_COD_EAN                  = $FCBF;
+  TC_COLETA_HORA_TRN_ORIG            = $FCC0;
+  TC_DECIDE_PGTO_CARNE               = $FCC1;
+  TC_COLETA_MODALIDADE               = $FCC2;
+  TC_COLETA_CODIGO_CODUTOR           = $FCC3;
+  TC_COLETA_COD_COMBUSTIVEL          = $FCC4;
+  TC_COLETA_VOUCHER_FROTA            = $FCC5;
+  TC_COLETA_DADOS_CARTAO_PRESENTE    = $FCC6;
+  TC_PRIMEIROS_DIGITOS               = $FCC7;
+  TC_COLETA_CAMPO_AUT                = $FCC8;
+  TC_COLETA_CAMPO_DOC                = $FCC9;
+  TC_COLETA_LISTA_PRECOS             = $FCCA;
+  TC_COLETA_LISTA_MERCADORIAS        = $FCCB;
+  TC_HORIMETRO                       = $FCCC;
+  TC_COLETA_CARTAO_MAGNETICO         = $FCCD;
+
+  TC_COLETA_LISTA_PLANOS             = $FCCE;
+  TC_DECIDE_EMPRESTIMO_SAQUE         = $FCCF;
+  TC_COLETA_NUM_DOCUMENTO            = $FCD0;
+  TC_COLETA_PROJETO                  = $FCD1;
+  //TC_SENHA_NOVA                    = $FCD2;
+  //TC_SENHA_NOVA_CONF               = $FCD3;
+  TC_COLETA_SEGMENTO_SAV             = $FCD4;
+  TC_COLETA_FORNECEDOR_SAV           = $FCD5;
+  TC_COLETA_PRODUTO_SAV              = $FCD6;
+  TC_COLETA_QUANTIDADE               = $FCD7;
+  TC_COLETA_CLIENTE_PREFERENCIAL     = $FCD8;
+
+  // --> Proximo Tipo Coleta AQUI (ACIMA) //
+  TC_COLETA_CARTAO_EM_ANDAMENTO      = $FCFC;
+  TC_COLETA_EM_ANDAMENTO             = $FCFD;
+  TC_INFO_RET_FLUXO                  = $FCFE;
+  TC_INFO_AGU_CONF_OP                = $FCFF;
+
+  TC_PRIMEIRO_TIPO_COLETA            = TC_CARTAO;
+  TC_MAX_TIPO_COLETA                 = TC_INFO_AGU_CONF_OP;
+
+
+  {--------------------------------------------------------------------------------------------
+  		Valores possiveis para o parametro da funcao ScopeValidaInterfacePP()
+  --------------------------------------------------------------------------------------------}
+  PP_NAO_UTILIZA                 = 0;
+  PP_INTERFACE_LIB_VISA          = 1;
   PP_INTERFACE_LIB_COMPARTILHADA = 2;
 
-  PC_MODO_NONE = 0;       // Pinpad
-  PC_MODO_COMPART = 1;    // Pinpad compartilhado
-  PC_MODO_ABECS = 2;      // Pinpad ABECS
-
-  PC_COMM_NONE = 0;       // Conforme configuracao do scope.ini
-  PC_COMM_SERIAL = 1;     // Comunicacao serial
-  PC_COMM_USB = 2;        // Comunicacao USB
-  PC_COMM_BLUETOOTH = 3;  // Comunicacao Bluetooth
-
-  SCO_DESFAZ_TEF = 0;
-  SCO_CONFIRMA_TEF = 1;
-
-  SCO_ERRO_PARM_1 = 64001; //0xFA01
-  SCO_ERRO_PARM_2 = 64002; //0xFA02
-  SCO_ERRO_PARM_3 = 64003; //0xFA03
-  SCO_ERRO_PARM_4 = 64004; //0xFA04
-
-  SCO_ERRO_ARQ_CICLO_TEF = 64264; //0xFB08
-  SCO_TRN_EM_ANDAMENTO = 65024; //0xFE00
-  SCO_API_NAO_INICIALIZADA = 65025; //0xFE01
-  SCO_API_JA_INICIALIZADA = 65026; //0xFE02
-  SCO_SRV_NOT_CFG = 65033; //0xFE09
-  SCO_ERRO_LOGON_PDV = 65349; //0xFF45
-  SCO_ERRO_CONFIG_PDV = 65430; //0xFF96
-
-  OP_DESABILITA	= 0;
-  OP_HABILITA = 1;
-  OP_SOMENTE_PCI = 2;
-
-  CFG_CANCELAR_OPERACAO_PINPAD = 1;     // Permite cancelar a interacao (leitura do cartao, senha e ...) no pinpad (default: desabilitado)
-  CFG_OBTER_SERVICOS = 2;               // Permite retornar o estado TC_OBTEM_SERVICOS durante o fluxo de TEF (default: desabilitado)
-  CFG_NAO_ABRIR_DIGITADO_COM_PP = 4;    // Permite nao abrir o digitado na leitura do cartao com o PP Compartilhado (default: desabilitado)
-  CFG_DEVOLVER_SENHA_CRIPTOGRAFADA = 8; // Permite devolver a senha criptografada com a master key da Itautec (default: desabilitado, ou seja, devolve senha aberta)
-  CFG_IMPRESSORA_CARBONADA = 16;        // Permite configurar a impressora como carbonada para nao imprimir 2a via... (default: desabilitado, ou seja, no cupom exibira 1a e 2a via)
-  CFG_ARMAZENA_EM_QUEDA = 32;           // Armazena dados da coleta para recuperar em queda de energia. (default: desabilitado)
-  CFG_MASCARAR_DADOS = 64;              // Configura se mascaramento de dados pelo ObtemCampo esta habilitado. (default: habilitado)
-  CFG_ATUALIZA_TRANSACAO_EM_QUEDA = 128;// Permite confirmar/desfazer a transacao em caso de queda de energia. (default: desabilitado, ou seja, sempre desfazer)
-  CFG_PERMITIR_SAQUE = 256;             // Habilita coleta de saque em operacoes de Debito A Vista da rede Cielo
-  CFG_COLETA_RECARGA_PP	= 512;          // Permite desabilitar a coleta do ddd e telefone no pinpad em recarga de celular (default: conforme configuracao do SCOPECNF)
+  {--------------------------------------------------------------------------------------------
+  		Valores possiveis para o parametro <Acao> da funcao ScopeFechaSessaoTEF()
+  --------------------------------------------------------------------------------------------}
+  ACAO_FECHA_DESFAZ_TEF   = 0;
+  ACAO_FECHA_CONFIRMA_TEF = 1;
 
 
-  // Identificacao das redes
-  R_GWCEL:                          LongInt = 90;
+  {--------------------------------------------------------------------------------------------
+  		Valores possiveis para o parametro <Acao> da funcao ScopeResumeParam()
+  --------------------------------------------------------------------------------------------}
+  COLETA_TECLADO          = $0004;
+  COLETA_CARTAO_MAGNETICO = $0020;
 
-  {- entrada dos dados -}
-  SCO_NONE:                         LongInt = $0000;
-  SCO_TECLADO:                      LongInt = $0004;
-  SCO_PIN_PAD:                      LongInt = $0008;
-  SCO_CMC_7:                        LongInt = $0010;
-  SCO_CARTAO_MAGNETICO:             LongInt = $0020;
-  SCO_SCANNER:                      LongInt = $0040;
+  {--------------------------------------------------------------------------------------------
+  		Valores possiveis para o parametro <Acao> da funcao ScopeResumeParam()
+  --------------------------------------------------------------------------------------------}
+  ACAO_RESUME_PROXIMO_ESTADO  = 0;
+  ACAO_RESUME_ESTADO_ANTERIOR = 1;
+  ACAO_RESUME_CANCELAR        = 2;
+  ACAO_RESUME_APL_ERRO        = 3;
 
-  {- ainda n√£o sei para que servem estes ??? -}
-  SCO_AUTO_ERRO_CRD_RLV_INVALIDO:   LongInt = $F900;
-  SCO_AUTO_ERRO_CRD_TRK_INVALIDA:   LongInt = $F901;
-  SCO_AUTO_ERRO_CRD_INVALIDO:       LongInt = $F902;
-  SCO_AUTO_ERRO_CRD_VALIDADE:       LongInt = $F903;
-  SCO_AUTO_ERRO_PARM_INVALIDO:      LongInt = $F904;
-
-  {- erros relacionados ao windows -}
-  SCO_THREAD_API_NOT_INIT:          LongInt = $FB01;
-  SCO_ERRO_CRIA_SERV:               LongInt = $FB02;
-  SCO_ERRO_CRITICA_MSG:             LongInt = $FB03;
-  SCO_ERRO_MONTA_MSG:               LongInt = $FB04;
-
-  {-coleta de dados -}
-  SCO_PRIMEIRO_COLETA_DADOS:        LongInt = $FC00;
-  SCO_COLETAR_CARTAO:               LongInt = $FC00;
-
-  SCO_CARTAO = $FC00;
-  SCO_IMPRIME_CUPOM = $FC02;
-  SCO_IMPRIME_CHEQUE = $FC08;
-  SCO_SENHA = $FC11;
-  SCO_IMPRIME_CONSULTA = $FC1B;
-  SCO_COLETA_VALOR_RECARGA = $FC2E;
-  SCO_IMPRIME_CUPOM_PARCIAL = $FC46;
-  SCO_COLETA_AUT_OU_CARTAO = $FC6C;
-  SCO_COLETA_OPERADORA = $FC70;
-  SCO_CARTAO_DIGITADO = $FC85;
-
-  SCO_COLETA_CARTAO_EM_ANDAMENTO = $FCFC;
-  SCO_COLETA_EM_ANDAMENTO = $FCFD;
-  SCO_MOSTRA_INFO_RET_SCOPE = $FCFE; // mostra informa√ß√µes e retorna para scope
-  SCO_MOSTRA_INFO_AGUARDA_CONF = $FCFF; // mostra informa√ß√µes e aguarda operador
-  SCO_ULTIMO_COLETA_DADOS = $FCFF;
-
-  SCO_EXISTE_TRN_SUSPENSA:          LongInt = $FE03;  // existe transa√ß√£o suspensa
-  SCO_NAO_EXISTE_TRN_SUSPENSA:      LongInt = $FE04;  // n√£o existe transa√ß√£o suspensa
-  SCO_API_NAO_FEZ_TRN:              LongInt = $FE05;  //
-  SCO_POS_JA_LOGADO:                LongInt = $FE06;  // Logon duplicado
-  SCO_POS_NAO_CADASTRADO:           LongInt = $FE08;  // Codigo POS n√£o cadastrado no BD
-
-  SCO_SERVER_OFF:                   LongInt = $FF00;
-  SCO_INSTITUICAO_OFF:              LongInt = $FF01;
-  SCO_CANCELADA_PELO_OPERADOR:      LongInt = $FF02;
-  SCO_BIN_SERV_INV:                 LongInt = $FF03; // BIN n√£o configurado
-  SCO_TRN_JA_CANCELADA:             LongInt = $FF04;
-  SCO_TRN_NOT_FOUND_BD:             LongInt = $FF05;
-  SCO_TRN_NAO_REVERSIVEL:           LongInt = $FF06; // transa√ß√£o n√£o pode ser cancelada
-  SCO_PARMS_INCOMPATIVEIS:          LongInt = $FF07; // Dados n√£o conferem com a transa√ß√£o original
-  SCO_ERRO_BD:                      LongInt = $FF08;
-  SCO_TIMEOUT_BD:                   LongInt = $FF09;
-  SCO_BD_OFFLINE:                   LongInt = $FF0A;
-  SCO_ABORTADA_PELO_APLICATIVO:     LongInt = $FF0B;
-  SCO_TRN_NAO_IMPLEMENTADA:         LongInt = $FF0C;
-  SCO_HANDLE_INVALIDO:              LongInt = $FF0D;
-  SCO_TX_SERV_INVALIDA:             LongInt = $FF0E;
-  SCO_TX_SERV_EXCEDE_LIM:           LongInt = $FF0F;
-  SCO_DADO_INVALIDO:                LongInt = $FF10;
-  SCO_NAO_EXITE_CUPOM_VALIDO:       LongInt = $FF11;
-  SCO_AREA_RESERVADA_INSUFICIENTE:  LongInt = $FF12;
-  SCO_ERRO_GENERICO:                LongInt = $FFFF;
-
-  {- Define os campos para as funcoes ScopeObtemCampo() e para ScopeObtemCampoExt() -}
-  Cod_Rede:                         LongInt = $400000;
-
-  {- Define os parametros para a funcao ScopeObtemHandle -}
-  HDL_TRANSACAO_ANTERIOR:           LongInt = $0000;
-  HDL_TRANSACAO_EM_ARQUIVO:         LongInt = $0008;
-  HDL_TRANSACAO_EM_ANDAMENTO:       LongInt = $0009;
-
-  {- codigos das bandeiras -}
-  SCO_SCOPE:                        LongInt = $0000;
-  SCO_VISA:                         LongInt = $0001;
-  SCO_MASTERCARD:                   LongInt = $0002;
-  SCO_AMEX:                         LongInt = $0003;
-  SCO_FININCARD:                    LongInt = $0004;
-  SCO_DINERS:                       LongInt = $0005;
-  SCO_SOLO:                         LongInt = $0006;
-  SCO_CHEQUE_ELETRONICO:            LongInt = $0007;
-  SCO_REDESHOP:                     LongInt = $0008;
-  SCO_ITAU:                         LongInt = $0009;
-  SCO_BRADESCO:                     LongInt = $000A;
-  SCO_TRISHOP_ITAU:                 LongInt = $000B;
-  SCO_SERASA:                       LongInt = $000C;
-  SCO_TELECHEQUE:                   LongInt = $000D;
-  SCO_CREDICARD:                    LongInt = $000E;
-  SCO_RVA:                          LongInt = $000F;
-  SCO_TICKET:                       LongInt = $0010;
-  SCO_HIPERCARD:                    LongInt = $0011;
-  SCO_CNS:                          LongInt = $0012;
-  SCO_CSS:                          LongInt = $0013;
-  SCO_BANRISUL:                     LongInt = $0014;
-  SCO_ELECTRON:                     LongInt = $0015;
-  SCO_REDECARD:                     LongInt = $0016;
-  SCO_JBC:                          LongInt = $0017;
-  SCO_QUALITY_CARD:                 LongInt = $0018;
-  SCO_UNNISA:                       LongInt = $0019;
-  SCO_FININVEST:                    LongInt = $001A;
-
-  { Bits para indicacao do estado da comunicacao c/
-    o SCOPE - possiveis vals da var iSinc }
-  INI_COMUNIC:                      LongInt = $0001;
-  INI_SESSAO:                       LongInt = $0002;
-  INI_APLCOLET:                     LongInt = $0004;
-
-  ACAO_PROX:                        LongInt = $0008;
-  ACAO_ANTER:                       LongInt = $0010;
-  ACAO_CANCELAR:                    LongInt = $0020;
-
-  COLETA_PROXIMO_ESTADO:            LongInt = 0;
-  COLETA_ANTERIOR_ESTADO:           LongInt = 1;
-  COLETA_CANCELAR:                  LongInt = 2;
-
-  BIT6_ON:                          LongInt = $0040;
-  BIT7_ON:                          LongInt = $0080;
-  BIT8_ON:                          LongInt = $0100;
-  BIT9_ON:                          LongInt = $0200;
-
+{--------------------------------------------------------------------------------------------
+   Constantes de uso interno, n„o retornadas por Mask
+--------------------------------------------------------------------------------------------}
+const
+  MASK0_CUPOM_LOJA     = $00000001;  { CupomLoja }
+  MASK0_CUPOM_CLIENTE  = $00000002;  { CupomCliente }
+  MASK0_CUPOM_REDUZIDO = $00000004;  { CupomReduzido }
+  MASK0_CHEQUE_BANCO   = $00000008;
+  MASK0_CHEQUE_AGENCIA = $00000010;
+  MASK0_CHEQUE_NUMERO  = $00000020;
+  MASK0_CHEQUE_VALOR   = $00000040;
+  MASK0_CHEQUE_DATA    = $00000080;
+  MASK0_CHEQUE_CODAUT  = $00000100;
+  MASK0_CHEQUE_MUNICIP = $00000200;
 
 
 //------------------------------------------------------------------------------
@@ -268,20 +703,20 @@ type
   PParam_Coleta = ^TParam_Coleta;
 
   TParam_Coleta = packed record
-    Bandeira:             Word;
-    FormatoDado:          Word;
-    HabTeclas:            Word;
-    MsgOp1:               array [1..64]  of AnsiChar;
-    MsgOp2:               array [1..64]  of AnsiChar;
-    MsgCl1:               array [1..64]  of AnsiChar;
-    MsgCl2:               array [1..64]  of AnsiChar;
-    WrkKey:               array [1..17]  of AnsiChar;
-    PosMasterKey:         Word;
-    PAN:                  array [1..20]  of AnsiChar;
-    UsaCriptoPinpad:      Byte;
-    IdModoPagto:          Byte;
+    Bandeira: Word;
+    FormatoDado: Word;
+    HabTeclas: Word;
+    MsgOp1: array [1..64]  of AnsiChar;
+    MsgOp2: array [1..64]  of AnsiChar;
+    MsgCl1: array [1..64]  of AnsiChar;
+    MsgCl2: array [1..64]  of AnsiChar;
+    WrkKey: array [1..17]  of AnsiChar;
+    PosMasterKey: Word;
+    PAN: array [1..20]  of AnsiChar;
+    UsaCriptoPinpad: Byte;
+    IdModoPagto: Byte;
     AceitaCartaoDigitado: Byte;
-    Reservado:            array [1..105] of AnsiChar;
+    Reservado: array [1..105] of AnsiChar;
   end;
 
 
@@ -364,20 +799,45 @@ type
 type
   EACBrTEFScopeAPI = class(Exception);
 
-  TACBrTEFScopeOperacao = ( scoCredito, scoDebito, scoPagto, scoConsCDC, scoCheque, scoCanc,
-                    scoReimpComp, scoResVenda, scoRecargaCel, scoPreAutCredito );
+  TACBrTEFScopeOperacao = ( scoMenu, scoCredito, scoDebito, scoPagto, scoConsCDC, scoCheque, scoCanc,
+                            scoReimpComp, scoResVenda, scoRecargaCel, scoPreAutCredito );
 
   TACBrTEFScopeGravarLog = procedure(const ALogLine: String; var Tratado: Boolean) of object ;
 
+  TACBrTEFScopeTerminalMensagem = (tmOperador, tmCliente);
+
   TACBrTEFScopeExibeMensagem = procedure(
-    Mensagem: String;
-    MilissegundosExibicao: Integer  // 0 - Para com OK; Positivo - aguarda Ok ou N milissegundos; Negativo - Apenas exibe a Msg (n√£o aguarda)
+    const Mensagem: String;
+    Terminal: TACBrTEFScopeTerminalMensagem;
+    MilissegundosExibicao: Integer  // 0 - Para com OK; Positivo - aguarda Ok ou N milissegundos; Negativo - Apenas exibe a Msg (n„o aguarda)
     ) of object;
+
+  TACBrTEFScopeExibeMenu = procedure(
+    const Titulo: String;
+    Opcoes: TStringList;
+    var ItemSelecionado: Integer) of object ;  // -1 = Cancelado
+
+  TACBrTEFScopePerguntarCampo = procedure(
+    const MsgOperador: String; const MsgCliente: String;
+    const TituloCampo: String;
+    const AcoesPermitidas: Byte;
+    var Resposta: String;
+    var AcaoResposta: Byte) of object ;
+
+  TACBrTEFScopeEstadoOperacao = ( scoestFluxoAPI,
+                                  scoestAguardaUsuario,
+                                  scoestPinPad,
+                                  scoestPinPadLerCartao,
+                                  scoestPinPadDigitacao,
+                                  scoestRemoveCartao,
+                                  scoestLeituraQRCode );
+
+  TACBrTEFScopeTransacaoEmAndamento = procedure(
+    EstadoOperacao: TACBrTEFScopeEstadoOperacao; out Cancelar: Boolean) of object;
 
   { TACBrTEFScopeAPI }
 
   TACBrTEFScopeAPI = Class
-
   private
     fCarregada: Boolean;
     fConectado: Boolean;
@@ -386,12 +846,17 @@ type
     fCupomReduzido: Boolean;
     fDiretorioTrabalho: String;
     fEmpresa: String;
+    fEmTransacao: Boolean;
     fEnderecoIP: String;
     fFilial: String;
     fInicializada: Boolean;
     fMsgPinPad: String;
+    fDadosDaTransacao: TStringList;
     fOnExibeMensagem: TACBrTEFScopeExibeMensagem;
+    fOnExibeMenu: TACBrTEFScopeExibeMenu;
     fOnGravarLog: TACBrTEFScopeGravarLog;
+    fOnPerguntaCampo: TACBrTEFScopePerguntarCampo;
+    fOnTransacaoEmAndamento: TACBrTEFScopeTransacaoEmAndamento;
     fPathLib: String;
     fPDV: String;
     fPermitirCancelarOperacaoPinPad: Boolean;
@@ -444,6 +909,12 @@ type
     xScopeObtemCampoExt: function(_Handle, _Masc, _Masc2: LongInt;
       _FieldSeparator: Byte; _Buffer: PAnsiChar): LongInt;
       {$IfDef MSWINDOWS}stdcall{$Else}cdecl{$EndIf};
+    xScopeObtemCampoExt2: function(_Handle, _Masc, _Masc2, _Masc3: LongInt;
+      _FieldSeparator: Byte; _Buffer: PAnsiChar): LongInt;
+      {$IfDef MSWINDOWS}stdcall{$Else}cdecl{$EndIf};
+    xScopeObtemCampoExt3: function(_Handle, _Masc, _Masc2, _Masc3, _Masc4: LongInt;
+      _FieldSeparator: Byte; _Buffer: PAnsiChar): LongInt;
+      {$IfDef MSWINDOWS}stdcall{$Else}cdecl{$EndIf};
     xScopeObtemHandle: function(_Desloc: LongInt): LongInt;
       {$IfDef MSWINDOWS}stdcall{$Else}cdecl{$EndIf};
     xScopePagamento: function(_Servico, _CodBandeira: Word): LongInt;
@@ -460,7 +931,7 @@ type
       {$IfDef MSWINDOWS}stdcall{$Else}cdecl{$EndIf};
     xScopeValidaInterfacePP: function(IntPP: Byte): LongInt;
       {$IfDef MSWINDOWS}stdcall{$Else}cdecl{$EndIf};
-    //Busca informa√ß√µes de configura√ß√µes no servidor deles...
+    //Busca informaÁıes de configuraÁıes no servidor deles...
     xScopeConsultaPP: function(Configurado, UsoExclusivoScope, Porta: PByte): LongInt;
       {$IfDef MSWINDOWS}stdcall{$Else}cdecl{$EndIf};
 
@@ -478,12 +949,11 @@ type
     //ScopePPStartOptionMenu
     //ScopePPOptionMenu]
     //ScopePPGetOperationMode
-    xScopePPDisplay: function(Msg: PAnsiChar): LongInt;
-      {$IfDef MSWINDOWS}stdcall{$Else}cdecl{$EndIf};
+    xScopeMenu: function(_UsoFuturo: LongInt): LongInt; {$IfDef MSWINDOWS}stdcall{$Else}cdecl{$EndIf};
+    xScopePPDisplay: function(Msg: PAnsiChar): LongInt; {$IfDef MSWINDOWS}stdcall{$Else}cdecl{$EndIf};
     //ScopePPDisplayEx
-  //Descontinuadas (p√°g. 142)
-    xScopePPOpen: function(Porta: Word): LongInt;
-      {$IfDef MSWINDOWS}stdcall{$Else}cdecl{$EndIf};
+  //Descontinuadas (p·g. 142)
+    xScopePPOpen: function(Porta: Word): LongInt; {$IfDef MSWINDOWS}stdcall{$Else}cdecl{$EndIf};
     //xScopePPGetInfo
     //xScopePPStartGetPIN
   //.... Descontinuadas
@@ -497,6 +967,10 @@ type
     procedure SetControleConexao(AValue: Boolean);
     procedure SetEnderecoIP(AValue: String);
     procedure SetPortaTCP(AValue: String);
+
+    procedure SetEmTransacao(AValue: Boolean);
+    procedure ChamarEventoTransacaoEmAndamento(EstadoOperacao: TACBrTEFScopeEstadoOperacao;
+      out Cancelar: Boolean);
 
   protected
     function GetLibFullPath: String;
@@ -528,7 +1002,15 @@ type
     procedure ObterDadosScopeINI(out AEmpresa: String; out AFilial: String;
       out AEnderecoIP: String; out APortaTCP: String);
 
-    procedure ExibirMensagem(const AMsg: String; TempoEspera: Integer = -1);
+    procedure ExibirMensagem(const AMsg: String;
+      Terminal: TACBrTEFScopeTerminalMensagem = tmOperador; TempoEspera: Integer = -1);
+
+    function ObterScopeStatus: Longint;
+    function ObterDadosComprovantes: Longint;
+    procedure ObterDadosCheque;
+    procedure ObterDadosDaTransacao;
+    procedure ExibirErroUltimaMsg;
+    procedure LogColeta(AColeta: TParam_Coleta);
 
   public
     constructor Create;
@@ -543,6 +1025,8 @@ type
     property PDV: String read fPDV write SetPDV;
     property EnderecoIP: String  read fEnderecoIP write SetEnderecoIP;
     property PortaTCP: String read fPortaTCP write SetPortaTCP;
+
+    property DadosDaTransacao: TStringList read fDadosDaTransacao;
 
     property PortaPinPad: String read fPortaPinPad write fPortaPinPad;
     property MsgPinPad: String read fMsgPinPad write fMsgPinPad;
@@ -561,20 +1045,30 @@ type
     property Inicializada: Boolean read fInicializada write SetInicializada;
     property Conectado: Boolean read fConectado;
     property SessaoAberta: Boolean read fSessaoAberta;
+    property EmTransacao: Boolean read fEmTransacao;
 
     property OnExibeMensagem: TACBrTEFScopeExibeMensagem read fOnExibeMensagem
       write fOnExibeMensagem;
+    property OnExibeMenu: TACBrTEFScopeExibeMenu read fOnExibeMenu
+      write fOnExibeMenu;
+    property OnPerguntaCampo: TACBrTEFScopePerguntarCampo read fOnPerguntaCampo
+      write fOnPerguntaCampo;
+    property OnTransacaoEmAndamento: TACBrTEFScopeTransacaoEmAndamento read fOnTransacaoEmAndamento
+      write fOnTransacaoEmAndamento;
+
     property OnGravarLog: TACBrTEFScopeGravarLog read fOnGravarLog write fOnGravarLog;
 
     procedure Inicializar;
     procedure DesInicializar;
 
-//E
     procedure AbrirSessaoTEF;
     procedure FecharSessaoTEF(Confirmar: Boolean; out TransacaoFoiDesfeita: Boolean);
-    procedure IniciarTransacao(Operacao: TACBrTEFScopeOperacao; const Param1,
-      Param2, Param3: String);
+    procedure IniciarTransacao(Operacao: TACBrTEFScopeOperacao;
+      const Param1: String = ''; const Param2: String = ''; const Param3: String = '');
     procedure ExecutarTransacao;
+    function EnviarParametroTransacao(Acao: LongInt; codTipoColeta: LongInt = -1;
+      Dados: AnsiString = ''; dadosParam: Word = 0): LongInt;
+    procedure AbortarTransacao;
 
     function ObterVersaoScope: String;
     function AcharPortaPinPad: String;
@@ -587,7 +1081,7 @@ implementation
 
 uses
   IniFiles, StrUtils, TypInfo,
-  ACBrUtil.Strings, ACBrUtil.FilesIO;
+  ACBrUtil.Strings, ACBrUtil.Math, ACBrUtil.FilesIO;
 
 { TACBrTEFScopeAPI }
 
@@ -614,6 +1108,10 @@ begin
   fConfirmarTransacoesPendentes := True;
   fOnGravarLog := Nil;
   fOnExibeMensagem := Nil;
+  fOnExibeMenu := Nil;
+  fOnPerguntaCampo := Nil;
+  fOnTransacaoEmAndamento := Nil;
+  fDadosDaTransacao := TStringList.Create;
 end;
 
 destructor TACBrTEFScopeAPI.Destroy;
@@ -621,6 +1119,7 @@ begin
   fOnGravarLog := Nil;
   fOnExibeMensagem := Nil;
   DesInicializar;
+  fDadosDaTransacao.Free;
   inherited Destroy;
 end;
 
@@ -631,18 +1130,26 @@ begin
 
   GravarLog('TACBrTEFScopeAPI.Inicializar');
 
+  if not Assigned(fOnTransacaoEmAndamento) then
+    DoException(Format(ACBrStr(sErrEventoNaoAtribuido), ['OnTransacaoEmAndamento']));
+  if not Assigned(fOnExibeMenu) then
+    DoException(Format(ACBrStr(sErrEventoNaoAtribuido), ['OnExibeMenu']));
+  if not Assigned(fOnPerguntaCampo) then
+    DoException(Format(ACBrStr(sErrEventoNaoAtribuido), ['OnPerguntaCampo']));
+  if not Assigned(fOnExibeMensagem) then
+    DoException(Format(ACBrStr(sErrEventoNaoAtribuido), ['OnExibeMensagem']));
+
   VerificarDiretorioDeTrabalho;
-//E
-  //Se o arquivo INI estiver configurado, a chamada abaixo talvez possa ser dispensada.
-  //Ver tamb√©m fun√ß√£o ScopeOpenVerify() como poss√≠vel adi√ß√£o para essa feature.
+  //E: Se o arquivo INI estiver configurado, a chamada abaixo talvez possa ser dispensada.
+  //Ver tambÈm funÁ„o ScopeOpenVerify() como possÌvel adiÁ„o para essa feature.
   VerificarEAjustarScopeINI;
   LoadLibFunctions;
-//E
-  AbrirPinPad; //exemplo em Delphi parece n√£o precisar do PINPAD.
 
   fInicializada := True;
   fConectado := False;
   fSessaoAberta := False;
+
+  AbrirPinPad;
 
   if not ControleConexao then
     AbrirComunicacaoScope;
@@ -799,11 +1306,35 @@ begin
   fPortaTCP := Trim(AValue);
 end;
 
+procedure TACBrTEFScopeAPI.SetEmTransacao(AValue: Boolean);
+begin
+  if (not fInicializada) or (AValue = fEmTransacao) then
+    Exit;
+
+  fEmTransacao := AValue;
+
+  if not fEmTransacao then
+    ExibirMensagem('');
+end;
+
+procedure TACBrTEFScopeAPI.ChamarEventoTransacaoEmAndamento(
+  EstadoOperacao: TACBrTEFScopeEstadoOperacao; out Cancelar: Boolean);
+begin
+  Cancelar := False;
+  if not Assigned(fOnTransacaoEmAndamento) then
+    Exit;
+
+  GravarLog('  OnTransacaoEmAndamento( '+GetEnumName(TypeInfo(TACBrTEFScopeEstadoOperacao),
+            integer(EstadoOperacao))+' )');
+  fOnTransacaoEmAndamento(EstadoOperacao, Cancelar);
+  GravarLog('    Cancelar: '+BoolToStr(Cancelar, True) );
+end;
+
 function TACBrTEFScopeAPI.GetLibFullPath: String;
 begin
   if (PathLib <> '') then
   begin
-    GravarLog(ACBrStr('TACBrTEFScopeAPI.LibFullName: Usando "PathLib" informado pela aplica√ß√£o: ')+PathLib);
+    GravarLog(ACBrStr('TACBrTEFScopeAPI.LibFullName: Usando "PathLib" informado pela aplicaÁ„o: ')+PathLib);
     Result := PathLib + CScopeLib
   end
   else
@@ -815,7 +1346,7 @@ var
   sLibName: String;
 begin
   sLibName := GetLibFullPath;
-  Result := ExtractFilePath(sLibName) + PathDelim + CScopeINI;
+  Result := ExtractFilePath(sLibName) + CScopeINI;
 end;
 
 procedure TACBrTEFScopeAPI.LoadLibFunctions;
@@ -830,9 +1361,9 @@ procedure TACBrTEFScopeAPI.LoadLibFunctions;
       begin
         LibPointer := NIL ;
         if FuncIsRequired then
-          DoException(Format(ACBrStr('Erro ao carregar a fun√ß√£o: %s de: %s'),[FuncName, LibName]))
+          DoException(Format(ACBrStr('Erro ao carregar a funÁ„o: %s de: %s'),[FuncName, LibName]))
         else
-          GravarLog(Format(ACBrStr('     Fun√ß√£o n√£o requerida: %s n√£o encontrada em: %s'),[FuncName, LibName]));
+          GravarLog(Format(ACBrStr('     FunÁ„o n„o requerida: %s n„o encontrada em: %s'),[FuncName, LibName]));
         end ;
     end ;
   end;
@@ -866,6 +1397,8 @@ begin
   ScopeFunctionDetect(sLibName, 'ScopeReimpressaoComprovante', @xScopeReimpressaoComprovante);
   ScopeFunctionDetect(sLibName, 'ScopeResumoVendas', @xScopeResumoVendas);
   ScopeFunctionDetect(sLibName, 'ScopeObtemCampoExt', @xScopeObtemCampoExt);
+  ScopeFunctionDetect(sLibName, 'ScopeObtemCampoExt2', @xScopeObtemCampoExt2);
+  ScopeFunctionDetect(sLibName, 'ScopeObtemCampoExt3', @xScopeObtemCampoExt3);
   ScopeFunctionDetect(sLibName, 'ScopeObtemHandle', @xScopeObtemHandle);
   ScopeFunctionDetect(sLibName, 'ScopePagamento', @xScopePagamento);
   ScopeFunctionDetect(sLibName, 'ScopeRecargaCelular', @xScopeRecargaCelular);
@@ -879,8 +1412,8 @@ begin
   ScopeFunctionDetect(sLibName, 'ScopePPOpenSecure', @xScopePPOpenSecure);
   ScopeFunctionDetect(sLibName, 'ScopePPClose', @xScopePPClose);
   ScopeFunctionDetect(sLibName, 'ScopePPGetCOMPort', @xScopePPGetCOMPort);
-
   ScopeFunctionDetect(sLibName, 'ScopePPDisplay', @xScopePPDisplay);
+  ScopeFunctionDetect(sLibName, 'ScopeMenu', @xScopeMenu);
 
   fCarregada := True;
 end;
@@ -922,6 +1455,8 @@ begin
   xScopeReimpressaoComprovante := Nil;
   xScopeResumoVendas := Nil;
   xScopeObtemCampoExt := Nil;
+  xScopeObtemCampoExt2 := Nil;
+  xScopeObtemCampoExt3 := Nil;
   xScopeObtemHandle := Nil;
   xScopePagamento := Nil;
   xScopeRecargaCelular := Nil;
@@ -964,7 +1499,7 @@ var
   ini: TMemIniFile;
   sl: TStringList;
   i: Integer;
-  sPathScopeIni, SecName, sEmpresa, sFilial, {sName,} sPort: String;
+  sPathScopeIni, SecName, sEmpresa, sFilial, sName, sPort: String;
   ApagaSessoPrincipal, SemSessaoPrincipal: Boolean;
 
   procedure AjustarParamSeNaoExistir(const ASessao: String; const AChave: String; ValorPadrao: String);
@@ -1016,7 +1551,12 @@ begin
         end;
 
         AjustarParamSeNaoExistir(SecName, 'TimeOutAdm', '120');
-        AjustarParamSeNaoExistir(SecName, 'VersaoAutomacao', fVersaoAutomacao);
+        if (fVersaoAutomacao <> '') then
+          sName := fVersaoAutomacao
+        else
+          sName := '01ACBR0000';
+
+        AjustarParamSeNaoExistir(SecName, 'VersaoAutomacao', sName);
         AjustarParamSeNaoExistir(SecName, 'CupomReduzido', IfThen(fCupomReduzido, 's', 'n'));
         AjustarParamSeNaoExistir(SecName, 'NaoAbrirDigitado', IfThen(fPermitirCartaoDigitado, 'n', 's'));
         AjustarParamSeNaoExistir(SecName, 'WKPAN', IfThen(fPinPadSeguro, 's', 'n'));
@@ -1110,11 +1650,12 @@ begin
 end;
 
 procedure TACBrTEFScopeAPI.ExibirMensagem(const AMsg: String;
-  TempoEspera: Integer);
+  Terminal: TACBrTEFScopeTerminalMensagem; TempoEspera: Integer);
 begin
   GravarLog('  OnExibeMensagem( '+AMsg+
-                                ', '+IntToStr(TempoEspera)+' )', True);
-  fOnExibeMensagem(AMsg, TempoEspera);
+            ', '+GetEnumName(TypeInfo(TACBrTEFScopeTerminalMensagem), integer(Terminal) )+
+            ', '+IntToStr(TempoEspera)+' )', True);
+  fOnExibeMensagem(AMsg, Terminal, TempoEspera);
 end;
 
 function TACBrTEFScopeAPI.ConfigurarPortaPinPad(const APortaPinPad: String
@@ -1156,7 +1697,7 @@ begin
     GravarLog('ScopeVersao()');
     ret := xScopeVersao(pszData, 13);
     GravarLog('  ret: '+IntToStr(ret));
-    if (ret = SCO_SUCESSO) then
+    if (ret = RCS_SUCESSO) then
     begin
       Result := String(pszData);
       GravarLog('  Result: '+Result);
@@ -1179,7 +1720,7 @@ begin
     GravarLog('ScopePPGetCOMPort()');
     ret := xScopePPGetCOMPort(pszData);
     GravarLog('  ret: '+IntToStr(ret));
-    if (ret = SCO_SUCESSO) then
+    if (ret = RCS_SUCESSO) then
     begin
       Result := String(pszData);
       GravarLog('  Result: '+Result);
@@ -1206,20 +1747,24 @@ var
   MsgErro: String;
 begin
 //E
-  //Adicionar erros como os do Pinpad (Ex.: PC_NAO_ABERTO_APP ver p√°g 148)
+  //Adicionar erros como os do Pinpad (Ex.: PC_NAO_ABERTO_APP ver p·g 148)
   case AErrorCode of
-    SCO_SUCESSO: MsgErro := '';
-    SCO_ERRO_PARM_1: MsgErro := 'Par√¢metro 1 inv√°lido';
-    SCO_ERRO_PARM_2: MsgErro := 'Par√¢metro 2 inv√°lido';
-    SCO_ERRO_PARM_3: MsgErro := 'Par√¢metro 3 inv√°lido';
-    SCO_ERRO_PARM_4: MsgErro := 'Par√¢metro 4 inv√°lido';
-    SCO_ERRO_ARQ_CICLO_TEF: MsgErro := 'Erro no arquivo de controle, finaliza√ß√£o multi-TEF';
-    SCO_TRN_EM_ANDAMENTO: MsgErro := 'Transa√ß√£o em andamento';
-    SCO_API_NAO_INICIALIZADA: MsgErro := 'SCOPE API n√£o foi inicializada';
-    SCO_API_JA_INICIALIZADA: MsgErro := 'SCOPE API j√° foi inicializada';
-    SCO_SRV_NOT_CFG: MsgErro := 'Servidor n√£o configurado no arquivo '+CScopeINi;
-    SCO_ERRO_LOGON_PDV: MsgErro := 'Verificar o erro retornado no log do ScopeSrv';
-    SCO_ERRO_CONFIG_PDV: MsgErro := 'Verifique a configura√ß√£o do perfil do PDV';
+    RCS_SUCESSO: MsgErro := '';
+    RCS_TRN_EM_ANDAMENTO: MsgErro := ''; //'TransaÁ„o em andamento';
+    RCS_ERRO_PARM_1: MsgErro := 'Par‚metro 1 inv·lido';
+    RCS_ERRO_PARM_2: MsgErro := 'Par‚metro 2 inv·lido';
+    RCS_ERRO_PARM_3: MsgErro := 'Par‚metro 3 inv·lido';
+    RCS_ERRO_PARM_4: MsgErro := 'Par‚metro 4 inv·lido';
+    RCS_ERRO_ARQ_CICLO_TEF: MsgErro := 'Erro no arquivo de controle, finalizaÁ„o multi-TEF';
+    //D RCS_API_NAO_FEZ_TRN: MsgErro := 'Ainda n„o fez nenhuma transaÁ„o apÛs a inicializaÁ„o';
+    RCS_API_NAO_INICIALIZADA: MsgErro := 'SCOPE API n„o foi inicializada';
+    RCS_API_JA_INICIALIZADA: MsgErro := 'SCOPE API j· foi inicializada';
+    RCS_SRV_NOT_CFG: MsgErro := 'Servidor n„o configurado no arquivo '+CScopeINi;
+    RCS_ERRO_LOGON_PDV: MsgErro := 'Verificar o erro retornado no log do ScopeSrv';
+    RCS_ERRO_CONFIG_PDV: MsgErro := 'Verifique a configuraÁ„o do perfil do PDV';
+    //D RCS_THREAD_API_NOT_INIT: MsgErro := 'N„o foi possÌvel criar a ìthreadî na coleta de dados';
+    RCS_ERRO_NUM_MAX_TEF_SESSAO: MsgErro := 'Estourou o n˙mero m·ximo de TEF numa sess„o multi-TEF';
+    RCS_NAO_HA_CAMPOS_SALVOS: MsgErro := 'N„o h· arquivo com dados da transaÁ„o anterior salvo';
   else
     MsgErro := Format('Erro: %d', [AErrorCode]);
   end;
@@ -1241,7 +1786,9 @@ begin
   ObterDadosScopeINI(sEmpresa, sFilial, sEnderecoIP, sPorta);
   ExibirMensagem( ACBrStr(Format(sMsgAbrindoConexao, [sEmpresa, sFilial]) ));
   if (fPDV = '') then
-    sPDV := '001';
+    sPDV := '001'
+  else
+    sPDV:= fPDV;
 
   GravarLog('ScopeOpen( 2, '+sEmpresa+', '+sFilial+', '+sPDV+' )');
   ret := xScopeOpen( PAnsiChar('2'),
@@ -1249,11 +1796,11 @@ begin
                      PAnsiChar(AnsiString(sFilial)),
                      PAnsiChar(AnsiString(sPDV)) );
   GravarLog('  ret: '+IntToStr(ret));
-  if ret <> SCO_SUCESSO then
+  if (ret <> RCS_SUCESSO) then
     TratarErroScope(ret);
 
   fConectado := True;
-  ExibirMensagem(Format(ACBrStr(sMsgConctadoAoServidor), [sEnderecoIP+':'+sPorta]));
+  //ExibirMensagem(Format(ACBrStr(sMsgConctadoAoServidor), [sEnderecoIP+':'+sPorta]));
 
   ConfigurarColeta;
   VerificaSessaoTEFAnterior;
@@ -1269,11 +1816,11 @@ begin
   GravarLog('ScopeClose()');
   ret := xScopeClose();
   GravarLog('  ret: '+IntToStr(ret));
-  if (ret <> SCO_SUCESSO) then
+  if (ret <> RCS_SUCESSO) and (ret <> RCS_API_NAO_INICIALIZADA) then
     TratarErroScope(ret);
 
   fConectado := False;
-  ExibirMensagem(ACBrStr(sMsgDesconectado));
+  //ExibirMensagem(ACBrStr(sMsgDesconectado));
 end;
 
 procedure TACBrTEFScopeAPI.VerificarSeEstaConectadoScope;
@@ -1310,7 +1857,7 @@ begin
   GravarLog('ScopeAbreSessaoTEF()');
   ret := xScopeAbreSessaoTEF;
   GravarLog('  ret: '+IntToStr(ret));
-  if (ret <> SCO_SUCESSO) then
+  if (ret <> RCS_SUCESSO) then
     TratarErroScope(ret);
 
   ExibirMensagem('');
@@ -1329,15 +1876,15 @@ begin
 
   GravarLog('FecharSessaoTEF( '+BoolToStr(Confirmar, True)+' )');
   if Confirmar then
-    Acao := SCO_CONFIRMA_TEF
+    Acao := ACAO_FECHA_CONFIRMA_TEF
   else
-    Acao := SCO_DESFAZ_TEF;
+    Acao := ACAO_FECHA_DESFAZ_TEF;
 
   DesfezTEF := 0;
   GravarLog('ScopeFechaSessaoTEF( '+IntToStr(Acao)+' )');
   ret := xScopeFechaSessaoTEF(Acao, @DesfezTEF);
   GravarLog('  ret: '+IntToStr(ret)+', DesfezTEF: '+IntToStr(DesfezTEF));
-  if (ret <> SCO_SUCESSO) then
+  if (ret <> RCS_SUCESSO) then
     TratarErroScope(ret);
 
   fSessaoAberta := False;
@@ -1353,22 +1900,26 @@ begin
   FecharSessaoTEF(fConfirmarTransacoesPendentes, DesfezTEF);
   if DesfezTEF then
   begin
-    ExibirMensagem(sMsgTransacaoDesfeita, 0);
+    ExibirMensagem(sMsgTransacaoDesfeita, tmOperador, 0);
     ExibirMensagem('');
   end;
 end;
 
 procedure TACBrTEFScopeAPI.IniciarTransacao(Operacao: TACBrTEFScopeOperacao;
-  const Param1, Param2, Param3: String);
+  const Param1: String; const Param2: String; const Param3: String);
 var
   p1, p2, p3: PAnsiChar;
   ret: LongInt;
+  b: Boolean;
 begin
   GravarLog('IniciarTransacao( '+GetEnumName(TypeInfo(TACBrTEFScopeOperacao), integer(Operacao))+
             ', '+Param1+', '+Param2+', '+Param3+' )' );
 
+  if fEmTransacao then
+    DoException(ACBrStr(sErrTransacaoJaIniciada));
+
   if not fSessaoAberta then
-    DoException(ACBrStr(sErrSemSessao));
+    AbrirSessaoTEF;
 
   p1 := PAnsiChar(AnsiString(Param1));
   p2 := PAnsiChar(AnsiString(Param2));
@@ -1376,6 +1927,12 @@ begin
   ret := 0;
 
   case Operacao of
+    scoMenu:
+      begin
+        GravarLog('ScopeMenu( 0 )');
+        ret := xScopeMenu(0);
+      end;
+
     scoCredito:
       begin
         GravarLog('ScopeCompraCartaoCredito( '+Param1+', '+Param2+' )');
@@ -1387,243 +1944,389 @@ begin
         GravarLog('ScopeCompraCartaoDebito( '+Param1+' )');
         ret := xScopeCompraCartaoDebito(p1);
       end;
+
+    //TODO: escrever outras outras operaÁıes
   end;
 
   GravarLog('  ret: '+IntToStr(ret));
-  if (ret <> SCO_SUCESSO) then
-    TratarErroScope(ret);
+  if (ret <> RCS_SUCESSO) then
+  begin
+    FecharSessaoTEF(False, b);
+    TratarErroScope(ret)
+  end
+  else
+    SetEmTransacao(True);
 end;
 
 procedure TACBrTEFScopeAPI.ExecutarTransacao;
 var
-  iRet,
-  iAux:       LongInt;
-  PColeta:    TParam_Coleta;
-  PColetaMsg: TColeta_Msg;
-  bAux:       Byte;
-  sBufEntrAux: string;
+  ret, iStatus: LongInt;
+  iBarra, Acao: Byte;
+  rColeta: TParam_Coleta;
+  TipoCaptura: Word;
+  MsgOp, MsgCli, Titulo, Resposta: String;
+const
+  cBarras = '|/-\';
 
-  //ForcarFinalizar :Boolean;
+  function UsuarioCancelouATransacao(Fluxo: TACBrTEFScopeEstadoOperacao): Boolean;
+  var
+    Cancelar: Boolean;
+  begin
+    //Apenas Exibe uma mensagem na tela para n„o parecer que est· travado
+    inc(iBarra);
+    if (iBarra) > 4 then
+      iBarra := 1;
+    ExibirMensagem(Format(ACBrStr(sMsgTransacaoEmAndamento), [cBarras[iBarra]]));
+
+    // Chama evento, permitindo ao usu·rio cancelar
+    Cancelar := False;
+    ChamarEventoTransacaoEmAndamento(Fluxo, Cancelar);
+    Result := Cancelar;
+  end;
+
 begin
   GravarLog('ExecutarTransacao');
-  //ForcarFinalizar := False;
 
-  //Ver m√©todo FinalizaTransacaoTEF exemplo Delphi para entender loop...
-  repeat
-    iAux := 0;
-    bAux := 0;
-    sBufEntrAux := '';
-    //FillChar(sBufEntr, length(sBufEntr) * sizeof(AnsiChar), #0);
-    //ZeroMemory(@PColeta, SizeOf(TParam_Coleta));//abaixo
-    FillChar(PColeta, SizeOf(TParam_Coleta), 0);
+  if not fEmTransacao then
+    DoException(ACBrStr(sErrTransacaoNaoIniciada));
 
-    // Enquanto a transacao estiver em andamento, aguarda....Loop
-    repeat
-      iRet := xScopeStatus;
-      //Apenas Exibe uma mensagem na tela para n√£o parecer que est√° travado?
-      //if (iAux = 0) then
-      //  atualizMsg ('... transacao em andamento |    -> ' + IntToStr(iRet))
-      //else if (iAux = 1) then
-      //  atualizMsg ('... transacao em andamento /    -> ' + IntToStr(iRet))
-      //else if (iAux = 2) then
-      //  atualizMsg ('... transacao em andamento -    -> ' + IntToStr(iRet))
-      //else
-      //begin
-      //  atualizMsg ('... transacao em andamento \    -> ' + IntToStr(iRet));
-      //  iAux := -1;
-      //end;
-      //iAux := iAux + 1;
+  fDadosDaTransacao.Clear;
+  iBarra := 0;
 
-      // Tratar quando usu√°rio clicou em Cancelar???
-      // Tratar a coleta de cartao manualmente, em paralelo c/ o PINPad
+  while True do
+  begin
+    // Le o Status da OperaÁ„o
+    iStatus := ObterScopeStatus;
+    Acao := ACAO_RESUME_PROXIMO_ESTADO;
 
-    until (iRet <> SCO_TRN_EM_ANDAMENTO);//...
-
-    //Ainda est√° em modo Coleta de dados?
-    if ((iRet < SCO_PRIMEIRO_COLETA_DADOS) or
-         (iRet > SCO_ULTIMO_COLETA_DADOS)) then
+    // Enquanto a transacao estiver em andamento, aguarda, mas verifica se o usu·rio Cancelou //
+    if (iStatus = RCS_TRN_EM_ANDAMENTO) then
     begin
-      //Exibir uma mensagem de sa√≠da??
-      //encerraTransacao(iRet);
+      if UsuarioCancelouATransacao(scoestFluxoAPI) then
+        EnviarParametroTransacao(ACAO_RESUME_CANCELAR)
+      else
+        Sleep(CINTERVALO_COLETA);
+
+      Continue;
+    end;
+
+    // Efetuando Leitura do Cart„o. Verifica se o operador cancelou a operacao via teclado //
+    if (iStatus = TC_COLETA_CARTAO_EM_ANDAMENTO) then
+    begin
+      if UsuarioCancelouATransacao(scoestPinPadLerCartao) then
+        Acao := ACAO_RESUME_CANCELAR;
+
+      EnviarParametroTransacao(Acao);
+      Continue;
+    end;
+
+    // Se estiver fora da faixa FC00 a FCFF, finaliza o processo //
+    if ((iStatus < TC_PRIMEIRO_TIPO_COLETA) or (iStatus > TC_MAX_TIPO_COLETA)) then
       Break;
+
+    // Coleta dados do Scope para esse passo //
+    GravarLog('ScopeGetParam');
+    FillChar(rColeta, SizeOf(TParam_Coleta), #0);
+    ret := xScopeGetParam(iStatus, @rColeta);
+    GravarLog('  ret: '+IntToStr(ret));
+    if (ret <> RCS_SUCESSO) then
+      TratarErroScope(ret);
+
+    LogColeta(rColeta);
+    // Exibe as mensagens do cliente e operador //
+    MsgOp := Trim(String(rColeta.MsgOp1)) + sLineBreak + Trim(String(rColeta.MsgOp2));
+    if (MsgOp <> '') then
+      ExibirMensagem(MsgOp, tmOperador);
+
+    MsgCli := Trim(String(rColeta.MsgCl1)) + sLineBreak + Trim(String(rColeta.MsgCl2));
+    if (MsgCli <> '') then
+      ExibirMensagem(MsgCli, tmCliente);
+
+    Titulo := MsgOp;
+    Resposta := '';
+    TipoCaptura := COLETA_TECLADO;
+
+    // Trata os estados //
+    case iStatus of
+      TC_CARTAO,                    // cartao //
+      TC_COLETA_AUT_OU_CARTAO:;
+        //TODO
+
+      TC_IMPRIME_CHEQUE:            // imprime Cheque //
+        ObterDadosCheque;
+
+      TC_IMPRIME_CUPOM,             // imprime Cupom + Nota Promissoria + Cupom Promocional //
+      TC_IMPRIME_CUPOM_PARCIAL,     // imprime Cupom Parcial //
+      TC_IMPRIME_CONSULTA:
+        ObterDadosComprovantes;
+
+      TC_DISP_LISTA_MEDICAMENTO:;   // recupera lista de Medicamentos //
+        //TODO
+
+      TC_DISP_VALOR:;               // recupera valor do Vale Gas //
+        //TODO
+
+      TC_COLETA_REG_MEDICAMENTO:;   // se coletou lista de medicamentos, deve tambem atualizar o valor. //
+        //TODO
+
+      TC_INFO_RET_FLUXO,            // apenas mostra informacao e deve retornar ao scope //
+      TC_COLETA_EM_ANDAMENTO:       // transacao em andamento //
+        Acao := ACAO_RESUME_PROXIMO_ESTADO;
+
+      TC_OBTEM_SERVICOS:;           // recupera os servicos configurados //
+        //TODO:
+
+      TC_COLETA_OPERADORA:;         // recupera a lista de operadoras da Recarga de Celular //
+        //TODO:
+
+      TC_COLETA_VALOR_RECARGA:;     // recupera a lista de valores da Recarga de Celular //
+        //TODO:
+
+      TC_SENHA:;                    // captura da senha do usuario //
+        //TODO:
+
+      TC_INFO_AGU_CONF_OP:;         // mostra informacao e aguarda confirmacao do usuario //
+        //TODO:
+
+      TC_COLETA_DADOS_ECF:;         // coleta dados do ECF e do cupom fiscal para a transacao de debito voucher com o TICKET CAR //
+        //TODO:
+
+      TC_COLETA_LISTA_MERCADORIAS:; // coleta Lista de Mercadorias para a transacao de debito voucher com o TICKET CAR //
+        //TODO:
+
+      TC_COLETA_LISTA_PRECOS:;      // coleta Lista para Atualizacao de Precos (TICKET CAR)
+        //TODO:
+
+    else                            // deve coletar algo... //
+      fOnPerguntaCampo(MsgOp, MsgCli, Titulo, rColeta.HabTeclas, Resposta, Acao);
+
     end;
 
-    // Guardar os bits q ligamos nos passos anteriores
-    iAux := PColeta.HabTeclas;
-
-    // Obtem dados do Scope e exibe as mensagens do cliente e operador
-    xScopeGetParam(iRet, @PColeta);
-
-    // Restaurar os bits armazenados anteriorm/te
-    PColeta.HabTeclas := PColeta.HabTeclas or iAux;
-
-    // Tratamento dos estados
-    case iRet of
-      SCO_CARTAO, SCO_COLETA_AUT_OU_CARTAO :
-      begin
-        sBufEntrAux := 'Digite o numero do cartao:';
-      end;
-
-      // imprime Cheque
-      SCO_IMPRIME_CHEQUE:
-      begin
-        //// P/ indicarmos p/ a funcao execFormAux exibir esse texto no memo
-        //// de exibicao
-        //PColeta.HabTeclas := PColeta.HabTeclas or BIT7_ON;
-        //sBufEntrAux := ObtemDadosCupom();
-        //Imprime(sBufEntrAux);
-        DoException('N√£o Implementado: SCO_IMPRIME_CHEQUE');
-      end;
-
-      // recupera a lista de valores da Recarga de Celular
-      SCO_COLETA_VALOR_RECARGA:
-      begin
-        //sBufEntrAux := ObtemValoresRecarga(PColeta);
-        //PColeta.HabTeclas := PColeta.HabTeclas or BIT7_ON;
-        //Imprime(sBufEntrAux);
-        DoException('N√£o Implementado: SCO_COLETA_VALOR_RECARGA');
-      end;
-
-      // recupera a lista de operadoras da Recarga de Celular
-      SCO_COLETA_OPERADORA:
-      begin
-        //sBufEntrAux := ObtemOperadorasRecarga(PColeta);
-        //PColeta.HabTeclas := PColeta.HabTeclas or BIT7_ON;
-        //Imprime(sBufEntrAux);
-        DoException('N√£o Implementado: SCO_COLETA_OPERADORA');
-      end;
-
-      // imprime Cupom + Nota Promissoria + Cupom Promocional
-      SCO_IMPRIME_CUPOM,
-      SCO_IMPRIME_CUPOM_PARCIAL, // imprime Cupom Parcial
-      SCO_IMPRIME_CONSULTA: // imprime Consulta
-      begin
-        //{ P/ indicarmos p/ a funcao execFormAux exibir esse texto
-        //no memo de exibicao }
-        //PColeta.HabTeclas := PColeta.HabTeclas or BIT7_ON;
-        //sBufEntrAux := ObtemCupons(PColeta);
-        //Imprime(sBufEntrAux);
-        DoException('N√£o Implementado: SCO_IMPRIME_CXXXX');
-      end;
-
-      // SCOPE aguardando o cartao que foi digitado
-      SCO_CARTAO_DIGITADO:
-      begin
-        // Vamos ver c o usr ja' digitou o texto
-        //sBufEntrAux := frmAuxParallelCtl (2, @bAux);
-        //if bAux = 0 then
-        //begin
-        //  if Length (sBufEntrAux) <> 0 then
-        //  begin
-        //    // O texto ja' esta' em sBufEntrAux
-        //    iAux := 0;  // Proximo estado
-        //    bAux := 1;  // Nao podemos executar a funcao execFormAux
-        //  end
-        //  else
-        //    // O usr teclou 'Cancelar' no PPad
-        //    sBufEntrAux := 'Coleta:';
-        //end;
-        DoException('N√£o Implementado: SCO_CARTAO_DIGITADO');
-      end;
-
-      // mostra informacao e aguarda confirmacao do usuario
-      SCO_MOSTRA_INFO_RET_SCOPE:
-      begin
-        if Length (sBufEntrAux) = 0 then
-          sBufEntrAux := 'Coleta:';
-        PColeta.HabTeclas := BIT9_ON;
-        iAux := 0; // Garantir o envio da acao PROXIMO ao SCOPE
-      end;
-
-      SCO_COLETA_EM_ANDAMENTO:
-      begin
-        bAux := 1
-      end;
-
-      // Todos os outros estados nao tratados
-      else
-      begin
-        if Length (sBufEntrAux) = 0 then
-          sBufEntrAux := 'Coleta:';
-      end;
-    end;
-
-    // Exibe as msgs retornadas pelo SCOPE
-    if (bAux <> 1) then
+    ret := EnviarParametroTransacao(Acao, iStatus, Resposta, TipoCaptura);
+    if (ret <> RCS_SUCESSO) then
     begin
-      //iSinc := iSinc and not (ACAO_PROX + ACAO_ANTER + ACAO_CANCELAR);
-      //Chama Form para usu√°rio.
-      //sBufEntrAux := execFormAux ( TrimRight ( string (PColeta.MsgOp1) ),
-      //                          TrimRight ( string (PColeta.MsgOp2) ),
-      //                          TrimRight ( string (PColeta.MsgCl1) ),
-      //                          TrimRight ( string (PColeta.MsgCl2) ),
-      //                          sBufEntrAux,
-      //                          PColeta.HabTeclas);
-      ExibirMensagem(TrimRight(string(PColeta.MsgOp1))+ TrimRight(string(PColeta.MsgOp2))+
-                     TrimRight(string(PColeta.MsgCl1))+ TrimRight(string(PColeta.MsgCl2)) );
-      // Em qual botao o usr clicou?
-      // Proximo
-      //if (iSinc and ACAO_PROX) <> 0 then
-      //  iAux := COLETA_PROXIMO_ESTADO
-      //// Anterior
-      //else if (iSinc and ACAO_ANTER) <> 0 then
-      //  iAux := COLETA_ANTERIOR_ESTADO
-      //// Cancelar
-      //else if (iSinc and ACAO_CANCELAR) <> 0 then
-      //  iAux := COLETA_CANCELAR;
+      ExibirErroUltimaMsg;
+
+      if (ret <> RCS_DADO_INVALIDO) then
+        Break;
     end;
+  end;
 
-    //if ( iSinc and (ACAO_PROX + ACAO_ANTER + ACAO_CANCELAR) = 0 ) then
-      //sBufEntrAux := '';
+  if (iStatus = RCS_SUCESSO) then
+  begin
+    ExibirMensagem(sMsgTransacaoCompleta);
+    ObterDadosDaTransacao;
+  end
+  else
+    TratarErroScope(iStatus);
+end;
 
-    iRet := xScopeResumeParam(iRet, PAnsiChar(AnsiString(sBufEntrAux)), SCO_TECLADO, iAux);
+function TACBrTEFScopeAPI.EnviarParametroTransacao(Acao: LongInt;
+  codTipoColeta: LongInt; Dados: AnsiString; dadosParam: Word): LongInt;
+begin
+  if (codTipoColeta < 0) then
+    codTipoColeta := ObterScopeStatus;
 
-    if (iRet <> SCO_SUCESSO) then
+  GravarLog('ScopeResumeParam( '+IntToStr(codTipoColeta)+', "'+Dados+'", '+IntToStr(dadosParam)+', '+IntToStr(Acao)+' )');
+  Result := xScopeResumeParam(codTipoColeta, PAnsiChar(Dados), dadosParam, Acao);
+  GravarLog('  ret: '+IntToStr(Result));
+end;
+
+procedure TACBrTEFScopeAPI.AbortarTransacao;
+begin
+  EnviarParametroTransacao(ACAO_RESUME_CANCELAR);
+  SetEmTransacao(False);
+end;
+
+function TACBrTEFScopeAPI.ObterScopeStatus: Longint;
+begin
+  GravarLog('ScopeStatus');
+  Result := xScopeStatus;
+  GravarLog('  ret: '+IntToStr(Result) + ' - $'+IntToHex(Result, 4));
+end;
+
+function TACBrTEFScopeAPI.ObterDadosComprovantes: Longint;
+var
+  pCabec, pCupomCliente, pCupomLoja, pCupomReduzido: PAnsiChar;
+  NumeroLinhasReduzido: Byte;
+  sCabec: String;
+const
+  CMASK0 = 'mask0-';
+begin
+  pCabec := AllocMem(1024);
+  pCupomCliente := AllocMem(2048);
+  pCupomLoja := AllocMem(2048);
+  pCupomReduzido := AllocMem(2048);
+  try
+    GravarLog('ScopeGetCupomEx');
+    Result := xScopeGetCupomEx( SizeOf(pCabec), pCabec,
+                                SizeOf(pCupomCliente), pCupomCliente,
+                                SizeOf(pCupomLoja), pCupomLoja,
+                                SizeOf(pCupomReduzido), pCupomReduzido,
+                                @NumeroLinhasReduzido);
+    GravarLog('  ret: '+IntToStr(Result));
+    if (Result <> RCS_SUCESSO) then
+      TratarErroScope(Result);
+
+    sCabec := String(pCabec);
+    fDadosDaTransacao.Values[CMASK0 + IntToHex(MASK0_CUPOM_LOJA, 8)] := BinaryStringToString( sCabec + sLineBreak + String(pCupomLoja) );
+    fDadosDaTransacao.Values[CMASK0 + IntToHex(MASK0_CUPOM_CLIENTE, 8)] := BinaryStringToString( sCabec + sLineBreak + String(pCupomCliente) );
+    fDadosDaTransacao.Values[CMASK0 + IntToHex(MASK0_CUPOM_REDUZIDO, 8)] := BinaryStringToString( String(pCupomReduzido) );
+  finally
+    Freemem(pCabec);
+    Freemem(pCupomCliente);
+    Freemem(pCupomLoja);
+    Freemem(pCupomReduzido);
+  end;
+end;
+
+procedure TACBrTEFScopeAPI.ObterDadosCheque;
+var
+  PCheque: TParam_Cheq;
+  ret: LongInt;
+const
+  CMASK0 = 'mask0-';
+begin
+  GravarLog('ScopeGetCheque');
+  ret := xScopeGetCheque(@PCheque);
+  GravarLog('  ret: '+IntToStr(ret));
+  if (ret <> RCS_SUCESSO) then
+    TratarErroScope(ret);
+
+  fDadosDaTransacao.Values[CMASK0 + IntToHex(MASK0_CHEQUE_BANCO, 8)]   := String(PCheque.Banco);
+  fDadosDaTransacao.Values[CMASK0 + IntToHex(MASK0_CHEQUE_AGENCIA, 8)] := String(PCheque.Agencia);
+  fDadosDaTransacao.Values[CMASK0 + IntToHex(MASK0_CHEQUE_NUMERO, 8)]  := String(PCheque.NumCheque);
+  fDadosDaTransacao.Values[CMASK0 + IntToHex(MASK0_CHEQUE_VALOR, 8)]   := String(PCheque.Valor);
+  fDadosDaTransacao.Values[CMASK0 + IntToHex(MASK0_CHEQUE_DATA, 8)]    := String(PCheque.BomPara);
+  fDadosDaTransacao.Values[CMASK0 + IntToHex(MASK0_CHEQUE_CODAUT, 8)]  := String(PCheque.CodAut);
+  fDadosDaTransacao.Values[CMASK0 + IntToHex(MASK0_CHEQUE_MUNICIP, 8)] := String(PCheque.Municipio);
+end;
+
+procedure TACBrTEFScopeAPI.ObterDadosDaTransacao;
+var
+  pBuffer: PAnsiChar;
+  h, i, ret, mask: LongInt;
+  val, hmask: string;
+begin
+  fDadosDaTransacao.Clear;
+
+  //* receber o identificador da transacao */
+  GravarLog('ScopeObtemHandle');
+  h := xScopeObtemHandle(0);
+  GravarLog('  ret: '+IntToStr(h));
+
+  if (h <= RCS_ERRO_GENERICO) then
+    TratarErroScope(h);
+
+  pBuffer := AllocMem(1024);
+  try
+    mask := 1;
+    for i := 1 to 32 do
     begin
-      iAux := xScopeGetLastMsg (@PColetaMsg);
-      if (iAux <> SCO_SUCESSO) then
-      begin
-      //E
-        //MostramensagemErro
-        //showMensagemErro('Erro ao obter mensagens', iRet);
-        //Application.MessageBox(PWideChar('ERRO NO ScopeGetLastMsg() = ' + IntToStr(iRet)), 'TEF', MB_OK);
-      end;
-
-      // Se o erro for de dado invalido, vamos permitir o usuario tentar novamente
-      if (iRet <> SCO_DADO_INVALIDO) then
-        Break
-      else
-        Continue;
-
-      //E
-      //Nunca Chega aqui!!! C√≥digo desnecess√°rio.
-      //execFormAux ( TrimRight ( string (PColeta.MsgOp1) ),
-      //              TrimRight ( string (PColeta.MsgOp2) ),
-      //              TrimRight ( string (PColeta.MsgCl1) ),
-      //              TrimRight ( string (PColeta.MsgCl2) ),
-      //              'Coleta:',
-      //              2);
+      FillChar(pBuffer , length(pBuffer), #0);
+      hmask := '$'+IntToHex(mask, 8);
+      GravarLog('ScopeObtemCampoExt3( '+IntToStr(h)+', '+hmask+', 0, 0, 0, : )');
+      ret := xScopeObtemCampoExt3(h, mask, 0, 0, 0, Byte(':'), pBuffer);
+      GravarLog('  ret: '+IntToStr(ret));
+      val := String(pBuffer);
+      fDadosDaTransacao.Add(Format('%s-%s=%s', ['mask1', hmask, val]));
+      mask := mask shl 1;
     end;
 
+    for i := 1 to 32 do
+    begin
+      FillChar(pBuffer , length(pBuffer), #0);
+      hmask := '$'+IntToHex(mask, 8);
+      GravarLog('ScopeObtemCampoExt3( '+IntToStr(h)+', 0, '+hmask+', 0, 0, : )');
+      ret := xScopeObtemCampoExt3(h, 0, mask, 0, 0, Byte(':'), pBuffer);
+      GravarLog('  ret: '+IntToStr(ret));
+      val := String(pBuffer);
+      fDadosDaTransacao.Add(Format('%s-%s=%s', ['mask2', hmask, val]));
+      mask := mask shl 1;
+    end;
 
-  until ((iRet < SCO_PRIMEIRO_COLETA_DADOS) and
-            (iRet > SCO_ULTIMO_COLETA_DADOS));
+    for i := 1 to 32 do
+    begin
+      FillChar(pBuffer , length(pBuffer), #0);
+      hmask := '$'+IntToHex(mask, 8);
+      GravarLog('ScopeObtemCampoExt3( '+IntToStr(h)+', 0, 0, '+hmask+', 0, : )');
+      ret := xScopeObtemCampoExt3(h, 0, 0, mask, 0, Byte(':'), pBuffer);
+      GravarLog('  ret: '+IntToStr(ret));
+      val := String(pBuffer);
+      fDadosDaTransacao.Add(Format('%s-%s=%s', ['mask3', hmask, val]));
+      mask := mask shl 1;
+    end;
 
-  //fEnd:
+    for i := 1 to 32 do
+    begin
+      FillChar(pBuffer , length(pBuffer), #0);
+      hmask := '$'+IntToHex(mask, 8);
+      GravarLog('ScopeObtemCampoExt3( '+IntToStr(h)+', 0, 0, 0, '+hmask+', : )');
+      ret := xScopeObtemCampoExt3(h, 0, 0, 0, mask, Byte(':'), pBuffer);
+      GravarLog('  ret: '+IntToStr(ret));
+      val := String(pBuffer);
+      fDadosDaTransacao.Add(Format('%s-%s=%s', ['mask4', hmask, val]));
+      mask := mask shl 1;
+    end;
+  finally
+    Freemem(pBuffer);
+  end;
+end;
 
-  //sBufEntrAux := execFormAux ('Confirmar essa transacao? (1/0)',
-                                      //'', '', '', 'Opcao', 2);
+procedure TACBrTEFScopeAPI.ExibirErroUltimaMsg;
+var
+  MsgColetada: TColeta_Msg;
+  ret: LongInt;
+  s, MsgOp, MsgCli: String;
+begin
+  // Coleta dados do Scope para esse passo //
+  GravarLog('ScopeGetLastMsg');
+  FillChar(MsgColetada, SizeOf(TColeta_Msg), #0);
+  ret := xScopeGetLastMsg(@MsgColetada);
+  GravarLog('  ret: '+IntToStr(ret));
 
-  //if ((Length(sBufEntrAux) = 0) or (StrToInt (sBufEntrAux) <> 0)) then
-  //  bAux := SCO_CONFIRMA_TEF
-  //else
-  //  bAux := SCO_DESFAZ_TEF;
-  //FechaSessaoTEF (bAux);
+  if (ret = RCS_SUCESSO) then
+  begin
+    s := 'Coleta_Msg.' + sLineBreak +
+         '  Op1: '+String(MsgColetada.Op1) + sLineBreak +
+         '  Op2: '+String(MsgColetada.Op2) + sLineBreak +
+         '  Cl1: '+String(MsgColetada.Cl1) + sLineBreak +
+         '  Cl2: '+String(MsgColetada.Cl2);
+    GravarLog(s);
 
-  //Result := iRet;
+    // Exibe as mensagens do cliente e operador //
+    MsgOp := Trim(String(MsgColetada.Op1)) + sLineBreak + Trim(String(MsgColetada.Op2));
+    if (MsgOp <> '') then
+      ExibirMensagem(MsgOp, tmOperador);
 
+    MsgCli := Trim(String(MsgColetada.Cl1)) + sLineBreak + Trim(String(MsgColetada.Cl2));
+    if (MsgCli <> '') then
+      ExibirMensagem(MsgCli, tmCliente);
+  end;
 
+end;
 
+procedure TACBrTEFScopeAPI.LogColeta(AColeta: TParam_Coleta);
+var
+  s: String;
+begin
+  s := 'Param_Coleta.' + sLineBreak +
+       '  Bandeira: '+IntToStr(AColeta.Bandeira) + sLineBreak +
+       '  FormatoDado: '+IntToStr(AColeta.FormatoDado) + sLineBreak +
+       '  HabTeclas: '+IntToStr(AColeta.HabTeclas) + sLineBreak +
+       '  MsgOp1: '+String(AColeta.MsgOp1) + sLineBreak +
+       '  MsgOp2: '+String(AColeta.MsgOp2) + sLineBreak +
+       '  MsgCl1: '+String(AColeta.MsgCl1) + sLineBreak +
+       '  MsgCl2: '+String(AColeta.MsgCl2) + sLineBreak +
+       '  WrkKey: '+String(AColeta.WrkKey) + sLineBreak +
+       '  PosMasterKey: '+IntToStr(AColeta.PosMasterKey) + sLineBreak +
+       '  PAN: '+String(AColeta.PAN) + sLineBreak +
+       '  UsaCriptoPinpad: '+IntToStr(AColeta.UsaCriptoPinpad) + sLineBreak +
+       '  IdModoPagto: '+IntToStr(AColeta.IdModoPagto) + sLineBreak +
+       '  AceitaCartaoDigitado: '+IntToStr(AColeta.AceitaCartaoDigitado) + sLineBreak +
+       '  Reservado: '+String(AColeta.Reservado);
+
+  GravarLog(s);
 end;
 
 procedure TACBrTEFScopeAPI.AbrirPinPad;
@@ -1633,50 +2336,58 @@ var
   Canal: Word;
   endereco: AnsiString;
 begin
+  FecharComunicacaoScope;
   GravarLog('AbrirPinPad');
 
   GravarLog('ScopeValidaInterfacePP( '+IntToStr(PP_INTERFACE_LIB_COMPARTILHADA)+' )');
   ret := xScopeValidaInterfacePP( PP_INTERFACE_LIB_COMPARTILHADA );
   GravarLog('  ret: '+IntToStr(ret));
-//E
-  //GravarLog('ScopeConsultaPP()');
-  //ret := xScopeConsultaPP(@bConfig, @bExclusivo, @bPorta);
-  //GravarLog('  ret: '+IntToStr(ret)+
-  //          ', Config:'+IntToStr(bConfig)+
-  //          ', Exclusivo:'+IntToStr(bExclusivo)+
-  //          ', Porta:'+IntToStr(bPorta) );
-  //if ret <> PC_OK then
-  //  DoException(ACBrStr(Format('Erro %d ao consultar o PinPad', [ret])));
+  if ret <> PC_OK then
+    TratarErroScope(ret);
 
-  //if (bExclusivo = 0) then
-  if (True) then
-  begin
-    if (bPorta < 1) or (fPortaPinPad <> '') then
-      bPorta := ConfigurarPortaPinPad(fPortaPinPad);
+  try
+    VerificarSeEstaConectadoScope;
 
-    if (bConfig = PC_MODO_ABECS) then
-      fPinPadSeguro := True;
-
-    if fPinPadSeguro then
-    begin
-      if (bPorta = 0) then
-        Canal := PC_COMM_NONE
-      else
-        Canal := PC_COMM_SERIAL;
-
-      GravarLog('ScopePPOpenSecure( '+IntToStr(Canal)+', '+IntToStr(bPorta)+' )');
-      endereco := IntToStr(bPorta);
-      ret := xScopePPOpenSecure(Canal, PAnsiChar(endereco));
-    end
-    else
-    begin
-      GravarLog('ScopePPOpen( '+IntToStr(bPorta)+' )');
-      ret := xScopePPOpen(bPorta);
-    end;
-
-    GravarLog('  ret: '+IntToStr(ret));
+    GravarLog('ScopeConsultaPP()');
+    ret := xScopeConsultaPP(@bConfig, @bExclusivo, @bPorta);
+    GravarLog('  ret: '+IntToStr(ret)+
+              ', Config:'+IntToStr(bConfig)+
+              ', Exclusivo:'+IntToStr(bExclusivo)+
+              ', Porta:'+IntToStr(bPorta) );
     if ret <> PC_OK then
-      DoException(ACBrStr(Format('Erro %d ao abrir o PinPad', [ret])));
+      TratarErroScope(ret);
+
+    if (bExclusivo = 0) then
+    begin
+      if (bPorta < 1) or (fPortaPinPad <> '') then
+        bPorta := ConfigurarPortaPinPad(fPortaPinPad);
+
+      if (bConfig = PPCONF_MODO_ABECS) then
+        fPinPadSeguro := True;
+
+      if fPinPadSeguro then
+      begin
+        if (bPorta = 0) then
+          Canal := CANAL_COMM_NONE
+        else
+          Canal := CANAL_COMM_SERIAL;
+
+        GravarLog('ScopePPOpenSecure( '+IntToStr(Canal)+', '+IntToStr(bPorta)+' )');
+        endereco := IntToStr(bPorta);
+        ret := xScopePPOpenSecure(Canal, PAnsiChar(endereco));
+      end
+      else
+      begin
+        GravarLog('ScopePPOpen( '+IntToStr(bPorta)+' )');
+        ret := xScopePPOpen(bPorta);
+      end;
+
+      GravarLog('  ret: '+IntToStr(ret));
+      if ret <> PC_OK then
+        DoException(ACBrStr(Format('Erro %d ao abrir o PinPad', [ret])));
+    end;
+  finally
+    VerificarSeMantemConexaoScope;
   end;
 end;
 
@@ -1710,7 +2421,7 @@ begin
   GravarLog('ScopeConfigura( '+IntToStr(AId)+', '+IntToStr(AParam) +' )');
   ret := xScopeConfigura(AId, AParam);
   GravarLog('  ret: '+IntToStr(ret));
-  Result := (ret = SCO_SUCESSO);
+  Result := (ret = RCS_SUCESSO);
 end;
 
 procedure TACBrTEFScopeAPI.FecharPinPad;
