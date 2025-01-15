@@ -46,6 +46,71 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+09/01/2025
+-- ACBrTEFDestaxaComum --
+[-] Alteração para aguardar primeira resposta do client Destaxa antes de permitir Cancelar o Fluxo.
+    por: Elias César
+
+07/01/2025
+-- ACBrTEFAPIDestaxa --
+[-] Correção na confirmação da transação "Digital Pagar".
+    por: Elias César
+
+27/12/2024
+-- ACBrTEFComum --
+[*] Ajustes para a classe 'TACBrTEFArquivo' usar a busca por Chave alfanumérica
+
+-- ACBrTEFAPIScope, ACBrTEFScopeAPI --
+[*] Refatoração de classes e métodos, para simplificação, e melhor isolamento de
+    classes
+
+-- ACBrTEFAPIScope --
+[+] Implementação de Definiçoes de Campo e Validação em 'QuandoPerguntarCampoAPI'
+
+-- ACBrTEFPayGoWebComum --
+[*] Métodos 'ValidarMMAA' e 'ValidarDDMMAA' movidos para ACBrUtil.Base
+    (por: DSA)
+
+23/12/2024
+-- ACBrTEFCliSiTefComum --
+[*] Ajustes nos textos de mensagens de resolução de transação Pendente
+
+-- ACBrTEFAPICliSiTef --
+[*] Ajuste em 'TACBrTEFAPIClassCliSiTef.ResolverTransacaoPendente' para exibir
+    mensagens quando Confirmar ou Estornar a transação Pendente, conforme
+    requisito de homologação
+[*] Ajuste para que todas as transações iniciadas, possuam um identificados único
+    Se nada for informado, usa a Data e Hora com a mascara 'yyyymmddhhmmss'
+    https://www.projetoacbr.com.br/forum/index.php?showtopic=80973
+
+-- ACBrTEFAPIComum --
+[*] Método 'TACBrTEFAPIRespostas.AcharTransacao', modificado para não considerar
+    o Case na busca por 'REDE'
+    (por: DSA)
+
+18/12/2024
+-- ACBrTEFAPI --
+[-] Remoção da propriedade 'NaoRemoverMascaraResposta'.
+
+-- ACBrTEFAPICliSiTef, ACBrTEFAPIElgin, ACBrTEFAPIPaygoWeb --
+[-] Ajuste por removação da propriedade 'NaoRemoverMascaraResposta'.
+
+-- ACBrTEFAPIDestaxa --
+[+] Inclusão da função 'AplicarMascaraData()' para tratar automaticamente a resposta
+    do evento QuandoPerguntarCampoAPI().
+    por: Elias César
+
+17/12/2024
+-- ACBrTEFDestaxaComum --
+[-] Correção de exibição do QRCode na tela.
+    por: Elias César
+
+17/12/2024
+-- ACBrTEFAPICliSiTef, ACBrTEFAPIElgin, ACBrTEFAPIPaygoWeb --
+[*] Altera para definir a propriedade 'NaoRemoverMascaraResposta' ao chamar evento
+    'QuandoPerguntarCampo' nos demais TEFs.
+    por: Elias César
+
 11/12/2024
 -- ACBrTEFAPIDestaxaComum --
 [+] Criação de função para possibilitar executar transação sem alterar último sequencial

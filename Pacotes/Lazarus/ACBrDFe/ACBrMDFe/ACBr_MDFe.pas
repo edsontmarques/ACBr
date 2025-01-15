@@ -9,8 +9,8 @@ interface
 
 uses
   ACBrMDFe, ACBrMDFeConfiguracoes, ACBrMDFeManifestos, ACBrMDFeReg, 
-  ACBrMDFeWebServices, pmdfeConversaoMDFe, pmdfeMDFe, pmdfeMDFeR, pmdfeMDFeW, 
-  pmdfeProcMDFe, ACBrMDFeDAMDFeClass, pmdfeConsts, ACBrMDFe.ProcInfraSA, 
+  ACBrMDFeWebServices, pmdfeConversaoMDFe, pmdfeMDFeR, pmdfeMDFeW, 
+  pmdfeProcMDFe, ACBrMDFeDAMDFeClass, ACBrMDFe.Classes, ACBrMDFe.ProcInfraSA, 
   ACBrMDFe.XmlReader, ACBrMDFe.XmlWriter, ACBrMDFe.ConsNaoEnc, 
   ACBrMDFe.RetConsNaoEnc, ACBrMDFe.ConsSit, ACBrMDFe.RetConsSit, 
   ACBrMDFe.EventoClass, ACBrMDFe.EnvEvento, ACBrMDFe.RetEnvEvento, 

@@ -85,6 +85,7 @@ type
     cbxTransacaoPendenteInicializacao: TComboBox;
     edCNPJEstabelecimento: TEdit;
     edCNPJSwHouse: TEdit;
+    edCodFilial: TEdit;
     edCodTerminal: TEdit;
     edCodEmpresa: TEdit;
     edEnderecoServidor: TEdit;
@@ -121,6 +122,7 @@ type
     Label27: TLabel;
     Label28: TLabel;
     Label29: TLabel;
+    Label30: TLabel;
     Label7: TLabel;
     Label9: TLabel;
     lMensagemCliente: TLabel;
@@ -1013,7 +1015,6 @@ begin
     FormObtemCampo.Resposta := DefinicaoCampo.ValorInicial;
     FormObtemCampo.Ocultar := DefinicaoCampo.OcultarDadosDigitados;
     FormObtemCampo.Mascara := DefinicaoCampo.MascaraDeCaptura;
-    FormObtemCampo.NaoRemoverMascaraResposta := DefinicaoCampo.NaoRemoverMascaraResposta;
     FormObtemCampo.btVoltar.Visible := False;  // PayGoWeb não suporta Voltar;
 
     if (pos('R$', DefinicaoCampo.MascaraDeCaptura) > 0) or
@@ -1140,6 +1141,7 @@ begin
 
     edCodTerminal.Text := INI.ReadString('Terminal', 'CodTerminal', edCodTerminal.Text);
     edCodEmpresa.Text := INI.ReadString('Terminal', 'CodEmpresa', edCodEmpresa.Text);
+    edCodFilial.Text := INI.ReadString('Terminal', 'CodFilial', edCodFilial.Text);
     edPortaPinPad.Text := INI.ReadString('Terminal', 'PortaPinPad', edPortaPinPad.Text);
     edEnderecoServidor.Text := INI.ReadString('Terminal', 'EnderecoServidor', edEnderecoServidor.Text);
 
@@ -1185,6 +1187,7 @@ begin
 
     INI.WriteString('Terminal', 'CodTerminal', edCodTerminal.Text);
     INI.WriteString('Terminal', 'CodEmpresa', edCodEmpresa.Text);
+    INI.WriteString('Terminal', 'CodFilial', edCodFilial.Text);
     INI.WriteString('Terminal', 'PortaPinPad', edPortaPinPad.Text);
     INI.WriteString('Terminal', 'EnderecoServidor', edEnderecoServidor.Text);
 
@@ -1981,6 +1984,7 @@ begin
 
   ACBrTEFAPI1.DadosTerminal.CodTerminal := edCodTerminal.Text;
   ACBrTEFAPI1.DadosTerminal.CodEmpresa := edCodEmpresa.Text;
+  ACBrTEFAPI1.DadosTerminal.CodFilial  := edCodFilial.Text;
   ACBrTEFAPI1.DadosTerminal.PortaPinPad := edPortaPinPad.Text;
   ACBrTEFAPI1.DadosTerminal.EnderecoServidor := edEnderecoServidor.Text;
 

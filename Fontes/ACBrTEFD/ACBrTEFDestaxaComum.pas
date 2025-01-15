@@ -998,6 +998,10 @@ begin
   begin
     msg := Copy(s, (Pos('automacao_coleta_mensagem', s)+27), Length(s));
     msg := Copy(msg, 1, (Pos('"', msg)-1));
+
+    if (Pos(CDESTAXA_STR_QRCODE, msg) > 0) then
+      msg := CarregarCampoString(aStrList.Values['automacao_coleta_mensagem']);
+
     if NaoEstaVazio(msg) then
       fautomacao_coleta_mensagem := msg;
   end;
@@ -1763,32 +1767,11 @@ begin
 end;
 
 procedure TACBrTEFDestaxaClient.TratarErro;
-var
-  Cancelar: Boolean;
-  wSequencial: Integer;
 begin
   GravarLog('TACBrTEFDestaxaSocket.TratarErro: ' +
     IntToStr(Socket.LastError) + ' - ' + Socket.GetErrorDesc(Socket.LastError));
 
-  if (Socket.LastError = 10060) then  // TimeOut
-  begin
-    Cancelar := False;
-    if Assigned(OnAguardarResposta) then
-      OnAguardarResposta(opapiFluxoAPI, Cancelar);
-
-    if Cancelar then
-    begin
-      GravarLog(' - Transação Cancelada pelo Usuário');
-
-      wSequencial := Requisicao.sequencial;
-      Requisicao.Clear;
-      Requisicao.sequencial := wSequencial + 1;
-      Requisicao.retorno := drqCancelarTransacao;
-
-      Socket.ExecutarTransacao;
-    end;
-  end
-  else
+  if (Socket.LastError <> 10060) then
     raise EACBrTEFDestaxaErro.Create(
       ACBrStr('Erro ao Receber resposta do V&SPague' + sLineBreak +
       'Endereço: ' + EnderecoIP + sLineBreak +

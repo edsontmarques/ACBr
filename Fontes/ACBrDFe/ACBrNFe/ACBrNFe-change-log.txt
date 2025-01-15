@@ -44,6 +44,54 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+09/01/2025
+-- ACBrNFe.XmlWriter --
+[*] Corrige problema na geração do grupo agropecuário.
+  Por: Diego Folieni
+
+08/01/2025
+-- ACBrNFe.EnvEvento --
+[*] Melhorias no código.
+   Por: Italo Giurizzato Junior
+
+07/01/2025
+-- ACBrNFeDANFeESCPOS/ACBrDANFCeFortesFr/ACBrDANFCeFortesFrA4 --
+[+] #TK-6435: Incluído no DANFE a impressão do endereço de entrega caso este esteja
+    no XML da NFC-e.
+   Por: Italo Giurizzato Junior
+
+-- ACBrNFe.Classes/pcnNFe/pcnNFeR/pcnNFeW --
+[-] Ajustes para corrigir erro de compilação/instalação se o uso do ACBrXmlDocument.
+   Por: Italo Giurizzato Junior
+-- Diversos --
+[*] #TK-6415: Realizado a substituição da unit de classes de: pcnNFe
+    por: ACBrNFe.Classes 
+   Por: Italo Giurizzato Junior
+
+23/12/2024
+-- ACBrNFeDANFEClass --
+[*] #TK-6398: Ajustado a quantidade de casas decimais do campo qLote. 
+   Por: Italo Giurizzato Junior
+-- pcnNFeConsts --
+[*] Remoção de unit sem uso.
+   Por: Italo Giurizzato Junior
+
+20/12/2024
+-- pcnNFe --
+[*] #TK-6132: Altera o tipo dos campos qCom/qTrib para Double visando corrigir divergência no comportamento das compilações x86 e x64.
+  Por: Diego Folieni
+
+19/12/2024
+-- ACBrNFe.XmlWriter --
+[*] Imposta uma condição para que as tags do ICMS 51 sejam obrigatórias se a UF for PR.
+   Por: Italo Giurizzato Junior
+
+13/12/2024
+-- Diversos --
+[+] #TK-5944: Implementado a unit especifica para imprimir a DANFE em Etiqueta
+    em Fortes.
+  Por: Rodrigo Ogioni/Italo Giurizzato Junior
+
 12/12/2024
 -- ACBrNFeWebService --
 [*] #TK-5992: Trocado a unit pcnRetEnvNFe pela ACBrDFeComum.RetEnvio que não
