@@ -101,8 +101,7 @@ type
     procedure PrepararCancelaNFSe(Response: TNFSeCancelaNFSeResponse); override;
     procedure TratarRetornoCancelaNFSe(Response: TNFSeCancelaNFSeResponse); override;
 
-    function AplicarXMLtoUTF8(const AXMLRps: String): String; override;
-    function AplicarLineBreak(const AXMLRps: String; const ABreak: String): String; override;
+    function AplicarLineBreak(const AXMLRps: string; const ABreak: string): string; override;
 
     procedure ProcessarMensagemErros(RootNode: TACBrXmlNode;
                                      Response: TNFSeWebserviceResponse;
@@ -347,6 +346,12 @@ begin
     (ALinha[1] = '2') or
     (ALinha[1] = '3') or
     (ALinha[1] = '9'));
+end;
+
+function TACBrNFSeProviderISSBarueri.AplicarLineBreak(const AXMLRps,
+  ABreak: string): string;
+begin
+  Result := AXMLRps;
 end;
 
 procedure TACBrNFSeProviderISSBarueri.Configuracao;
@@ -638,8 +643,7 @@ begin
   Nota.NFSe.CodigoCancelamento := Response.InfCancelamento.CodCancelamento;
   Nota.GerarXML;
 
-  Nota.XmlRps := AplicarXMLtoUTF8(Nota.XmlRps);
-  Nota.XmlRps := AplicarLineBreak(Nota.XmlRps, '');
+  Nota.XmlRps := string(NativeStringToUTF8(Nota.XmlRps));
 
   SalvarXmlRps(Nota);
 
@@ -739,7 +743,7 @@ var
   Erros: TStringList;
   ANota: TNotaFiscal;
   I, X: Integer;
-  XML: string;
+  XML, wDataString: string;
   Ok: Boolean;
 begin
   Document := TACBrXmlDocument.Create;
@@ -823,13 +827,18 @@ begin
         Response.SerieRps := Trim(Copy(Dados[1], 51, 4));
         Response.SerieNota := Trim(Copy(Dados[1], 2, 5));
 
+        wDataString := Trim(Copy(Dados[1], 19, 2) + '/' + Copy(Dados[1], 17, 2) +
+                       '/' + Copy(Dados[1], 13, 4));
+
         if NaoEstaVazio(Trim(Copy(Dados[1], 22, 6))) then
         begin
-          Response.Data := StringToDateTime(Trim(Copy(Dados[1], 13, 8)), 'YYYYMMDD');
-          Response.Data := Response.Data + StrToTime(Format('%S:%S:%S', [Trim(Copy(Dados[1], 21, 2)), Trim(Copy(Dados[1], 23, 2)), Trim(Copy(Dados[1], 25, 2))]));
+          Response.Data := StrToDateTime(wDataString);
+          Response.Data := Response.Data +
+                      StrToTime(Format('%S:%S:%S', [Trim(Copy(Dados[1], 21, 2)),
+                      Trim(Copy(Dados[1], 23, 2)), Trim(Copy(Dados[1], 25, 2))]));
         end
         else
-          Response.Data := StringToDateTime(Trim(Copy(Dados[1], 13, 8)), 'YYYYMMDD');
+          Response.Data := StrToDateTime(wDataString);
 
         if (FAOwner.Configuracoes.WebServices.AmbienteCodigo = 1) then
           Response.Link := 'https://www.barueri.sp.gov.br/nfe/xmlNFe.ashx'
@@ -1030,17 +1039,6 @@ begin
         <Correcao>Informe um certificado válido padrão ICP-Brasil</Correcao>
     </ListaMensagemRetorno>
   }
-end;
-
-function TACBrNFSeProviderISSBarueri.AplicarXMLtoUTF8(const AXMLRps: String): String;
-begin
-  Result := string(NativeStringToUTF8(AXMLRps));
-end;
-
-function TACBrNFSeProviderISSBarueri.AplicarLineBreak(const AXMLRps: String;
-  const ABreak: String): String;
-begin
-  Result := AXMLRps;
 end;
 
 function TACBrNFSeProviderISSBarueri.SituacaoLoteRpsToStr(const t: TSituacaoLoteRps): string;

@@ -1587,7 +1587,7 @@ begin
       // Informar A Exigibilidade ISS para fintelISS [1/2/3/4/5/6/7]
       Servico.ExigibilidadeISS := exiExigivel;
 
-//      Servico.CodigoPais := 1058; // Brasil
+      Servico.CodigoPais := 1058; // Brasil
       Servico.MunicipioIncidencia := StrToIntDef(edtCodCidade.Text, 0);
 
       {=========================================================================
@@ -1644,7 +1644,7 @@ begin
       Tomador.Endereco.CodigoMunicipio := edtCodCidade.Text;
       Tomador.Endereco.xMunicipio := 'Cidade do Tomador';
       Tomador.Endereco.UF := edtEmitUF.Text;
-      Tomador.Endereco.CodigoPais := 0;
+      Tomador.Endereco.CodigoPais := 1058; // Brasil
       Tomador.Endereco.CEP := '14800000';
       Tomador.Endereco.xPais := 'BRASIL';
       Tomador.Contato.Telefone := '1622223333';
@@ -3914,7 +3914,7 @@ begin
   if ACBrNFSeX1.Configuracoes.Geral.Provedor in [proAgili, proConam, proEquiplano,
     proGoverna, proIPM, proISSDSF, proISSLencois, proModernizacaoPublica,
     proPublica, proSiat, proSigISS, proSmarAPD, proWebFisco, proSudoeste,
-    proBauhaus, proISSCampinas] then
+    proBauhaus, proISSCampinas, proSigep] then
   begin
     Motivo := 'Teste de Cancelamento';
     if not (InputQuery(Titulo, 'Motivo de Cancelamento', Motivo)) then
@@ -5302,6 +5302,9 @@ begin
 
   with ACBrNFSeX1.Configuracoes.WebServices do
   begin
+    // Redefini a quebra de linha que por padrão é "|'
+    QuebradeLinha := ';';
+
     Ambiente   := StrToTpAmb(Ok,IntToStr(rgTipoAmb.ItemIndex+1));
     Visualizar := cbxVisualizar.Checked;
     Salvar     := chkSalvarSOAP.Checked;

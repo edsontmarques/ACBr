@@ -44,6 +44,36 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+14/02/2025
+-- ACBrNFe.Classes/ACBrNFe.Consts --
+[+] Inclusão de novas contantes e ajustes nas novas classes para atender a Reforma Tributária.
+   Por: Italo Giurizzato Junior
+
+11/02/2025
+-- ACBrNFe.XmlWriter --
+[-] Possível solução para o erro que estava ocorrendo ao gerar o grupo detExport.
+   Por: Italo Giurizzato Junior
+
+10/02/2025
+-- ACBrNFe.Classes/ACBrNFe.Conversao/pcnConversaoNFe--
+[+] Inclusão das novas classes e tipos para atender a Reforma Tributária.
+   Por: Italo Giurizzato Junior
+
+20/01/2025
+-- ACBrNFeServicos --
+[*] Atualizado a URL do serviço ConsultaCadastro do RS.
+   Por: Italo Giurizzato Junior
+
+27/01/2025
+-- ACBrNFe.XmlReader --
+[-] #TK-6488: Corrige problema na leitura do grupo NVE.
+  Por: Jeanny Paiva Lopes
+
+20/01/2025
+-- pcnNFe --
+[*] Remoção de unit por estar em desuso.
+   Por: Italo Giurizzato Junior
+
 09/01/2025
 -- ACBrNFe.XmlWriter --
 [*] Corrige problema na geração do grupo agropecuário.

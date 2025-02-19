@@ -120,7 +120,6 @@ type
     procedure Clear;
 
   protected
-
     property Banco: TACBrTipoCobranca read FBanco write SetBanco;
 
   public
@@ -147,6 +146,7 @@ type
     FMsg           : String;
     FLeitor        : TLeitor;
     FHTTPResultCode: Integer;
+    procedure SetRetWS(const Value: String);
   protected
     function LerListaRetorno: Boolean; virtual;
     function LerRetorno(const ARetornoWS: TACBrBoletoRetornoWS): Boolean; virtual;
@@ -155,7 +155,7 @@ type
     property ACBrTitulo: TACBrTitulo read FACBrTitulo write FACBrTitulo;
     property ACBrBoleto: TACBrBoleto read FACBrBoleto;
     property Leitor: TLeitor read FLeitor;
-    property RetWS: String read FRetWS write FRetWS;
+    property RetWS: String read FRetWS write SetRetWS;
     property EnvWs: String read FEnvWS;
 
   public
@@ -251,7 +251,8 @@ uses
   ACBrBoletoW_Cora,
   AcbrBoletoRet_Cora,
   ACBrBoletoW_Kobana,
-  ACBrBoletoRet_Kobana;
+  ACBrBoletoRet_Kobana,
+  ACBrUtil.DateTime;
 
   { TRetornoEnvioClass }
 
@@ -262,7 +263,6 @@ begin
   FMsg        := '';
   FLeitor     := TLeitor.Create;
   FACBrBoleto := ABoletoWS;
-
 end;
 
 destructor TRetornoEnvioClass.Destroy;
@@ -293,7 +293,12 @@ begin
 
 end;
 
-  { TBoletoWSClass }
+procedure TRetornoEnvioClass.SetRetWS(const Value: String);
+begin
+  FRetWS := Trim(Value);
+end;
+
+{ TBoletoWSClass }
 
 constructor TBoletoWSClass.Create(ABoletoWS: TBoletoWS);
 begin
@@ -308,6 +313,9 @@ begin
     FDFeSSL := TDFeSSL(ABoletoWS.FBoleto.Configuracoes.WebService);
 
   FOAuth := TOAuth.Create(FHTTPSend, ABoletoWS.FBoleto);
+
+  FHTTPSend.Timeout := ABoletoWS.FBoleto.Configuracoes.WebService.TimeOut;
+
   FIntervaloEnvio := 0;
   FQuantidadeMaximoEnvioIntervalo := 0;
 end;
@@ -478,7 +486,6 @@ begin
       FRetornoBanco  := TRetornoEnvioClass.Create(FBoleto);
   end;
   FBoletoWSClass.FBoleto := FBoleto;
-
 end;
 
 constructor TBoletoWS.Create(AOwner: TComponent);
@@ -534,7 +541,11 @@ begin
   if (FArqLOG = '') then
     exit;
 
-  WriteLog(FArqLOG, FormatDateTime('dd/mm/yy hh:nn:ss:zzz', now) + ' - ' + AString);
+  WriteLog(FArqLOG, FormatDateTime('dd/mm/yy hh:nn:ss:zzz', now) +
+                    ' ' +
+                    ACBrUtil.DateTime.GetUTCSistema +
+                    ' - ' +
+                    AString);
 end;
 
 procedure TBoletoWS.InstanciarIntegradora;
@@ -570,6 +581,7 @@ var
 begin
   Banco  := FBoleto.Banco.TipoCobranca;
   Result := False;
+  FBoletoWSClass.FHTTPSend.Timeout := FBoleto.Configuracoes.WebService.TimeOut;
 
   try
     if FBoleto.ListadeBoletos.Count > 0 then

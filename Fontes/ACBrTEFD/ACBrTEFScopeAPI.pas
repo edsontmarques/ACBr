@@ -73,6 +73,7 @@ resourcestring
                                 'AAAA - Nome da Automação'+sLineBreak+
                                 'CCCC - Código do Memorando'+sLineBreak+
                                 'Exemplo: "01HOTK0000"';
+  sErrArquivoNaoExistente = 'Arquivo: %s não encontrado';
 
   sMsgTituloMenu = 'Escolha uma opção';
   sMsgTituloAVista = 'A Vista ?';
@@ -85,6 +86,7 @@ resourcestring
   sMsgTransacaoEmAndamento = 'Transação em Andamento';
   sMsgTransacaoCompleta = 'Transação Completa';
   sMsgTransacaoDesfeita = 'A TRANSAÇÃO TEF ANTERIOR FOI DESFEITA.'+sLineBreak+'RETER O CUPOM TEF.';
+
 
 const
   CINTERVALO_COLETA = 300;
@@ -908,7 +910,8 @@ const
   RET_QRCODE       = 'QRCODE';
   RET_MSG_OPERADOR = 'MSG_OPERADOR';
   RET_MSG_CLIENTE  = 'MSG_CLIENTE';
-  RET_SCOPE_OPERACAO = 'SCOPE_OPERACAO';
+  RET_SCOPE_COD_OPERACAO = 'SCOPE_COD_OPERACAO';
+  RET_SCOPE_DESC_OPERACAO = 'SCOPE_DESC_OPERACAO';
 
   {--------------------------------------------------------------------------------------------
      Constantes de Serviços usadas em 'ScopePagamento' e 'ScopePagamentoConta'
@@ -1317,6 +1320,15 @@ type
     TabFaixaValores:array [1..NUM_VLRS_RC] of TRec_Cel_Faixa_Valores;
   end;
 
+  PABECS_PPFILE_INFO = ^stABECS_PPFILE_INFO;
+  stABECS_PPFILE_INFO = packed record
+    Version: LongInt;
+    szFileNamePP: array [1..9] of AnsiChar;
+    cFileType: AnsiChar;
+    szFileName: array [1..257] of AnsiChar;
+    szFilePath: array [1..321] of AnsiChar;
+  end;
+
 type
   EACBrTEFScopeAPI = class(Exception);
 
@@ -1396,6 +1408,7 @@ type
     fPortaTCP: String;
     fSessaoAberta: Boolean;
     fVersaoAutomacao: String;
+    fInformacoesPinPad: String;
 
     // Funcoes originais do SCOPE
     xScopeOpen: function(Modo, Empresa, Filial, Pdv: PAnsiChar): LongInt;
@@ -1498,6 +1511,16 @@ type
       {$IfDef MSWINDOWS}stdcall{$Else}cdecl{$EndIf};
     xScopeObtemConsultaValeGas: function(_Valor: PAnsiChar): LongInt;
       {$IfDef MSWINDOWS}stdcall{$Else}cdecl{$EndIf};
+    xScopePPMMFileList: function(_ptFileList: PAnsiChar; var _ptTamanho: LongInt): LongInt;
+      {$IfDef MSWINDOWS}stdcall{$Else}cdecl{$EndIf};
+    xScopePPMMFileLoad: function(_ptInfoFile: PABECS_PPFILE_INFO): LongInt;
+      {$IfDef MSWINDOWS}stdcall{$Else}cdecl{$EndIf};
+    xScopePPMMDisplayImage: function(_ptFileNamePP: PAnsiChar): LongInt;
+      {$IfDef MSWINDOWS}stdcall{$Else}cdecl{$EndIf};
+    xScopePPMMFileDelete: function(_ptFileNamePP: PAnsiChar): LongInt;
+      {$IfDef MSWINDOWS}stdcall{$Else}cdecl{$EndIf};
+    xScopePPGetInfoEx: function(IdSaida, DadosLen: Word; Dados: PAnsiChar): LongInt;
+      {$IfDef MSWINDOWS}stdcall{$Else}cdecl{$EndIf};
 
     function PAnsiCharToString(APAnsiChar: PAnsiChar): String;
     function ArrayOfCharToString(Arr: array of AnsiChar): String;
@@ -1582,6 +1605,7 @@ type
     function FormatarMsgPinPad(const MsgPinPad: String): String;
 
     function PerguntarValorTransacao: Double;
+    function TratarNomeImagemPinPad(const NomeImagem: String): String;
   public
     constructor Create;
     destructor Destroy; override;
@@ -1655,6 +1679,14 @@ type
     function MenuPinPad(const Titulo: String; Opcoes: TStrings;
       TimeOutMiliSec: Integer = 30000): Integer;
 
+    procedure ObterListaImagensPinPad(ALista: TStrings);
+    procedure CarregarImagemPinPad(const NomeImagem: String; const Arquivo: String);
+    procedure ExibirImagemPinPad(const NomeImagem: String);
+    procedure ApagarImagemPinPad(const NomeImagem: String);
+
+    function ObterInformacoesPinPad: String;
+    procedure ObterDimensoesVisorPinPad(out Width: Word; out Height: Word);
+
     procedure GravarLog(const AString: AnsiString; Traduz: Boolean = False);
   end;
 
@@ -1684,6 +1716,7 @@ begin
   fVersaoAutomacao := '';
   fPinPadSeguro := True;
   fPortaPinPad := '';
+  fInformacoesPinPad := '';
   fCupomReduzido := False;
   fPermitirCartaoDigitado := False;
   fPermitirCancelarOperacaoPinPad := True;
@@ -1718,6 +1751,7 @@ begin
 
   fConectado := False;
   fSessaoAberta := False;
+  fInformacoesPinPad := '';
   GravarLog('TACBrTEFScopeAPI.Inicializar');
 
   if not Assigned(fOnTransacaoEmAndamento) then
@@ -2059,6 +2093,11 @@ begin
   ScopeFunctionDetect(sLibName, 'ScopePPDisplay', @xScopePPDisplay);
   ScopeFunctionDetect(sLibName, 'ScopeMenu', @xScopeMenu);
   ScopeFunctionDetect(sLibName, 'ScopeObtemConsultaValeGas', @xScopeObtemConsultaValeGas);
+  ScopeFunctionDetect(sLibName, 'ScopePPMMFileList', @xScopePPMMFileList);
+  ScopeFunctionDetect(sLibName, 'ScopePPMMFileLoad', @xScopePPMMFileLoad);
+  ScopeFunctionDetect(sLibName, 'ScopePPMMDisplayImage', @xScopePPMMDisplayImage);
+  ScopeFunctionDetect(sLibName, 'ScopePPMMFileDelete', @xScopePPMMFileDelete);
+  ScopeFunctionDetect(sLibName, 'ScopePPGetInfoEx', @xScopePPGetInfoEx);
 
   fCarregada := True;
 end;
@@ -2128,6 +2167,11 @@ begin
   xScopePPOptionMenu := Nil;
   xScopePPDisplay := Nil;
   xScopeObtemConsultaValeGas := Nil;
+  xScopePPMMFileList := Nil;
+  xScopePPMMFileLoad := Nil;
+  xScopePPMMDisplayImage := Nil;
+  xScopePPMMFileDelete := Nil;
+  xScopePPGetInfoEx := Nil;
 end;
 
 procedure TACBrTEFScopeAPI.DoException(const AErrorMsg: String);
@@ -2220,10 +2264,20 @@ begin
         AjustarParamSeNaoExistir(SecName, 'VersaoAutomacao', sName);
         AjustarParamSeNaoExistir(SecName, 'CupomReduzido', IfThen(fCupomReduzido, 's', 'n'));
         AjustarParamSeNaoExistir(SecName, 'WKPAN', IfThen(fPinPadSeguro, 's', 'n'));
+
+        // Configuração para PIX, sempre será em LocalHost
         if (fEnderecoIP = '127.0.0.1') or (LowerCase(fEnderecoIP) = 'localhost') then
+        begin
           AjustarParamSeNaoExistir(SecName, 'ThinClient', 's');
-        AjustarParamSeNaoExistir(SecName, 'CRTYPE', '1');
-        AjustarParamSeNaoExistir(SecName, 'ExibeQRcode', 's');
+          AjustarParamSeNaoExistir(SecName, 'CRTYPE', '1');
+          AjustarParamSeNaoExistir(SecName, 'ExibeQRcode', 's');
+        end
+        else
+        begin
+          ini.DeleteKey(SecName, 'ThinClient');
+          ini.DeleteKey(SecName, 'CRTYPE');
+          ini.DeleteKey(SecName, 'ExibeQRcode');
+        end;
         Break;
       end;
     end;
@@ -2265,15 +2319,16 @@ begin
     AjustarParamSeNaoExistir('PPCOMP', 'NaoAbrirDigitado', IfThen(fPermitirCartaoDigitado, 'n', 's'));
 
     SecName := 'SCOPEAPI';
+    ini.WriteString(SecName, 'ArqControlPath', fDiretorioTrabalho + PathDelim + 'control');
+    ini.WriteString(SecName, 'ArqTracePath', fDiretorioTrabalho + PathDelim + 'logs');
     AjustarParamSeNaoExistir(SecName, 'TraceApi', 's');
     AjustarParamSeNaoExistir(SecName, 'TraceSrl', 's');
     AjustarParamSeNaoExistir(SecName, 'TracePin', 's');
     AjustarParamSeNaoExistir(SecName, 'RedecardBit47Tag6', '1');
-    ini.WriteString(SecName, 'ArqControlPath', fDiretorioTrabalho + PathDelim + 'control');
-    ini.WriteString(SecName, 'ArqTracePath', fDiretorioTrabalho + PathDelim + 'trace');
 
-    AjusarSessaoLogAPI('SCOPELOGAPI');
-    AjusarSessaoLogAPI('SCOPELOGPRF');
+    //AjusarSessaoLogAPI('SCOPELOGAPI');
+    //AjusarSessaoLogAPI('SCOPELOGPRF');
+    //AjusarSessaoLogAPI('SCOPELOGSRL');
 
     ini.UpdateFile;
   finally
@@ -2401,9 +2456,9 @@ end;
 procedure TACBrTEFScopeAPI.ExibirMensagemPinPad(const MsgPinPad: String);
 var
   ret: LongInt;
-  s: String;
+  s: AnsiString;
 begin
-  s := FormatarMsgPinPad(MsgPinPad);
+  s := AnsiString(FormatarMsgPinPad(MsgPinPad));
   GravarLog('ScopePPDisplay( '+s+' )');
   ret := xScopePPDisplay(PAnsiChar(s));
   GravarLog('  ret: '+IntToStr(ret));
@@ -2482,7 +2537,7 @@ begin
   end;
 
   GravarLog('ScopePPStartOptionMenu( '+Titulo+', '+Lista+' )');
-  ret := xScopePPStartOptionMenu(PAnsiChar(Titulo), PAnsiChar(Lista));
+  ret := xScopePPStartOptionMenu(PAnsiChar(AnsiString(Titulo)), PAnsiChar(Lista));
   GravarLog('  ret: '+IntToStr(ret));
   if (ret <> PC_OK) then
     TratarErroPinPadScope(ret);
@@ -2521,6 +2576,139 @@ begin
   finally
     Freemem(pBuffer);
   end;
+end;
+
+procedure TACBrTEFScopeAPI.ObterListaImagensPinPad(ALista: TStrings);
+var
+  ret, tam: LongInt;
+  pLista: PAnsiChar;
+  sLista, s: String;
+  p, l: Integer;
+begin
+  sLista := '';
+  pLista := AllocMem(2048);
+  try
+    GravarLog('ScopePPMMFileList');
+    ret := xScopePPMMFileList(pLista, tam);
+    GravarLog('  ret: '+IntToStr(ret)+', tam: '+IntToStr(tam));
+    if (ret <> PC_OK) then
+      TratarErroScope(ret);
+
+    sLista := PAnsiCharToString(pLista);
+  finally
+    Freemem(pLista);
+  end;
+
+  GravarLog('  lista: ' + sLista);
+  ALista.Clear;
+  l := Length(sLista);
+  p := 1;
+  while (p < l) do
+  begin
+    s := copy(sLista, p, 8);
+    ALista.Add(s);
+    Inc(p, 8);
+  end;
+end;
+
+procedure TACBrTEFScopeAPI.CarregarImagemPinPad(const NomeImagem: String;
+  const Arquivo: String);
+var
+  ret: LongInt;
+  warq, wimg, sfile, spath, sext: AnsiString;
+  ct: AnsiChar;
+  ptInfoFile: stABECS_PPFILE_INFO;
+begin
+  warq := Trim(Arquivo);
+  if (warq = '') then
+    Exit;
+
+  if not FileExists(warq) then
+    DoException(Format(sErrArquivoNaoExistente, [warq]));
+
+  sfile := ExtractFileName(warq);
+  spath := ExtractFilePath(warq);
+  sext := LowerCase(ExtractFileExt(warq));
+  wimg := TratarNomeImagemPinPad(NomeImagem);
+  if (sext = '.png') then
+    ct := '1'
+  else
+    ct := '2';
+
+  FillChar(ptInfoFile, SizeOf(stABECS_PPFILE_INFO), #0);
+  ptInfoFile.Version := 1;
+  move( wimg[1], ptInfoFile.szFileNamePP, SizeOf(ptInfoFile.szFileNamePP) );
+  ptInfoFile.cFileType := ct;
+  move( sfile[1], ptInfoFile.szFileName, SizeOf(ptInfoFile.szFileName) );
+  move( spath[1], ptInfoFile.szFilePath, SizeOf(ptInfoFile.szFilePath) );
+
+  GravarLog('ScopePPMMFileLoad( '+NomeImagem+', '+warq+' )');
+  ret := xScopePPMMFileLoad(@ptInfoFile);
+  GravarLog('  ret: '+IntToStr(ret));
+  if (ret <> PC_OK) then
+    TratarErroScope(ret);
+end;
+
+procedure TACBrTEFScopeAPI.ExibirImagemPinPad(const NomeImagem: String);
+var
+  ret: LongInt;
+  s: AnsiString;
+begin
+  s := AnsiString(TratarNomeImagemPinPad(NomeImagem));
+  GravarLog('ScopePPMMDisplayImage( '+s+' )');
+  ret := xScopePPMMDisplayImage(PAnsiChar(s));
+  GravarLog('  ret: '+IntToStr(ret));
+  if (ret <> PC_OK) then
+    TratarErroScope(ret);
+end;
+
+procedure TACBrTEFScopeAPI.ApagarImagemPinPad(const NomeImagem: String);
+var
+  ret: LongInt;
+  s: AnsiString;
+begin
+  s := AnsiString(TratarNomeImagemPinPad(NomeImagem));
+  GravarLog('ScopePPMMFileDelete( '+s+' )');
+  ret := xScopePPMMFileDelete(PAnsiChar(s));
+  GravarLog('  ret: '+IntToStr(ret));
+  if (ret <> PC_OK) then
+    TratarErroScope(ret);
+end;
+
+function TACBrTEFScopeAPI.ObterInformacoesPinPad: String;
+var
+  Dados: PAnsiChar;
+  ret: LongInt;
+begin
+  if (fInformacoesPinPad = '') then
+  begin
+    Result := '';
+    Dados := AllocMem(2048);
+    try
+      GravarLog('ScopePPGetInfoEx');
+      ret := xScopePPGetInfoEx(0, 2048, Dados);
+      GravarLog('  ret: '+IntToStr(ret));
+      if (ret <> PC_OK) then
+        TratarErroScope(ret);
+
+      fInformacoesPinPad := PAnsiCharToString(Dados);
+    finally
+      Freemem(Dados);
+    end;
+
+    GravarLog('  dados: ' + Result);
+  end;
+
+  Result := fInformacoesPinPad;
+end;
+
+procedure TACBrTEFScopeAPI.ObterDimensoesVisorPinPad(out Width: Word; out Height: Word);
+var
+  s: String;
+begin
+  s := ObterInformacoesPinPad;
+  Height := StrToIntDef(copy(s, 115, 4), 0);
+  Width  := StrToIntDef(copy(s, 119, 4), 0);
 end;
 
 procedure TACBrTEFScopeAPI.TratarErroScope(AErrorCode: LongInt);
@@ -2607,7 +2795,7 @@ begin
 
   // ExibirMensagem( Format(sMsgAbrindoConexao, [sEmpresa, sFilial, sPDV]) );
   GravarLog('ScopeOpen( 2, '+sEmpresa+', '+sFilial+', '+sPDV+' )');
-  ret := xScopeOpen( PAnsiChar('2'),
+  ret := xScopeOpen( PAnsiChar(AnsiString('2')),
                      PAnsiChar(AnsiString(sEmpresa)),
                      PAnsiChar(AnsiString(sFilial)),
                      PAnsiChar(AnsiString(sPDV)) );
@@ -2728,7 +2916,7 @@ function TACBrTEFScopeAPI.IniciarTransacao(Operacao: TACBrTEFScopeOperacao;
   const Param1: String; const Param2: String; const Param3: String;
   const Param4: String): LongInt;
 var
-  p1, p2, p3, p4: PAnsiChar;
+  p1, p2{, p3, p4}: PAnsiChar;
   w1, w2, w3, w4: Word;
   ret: LongInt;
   f1: Double;
@@ -2747,8 +2935,8 @@ begin
   fDadosDaTransacao.Clear;
   p1 := PAnsiChar(AnsiString(Param1));
   p2 := PAnsiChar(AnsiString(Param2));
-  p3 := PAnsiChar(AnsiString(Param3));
-  p4 := PAnsiChar(AnsiString(Param4));
+//  p3 := PAnsiChar(AnsiString(Param3));
+//  p4 := PAnsiChar(AnsiString(Param4));
   ret := 0;
 
   case Operacao of
@@ -2859,7 +3047,8 @@ begin
 
   if (Result = RCS_SUCESSO) then
   begin
-    fDadosDaTransacao.Values[RET_SCOPE_OPERACAO] := sOp;
+    fDadosDaTransacao.Values[RET_SCOPE_COD_OPERACAO] := IntToStr(Integer(Operacao));
+    fDadosDaTransacao.Values[RET_SCOPE_DESC_OPERACAO] := sOp;
     SetEmTransacao(True);
   end;
 end;
@@ -2871,6 +3060,7 @@ var
   rColetaEx: TParam_Coleta_Ext;
   TipoCaptura: Word;
   Resposta, MsgCli, MsgOpe: String;
+  Fluxo: TACBrTEFScopeEstadoOperacao;
 
   function VerificarSeUsuarioCancelouTransacao(Fluxo: TACBrTEFScopeEstadoOperacao): Boolean;
   var
@@ -2908,7 +3098,12 @@ begin
       // Enquanto a transacao estiver em andamento, aguarda, mas verifica se o usuário Cancelou //
       if (iStatus = RCS_TRN_EM_ANDAMENTO) then
       begin
-        if VerificarSeUsuarioCancelouTransacao(scoestFluxoAPI) then
+        if (fDadosDaTransacao.Values[RET_QRCODE] <> '') then
+          Fluxo := scoestLeituraQRCode
+        else
+          Fluxo := scoestFluxoAPI;
+
+        if VerificarSeUsuarioCancelouTransacao(Fluxo) then
           EnviarParametroTransacao(ACAO_CANCELAR, iStatus)
         else
           Sleep(fIntervaloColeta);
@@ -3063,11 +3258,14 @@ begin
       end;
     end;
 
+    if (fDadosDaTransacao.Values[RET_QRCODE] <> '') then // Remove QRCode da tela, Se houver...
+      fOnExibeQRCode('');
+
     // Atribui na Transação, as mensagens do cliente e operador //
     ObterMsgUltimaTransacao(MsgCli, MsgOpe);
     if (MsgOpe = '') and (iStatus <> RCS_SUCESSO) then
       MsgOpe := Format(ACBrStr(sErrExecutarOperacao), [ IntToHex(iStatus, 4),
-                       fDadosDaTransacao.Values[RET_SCOPE_OPERACAO] ]);
+                       fDadosDaTransacao.Values[RET_SCOPE_DESC_OPERACAO] ]);
 
     if (MsgCli <> '') then
       fDadosDaTransacao.Values[RET_MSG_CLIENTE] := BinaryStringToString( MsgCli );
@@ -3105,10 +3303,13 @@ begin
 end;
 
 function TACBrTEFScopeAPI.ObterScopeStatus: Longint;
+var
+  ret: LongInt;
 begin
   GravarLog('ScopeStatus');
-  Result := xScopeStatus;
-  GravarLog('  ret: '+IntToStr(Result) + ' - $'+IntToHex(Result, 4));
+  ret := xScopeStatus;
+  GravarLog('  ret: '+IntToStr(ret) + ' - $'+IntToHex(ret, 4));
+  Result := ret;
 end;
 
 procedure TACBrTEFScopeAPI.ObterDadosComprovantes;
@@ -3820,6 +4021,11 @@ begin
     Result := -1;
 end;
 
+function TACBrTEFScopeAPI.TratarNomeImagemPinPad(const NomeImagem: String): String;
+begin
+  Result := UpperCase(PadRight(OnlyAlphaNum(NomeImagem), 8, '0'));
+end;
+
 procedure TACBrTEFScopeAPI.AbrirPinPad;
 var
   ret: LongInt;
@@ -3844,7 +4050,13 @@ begin
               ', Config:'+IntToStr(bConfig)+
               ', Exclusivo:'+IntToStr(bExclusivo)+
               ', Porta:'+IntToStr(bPorta) );
-    if (ret <> PC_OK) then
+    if (ret = RCS_PP_NAO_ENCONTRADO) then
+    begin
+      bExclusivo := 0;
+      bPorta := 0;
+      bConfig := PPCONF_MODO_ABECS;
+    end
+    else if (ret <> PC_OK) then
       TratarErroPinPadScope(ret);
 
     if (bExclusivo = 0) then
@@ -3864,7 +4076,7 @@ begin
           Canal := CANAL_COMM_SERIAL;
 
         GravarLog('ScopePPOpenSecure( '+IntToStr(Canal)+', '+IntToStr(aPorta)+' )');
-        endereco := IntToStr(aPorta);
+        endereco := AnsiString(IntToStr(aPorta));
         ret := xScopePPOpenSecure(Canal, PAnsiChar(endereco));
       end
       else
@@ -3885,9 +4097,9 @@ end;
 procedure TACBrTEFScopeAPI.FecharPinPad;
 var
   ret: LongInt;
-  s: String;
+  s: AnsiString;
 begin
-  s := FormatarMsgPinPad(fMsgPinPad);
+  s := AnsiString(FormatarMsgPinPad(fMsgPinPad));
   GravarLog('ScopePPClose( '+s+' )');
   ret := xScopePPClose(PAnsiChar(s));
   GravarLog('  ret: '+IntToStr(ret));

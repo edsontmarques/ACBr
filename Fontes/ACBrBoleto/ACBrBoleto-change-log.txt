@@ -48,6 +48,48 @@ Símbolo : Significado
 [+]     : Novo recurso
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
+
+13/02/2025
+-- ACBrBoleto.pas --
+[*] TK-6565 - Ajustado exception para ser utilizado da classe de boleto
+  https://www.projetoacbr.com.br/forum/topic/81638-acbrboleto-sugest%C3%A3o-de-melhoria/
+  Por:  samuel.parastchuk, Victor H. Gonzales Pandaaa, Daniel Morais InfoCotidiano
+
+11/02/2025
+-- ACBrBancoSantander.pas --
+[*] TK-6533 - Ajustado para ler NossoNumeroCompleto no CNAB400 
+  https://www.projetoacbr.com.br/forum/topic/81533-retorno-banco-santander/
+  Por: Daniel Morais InfoCotidiano
+
+03/02/2025
+-- ACBrBancoBanrisul.pas --
+[*] TK-6494 - Ajustado nova formatação para CodigoCedente impresso no boleto.
+  https://www.projetoacbr.com.br/forum/topic/81360-rejei%C3%A7%C3%A3o-no-layout-do-boleto-banrisul/
+  Por: Daniel Morais InfoCotidiano
+
+30/01/2025
+-- ACBrBoletoW_Santander_API.pas --
+[-] TK-6122 - Ajustado Ambiente para Producao/Homologacao e Sandbox, ajustado NossoNumero consulta sandbox para 8 carac
+  https://www.projetoacbr.com.br/forum/topic/80208-erro-na-consulta-detalhada-de-um-boleto-via-api-do-santander-em-sandbox/
+  Por: Victor Gonzales Pandaaa / Daniel Morais
+
+23/01/2025
+-- ACBrBoletoRetorno.pas --
+[-] TK-6141-2 - Estava tentando acessar uma classe q nao estava instanciada.
+  Por: Daniel Morais InfoCotidiano / Pandaaaa
+
+15/01/2025
+-- ACBrBoletoW_Inter_API.pas --
+[*] TK-6095 - Correção de paginação retorno titulos.
+  https://www.projetoacbr.com.br/forum/topic/80132-queryparams-de-pagina%C3%A7%C3%A3o-do-banco-inter-boleto-com-pix-incorretos/
+  Por: Caio Cinel
+
+15/01/2025
+-- ACBrBoletoRetorno.pas --
+[*] TK-6141 - Retorno INI devolver o banco que foi liquidado, propriedade LiquidadoBanco
+  https://www.projetoacbr.com.br/forum/topic/80275-mapear-campo-banco-cobrador-237-bradesco-carteira-09/
+  Por: Daniel de Morais InfoCotidiano
+
 14/01/2025
 -- ACBrBoleto.pas --
 [-] TK-6479 - Ajustado para que a propriedade VersaoArquivo possa aceitar NumeroNegativo. 

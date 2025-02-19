@@ -1420,9 +1420,7 @@ function TACBrTEFDestaxaSocket.Desconectar: Integer;
 begin
   CloseSocket;
   Result := LastError;
-
-  fDestaxaClient.GravarLog('TACBrTEFDestaxaSocket.Desconectar - Result: ' +
-    IntToStr(Result));
+  fDestaxaClient.GravarLog('TACBrTEFDestaxaSocket.Desconectar - Result: ' + IntToStr(Result));
 end;
 
 function TACBrTEFDestaxaSocket.Iniciar(aSequencial: Integer): Boolean;
@@ -1677,10 +1675,11 @@ end;
 
 procedure TACBrTEFDestaxaClient.ProcessarColeta;
 var
-  Cancelar: Boolean;
+  Cancelar, Aguardar: Boolean;
 begin
+  Aguardar := True;
   Cancelar := False;
-  while (ColetaResposta.automacao_coleta_retorno in [dcrExecutarProcedimento, dcrErroParametrosInvalidos, dcrErroTempoLimiteExcedido]) do
+  while (ColetaResposta.automacao_coleta_retorno in [dcrExecutarProcedimento, dcrErroParametrosInvalidos]) do
   begin
     ColetaRequisicao.Clear;
 
@@ -1708,17 +1707,20 @@ begin
       drsErroTempoLimiteExcedido]) then
     fOnExibirMensagem(ColetaResposta.mensagem, 0, Cancelar);
 
-  if (ColetaResposta.automacao_coleta_retorno = dcrCancelarProcedimento) then
+  if (ColetaResposta.automacao_coleta_retorno in [dcrCancelarProcedimento, dcrErroTempoLimiteExcedido]) then
   begin
     if Assigned(fOnExibirMensagem) and fExibirMensagem and NaoEstaVazio(ColetaResposta.automacao_coleta_mensagem) then
       fOnExibirMensagem(ColetaResposta.automacao_coleta_mensagem, 0, Cancelar);
+                                    
+    if (ColetaResposta.automacao_coleta_retorno = dcrCancelarProcedimento) then
+      Aguardar := False;
 
     ColetaRequisicao.Clear;
-    ColetaRequisicao.automacao_coleta_retorno := ColetaResposta.automacao_coleta_retorno;
+    ColetaRequisicao.automacao_coleta_retorno := dcrCancelarProcedimento;
     ColetaRequisicao.automacao_coleta_mensagem := ColetaResposta.automacao_coleta_mensagem;
     ColetaRequisicao.automacao_coleta_sequencial := ColetaResposta.automacao_coleta_sequencial;
     ColetaRequisicao.automacao_coleta_transacao_resposta := ColetaResposta.automacao_coleta_transacao_resposta;
-    Socket.ExecutarColeta(False);
+    Socket.ExecutarColeta(Aguardar);
     Sleep(200);
   end;
 end;
@@ -1871,7 +1873,17 @@ begin
 end;
 
 function TACBrTEFDestaxaClient.IniciarRequisicao: Boolean;
+var
+  wErro: Integer;
 begin
+  wErro := Socket.Conectar;
+  if NaoEstaZerado(wErro) then
+    raise EACBrTEFDestaxaErro.Create(
+      ACBrStr(
+        'Erro ao conectar Destaxa Client' + sLineBreak +
+        'Endereço: ' + EnderecoIP + sLineBreak +
+        'Porta: ' + Porta + sLineBreak +
+        'Erro: ' + IntToStr(wErro) + '-' + Socket.LastErrorDesc));
   Result := Socket.Iniciar(UltimoSequencial+1);
 end;
 
@@ -1879,6 +1891,7 @@ function TACBrTEFDestaxaClient.FinalizarRequisicao: Boolean;
 begin
   Requisicao.sequencial := UltimoSequencial+1;
   Result := Socket.Finalizar;
+  Socket.Desconectar;
 end;
 
 function TACBrTEFDestaxaClient.CartaoVender: Boolean;

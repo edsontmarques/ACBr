@@ -44,6 +44,38 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+14/02/2025
+-- ACBrCTe.Classes/ACBrCTe.Consts --
+[+] Inclusão de novas contantes e ajustes nas novas classes para atender a Reforma Tributária.
+   Por: Italo Giurizzato Junior
+
+10/02/2025
+-- ACBrCTe.Classes --
+[+] Inclusão das novas classes para atender a Reforma Tributária.
+   Por: Italo Giurizzato Junior
+
+31/01/2025
+-- ACBrCTe.XmlWriter --
+[*] Correção para alguns campos do ICMS que são opcionais e estavam como obrigatórios.
+   Por: devFortes/Italo Giurizzato Junior
+-- ACBrCTeConhecimentos, pcteConversaoCTe --
+[*] #Tk-6521 - Altera o tipo dos enumerados TpcteTipoDataPeriodo e TpcteTipoHorarioIntervalo de não preenchido e N para -1
+  Por: Diego Folieni
+
+27/01/2025
+-- ACBrCTe.XmlHandler --
+[*] Correção na procedure LerToma4, não estava lendo o CNPJ/CPF do nó correto.
+   Por: devFortes
+
+24/01/2025
+-- ACBrCTeConhecimentos --
+[*] Alteração visando os campos do grupo <fluxo>
+   Por: Italo Giurizzato Junior
+
+20/01/2025
+-- pcteCTe --
+[*] Remoção de unit por estar em desuso.
+   Por: Italo Giurizzato Junior
 
 10/01/2025
 -- ACBrCTe.Conversao/ACBrCTe.EventoClass/ACBrCTe.RetEnvEvento --
