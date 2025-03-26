@@ -52,7 +52,8 @@ const
   CScopeINi = 'scope.ini';
 
 resourcestring
-  sErrLibJaInicializda = 'Biblioteca ScopeAPI já foi inicializada';
+  sErrLibJaInicializada = 'Biblioteca ScopeAPI já foi inicializada';
+  sErrLibNaoInicializada = 'Biblioteca ScopeAPI ainda NÃO foi carregada';
   sErrDirTrabalhoInvalido = 'Diretório de Trabalho não encontrado: %s';
   sErrScopeINIInvalido = 'Arquivo de Configuração ' + CScopeINI + ' não encontrado em: %s';
   sErrEndServNaoEncontrado = 'Endereço do Servidor não encontrado em '+CScopeINi;
@@ -1553,9 +1554,10 @@ type
     procedure TratarErroScope(AErrorCode: LongInt);
     procedure TratarErroPinPadScope(AErrorCode: LongInt);
 
-    procedure AbrirComunicacaoScope;
+    procedure AbrirComunicacaoScope(VerificaSessaoAberta: Boolean = True);
     procedure FecharComunicacaoScope;
 
+    procedure VerificarCarregada;
     procedure VerificarSeEstaConectadoScope;
     procedure VerificarSeMantemConexaoScope;
     procedure VerificarSessaoTEFAnterior;
@@ -1612,7 +1614,7 @@ type
 
     property PathLib: String read fPathLib write SetPathLib;
     property DiretorioTrabalho: String read fDiretorioTrabalho write SetDiretorioTrabalho;
-    property ControleConexao: Boolean read fControleConexao write SetControleConexao default False;
+    property ControleConexao: Boolean read fControleConexao write SetControleConexao default True;
 
     property Empresa: String read fEmpresa write SetEmpresa;
     property Filial: String read fFilial write SetFilial;
@@ -1661,7 +1663,8 @@ type
 
     procedure AbrirSessaoTEF;
     procedure FecharSessaoTEF; overload;
-    procedure FecharSessaoTEF(Confirmar: Boolean; out TransacaoFoiDesfeita: Boolean); overload;
+    procedure FecharSessaoTEF(Confirmar: Boolean; out TransacaoFoiDesfeita: Boolean;
+      VerificaSessaoAberta: Boolean = True); overload;
 
     function IniciarTransacao(Operacao: TACBrTEFScopeOperacao;
       const Param1: String = ''; const Param2: String = '';
@@ -1707,7 +1710,7 @@ begin
   fInicializada := False;
   fConectado := False;
   fSessaoAberta := False;
-  fControleConexao := False;
+  fControleConexao := True;
   fPathLib := '';
   fDiretorioTrabalho := '';
   fEnderecoIP := '';
@@ -1780,14 +1783,12 @@ begin
 end;
 
 procedure TACBrTEFScopeAPI.DesInicializar;
-var
-  b: Boolean;
 begin
   if not fInicializada then
     Exit;
 
   GravarLog('TACBrTEFScopeAPI.DesInicializar');
-  FecharSessaoTEF(True, b);
+  FecharSessaoTEF;
   FecharComunicacaoScope;
   FecharPinPad;
 
@@ -1820,7 +1821,7 @@ begin
   GravarLog('TACBrTEFScopeAPI.SetPathLib( '+AValue+' )');
 
   if fInicializada then
-    DoException(sErrLibJaInicializda);
+    DoException(sErrLibJaInicializada);
 
   fPathLib := PathWithDelim(ExtractFilePath(AValue));
 end;
@@ -1851,7 +1852,7 @@ begin
   GravarLog('TACBrTEFScopeAPI.SetDiretorioTrabalho( '+AValue+' )');
 
   if fInicializada then
-    DoException(sErrLibJaInicializda);
+    DoException(sErrLibJaInicializada);
 
   fDiretorioTrabalho := AValue;
 end;
@@ -1875,7 +1876,7 @@ begin
     Exit;
 
   if fInicializada then
-    DoException(sErrLibJaInicializda);
+    DoException(sErrLibJaInicializada);
 
   if (AValue = '') then
     fEmpresa := AValue
@@ -1889,7 +1890,7 @@ begin
     Exit;
 
   if fInicializada then
-    DoException(sErrLibJaInicializda);
+    DoException(sErrLibJaInicializada);
 
   if (AValue = '') then
     fFilial := AValue
@@ -1903,7 +1904,7 @@ begin
     Exit;
 
   if fInicializada then
-    DoException(sErrLibJaInicializda);
+    DoException(sErrLibJaInicializada);
 
   if (AValue = '') then
     fPDV := AValue
@@ -1920,7 +1921,7 @@ begin
   GravarLog('TACBrTEFScopeAPI.SetControleConexao( '+BoolToStr(AValue, True)+' )');
 
   if fInicializada then
-    DoException(sErrLibJaInicializda);
+    DoException(sErrLibJaInicializada);
 
   fControleConexao := AValue;
 end;
@@ -1931,7 +1932,7 @@ begin
     Exit;
 
   if fInicializada then
-    DoException(sErrLibJaInicializda);
+    DoException(sErrLibJaInicializada);
 
   fEnderecoIP := Trim(AValue);
 end;
@@ -1943,7 +1944,7 @@ begin
     Exit;
 
   if fInicializada then
-    DoException(sErrLibJaInicializda);
+    DoException(sErrLibJaInicializada);
 
   fPortaTCP := Trim(AValue);
 end;
@@ -2183,6 +2184,12 @@ begin
   raise EACBrTEFScopeAPI.Create(ACBrStr(AErrorMsg));
 end;
 
+procedure TACBrTEFScopeAPI.VerificarCarregada;
+begin
+  if not fCarregada then
+    DoException(sErrLibNaoInicializada);
+end;
+
 procedure TACBrTEFScopeAPI.VerificarDiretorioDeTrabalho;
 begin
   if (fDiretorioTrabalho = '') then
@@ -2414,6 +2421,7 @@ var
   ret: longint;
   pszData: PAnsiChar;
 begin
+  VerificarCarregada;
   Result := '';
   pszData := AllocMem(13);
   try
@@ -2437,6 +2445,7 @@ var
   ret: longint;
   pszData: PAnsiChar;
 begin
+  VerificarCarregada;
   Result := '';
   pszData := AllocMem(48);
   try
@@ -2458,6 +2467,7 @@ var
   ret: LongInt;
   s: AnsiString;
 begin
+  VerificarCarregada;
   s := AnsiString(FormatarMsgPinPad(MsgPinPad));
   GravarLog('ScopePPDisplay( '+s+' )');
   ret := xScopePPDisplay(PAnsiChar(s));
@@ -2475,6 +2485,7 @@ var
 const
   BUFFER_SIZE = 1024;
 begin
+  VerificarCarregada;
   Result := '';
   GravarLog('ScopePPStartGetData( '+IntToStr(Dado)+', '+IntToStr(MinLen)+', '+IntToStr(MaxLen)+' )');
   ret := xScopePPStartGetData(Dado, MinLen, MaxLen);
@@ -2528,6 +2539,7 @@ var
 const
   BUFFER_SIZE = 10;
 begin
+  VerificarCarregada;
   Result := -1;
   Lista := '';
   for i := 0 to Opcoes.Count-1 do
@@ -2585,6 +2597,7 @@ var
   sLista, s: String;
   p, l: Integer;
 begin
+  VerificarCarregada;
   sLista := '';
   pLista := AllocMem(2048);
   try
@@ -2619,6 +2632,7 @@ var
   ct: AnsiChar;
   ptInfoFile: stABECS_PPFILE_INFO;
 begin
+  VerificarCarregada;
   warq := Trim(Arquivo);
   if (warq = '') then
     Exit;
@@ -2654,6 +2668,7 @@ var
   ret: LongInt;
   s: AnsiString;
 begin
+  VerificarCarregada;
   s := AnsiString(TratarNomeImagemPinPad(NomeImagem));
   GravarLog('ScopePPMMDisplayImage( '+s+' )');
   ret := xScopePPMMDisplayImage(PAnsiChar(s));
@@ -2667,6 +2682,7 @@ var
   ret: LongInt;
   s: AnsiString;
 begin
+  VerificarCarregada;
   s := AnsiString(TratarNomeImagemPinPad(NomeImagem));
   GravarLog('ScopePPMMFileDelete( '+s+' )');
   ret := xScopePPMMFileDelete(PAnsiChar(s));
@@ -2680,6 +2696,7 @@ var
   Dados: PAnsiChar;
   ret: LongInt;
 begin
+  VerificarCarregada;
   if (fInformacoesPinPad = '') then
   begin
     Result := '';
@@ -2779,7 +2796,7 @@ begin
     DoException(MsgErro);
 end;
 
-procedure TACBrTEFScopeAPI.AbrirComunicacaoScope;
+procedure TACBrTEFScopeAPI.AbrirComunicacaoScope(VerificaSessaoAberta: Boolean);
 var
   ret: LongInt;
   sEmpresa, sFilial, sPDV, sEnderecoIP, sPorta: String;
@@ -2807,7 +2824,8 @@ begin
   // ExibirMensagem(Format(sMsgConctadoAoServidor, [sEnderecoIP+':'+sPorta]));
 
   ConfigurarColeta;
-  VerificarSessaoTEFAnterior;
+  if VerificaSessaoAberta then
+    VerificarSessaoTEFAnterior;
 end;
 
 procedure TACBrTEFScopeAPI.FecharComunicacaoScope;
@@ -2873,14 +2891,16 @@ begin
 end;
 
 procedure TACBrTEFScopeAPI.FecharSessaoTEF(Confirmar: Boolean; out
-  TransacaoFoiDesfeita: Boolean);
+  TransacaoFoiDesfeita: Boolean; VerificaSessaoAberta: Boolean);
 var
   Acao, DesfezTEF: Byte;
   ret: LongInt;
 begin
   TransacaoFoiDesfeita := False;
-  if not fSessaoAberta then
+  if VerificaSessaoAberta and (not fSessaoAberta) then
     Exit;
+
+  AbrirComunicacaoScope(VerificaSessaoAberta);
 
   if Confirmar then
     Acao := ACAO_FECHA_CONFIRMA_TEF
@@ -2895,6 +2915,9 @@ begin
     TratarErroScope(ret);
 
   TransacaoFoiDesfeita := (DesfezTEF = 1);
+  if TransacaoFoiDesfeita then
+    GravarLog('  ATENÇÃO: A Ultima Transação foi desfeita');
+
   fSessaoAberta := False;
   VerificarSeMantemConexaoScope;
 end;
@@ -3443,13 +3466,16 @@ begin
     mask := 1;
     for i := 1 to 32 do
     begin
-      pBuffer^ := #0;
-      hmask := '$'+IntToHex(mask, 8);
-      GravarLog('ScopeObtemCampoExt3( '+IntToStr(h)+', '+hmask+', 0, 0, 0 )');
-      ret := xScopeObtemCampoExt3(h, mask, 0, 0, 0, 0, pBuffer);
-      sBuffer := String(pBuffer);
-      GravarLog('  ret: '+IntToStr(ret)+', Buffer: '+sBuffer);
-      fDadosDaTransacao.Add(Format('%s-%s=%s', ['mask1', hmask, sBuffer]));
+      if not (mask = MASK1_Texto_BIT_62) then
+      begin
+        pBuffer^ := #0;
+        hmask := '$'+IntToHex(mask, 8);
+        GravarLog('ScopeObtemCampoExt3( '+IntToStr(h)+', '+hmask+', 0, 0, 0 )');
+        ret := xScopeObtemCampoExt3(h, mask, 0, 0, 0, 0, pBuffer);
+        sBuffer := String(pBuffer);
+        GravarLog('  ret: '+IntToStr(ret)+', Buffer: '+sBuffer);
+        fDadosDaTransacao.Add(Format('%s-%s=%s', ['mask1', hmask, sBuffer]));
+      end;
       mask := mask shl 1;
     end;
 
@@ -3496,8 +3522,8 @@ begin
         sBuffer := String(pBuffer);
         GravarLog('  ret: '+IntToStr(ret)+', Buffer: '+sBuffer);
         fDadosDaTransacao.Add(Format('%s-%s=%s', ['mask4', hmask, sBuffer]));
-        mask := mask shl 1;
       end;
+      mask := mask shl 1;
     end;
   finally
     Freemem(pBuffer);
@@ -3910,6 +3936,8 @@ procedure TACBrTEFScopeAPI.ColetarParametrosScope(const iStatus: Word;
 var
   rColeta: TParam_Coleta;
   ret: LongInt;
+  bandeira: Int64;
+  s: String;
 begin
   // Obtendo informações da Coleta em curso
   FillChar(rColeta, SizeOf(TParam_Coleta), #0);
@@ -3940,8 +3968,13 @@ begin
   end;
 
   // Salva em DadosDaTransacao as informaçoes retornadas na Coleta //;
-  if (Trim(rColetaEx.CodBandeira) <> '') then
-    fDadosDaTransacao.Values[RET_BANDEIRA] := rColetaEx.CodBandeira;
+  bandeira := StrToInt64Def(Trim(String(rColetaEx.CodBandeira)), 0);
+  if (bandeira > 0) then
+  begin
+    s := IntToStr(bandeira);
+    GravarLog('  coletando Bandeira: '+s);
+    fDadosDaTransacao.Values[RET_BANDEIRA] := s;
+  end;
 end;
 
 procedure TACBrTEFScopeAPI.ExibirMsgColeta(const rColetaEx: TParam_Coleta_Ext;
@@ -3961,7 +3994,7 @@ end;
 procedure TACBrTEFScopeAPI.AssignColetaToColetaEx(const rColeta: TParam_Coleta;
   var rColetaEx: TParam_Coleta_Ext);
 var
-  s: String;
+  s: AnsiString;
 begin
   FillChar(rColetaEx, SizeOf(TParam_Coleta_Ext), #0);
   rColetaEx.FormatoDado := rColeta.FormatoDado;
@@ -4142,8 +4175,6 @@ end;
 
 {
 --- TODO VERIFICAR ---
-- A.V. quando chama ScopenOpen, na segunda vez
-  ocorre quando ControleConexao = True
 - Cancelar uma transação pelo Teclado está retornando o erro RCS_NAO_EXISTE_TRN_SUSPENSA
 - Como fazer Transação de Crédito parcelado pela Administradora ou Lojista
   - Como usar os Serviços Scope, da Pag 340 ?

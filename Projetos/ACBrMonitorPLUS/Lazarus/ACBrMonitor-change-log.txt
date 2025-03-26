@@ -44,6 +44,29 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+18/03/2025
+-- ACBrMonitor1 --
+[*] #TK-6778 Corrigida visualização do Logo png na aba de conta bancária.
+  Por: Renato Rubinho
+
+17/03/2025
+-- ACBrMonitor1 --
+[*] #TK-6765 Configurado para preencher a última versão do e-Social quando houver um valor inválido no ini.
+  Por: Renato Rubinho
+
+12/03/2025
+-- ACBrMonitorConsts --
+[*] #TK-6745: Altera valor default da versão do e-Social para S01_00_00.
+   Por: Diego Folieni
+-- DoACBreSocialUnit --
+[*] #TK-6455: Adiciona quebra de linha para separar resposta da linha do "OK:"
+   Por: Diego Folieni
+
+24/02/2025
+-- ACBrMonitor1, ACBrMonitorConfig, ACBrMonitorConsts, DoACBrNFSeUnit --
+[*] #TK-6556 Adiciona informações de endereço opcionais para o emitente para usar no DANFSe quando não houver no XML.
+  Por: Diego Folieni 
+
 17/02/2025  
 -- ACBrMonitor.hnd --  
 [*] #TK-6137 Corrigido exemplos de respostas da DistribuicaoDFe adicionando informações para refletir retorno mais recente.  

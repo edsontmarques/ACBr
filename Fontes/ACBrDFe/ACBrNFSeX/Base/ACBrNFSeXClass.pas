@@ -1363,6 +1363,7 @@ type
 
   TtotCIBSSel = class(TObject)
   private
+    FvBCCIBS: Double;
     FvTotNF: Double;
     FgSel: TgSel;
     FgIBS: TgIBS;
@@ -1371,6 +1372,7 @@ type
     constructor Create;
     destructor Destroy; override;
 
+    property vBCCIBS: Double read FvBCCIBS write FvBCCIBS;
     property vTotNF: Double read FvTotNF write FvTotNF;
     property gSel: TgSel read FgSel write FgSel;
     property gIBS: TgIBS read FgIBS write FgIBS;
@@ -1561,15 +1563,6 @@ type
 
   { Tseletivo }
 
-  Tseletivo = class(TObject)
-  private
-    FcstImpSel: Integer;
-    FcClassTribImpSel: Integer;
-  public
-    property cstImpSel: Integer read FcstImpSel write FcstImpSel;
-    property cClassTribImpSel: Integer read FcClassTribImpSel write FcClassTribImpSel;
-  end;
-
   { TgImpSel }
 
   TgImpSel = class(TObject)
@@ -1581,9 +1574,65 @@ type
     property qTrib: Double read FqTrib write FqTrib;
   end;
 
-  { TgIBSCBSValores }
+  Tseletivo = class(TObject)
+  private
+    FcstImpSel: Integer;
+    FcClassTribImpSel: Integer;
+    FgImpSel: TgImpSel;
+  public
+    constructor Create;
+    destructor Destroy; override;
 
-  TgIBSCBSValores = class(TObject)
+    property cstImpSel: Integer read FcstImpSel write FcstImpSel;
+    property cClassTribImpSel: Integer read FcClassTribImpSel write FcClassTribImpSel;
+    property gImpSel: TgImpSel read FgImpSel write FgImpSel;
+  end;
+
+  { TgIBSUFValores }
+
+  TgIBSUFValores = class(TObject)
+  private
+    FpCredPres: Double;
+    FpDif: Double;
+    FvDevTrib: Double;
+    FpRedAliq: Double;
+    FcstDeson: Integer;
+    FcClassTribDeson: Integer;
+    FpAliqDeson: Double;
+  public
+    property pCredPres: Double read FpCredPres write FpCredPres;
+    property pDif: Double read FpDif write FpDif;
+    property vDevTrib: Double read FvDevTrib write FvDevTrib;
+    property pRedAliq: Double read FpRedAliq write FpRedAliq;
+    property cstDeson: Integer read FcstDeson write FcstDeson;
+    property cClassTribDeson: Integer read FcClassTribDeson write FcClassTribDeson;
+    property pAliqDeson: Double read FpAliqDeson write FpAliqDeson;
+  end;
+
+  { TgIBSMunValores }
+
+  TgIBSMunValores = class(TObject)
+  private
+    FpCredPres: Double;
+    FpDif: Double;
+    FvDevTrib: Double;
+    FpRedAliq: Double;
+    FcstDeson: Integer;
+    FcClassTribDeson: Integer;
+    FpAliqDeson: Double;
+  public
+    property pCredPres: Double read FpCredPres write FpCredPres;
+    property pDif: Double read FpDif write FpDif;
+    property vDevTrib: Double read FvDevTrib write FvDevTrib;
+    property pRedAliq: Double read FpRedAliq write FpRedAliq;
+    property cstDeson: Integer read FcstDeson write FcstDeson;
+    property cClassTribDeson: Integer read FcClassTribDeson write FcClassTribDeson;
+    property pAliqDeson: Double read FpAliqDeson write FpAliqDeson;
+  end;
+
+  { TgCBSValores }
+
+  TgCBSValores = class(TObject)
   private
     FpCredPres: Double;
     FpDif: Double;
@@ -1608,18 +1657,18 @@ type
   private
     FcstIBSCBS: Integer;
     FcClassTribIBSCBS: Integer;
-    FgIBSUF: TgIBSCBSValores;
-    FgIBSMun: TgIBSCBSValores;
-    FgCBS: TgIBSCBSValores;
+    FgIBSUF: TgIBSUFValores;
+    FgIBSMun: TgIBSMunValores;
+    FgCBS: TgCBSValores;
   public
     constructor Create;
     destructor Destroy; override;
 
     property cstIBSCBS: Integer read FcstIBSCBS write FcstIBSCBS;
     property cClassTribIBSCBS: Integer read FcClassTribIBSCBS write FcClassTribIBSCBS;
-    property gIBSUF: TgIBSCBSValores read FgIBSUF write FgIBSUF;
-    property gIBSMun: TgIBSCBSValores read FgIBSMun write FgIBSMun;
-    property gCBS: TgIBSCBSValores read FgCBS write FgCBS;
+    property gIBSUF: TgIBSUFValores read FgIBSUF write FgIBSUF;
+    property gIBSMun: TgIBSMunValores read FgIBSMun write FgIBSMun;
+    property gCBS: TgCBSValores read FgCBS write FgCBS;
   end;
 
   { Ttrib }
@@ -1627,14 +1676,12 @@ type
   Ttrib = class(TObject)
   private
     Fseletivo: Tseletivo;
-    FgImpSel: TgImpSel;
     FgIBSCBS: TgIBSCBS;
   public
     constructor Create;
     destructor Destroy; override;
 
     property seletivo: Tseletivo read Fseletivo write Fseletivo;
-    property gImpSel: TgImpSel read FgImpSel write FgImpSel;
     property gIBSCBS: TgIBSCBS read FgIBSCBS write FgIBSCBS;
   end;
 
@@ -2856,14 +2903,12 @@ begin
   inherited Create;
 
   Fseletivo := Tseletivo.Create;
-  FgImpSel := TgImpSel.Create;
   FgIBSCBS := TgIBSCBS.Create;
 end;
 
 destructor Ttrib.Destroy;
 begin
   Fseletivo.Free;
-  FgImpSel.Free;
   FgIBSCBS.Free;
 
   inherited Destroy;
@@ -2875,9 +2920,9 @@ constructor TgIBSCBS.Create;
 begin
   inherited Create;
 
-  FgIBSUF := TgIBSCBSValores.Create;
-  FgIBSMun := TgIBSCBSValores.Create;
-  FgCBS := TgIBSCBSValores.Create;
+  FgIBSUF := TgIBSUFValores.Create;
+  FgIBSMun := TgIBSMunValores.Create;
+  FgCBS := TgCBSValores.Create;
 end;
 
 destructor TgIBSCBS.Destroy;
@@ -2939,6 +2984,22 @@ begin
   FgSel.Free;
   FgIBS.Free;
   FgCBS.Free;
+
+  inherited Destroy;
+end;
+
+{ Tseletivo }
+
+constructor Tseletivo.Create;
+begin
+  inherited Create;
+
+  FgImpSel := TgImpSel.Create;
+end;
+
+destructor Tseletivo.Destroy;
+begin
+  FgImpSel.Free;
 
   inherited Destroy;
 end;

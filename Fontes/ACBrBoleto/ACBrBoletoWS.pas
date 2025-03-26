@@ -55,7 +55,8 @@ uses
   ACBrUtil.FilesIO,
   ACBrUtil.XMLHTML,
   httpsend,
-  ACBrBoletoWS.Rest.OAuth;
+  ACBrBoletoWS.Rest.OAuth,
+  ACBrUtil.DateTime;
 
 type
 
@@ -249,10 +250,11 @@ uses
   ACBrBoletoW_Banrisul,
   ACBrBoletoRet_Banrisul,
   ACBrBoletoW_Cora,
-  AcbrBoletoRet_Cora,
+  ACBrBoletoRet_Cora,
   ACBrBoletoW_Kobana,
   ACBrBoletoRet_Kobana,
-  ACBrUtil.DateTime;
+  ACBrBoletoW_BTGPactual,
+  ACBrBoletoRet_BTGPactual;
 
   { TRetornoEnvioClass }
 
@@ -480,6 +482,11 @@ begin
       begin
         FBoletoWSClass := TBoletoW_Cora.Create(Self);
         FRetornoBanco  := TRetornoEnvio_Cora.Create(FBoleto);
+      end;
+    cobBTGPactual :
+      begin
+        FBoletoWSClass := TBoletoW_BTGPactual.Create(Self);
+        FRetornoBanco  := TRetornoEnvio_BTGPactual.Create(FBoleto);
       end;
     else
       FBoletoWSClass := TBoletoWSClass.Create(Self);

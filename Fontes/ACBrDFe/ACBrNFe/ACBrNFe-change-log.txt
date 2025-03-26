@@ -44,6 +44,56 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+25/03/2025
+-- ACBrNFe.IniReader/ACBrNFe.IniWriter --
+[+] #TK-5816: Implementado duas novas units especificas para a leitura e escrita do
+    arquivo INI que contem os dados da nota fiscal.
+-- ACBrNFeNotasFiscais/ACBrNFe.Classes/ACBrNFe.XmlReader/ACBrNFe.XmlWriter --
+[*] Ajustes realizados por conta das duas novas units e da Reforma Tributária.
+   Por: Italo Giurizzato Junior
+
+21/03/2025
+-- ACBrNFeWebServices --
+[*] #TK-6740: Alterado a condição que determina se o XML do evento deve ser salvo em disco
+    ou não, antes checava a propriedade de configuração Salvar, agora checa a propriedade
+    SalvarEvento
+   Por: Italo Giurizzato Junior
+
+-- pcnNFeW.pas --
+[*] #TK-6728: Correção para geração das tags de ST para cst90.
+    https://www.projetoacbr.com.br/forum/topic/82236-problema-com-o-preenchimento-das-tags-de-icms-st/
+   Por: Renato Rubinho
+
+20/03/2025
+-- ACBrNFeConfiguracoes, ACBrNFeWebServices --
+[*] #TK-6730: Ajuste visando que a rotina que define o caminho onde será salvo o XML de Inutilização considere o Modelo passado no comando.
+  Por: Diego Folieni 
+
+08/03/2025
+-- ACBrNFe.Classes/ACBrNFe.XmlReader/ACBrNFe.XmlWriter --
+[*] #TK-5816: Ajustes visando atender a Reforma Tributária.
+   Por: Italo Giurizzato Junior
+
+07/03/2025
+-- ACBrNFeNotasFiscais --
+[*] #TK-6620: Removida a validação para cStat 737 que estava incorreta no ValidarRegrasDeNegocio.
+   Por: Diego Folieni 
+   
+03/03/2025
+-- ACBrNFe.XmlWriter --
+[*] Ajuste visando evitar erro caso não preencha cMunFGIBS
+   Por: Diego Folieni
+
+28/02/2025
+-- ACBrNFe.Classes --
+[-]  incluido o gCompraGov no Create e no Destroy da classe Ide.
+   Por: Italo Giurizzato Junior
+
+25/02/2025
+-- Diversos --
+[+] Ajustes na escrita e leitura do XML para atender a Reforma Tributária.
+   Por: Italo Giurizzato Junior
+
 14/02/2025
 -- ACBrNFe.Classes/ACBrNFe.Consts --
 [+] Inclusão de novas contantes e ajustes nas novas classes para atender a Reforma Tributária.

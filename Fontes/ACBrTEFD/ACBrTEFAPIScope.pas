@@ -159,12 +159,14 @@ uses
 
 procedure TACBrTEFRespScope.ConteudoToProperty;
   procedure TrataCamposMask1(const IDCampo: Int64; Linha: TACBrTEFLinha);
+  var
+    s: String;
+    d: TDateTime;
   begin
     //MASK1_Numero_Conta_PAN
     //MASK1_Data_referencia
     //MASK1_Codigo_Origem_Mensagem
     //MASK1_Cod_Servico    // Ver tabela Código serviços página 340
-    //MASK1_Texto_BIT_62   // Parece muito o espelho do comprovante????
     //MASK1_Cartao_Trilha02
     //MASK1_Numero_Promissorias
     //MASK1_Cod_Estab_Impresso //<-- CNPJ do Estabelecimento
@@ -182,8 +184,10 @@ procedure TACBrTEFRespScope.ConteudoToProperty;
       DataHoraTransacaoLocal := DateOf(DataHoraTransacaoLocal) + Linha.Informacao.AsTime
     else if IDCampo = MASK1_Data_local_transacao then
     begin
-      if Trim(Linha.Informacao.AsString) <> '' then
-        DataHoraTransacaoLocal := Linha.Informacao.AsDate + TimeOf(DataHoraTransacaoLocal);
+      s  := Trim(Linha.Informacao.AsString);
+      if (s <> '') then
+        if TryEncodeDate(YearOf(Date()), StrToIntDef(copy(s, 1, 2), 0), StrToIntDef(copy(s, 3, 2), 0), d) then
+          DataHoraTransacaoLocal := d + TimeOf(DataHoraTransacaoLocal);
     end
     else if IDCampo = MASK1_Data_vencimento_cartao then
       NFCeSAT.DataExpiracao := Linha.Informacao.AsString
@@ -484,6 +488,7 @@ var
   i: Integer;
   AChave, AValue: String;
 begin
+  fpACBrTEFAPI.UltimaRespostaTEF.Clear;
   fpACBrTEFAPI.UltimaRespostaTEF.ViaClienteReduzida := fpACBrTEFAPI.DadosAutomacao.ImprimeViaClienteReduzida;
 
   for i := 0 to fTEFScopeAPI.DadosDaTransacao.Count-1 do
@@ -816,6 +821,7 @@ var
   OpScope: TACBrTEFScopeOperacao;
   Param1: String;
 begin
+  fTEFScopeAPI.DadosDaTransacao.Clear;
   Result := False;
   if CodOperacaoAdm = tefopAdministrativo then
     CodOperacaoAdm := PerguntarMenuAdmScope;
@@ -905,13 +911,16 @@ begin
   if (Financiamento = tefmfAVista) then
     fTEFScopeAPI.RespostasPorEstados.Values[IntToStr(TC_DECIDE_AVISTA)] := '1'
   else if (Financiamento > tefmfAVista) then   // Parcelado
+  begin
     fTEFScopeAPI.RespostasPorEstados.Values[IntToStr(TC_DECIDE_AVISTA)] := '0';
+    fTEFScopeAPI.RespostasPorEstados.Values[IntToStr(TC_DECIDE_CREDIARIO)] := '0';
+  end;
 
   // NAO TESTADO
   if (Financiamento = tefmfParceladoEmissor) then
     fTEFScopeAPI.RespostasPorEstados.Values[IntToStr(TC_DECIDE_P_ADM_EST)] := '1'
   else if (Financiamento = tefmfParceladoEstabelecimento) then
-    fTEFScopeAPI.RespostasPorEstados.Values[IntToStr(TC_DECIDE_P_ADM_EST)] := '0';
+    fTEFScopeAPI.RespostasPorEstados.Values[IntToStr(TC_DECIDE_P_ADM_EST)] := '2';
 
   if (Parcelas > 0) then
     fTEFScopeAPI.RespostasPorEstados.Values[IntToStr(TC_QTDE_PARCELAS)] := IntToStr(Parcelas);
@@ -948,7 +957,7 @@ begin
   //i := fpACBrTEFAPI.RespostasTEF.AcharTransacao(Rede, NSU, CodigoFinalizacao);
 
   Confirmar := (AStatus in [tefstsSucessoAutomatico, tefstsSucessoManual]);
-  fTEFScopeAPI.FecharSessaoTEF(Confirmar, TransacaoFoiDesfeita);
+  fTEFScopeAPI.FecharSessaoTEF(Confirmar, TransacaoFoiDesfeita, False);
   if TransacaoFoiDesfeita then
     TACBrTEFAPI(fpACBrTEFAPI).QuandoExibirMensagem(ACBrStr(sErrUltTransDesfeita), telaOperador, 0);
 end;
@@ -1102,6 +1111,7 @@ function TACBrTEFAPIClassScope.ExecutarTransacaoScopeSessaoUnica(
 var
   ret: LongInt;
 begin
+  fTEFScopeAPI.DadosDaTransacao.Clear;
   Result := False;
   if fTEFScopeAPI.SessaoAberta then
     fTEFScopeAPI.FecharSessaoTEF;
