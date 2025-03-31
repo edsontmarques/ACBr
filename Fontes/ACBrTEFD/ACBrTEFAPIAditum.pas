@@ -184,6 +184,10 @@ begin
   js := TACBrJSONObject.Parse(s);
   try
     jsCharge := js.AsJSONObject['charge'];
+
+    if not Assigned(jsCharge) then
+        jsCharge := js; // fallback para raiz do JSON
+
     if Assigned(jsCharge) then
     begin
       Rede := jsCharge.AsString['acquirerName'];
@@ -506,6 +510,11 @@ begin
     Result := 'Encerrando fluxo transacional'
   else if ATransactionStatus = 'FINISHED' then
     Result := 'Fluxo completo'
+  else if ATransactionStatus = 'VALIDATING_NSU' then
+    Result := 'Validando NSU'
+  else if ATransactionStatus = 'WAITING_CARD_EVENT' then
+    Result := 'Aguardando Aproximação do Cartão'
+
   else
     Result := '';
 end;
@@ -586,7 +595,7 @@ begin
   begin
     js := TACBrJSONObject.Parse(FHTTPResponse);
     try
-      if (LowerCase(js.AsString['sucess']) <> 'true') then
+      if (LowerCase(js.AsString['success']) <> 'true') then
         TratarRetornoComErro;
 
       jsmerchantInfo := js.AsJSONObject['merchantInfo'];
@@ -887,6 +896,8 @@ var
   sBody, sURL: String;
   jsErrors: TACBrJSONArray;
   i: Integer;
+  jserro: TACBrJSONObject;
+  sMsg : String;
 begin
   LimparRespostaHTTP;
   if (Trim(NSU) = '') then
@@ -915,8 +926,11 @@ begin
         begin
           for i := 0 to jsErrors.Count-1 do
           begin
-            if (GetErrorCode(jserrors.ItemAsJSONObject[i]) = -1950) then  // Transação já cancelada
+            jserro := jserrors.ItemAsJSONObject[i];
+            if Assigned(jserro) and (GetErrorCode(jserro) = -1950) then  // Transação já cancelada
             begin
+              sMsg := UTF8ToNativeString(jserro.AsString['message']);
+              TACBrTEFAPI(fpACBrTEFAPI).QuandoExibirMensagem( sMsg, telaOperador, 1000 );
               Result := True;
               Break;
             end;
@@ -934,7 +948,7 @@ end;
 
 procedure TACBrTEFAPIClassAditum.RecuperarTransacao(const NSU: String);
 var
-  sURL: String;
+  sURL, s: String;
   js: TACBrJSONObject;
   Ok: Boolean;
 begin
@@ -946,7 +960,11 @@ begin
   begin
     js := TACBrJSONObject.Parse(FHTTPResponse);
     try
-      Ok := (LowerCase(js.AsString['success']) = 'true');
+      s := js.AsString['success'];
+      if (s = '') then
+        s := js.AsString['isApproved'];
+
+      Ok := (LowerCase(s) = 'true');
       if Ok then
         FinalizarChamadaAPI
       else

@@ -42,6 +42,40 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+31/03/2025
+-- Diversos --
+[+] #TK-6822: Implementação do provedor Smart4 que atende a cidade de Paulo Afonso/BA
+  Por: Teresa/Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[+] #TK-6842: Incluída a cidade de Aguas Belas/PE, o provedor é o Agili
+  Por: Arimateia Jr
+[+] #TK-6838: Incluída a cidade de Vila Valerio/ES, o provedor é EL versão 2.04
+  Por: Desenvolvimento Objetiva
+
+28/03/2025
+-- ACBrNFSeXServicos --
+[+] #TK-6827: Incluída a cidade de Tibagi/PR, o provedor é EloTech.
+[+] #TK-6827: Incluída a cidade de Imbau/PR, o provedor é EloTech.
+  Por: Exi Sistemas
+
+27/03/2025
+-- EL.Provider --
+[*] #TK-6727: Ajuste visando a correta exibição do retorno nas propriedades Código, Descricao e Correção.
+  Por: Diego Folieni / Italo Giurizzato Junior 
+-- ACBrNFSeXWebservicesResponse/PadraoNacional.Provider --
+[+] #TK-6815: Incluído a propriedade TipoEvento que é retornado na pela Consulta DFe do
+    Padrão Nacional.
+  Por: Pegasus Sistemas LTDA
+-- ACBrNFSeXServicos --
+[*] #TK-6810: A cidade de Ilhota/SC trocou de provedor, agora é Betha versão 2.02
+  Por: Lucas atz
+-- TabServicos --
+[+] #TK-6819: Incluído o código de item de serviço 14.14 e sua descrição.
+  Por: Diego Reckziegel
+-- ACBrNFSeXDANFSeFPDFClass --
+[*] #TK-6793: Correção no FPDF na geração da marca d'água com informação de NFSe cancelada e o ambiente de homologação
+  Por: Renato Rubinho
+
 25/03/2025
 -- ACBrNFSeXServicos --
 [*] #TK-6808: Alterado o Params: ResponseTag da cidade de Visconde do Rio Branco/MG.
