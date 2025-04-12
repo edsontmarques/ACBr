@@ -48,6 +48,29 @@ Símbolo : Significado
 [+]     : Novo recurso
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
+10/04/2025
+-- ACBrBoletoW_Cora, ACBrBoletoRet_Cora  --
+[*] TK-6828 - Ajsutes codigo de liquidação e ID boleto.
+  Por:  Daniel de Morais InfoCotidiano
+
+09/04/2025
+-- ACBrBoletoRet_C6.pas  --
+[*] TK-6895 - Mapeado a data do vencimento que nao estava mapeada na inclusao.
+  Por:  Daniel de Morais InfoCotidiano
+
+09/04/2025
+-- ACBrBoletoW_Cora, ACBrBoletoRet_Cora  --
+[*] TK-6828 - Corrigida os retornos da TpConsulta e criado validacoes de datas no definir parametros;
+  https://www.projetoacbr.com.br/forum/topic/82555-boleto-banco-cora-via-api-m%C3%A9todo-n%C3%A3o-implementado/
+  https://www.projetoacbr.com.br/forum/topic/82670-boleto-banco-cora-via-api-classe-e-ini-n%C3%A3o-preenchidos-no-retorno
+  https://discord.com/channels/798697718800318484/809129039159230514/1359502714928758804  
+  Por:  Daniel de Morais InfoCotidiano
+
+07/04/2025
+-- ACBrBancoSicredi.pas --
+[*] TK-6865 - Corrigida geração do tipo de juros literal no Sicredi, quando preenchido CodigoMora numérico
+  https://www.projetoacbr.com.br/forum/topic/82659-acbrlib-boleto-sicredi-c%C3%B3digo-mora-sendo-gerado-incorretamente
+  Por:  Renato Rubinho
 
 19/03/2025
 -- ACBrBoletoFCFortesFr.pas --

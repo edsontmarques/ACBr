@@ -3112,22 +3112,29 @@ begin
   begin
     if not (FEvento.Evento.Items[0].InfEvento.tpEvento in [teCCe,
             teCancelamento, teCancSubst, tePedProrrog1, tePedProrrog2,
-            teCanPedProrrog1, teCanPedProrrog2{, teComprEntregaNFe,
-            teCancComprEntregaNFe}]) then
+            teCanPedProrrog1, teCanPedProrrog2]) then
     begin
       FPLayout := LayNFeEventoAN;
       UF       := 'AN';
-    end;
-
-    {
-      Conforme NT 2023/005 versão 1.02 os dois eventos abaixo são
-      recepcionados pela SVRS - SEFAZ Virtual do RS.
-    }
-    if FEvento.Evento.Items[0].InfEvento.tpEvento in [teInsucessoEntregaNFe,
-            teCancInsucessoEntregaNFe, teConcFinanceira, teCancConcFinanceira] then
+    end
+    else
     begin
-      FPLayout := LayNFeEvento;
-      UF       := 'SVRS';
+      case FEvento.Evento.Items[0].InfEvento.tpEvento of
+        teInsucessoEntregaNFe, teCancInsucessoEntregaNFe:
+          begin
+            FPLayout := LayNFeEvento;
+            UF       := 'SVRS';
+          end;
+
+        teConcFinanceira, teCancConcFinanceira:
+          begin
+            if (FPConfiguracoesNFe.Geral.ModeloDF = moNFe) then
+            begin
+              FPLayout := LayNFeEvento;
+              UF       := 'SVRS';
+            end;
+          end;
+      end;
     end;
   end;
 

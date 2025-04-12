@@ -42,6 +42,95 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+11/04/2025
+-- CTA.Provider --
+[*] #TK-6889: Alterações visando obter o retorno do envio corretamente.
+  Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[*] #TK-6902: A cidade de Estancia Velha/RS correção na URL.
+  Por: Marco Moreira
+[*] #TK-6901: A cidade de Zortea/SC mudou de provedor, agora é IPM versão 1.01
+  Por: Lucas ATZ
+[*] #TK-6896: As cidades de Riqueza/SC e Caibi/SC mudaram a URL o provedor continua
+    o mesmo.
+  Por: Microsys Sistemas
+
+10/04/2025
+-- IPM.GravarXml/IPM.LerXml --
+[*] #TK-6877: Parametrizado a quantidade de casas decimais da tag: unidade_quantidade
+  Por: Centrodata Sistemas/Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[+] #TK-6890: Incluída a cidade de Mormaco/RS, o provedor é o Digifred,
+  Por: Doglas Stumpf
+-- ACBrNFSeXLerXml --
+[*] O provedor Betha ao gerar o XML da NFS-e acaba modificando de forma indevida o
+    conteudo da tag Discriminacao, feita uma alteração para contornar o problema.
+  Por: Italo Giurizzato Junior
+-- CTA.GravarXml/CTA.Provider --
+[*] #TK-6889: Alterações visando atender a nova versão do manual do provedor.
+  Por: Italo Giurizzato Junior
+
+09/04/2025
+-- ACBrNFSeXDANFSeRLSimplISS.dfm/ACBrNFSeXDANFSeRLSimplISS.lfm --
+-- SimplISS.Provider --
+[*] #TK-6883: Na impressão em Fortes Report do DANFSE estava saindo no titulo de
+    alguns campos o simbolo do % sendo que o valor impresso é R$.
+    Corrigido também a impressão do Regime Especial de Tributação
+  Por: Italo Giurizzato Junior
+
+08/04/2025
+-- ACBrNFSeXServicos --
+[*] #TK-6876: Alterado a URL da cidade de Estância Velha/RS.
+  Por: Heronim Antonio Marçal
+[*] #TK-6884: A cidade de Ipe/RS mudou de provedor, agora é Pronim versão 2.03
+  Por: DNA Automacao
+
+04/04/2025
+-- ACBrNFSeXServicos --
+[*] #TK-6863: Alterado a URL de homologação da cidade de Campo Belo/MG.
+  Por: Datacamp
+[+] #TK-6862: Incluída a cidade de Darcinopolis/TO, o provedor é o MegaSoft,
+  Por: Gustavo Barbosa Ferreira
+-- Fisco.Provider --
+[*] Alteração, o provedor tem SoapAction e NameSpace diferentes para cada ambiente.
+  Por: Isaque Pinheiro
+
+03/04/2025
+-- ACBrNFSeXGravarXml_ABRASFv2/Giss.GravarXml --
+[*] #TK-6851: Alteração visando atender o provedor Giss que exige que o código do 
+    pais esteja no padrão ISO em vez IBGE.
+  Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[*] #TK-6861: A cidade de Santa Rosa de Lima/SC mudou de provedor, agora é IPM versão
+    2.04
+  Por: Arimateia Jr
+[+] #TK-6857: Incluída a cidade de Careacu/MG, o provedor é o SH3
+  Por: João Antônio
+[*] #TK-6856: A cidade de Rio do Oeste/SC mudou a versão e a URL, o provedor continua
+    o mesmo.
+  Por: Willian Delan
+
+02/04/2025
+-- SisPMJP.Provider --
+[*] #TK-6790: Desfeita as alterações até que a prefeitura resolva os problemas em 
+    seu novo webservice, uma vez que o antigo continua funcionando.
+  Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[*] #TK-6849: A cidade de Estancia Velha/RS mudou de provedor, agora é IPM versão 2.04.
+  Por: DNA Automacao - Daniel Ostoic
+
+01/04/2025
+-- ISSCampinas.Provider --
+[*] #TK-6789 - Adiciona \s\n como quebra de linha a ser utilizada pelo provedor.
+  Por: Diego Folieni / Italo Giurizatto Junior
+-- ACBrNFSeXServicos --
+[*] #TK-6848: Incluído o Params: Codigo_Atividade para a cidade de Arapongas/PR.
+  Por: Massao Aihara
+[*] #TK-6847: A cidade de Caibi/SC trocou de provedor, agora é IPM.
+  Por: Microsys Sistemas
+[*] #TK-6841: A cidade de Sao Mateus do Sul/PR trocou de provedor, agora é EloTech.
+  Por: Marcelo Dev
+
 31/03/2025
 -- Diversos --
 [+] #TK-6822: Implementação do provedor Smart4 que atende a cidade de Paulo Afonso/BA

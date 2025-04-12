@@ -46,6 +46,31 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+10/04/2025
+-- ACBrTEFAPIAditum --
+[*] Ajuste para reter mensagem na tela por 3 segundos, quando ocorrer falha
+    https://www.projetoacbr.com.br/forum/index.php?showtopic=82622
+    (por: EasySoft Sistemas e DSA)
+[-] Correção para abortar corretamente a transação, quando cancelada pelo Operador
+    https://www.projetoacbr.com.br/forum/index.php?showtopic=82616
+    (por: EasySoft Sistemas)
+
+-- ACBrTEFAPICliSiTef --
+[*] Ajuste em 'ObterDadoPinPad', para converter valor de milisegundos para segundos
+    https://www.projetoacbr.com.br/forum/topic/82792-erro-tempo-de-espera-inv%C3%A1lido-ao-obter-dados-pinpad
+    (por: DSA)
+
+06/04/2025
+-- ACBrTEFAPIScope, ACBrTEFScopeAPI --
+[*] Ajuste para permitir validação de Parcelas, no fluxo do TEF
+    (por: GPlus e DSA)
+
+04/04/2025
+-- ACBrTEDAPIDestaxa --
+[*] Alteração para preencher propriedade AplicacaoTela do DestaxaClient;
+[*] Alteração para permitir acesso ao DestaxaClient através do TACBrTEFAPI.
+    por: Elias César
+
 31/03/2025
 -- ACBrTEFAPIAditum --
 [*] Exibição de msg "Transação já Cancelada" na Tela do Operador
