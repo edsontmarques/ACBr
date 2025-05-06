@@ -370,6 +370,13 @@ type
 const
   TindIEDestArrayStrings: array[TindIEDest] of string = ('1', '2', '9');
 
+// Reforma Tributaria
+type
+  TtpEnteGov  = (tcgUniao, tcgEstados, tcgDistritoFederal, tcgMunicipios);
+
+const
+  TtpEnteGovArrayStrings: array[TtpEnteGov] of string = ('1', '2', '3', '4');
+
 {
   Declaração das funções de conversão
 }
@@ -502,6 +509,9 @@ function CSTICMSToStrTagPosText(const t: TCSTIcms): string;
 
 function indIEDestToStr(const t: TindIEDest ): string;
 function StrToindIEDest(const s: string): TindIEDest;
+
+function tpEnteGovToStr(const t: TtpEnteGov): string;
+function StrTotpEnteGov(const s: string): TtpEnteGov;
 
 implementation
 
@@ -1398,6 +1408,26 @@ begin
   end;
 
   raise EACBrException.CreateFmt('Valor string inválido para TindIEDest: %s', [s]);
+end;
+
+function tpEnteGovToStr(const t: TtpEnteGov): string;
+begin
+  Result := TtpEnteGovArrayStrings[t];
+end;
+
+function StrTotpEnteGov(const s: string): TtpEnteGov;
+var
+  idx: TtpEnteGov;
+begin
+  for idx:= Low(TtpEnteGovArrayStrings) to High(TtpEnteGovArrayStrings)do
+  begin
+    if(TtpEnteGovArrayStrings[idx] = s)then
+    begin
+      Result := idx;
+      exit;
+    end;
+  end;
+  raise EACBrException.CreateFmt('Valor string inválido para TtpEnteGov: %s', [s]);
 end;
 
 initialization

@@ -526,7 +526,7 @@ begin
 
     // Reforma Tributária
     {
-    ide.gCompraGov.tpCompraGov := tcgUniao;
+    ide.gCompraGov.tpEnteGov := tcgUniao;
     ide.gCompraGov.pRedutor := 5;
     }
     {Dados do Percurso}
@@ -647,45 +647,37 @@ begin
     Imp.IBSCBS.gIBSCBS.vBC := 100;
 
     Imp.IBSCBS.gIBSCBS.gIBSUF.pIBS := 5;
-    Imp.IBSCBS.gIBSCBS.gIBSUF.vTribOp := 50;
     Imp.IBSCBS.gIBSCBS.gIBSUF.gDif.pDif := 5;
     Imp.IBSCBS.gIBSCBS.gIBSUF.gDif.vDif := 50;
     Imp.IBSCBS.gIBSCBS.gIBSUF.gDevTrib.vDevTrib := 50;
     Imp.IBSCBS.gIBSCBS.gIBSUF.gRed.pRedAliq := 5;
     Imp.IBSCBS.gIBSCBS.gIBSUF.gRed.pAliqEfet := 5;
-    Imp.IBSCBS.gIBSCBS.gIBSUF.gTribRegular.CSTReg := 100;
-    Imp.IBSCBS.gIBSCBS.gIBSUF.gTribRegular.cClassTribReg := 100000;
-    Imp.IBSCBS.gIBSCBS.gIBSUF.gTribRegular.pAliqEfetReg := 5;
-    Imp.IBSCBS.gIBSCBS.gIBSUF.gTribRegular.vTribReg := 50;
     Imp.IBSCBS.gIBSCBS.gIBSUF.vIBS := 50;
 
     Imp.IBSCBS.gIBSCBS.gIBSMun.pIBS := 5;
-    Imp.IBSCBS.gIBSCBS.gIBSMun.vTribOp := 50;
     Imp.IBSCBS.gIBSCBS.gIBSMun.gDif.pDif := 5;
-    Imp.IBSCBS.gIBSCBS.gIBSMun.gDif.vCBSOp := 50;
     Imp.IBSCBS.gIBSCBS.gIBSMun.gDif.vDif := 50;
     Imp.IBSCBS.gIBSCBS.gIBSMun.gDevTrib.vDevTrib := 50;
     Imp.IBSCBS.gIBSCBS.gIBSMun.gRed.pRedAliq := 5;
     Imp.IBSCBS.gIBSCBS.gIBSMun.gRed.pAliqEfet := 5;
-    Imp.IBSCBS.gIBSCBS.gIBSMun.gTribRegular.CSTReg := 100;
-    Imp.IBSCBS.gIBSCBS.gIBSMun.gTribRegular.cClassTribReg := 100000;
-    Imp.IBSCBS.gIBSCBS.gIBSMun.gTribRegular.pAliqEfetReg := 5;
-    Imp.IBSCBS.gIBSCBS.gIBSMun.gTribRegular.vTribReg := 50;
     Imp.IBSCBS.gIBSCBS.gIBSMun.vIBS := 50;
 
     Imp.IBSCBS.gIBSCBS.gCBS.pCBS := 5;
-    Imp.IBSCBS.gIBSCBS.gCBS.vTribOp := 50;
     Imp.IBSCBS.gIBSCBS.gCBS.gDif.pDif := 5;
-    Imp.IBSCBS.gIBSCBS.gCBS.gDif.vCBSOp := 50;
     Imp.IBSCBS.gIBSCBS.gCBS.gDif.vDif := 50;
     Imp.IBSCBS.gIBSCBS.gCBS.gDevTrib.vDevTrib := 50;
     Imp.IBSCBS.gIBSCBS.gCBS.gRed.pRedAliq := 5;
     Imp.IBSCBS.gIBSCBS.gCBS.gRed.pAliqEfet := 5;
-    Imp.IBSCBS.gIBSCBS.gCBS.gTribRegular.CSTReg := 100;
-    Imp.IBSCBS.gIBSCBS.gCBS.gTribRegular.cClassTribReg := 100000;
-    Imp.IBSCBS.gIBSCBS.gCBS.gTribRegular.pAliqEfetReg := 5;
-    Imp.IBSCBS.gIBSCBS.gCBS.gTribRegular.vTribReg := 50;
     Imp.IBSCBS.gIBSCBS.gCBS.vCBS := 50;
+
+    Imp.IBSCBS.gIBSCBS.gTribRegular.CSTReg := 100;
+    Imp.IBSCBS.gIBSCBS.gTribRegular.cClassTribReg := 100000;
+    Imp.IBSCBS.gIBSCBS.gTribRegular.pAliqEfetRegIBSUF := 5;
+    Imp.IBSCBS.gIBSCBS.gTribRegular.vTribRegIBSUF := 50;
+    Imp.IBSCBS.gIBSCBS.gTribRegular.pAliqEfetRegIBSMun := 5;
+    Imp.IBSCBS.gIBSCBS.gTribRegular.vTribRegIBSMun := 50;
+    Imp.IBSCBS.gIBSCBS.gTribRegular.pAliqEfetRegCBS := 5;
+    Imp.IBSCBS.gIBSCBS.gTribRegular.vTribRegCBS := 50;
 
     Imp.IBSCBS.gIBSCBS.gIBSCredPres.cCredPres := 99;
     Imp.IBSCBS.gIBSCBS.gIBSCredPres.pCredPres := 5;
@@ -841,7 +833,7 @@ begin
 
     // Reforma Tributária
     {
-    ide.gCompraGov.tpCompraGov := tcgUniao;
+    ide.gCompraGov.tpEnteGov := tcgUniao;
     ide.gCompraGov.pRedutor := 5;
     }
     {Informações Complementares do CTe}
@@ -1157,45 +1149,37 @@ begin
     Imp.IBSCBS.gIBSCBS.vBC := 100;
 
     Imp.IBSCBS.gIBSCBS.gIBSUF.pIBS := 5;
-    Imp.IBSCBS.gIBSCBS.gIBSUF.vTribOp := 50;
     Imp.IBSCBS.gIBSCBS.gIBSUF.gDif.pDif := 5;
     Imp.IBSCBS.gIBSCBS.gIBSUF.gDif.vDif := 50;
     Imp.IBSCBS.gIBSCBS.gIBSUF.gDevTrib.vDevTrib := 50;
     Imp.IBSCBS.gIBSCBS.gIBSUF.gRed.pRedAliq := 5;
     Imp.IBSCBS.gIBSCBS.gIBSUF.gRed.pAliqEfet := 5;
-    Imp.IBSCBS.gIBSCBS.gIBSUF.gTribRegular.CSTReg := 100;
-    Imp.IBSCBS.gIBSCBS.gIBSUF.gTribRegular.cClassTribReg := 100000;
-    Imp.IBSCBS.gIBSCBS.gIBSUF.gTribRegular.pAliqEfetReg := 5;
-    Imp.IBSCBS.gIBSCBS.gIBSUF.gTribRegular.vTribReg := 50;
     Imp.IBSCBS.gIBSCBS.gIBSUF.vIBS := 50;
 
     Imp.IBSCBS.gIBSCBS.gIBSMun.pIBS := 5;
-    Imp.IBSCBS.gIBSCBS.gIBSMun.vTribOp := 50;
     Imp.IBSCBS.gIBSCBS.gIBSMun.gDif.pDif := 5;
-    Imp.IBSCBS.gIBSCBS.gIBSMun.gDif.vCBSOp := 50;
     Imp.IBSCBS.gIBSCBS.gIBSMun.gDif.vDif := 50;
     Imp.IBSCBS.gIBSCBS.gIBSMun.gDevTrib.vDevTrib := 50;
     Imp.IBSCBS.gIBSCBS.gIBSMun.gRed.pRedAliq := 5;
     Imp.IBSCBS.gIBSCBS.gIBSMun.gRed.pAliqEfet := 5;
-    Imp.IBSCBS.gIBSCBS.gIBSMun.gTribRegular.CSTReg := 100;
-    Imp.IBSCBS.gIBSCBS.gIBSMun.gTribRegular.cClassTribReg := 100000;
-    Imp.IBSCBS.gIBSCBS.gIBSMun.gTribRegular.pAliqEfetReg := 5;
-    Imp.IBSCBS.gIBSCBS.gIBSMun.gTribRegular.vTribReg := 50;
     Imp.IBSCBS.gIBSCBS.gIBSMun.vIBS := 50;
 
     Imp.IBSCBS.gIBSCBS.gCBS.pCBS := 5;
-    Imp.IBSCBS.gIBSCBS.gCBS.vTribOp := 50;
     Imp.IBSCBS.gIBSCBS.gCBS.gDif.pDif := 5;
-    Imp.IBSCBS.gIBSCBS.gCBS.gDif.vCBSOp := 50;
     Imp.IBSCBS.gIBSCBS.gCBS.gDif.vDif := 50;
     Imp.IBSCBS.gIBSCBS.gCBS.gDevTrib.vDevTrib := 50;
     Imp.IBSCBS.gIBSCBS.gCBS.gRed.pRedAliq := 5;
     Imp.IBSCBS.gIBSCBS.gCBS.gRed.pAliqEfet := 5;
-    Imp.IBSCBS.gIBSCBS.gCBS.gTribRegular.CSTReg := 100;
-    Imp.IBSCBS.gIBSCBS.gCBS.gTribRegular.cClassTribReg := 100000;
-    Imp.IBSCBS.gIBSCBS.gCBS.gTribRegular.pAliqEfetReg := 5;
-    Imp.IBSCBS.gIBSCBS.gCBS.gTribRegular.vTribReg := 50;
     Imp.IBSCBS.gIBSCBS.gCBS.vCBS := 50;
+
+    Imp.IBSCBS.gIBSCBS.gTribRegular.CSTReg := 100;
+    Imp.IBSCBS.gIBSCBS.gTribRegular.cClassTribReg := 100000;
+    Imp.IBSCBS.gIBSCBS.gTribRegular.pAliqEfetRegIBSUF := 5;
+    Imp.IBSCBS.gIBSCBS.gTribRegular.vTribRegIBSUF := 50;
+    Imp.IBSCBS.gIBSCBS.gTribRegular.pAliqEfetRegIBSMun := 5;
+    Imp.IBSCBS.gIBSCBS.gTribRegular.vTribRegIBSMun := 50;
+    Imp.IBSCBS.gIBSCBS.gTribRegular.pAliqEfetRegCBS := 5;
+    Imp.IBSCBS.gIBSCBS.gTribRegular.vTribRegCBS := 50;
 
     Imp.IBSCBS.gIBSCBS.gIBSCredPres.cCredPres := 99;
     Imp.IBSCBS.gIBSCBS.gIBSCredPres.pCredPres := 5;
@@ -1281,7 +1265,7 @@ begin
 
     // Reforma Tributária
     {
-    ide.gCompraGov.tpCompraGov := tcgUniao;
+    ide.gCompraGov.tpEnteGov := tcgUniao;
     ide.gCompraGov.pRedutor := 5;
     }
     {Dados do Percurso}
@@ -1527,45 +1511,37 @@ begin
     Imp.IBSCBS.gIBSCBS.vBC := 100;
 
     Imp.IBSCBS.gIBSCBS.gIBSUF.pIBS := 5;
-    Imp.IBSCBS.gIBSCBS.gIBSUF.vTribOp := 50;
     Imp.IBSCBS.gIBSCBS.gIBSUF.gDif.pDif := 5;
     Imp.IBSCBS.gIBSCBS.gIBSUF.gDif.vDif := 50;
     Imp.IBSCBS.gIBSCBS.gIBSUF.gDevTrib.vDevTrib := 50;
     Imp.IBSCBS.gIBSCBS.gIBSUF.gRed.pRedAliq := 5;
     Imp.IBSCBS.gIBSCBS.gIBSUF.gRed.pAliqEfet := 5;
-    Imp.IBSCBS.gIBSCBS.gIBSUF.gTribRegular.CSTReg := 100;
-    Imp.IBSCBS.gIBSCBS.gIBSUF.gTribRegular.cClassTribReg := 100000;
-    Imp.IBSCBS.gIBSCBS.gIBSUF.gTribRegular.pAliqEfetReg := 5;
-    Imp.IBSCBS.gIBSCBS.gIBSUF.gTribRegular.vTribReg := 50;
     Imp.IBSCBS.gIBSCBS.gIBSUF.vIBS := 50;
 
     Imp.IBSCBS.gIBSCBS.gIBSMun.pIBS := 5;
-    Imp.IBSCBS.gIBSCBS.gIBSMun.vTribOp := 50;
     Imp.IBSCBS.gIBSCBS.gIBSMun.gDif.pDif := 5;
-    Imp.IBSCBS.gIBSCBS.gIBSMun.gDif.vCBSOp := 50;
     Imp.IBSCBS.gIBSCBS.gIBSMun.gDif.vDif := 50;
     Imp.IBSCBS.gIBSCBS.gIBSMun.gDevTrib.vDevTrib := 50;
     Imp.IBSCBS.gIBSCBS.gIBSMun.gRed.pRedAliq := 5;
     Imp.IBSCBS.gIBSCBS.gIBSMun.gRed.pAliqEfet := 5;
-    Imp.IBSCBS.gIBSCBS.gIBSMun.gTribRegular.CSTReg := 100;
-    Imp.IBSCBS.gIBSCBS.gIBSMun.gTribRegular.cClassTribReg := 100000;
-    Imp.IBSCBS.gIBSCBS.gIBSMun.gTribRegular.pAliqEfetReg := 5;
-    Imp.IBSCBS.gIBSCBS.gIBSMun.gTribRegular.vTribReg := 50;
     Imp.IBSCBS.gIBSCBS.gIBSMun.vIBS := 50;
 
     Imp.IBSCBS.gIBSCBS.gCBS.pCBS := 5;
-    Imp.IBSCBS.gIBSCBS.gCBS.vTribOp := 50;
     Imp.IBSCBS.gIBSCBS.gCBS.gDif.pDif := 5;
-    Imp.IBSCBS.gIBSCBS.gCBS.gDif.vCBSOp := 50;
     Imp.IBSCBS.gIBSCBS.gCBS.gDif.vDif := 50;
     Imp.IBSCBS.gIBSCBS.gCBS.gDevTrib.vDevTrib := 50;
     Imp.IBSCBS.gIBSCBS.gCBS.gRed.pRedAliq := 5;
     Imp.IBSCBS.gIBSCBS.gCBS.gRed.pAliqEfet := 5;
-    Imp.IBSCBS.gIBSCBS.gCBS.gTribRegular.CSTReg := 100;
-    Imp.IBSCBS.gIBSCBS.gCBS.gTribRegular.cClassTribReg := 100000;
-    Imp.IBSCBS.gIBSCBS.gCBS.gTribRegular.pAliqEfetReg := 5;
-    Imp.IBSCBS.gIBSCBS.gCBS.gTribRegular.vTribReg := 50;
     Imp.IBSCBS.gIBSCBS.gCBS.vCBS := 50;
+
+    Imp.IBSCBS.gIBSCBS.gTribRegular.CSTReg := 100;
+    Imp.IBSCBS.gIBSCBS.gTribRegular.cClassTribReg := 100000;
+    Imp.IBSCBS.gIBSCBS.gTribRegular.pAliqEfetRegIBSUF := 5;
+    Imp.IBSCBS.gIBSCBS.gTribRegular.vTribRegIBSUF := 50;
+    Imp.IBSCBS.gIBSCBS.gTribRegular.pAliqEfetRegIBSMun := 5;
+    Imp.IBSCBS.gIBSCBS.gTribRegular.vTribRegIBSMun := 50;
+    Imp.IBSCBS.gIBSCBS.gTribRegular.pAliqEfetRegCBS := 5;
+    Imp.IBSCBS.gIBSCBS.gTribRegular.vTribRegCBS := 50;
 
     Imp.IBSCBS.gIBSCBS.gIBSCredPres.cCredPres := 99;
     Imp.IBSCBS.gIBSCBS.gIBSCredPres.pCredPres := 5;

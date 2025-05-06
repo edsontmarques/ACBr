@@ -46,8 +46,6 @@ type
   { TNFSeR_IPM }
 
   TNFSeR_IPM = class(TNFSeRClass)
-  private
-    FpCasasDecimais: Integer;
   protected
     function RemoverGrupo_conteudohtml(const aXML: string): string;
 
@@ -159,12 +157,8 @@ begin
         aValor := ObterConteudo(ANodes[i].Childrens.FindAnyNs('codigo_atividade'), tcStr);
         ItemServico[i].CodigoCnae := PadLeft(aValor, 9, '0');
 
-        if FpCasasDecimais = 4 then
-          ItemServico[i].Quantidade := ObterConteudo(ANodes[i].Childrens.FindAnyNs('unidade_quantidade'), tcDe4)
-        else
-          ItemServico[i].Quantidade := ObterConteudo(ANodes[i].Childrens.FindAnyNs('unidade_quantidade'), tcDe2);
-
-        ItemServico[i].ValorUnitario := ObterConteudo(ANodes[i].Childrens.FindAnyNs('unidade_valor_unitario'), tcDe2);
+        ItemServico[i].Quantidade := ObterConteudo(ANodes[i].Childrens.FindAnyNs('unidade_quantidade'), tcDe10);
+        ItemServico[i].ValorUnitario := ObterConteudo(ANodes[i].Childrens.FindAnyNs('unidade_valor_unitario'), tcDe10);
         ItemServico[i].Descricao := ObterConteudo(ANodes[i].Childrens.FindAnyNs('descritivo'), tcStr);
         ItemServico[i].Descricao := StringReplace(ItemServico[i].Descricao, FpQuebradeLinha,
                                                     sLineBreak, [rfReplaceAll]);
@@ -436,9 +430,6 @@ var
   XmlNode: TACBrXmlNode;
 begin
   FpQuebradeLinha := FpAOwner.ConfigGeral.QuebradeLinha;
-
-  // Define a quantidade de casas decimais da tag: unidade_quantidade
-  FpCasasDecimais := StrToIntDef(FpAOwner.ConfigGeral.Params.ValorParametro('CasasDecimais'), 2);
 
   if EstaVazio(Arquivo) then
     raise Exception.Create('Arquivo xml não carregado.');

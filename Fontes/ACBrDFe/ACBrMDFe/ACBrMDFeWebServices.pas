@@ -1722,7 +1722,7 @@ begin
     sCNPJ       := SeparaDados(aEvento, 'CNPJ');
     sPathEvento := PathWithDelim(FPConfiguracoesMDFe.Arquivos.GetPathEvento(TipoEvento, sCNPJ));
 
-    if (aProcEvento <> '') then
+    if FPConfiguracoesMDFe.Arquivos.SalvarEvento and (aProcEvento <> '') then
       FPDFeOwner.Gravar( aIDEvento + '-procEventoMDFe.xml', aProcEvento, sPathEvento);
   end;
 end;
@@ -2008,7 +2008,7 @@ begin
       end
       else
       begin
-        if ExtrairEventos and FPConfiguracoesMDFe.Arquivos.Salvar and
+        if ExtrairEventos and FPConfiguracoesMDFe.Arquivos.SalvarEvento and
            (NaoEstaVazio(SeparaDados(FPRetWS, 'procEventoMDFe'))) then
         begin
           Inicio := Pos('<procEventoMDFe', FPRetWS);
@@ -2312,6 +2312,7 @@ begin
 
     EventoMDFe.Versao := FPVersaoServico;
 
+    AjustarOpcoes(EventoMDFe.Opcoes);
     EventoMDFe.GerarXML;
 
     Eventos := NativeStringToUTF8( EventoMDFe.XmlEnvio );
@@ -2479,7 +2480,7 @@ begin
                      Texto +
                    '</procEventoMDFe>';
 
-          if FPConfiguracoesMDFe.Arquivos.Salvar then
+          if FPConfiguracoesMDFe.Arquivos.SalvarEvento then
           begin
             NomeArq := OnlyNumber(FEvento.Evento.Items[I].InfEvento.Id) + '-procEventoMDFe.xml';
             PathArq := PathWithDelim(GerarPathEvento(FEvento.Evento.Items[I].InfEvento.CNPJCPF));
@@ -2772,8 +2773,9 @@ begin
 
       if (FPConfiguracoesMDFe.Arquivos.Salvar) and NaoEstaVazio(FNomeArq) then
       begin
-        if (FretDistDFeInt.docZip.Items[I].schema in [schprocEventoMDFe]) then
-          FPDFeOwner.Gravar(FNomeArq, AXML, aPath);
+        if FPConfiguracoesMDFe.Arquivos.SalvarEvento then
+          if (FretDistDFeInt.docZip.Items[I].schema in [schprocEventoMDFe]) then
+            FPDFeOwner.Gravar(FNomeArq, AXML, aPath);
 
         if (FretDistDFeInt.docZip.Items[I].schema in [schprocMDFe]) then
           FPDFeOwner.Gravar(FNomeArq, AXML, aPath);

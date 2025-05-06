@@ -42,6 +42,23 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+29/04/2025
+-- ACBrNF3eWebServices --
+[*] #TK-6785 - Adiciona chamada a rotina AjustarOpcoes no envio de eventos da NF3e.
+  Por: Diego Folieni
+
+28/04/2025
+[*] Ajustes necessários para deixar em conformidade com a versão 1.01a dos Schemas.
+  Por: Italo Giurizzato Junior
+
+15/04/2025
+-- Diversos --
+[*] Ajustes necessários para deixar em conformidade com a NT2025/001 versão 1.01.
+  Por: Italo Giurizzato Junior
+-- Diversos --
+[*] #TK-6833: Ajustes necessários para deixar em conformidade com a NT2025/001.
+  Por: Italo Giurizzato Junior
+
 07/04/2025
 -- Diversos --
 [*] #TK-5814: Implementado as units: ACBrNF3eIniReader e ACBrNF3eIniWrite que

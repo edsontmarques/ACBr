@@ -44,6 +44,41 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+05/05/2025
+-- ACBrNFe.XmlWriter --
+[*] #TK-7008: Ajustes para gerar corretamente a tag cEAN quando o produto não contem o 
+    código de barras.
+   Por: Luiz Alberto da Silva Lope
+
+29/04/2025
+-- Diversos --
+[*] #TK-6835: Ajustes para atender a NT 2025/002 versão 1.01 da Reforma Tributária.
+   Por: Italo Giurizzato Junior
+
+25/04/2025
+-- ACBrNFeNotasFiscais --
+[*] #TK-6864: Ajuste visando que XML gerado pelo ACBrMonitor ou pela Lib assuma mesma configuração de ambiente definida caso a informação não tenha sido adicionada no arquivo INI
+  Por: Júlio Cavalcanti / Rev: Diego Folieni
+-- ACBrNFe.EnvEvento --
+[*] #TK-6968: Ajuste visando corrigir erro ao assinar evento de cancelamento de conciliação financeira.
+  Por: Diego Folieni 
+
+24/04/2025
+-- ACBrNFe.EnvEvento --
+[*] #TK-6966: Ajuste para que a leitura do INI considere valores decimais no vPag de um EConf.
+  Por: Diego Folieni
+
+17/04/2025
+-- ACBrNFeWebServices --
+[*] Ajuste para definir corretamente a UF quando for NF-e e NFC-e no que se refere
+    ao evento ECONF.
+   Por: Halisson Kosvoski/Italo Giurizzato Junior
+
+14/04/2025
+-- ACBrNFCeDANFeFPDF --
+[*] Correção acentuação impressão de evento para NFCe com FPDF
+   Por: Antonio Carlos Junior
+
 11/04/2025
 -- ACBrNFeWebServices --
 [*] A alteração anterior gerou um efeito colateral no evento de cancelamento.

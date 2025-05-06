@@ -269,8 +269,8 @@ procedure TACBrTEFRespScope.ConteudoToProperty;
       NSUTransacaoCancelada := Linha.Informacao.AsString
     else if IDCampo = MASK2_Cod_Operadora then
       CodigoOperadoraCelular := Linha.Informacao.AsString
-    else if IDCampo = MASK2_Codigo_IF then
-      CodigoPSP := Linha.Informacao.AsString
+    else if IDCampo = MASK2_BIN then
+      BIN := Linha.Informacao.AsString
     else if IDCampo = MASK2_Permite_Desfazimento then
       Confirmar := (Linha.Informacao.AsString = '1')
     else if IDCampo = MASK2_Cod_Empresa then
@@ -471,6 +471,7 @@ begin
                             fpACBrTEFAPI.DadosAutomacao.NomeAplicacao + ' ' +
                             fpACBrTEFAPI.DadosAutomacao.VersaoAplicacao;
   fTEFScopeAPI.PortaPinPad := fpACBrTEFAPI.DadosTerminal.PortaPinPad;
+  fTEFScopeAPI.GravarLogScope := (fpACBrTEFAPI.ArqLOG <> '');
 
   fTEFScopeAPI.Inicializar;
 

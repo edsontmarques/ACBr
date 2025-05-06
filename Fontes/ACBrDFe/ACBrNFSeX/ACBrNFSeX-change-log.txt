@@ -42,6 +42,119 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+05/05/2025
+-- SmarAPD.Provider --
+[*] #TK-7003: Possível solução para a leitura correta do XML de retorno.
+  Por: Italo Giurizzato Junior
+-- ACBrNFSeXConfiguracoes --
+[*] #TK-6979: Ajuste visando corrigir erro de inicialização da Lib quando definida cidade adicionada manualmente em ACBrNFSeXServicos apontado na configuração IniServicos.
+  Por: Diego Folieni
+-- PadraoNacional.LerXml --
+[*] #TK-7007: Ajuste no calculo das Retenções Federais que é diferente se o tipo
+    de retenção do PIS/COFINS não for retido.
+  Por: mkonat
+-- ACBrNFSeXServicos --
+[+] #TK-6996: Incluída a cidade de Angulo/PR, o provedor é EloTech.
+  Por: Paulo Aquino
+[+] #TK-6997: Incluída a cidade de Santana do Paraiso/MG, o provedor é GestaoISS.
+  Por: Paulo Aquino
+[*] #TK-6999: A cidade de Campo Ere/SC trocou de provedor, agora é Publica.
+  Por: Limber Software
+-- IPM.GravarXml/IPM.LerXml --
+[*] #TK-6913: Ajustado para 10 casas decimais tanto na leitura quanto da escrita da
+    tag: unidade_quantidade, o provedor aceita a referida tag com essa quantidade de
+    casas decimais.
+  Por: Italo Giurizzato Junior
+
+02/05/2025
+-- ACBrNFSeXServicos --
+[+] #TK-7000: Adiciona Param Dividir100 para Marechal Deodoro/AL.
+  Por: C4Dev
+
+30/04/2025
+-- ACBrNFSeXServicos --
+[*] #TK-6993: A cidade de Santa Cruz das Palmeiras/SP mudou de provedor, agora é o 
+    AssessorPublico.
+  Por: TDP Sistemas
+[+] #TK-6992: Incluída a cidade de Tupancireta/RS, o provedor é o Pronim versão 2.03
+  Por: Gabriel Bobello
+[*] #TK-6986: A cidade de Itapolis/SP mudou a URL de homologação.
+  Por: Italo Giurizzato Junior
+[*] #TK-6983: A cidade de Ituporanga/SC mudou de versão, o provedor continua o mesmo.
+  Por: Vinicius Telles dos Santos
+--AssessorPublico.LerXml --
+[*] #TK-6991: Alterações visando a correta leitura do XML do RPS.
+  Por: Diego Folieni
+
+29/04/2025
+-- PadraoNacional.GravarXml/PadraoNacional.LerXml --
+[*] #TK-6835: Alteração nas units para atender a Reforma Tributária.
+  Por: Italo Giurizzato Junior
+-- ACBrNFSeXClass/ACBrNFSeXConversao --
+[*] #TK-6835: Alteração nas classes e novos tipos e funções de conversão para 
+    atender a Reforma Tributária.
+  Por: Italo Giurizzato Junior
+-- VersaTecnologia.GravarXml --
+[*] #TK-6882: Ajustes para gerar o XML do RPS quando tem ISS retido.
+  Por: Antonio Gomes
+-- ACBrNFSeXServicos --
+[*] #TK-6913: Documentado o Params CasasDecimais
+-- IPM.GravarXml/IPM.LerXml --
+[*] #TK-6913: Ajustes para aceitar Casas Decimais: 2, 3, 4, 5, 6, 7 8 ou 10 
+    para a tag: unidade_quantidade.
+  Por: Italo Giurizzato Junior
+
+28/04/2025
+-- ACBrNFSeXServicos --
+[+] #TK-6979: Incluída a cidade de Curiúva/PR, o provedor é o Equiplano.
+  Por: Exi Sistemas 
+
+24/04/2025
+-- ACBrNFSeXServicos --
+[+] #TK-6955: Incluída a cidade de Perdigao/MG, o provedor é o NFSeBrasil.
+  Por: Bruno Italo
+[+] #TK-6954: Incluída a cidade de Araujos/MG, o provedor é o NFSeBrasil.
+  Por: Bruno Italo
+[*] #TK-6958: Alteração das URLs de homologação do provedor NFSeBrasil.
+  Por: Bruno Italo
+
+23/04/2025
+-- ACBrNFSeXServicos --
+[*] #TK-6942: A cidade de Imbituba/SC mudou de provedor, agora é IPM versão 2.04
+  Por: Gabriel Bobello
+-- Tinus.GravarXml --
+[*] #TK-6943: Quando o prestador for Optante Simples Nacional não gerar a tag
+    ValorIss.
+  Por: Italo Giurizzato Junior
+
+17/04/2025
+-- Tecnos.LerXml --
+[*] #TK-6928: Possível solução para a leitura correta da tag OptanteSimplesNacional
+  Por: Italo Giurizzato Junior
+-- IPM.Provider --
+[*] #TK-6936: Acrescentado a Quebra de Linha na configuração para versão 2.04 do provedor.
+  Por: Italo Giurizzato Junior
+-- Agili.GravarXml --
+[*] #TK-6935: Acrescentado a condição de ExigibilidadeISS diferente de Isenção para 
+    gerar o Municipio de Incidencia no XML.
+  Por: Diego Reckziegel
+-- ACBrNFSeXServicos --
+[*] #TK-6937: A cidade de Catanduva/SP mudou de provedor, agora é RLZ versão 2.03
+  Por: Bruno tbp
+[*] #TK-6931: A cidade de Catu/BA mudou de provedor, agora é WebISS versão 2.02
+  Por: Furquim
+
+16/04/2025
+-- ACBrNFSeXServicos --
+[+] #TK-6909: Incluída a cidade de Tambau/SP, o provedor é o AssessorPublico.
+  Por: Gabriel Bobello
+[*] #TK-6927: A cidade de Morumgaba/SP mudou a URL o provedor continua o mesmo.
+  Por: Italo Giurizzato Junior
+-- ACBrNFSeXDANFSeRLClass/ACBrNFSeXDANFSeRLISSNet --
+-- ACBrNFSeXDANFSeRLRetrato/ACBrNFSeXDANFSeRLSimplISS --
+[+] #TK-6922: Implementado a Explansão da Logo Marca
+  Por: Antonio Carlos Junior/Italo Giurizzato Junior
+
 11/04/2025
 -- CTA.Provider --
 [*] #TK-6889: Alterações visando obter o retorno do envio corretamente.
