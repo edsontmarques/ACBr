@@ -153,6 +153,7 @@ begin
     QuebradeLinha := '|';
     ModoEnvio := meUnitario;
     NumMaxRpsEnviar := 1;
+    UseCertificateHTTP := False;
 
     Autenticacao.RequerLogin := True;
 
@@ -587,7 +588,7 @@ end;
 function TACBrNFSeXWebserviceSigISS.TratarXmlRetornado(
   const aXML: string): string;
 begin
-  Result := ConverteANSIparaUTF8(aXml);
+  Result := ConverteANSItoUTF8(aXml);
   Result := RemoverDeclaracaoXML(Result);
 
   Result := inherited TratarXmlRetornado(Result);

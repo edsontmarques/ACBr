@@ -86,7 +86,7 @@ end;
 function TRetornoEnvio_Itau_API.LerRetorno(const ARetornoWS: TACBrBoletoRetornoWS): Boolean;
 var
   LJsonObject, LJsonBoletoObject : TACBrJSONObject;
-  LJsonArray, LJsonBoletoIndividualArray, LJsonPagamentoCobrancaArray : TACBrJSONArray;
+  LJsonArray, LJsonBoletoIndividualArray, LJsonPagamentoCobrancaArray,LJsonHistoricoCobrancaArray : TACBrJSONArray;
   LListaRejeicao: TACBrBoletoRejeicao;
   I, J: Integer;
   TipoOperacao : TOperacao;
@@ -284,6 +284,23 @@ begin
                 end;
               end;
 
+              //Caso estiver liquidado, pegar a data do crédito real, quando cai no conta corrente o dinheiro, e remaneja a data credito para a data movimento, que é a data do pagto
+              if LJsonBoletoObject.AsJSONObject['dado_boleto'].IsJSONArray('historico') then
+              begin
+                LJsonHistoricoCobrancaArray := LJsonBoletoObject.AsJSONObject['dado_boleto'].AsJSONArray['historico'];
+                for j := 0 to Pred(LJsonHistoricoCobrancaArray.Count) do
+                begin
+                  if AnsiUpperCase(LJsonHistoricoCobrancaArray.ItemAsJSONObject[J].AsString['operacao'])='TITULO LIQUIDADO' then
+                  begin
+                     if ARetornoWS.DadosRet.TituloRet.DataCredito > 0 then
+                     begin
+                        ARetornoWS.DadosRet.TituloRet.DataMovimento := ARetornoWS.DadosRet.TituloRet.DataCredito;
+                        ARetornoWS.DadosRet.TituloRet.DataCredito   := DateToDateTimeItau(LJsonHistoricoCobrancaArray.ItemAsJSONObject[J].AsString['data']);
+                     end;
+                  end;
+                end;
+              end;
+
               if LJsonBoletoObject.AsJSONObject['dado_boleto'].IsJSONObject('baixa') then
               begin
                 ARetornoWS.DadosRet.TituloRet.DataBaixa              := Iso8601ToDateTime(LJsonBoletoObject.AsJSONObject['dado_boleto'].AsJSONObject['baixa'].AsString['data_inclusao_alteracao_baixa']);
@@ -339,13 +356,13 @@ end;
 
 function TRetornoEnvio_Itau_API.LerListaRetorno: Boolean;
 var
-  LJsonObject, LJsonBoletoObject, LErrosObject: TACBrJSONObject;
-  LJsonArray, LJsonBoletosArray, LJsonBoletoIndividualArray, LJsonArrayMensagens, LJsonArrayErros : TACBrJSONArray;
+  LJsonObject, LJsonBoletoObject, LJsonPagadorObject, LErrosObject: TACBrJSONObject;
+  LJsonArray, LJsonBoletosArray, LJsonBoletoIndividualArray, LJsonArrayMensagens, LJsonArrayErros, LJsonArrayOperacaoCobranca : TACBrJSONArray;
   ListaRetorno: TACBrBoletoRetornoWS;
   LListaRejeicao : TACBrBoletoRejeicao;
   LValorPago : double;
   LMsgRetorno : String;
-  I, j: Integer;
+  I, j, K: Integer;
 begin
   Result := True;
   ListaRetorno := ACBrBoleto.CriarRetornoWebNaLista;
@@ -434,6 +451,26 @@ begin
                   ListaRetorno.DadosRet.TituloRet.Informativo.Add( LJsonBoletosArray.ItemAsJSONObject[J].AsString['texto_informacao_cliente_beneficiario'] );
                   ListaRetorno.DadosRet.TituloRet.Mensagem.Add(LJsonBoletosArray.ItemAsJSONObject[J].AsString['local_pagamento']);
 
+                end;
+
+                if LJsonBoletoObject.AsJSONObject['dado_boleto'].AsJSONObject['pagador'].IsJSONObject('pessoa') then
+                begin
+                  LJsonPagadorObject := LJsonBoletoObject.AsJSONObject['dado_boleto'].AsJSONObject['pagador'];
+
+                  ListaRetorno.DadosRet.TituloRet.Sacado.NomeSacado     := LJsonPagadorObject.AsJSONObject['pessoa'].AsString['nome_pessoa'];
+                  if (ListaRetorno.DadosRet.TituloRet.Sacado.NomeSacado = '') then
+                    ListaRetorno.DadosRet.TituloRet.Sacado.NomeSacado   := LJsonPagadorObject.AsJSONObject['pessoa'].AsString['nome_razao_social_pagador'];
+
+                  if LJsonPagadorObject.AsJSONObject['pessoa'].AsJSONObject['tipo_pessoa'].AsString['codigo_tipo_pessoa'] = 'F' then
+                    ListaRetorno.DadosRet.TituloRet.Sacado.CNPJCPF        := LJsonPagadorObject.AsJSONObject['pessoa'].AsJSONObject['tipo_pessoa'].AsString['numero_cadastro_pessoa_fisica']
+                  else
+                    ListaRetorno.DadosRet.TituloRet.Sacado.CNPJCPF        := LJsonPagadorObject.AsJSONObject['pessoa'].AsJSONObject['tipo_pessoa'].AsString['numero_cadastro_nacional_pessoa_juridica'];
+
+                  ListaRetorno.DadosRet.TituloRet.Sacado.Logradouro := LJsonPagadorObject.AsJSONObject['endereco'].AsString['nome_logradouro'];
+                  ListaRetorno.DadosRet.TituloRet.Sacado.Bairro     := LJsonPagadorObject.AsJSONObject['endereco'].AsString['nome_bairro'];
+                  ListaRetorno.DadosRet.TituloRet.Sacado.Cidade     := LJsonPagadorObject.AsJSONObject['endereco'].AsString['nome_cidade'];
+                  ListaRetorno.DadosRet.TituloRet.Sacado.UF         := LJsonPagadorObject.AsJSONObject['endereco'].AsString['sigla_UF'];
+                  ListaRetorno.DadosRet.TituloRet.Sacado.Cep        := LJsonPagadorObject.AsJSONObject['endereco'].AsString['numero_CEP'];
                 end;
 
                 if LJsonBoletoObject.AsJSONObject['dado_boleto'].IsJSONArray('pagamentos_cobranca') then
@@ -583,6 +620,28 @@ begin
                   ListaRetorno.DadosRet.TituloRet.ValorOutrasDespesas  := LJsonBoletoObject.AsCurrency['valor_acrescimo'];
                   ListaRetorno.DadosRet.TituloRet.ValorPago            := LJsonBoletoObject.AsCurrency['valor_liquido_lancado'];
                   ListaRetorno.DadosRet.TituloRet.ValorRecebido        := LJsonBoletoObject.AsCurrency['valor_liquido_lancado'];
+
+                  (*
+
+                  #Mapeamento detalhado Comentado, devido inconsistencias de dados do retorno com o manual da API, questionado Suporte ITAU.
+
+                  if LJsonBoletoObject.IsJSONArray('operacoes_cobranca') then
+                  begin
+                    LJsonArrayOperacaoCobranca := LJsonBoletoObject.AsJSONArray['operacoes_cobranca'];
+                    for K := 0 to Pred(LJsonArrayOperacaoCobranca.Count) do
+                    begin
+                      if AnsiUpperCase(LJsonArrayOperacaoCobranca.ItemAsJSONObject[K].AsString['descricao']) = 'TARIFA COBRANÇA' then
+                        ListaRetorno.DadosRet.TituloRet.ValorTarifa      := LJsonArrayOperacaoCobranca.ItemAsJSONObject[K].AsCurrency['valor'];
+                      if AnsiUpperCase(LJsonArrayOperacaoCobranca.ItemAsJSONObject[K].AsString['descricao']) = 'JUROS' then
+                        ListaRetorno.DadosRet.TituloRet.ValorMoraJuros   := LJsonArrayOperacaoCobranca.ItemAsJSONObject[K].AsCurrency['valor'];
+                      if AnsiUpperCase(LJsonArrayOperacaoCobranca.ItemAsJSONObject[K].AsString['descricao']) = 'MULTA' then
+                        ListaRetorno.DadosRet.TituloRet.ValorMoraJuros   := LJsonArrayOperacaoCobranca.ItemAsJSONObject[K].AsCurrency['valor'];
+                      if AnsiUpperCase(LJsonArrayOperacaoCobranca.ItemAsJSONObject[K].AsString['descricao']) = 'DESCONTO' then
+                        ListaRetorno.DadosRet.TituloRet.ValorMoraJuros   := LJsonArrayOperacaoCobranca.ItemAsJSONObject[K].AsCurrency['valor'];
+                    end;
+                  end;
+
+                  *)
 
               end;
             end;

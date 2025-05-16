@@ -42,6 +42,101 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+15/05/2025
+-- PadraoNacional.LerXml --
+[*] Incluida uma linha na leitura do INI do RPS e da NFS-e para setar o campo tpXML
+    com o valor txmlRPS ou txmlNFSe dependendo to INI que esta sendo lido.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[+] Incluída a cidade de Escada/PE, o provedor é Tributus versão 2.04
+   Por: Italo Giurizzato Junior
+[-] #TK-7015: Alterado de https para http as URLs da cidade de Regente Feijó/SP.
+   Por: Italo Giurizzato Junior
+-- Thema.Provider --
+[*] #TK-7060: Ajustes para retornar a descrição de cada tipo de Natureza da Operação
+    utilizado pelo provedor Thema.
+   Por: Italo Giurizzato Junior
+-- ISSDSF.Provider --
+[*] Ajustes para pegar a mensagem do erro quando este não vem segundo o padrão esperado.
+   Por: Milton Campanhã
+
+14/05/2025
+-- DeISS.GravarXml --
+[*] Definida uma condição para gerar ou não a tag ValorISS em função se o ISS é Retido
+    ou não.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXGravarXml_ABRASFv1/Ginfes.GravarXml --
+[*] #TK-7056: Criado um parâmetro interno chamado: GerarTagTomadorMesmoVazia tipo Boolean
+    que definie se a tag (grupo) Tomador deve ser gerada no XML mesmo vazia.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[+] #TK-7049: Incluída a cidade de Dianopolis/TO, o provedor é WebISS versão 2.02.
+  Por: maxdatasistema
+[+] #TK-7047: Incluída a cidade de Brumado/BA, o provedor é WebISS versão 2.02.
+  Por: João Antônio
+[*] #TK-7050: A cidade de Acreuna/GO trocou de provedor, agora é Siep versao 2.00.
+  Por: Diego Reckziegel
+-- AssessorPublico.LerXML --
+[*] #TK-7053: Ajuste no tipo do campo MunicípioIncidencia para corrigir erro na leitura do XML.
+   Por: Diego Folieni 
+
+13/05/2025
+-- ACBrNFSeXClass/Infisc.GravarXml/Infisc.LerXml --
+[*] #TK-7046: Incluido a tag <infAdicAT>.
+   Por: Italo Giurizzato Junior
+-- SigISSWeb.LerXml --
+[*] #TK-6959: Incluido novas tags para atender as alterações promovidas pelo provedor.
+   Por: Italo Giurizzato Junior
+-- Diversos --
+[*] #TK-6995: Refatoração na rotina que realiza a leitura do arquivo INI para os
+    provedores que utilização a versão 1 e 2 da ABRASF.
+   Por: Italo Giurizzato Junior
+
+12/05/2025
+-- ACBrNFSeXServicos --
+[*] #TK-7042: A cidade de Santa Cruz do Rio Pardo/SP trocou de provedor, agora é SimplISS
+    versão 2.03
+  Por: Light System Software
+-- ACBrNFSeXClass --
+[*] #TK-6959: Incluido o campo xPais que é usado no provedor SigISSWeb.
+-- SigISSWeb.GravarXml --
+[*] #TK-6959: Incluido novas tags para atender as alterações promovidas pelo provedor.
+-- SigISSWeb.Provider --
+[*] #TK-6959: Alteração visando eliminar a variável global xToken.
+   Por: Italo Giurizzato Junior
+-- AssessorPublico.GravarXml/AssessorPublico.LerXml --
+[*] #TK-7039: Ajustes na leitura e escrita do XML do RPS, não estava lendo a tag LOCAL 
+    e ao ler a tag ATIVIDADE estava atribuindo o seu conteudo a campo incorretamente.
+   Por: Italo Giurizzato Junior
+-- Aspec.LerJson/Bauhaus.LerJson/eISS.LerJson/EL.Provider/XTRTecnologia.LerJson --
+[*] Remoção de Warnings e Hints.
+   Por: Italo Giurizzato Junior
+
+09/05/2025
+-- SigISS.Provider --
+[*] Alterado a procedure Configuracao para que não exija o certificado digital.
+  Por: Italo Giurizzato Junior
+
+08/05/2025
+-- ACBrNFSeXServicos --
+[+] #TK-7020: Incluída a cidade de Nova Ubirata/MT, o provedor é Agili.
+  Por: Diego Reckziegel
+[*] #TK-7029: A cidade de Paulinia/SP trocou de provedor, agora é Giss.
+  Por: jaidomini
+[*] #TK-7031: A cidade de Governador Lindemberg/ES trocou para a versão 2.04,
+    o provedor continua o mesmo: EL.
+  Por: Neski Soluções
+
+07/05/2025
+-- EloTech.Provider --
+[*] #TK-7002: Ajuste no TratarXmlRetornado visando remover todas as ocorrências de
+    Declaração no XML.
+  Por: Diego Folieni/Italo Giurizzato Junior
+-- SigISSWeb.GravarXml/SigISSWeb.LerXml --
+[*] #TK-7013/#TK-7016: Incluído os novos campos: codigo_nbs, cidade_local_prest e 
+    uf_local_prest, tanto na geração do XML quanto na leitura.
+  Por: Guilherme Consolação Dias
+
 05/05/2025
 -- SmarAPD.Provider --
 [*] #TK-7003: Possível solução para a leitura correta do XML de retorno.

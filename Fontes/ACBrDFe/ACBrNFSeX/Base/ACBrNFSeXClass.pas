@@ -808,6 +808,7 @@ type
     FCodigoMunicipio: string;
     FMunicipioPrestacaoServico: string;
     FCodigoPais: Integer;
+    FxPais: string;
     FExigibilidadeISS: TnfseExigibilidadeISS;
     FMunicipioIncidencia: Integer;
     FNumeroProcesso: string;
@@ -862,6 +863,7 @@ type
     property CodigoMunicipio: string read FCodigoMunicipio write FCodigoMunicipio;
     property MunicipioPrestacaoServico: string read FMunicipioPrestacaoServico write FMunicipioPrestacaoServico;
     property CodigoPais: Integer read FCodigoPais write FCodigoPais;
+    property xPais: string read FxPais write FxPais;
     property ExigibilidadeISS: TnfseExigibilidadeISS read FExigibilidadeISS write FExigibilidadeISS;
     property IdentifNaoExigibilidade: string read FIdentifNaoExigibilidade write FIdentifNaoExigibilidade;
     property MunicipioIncidencia: Integer read FMunicipioIncidencia write FMunicipioIncidencia;
@@ -1767,6 +1769,7 @@ type
     FModeloNFSe: string;
     FTransportadora: TDadosTransportadora;
     FCanhoto: TnfseCanhoto;
+    FinfAdicAT: TnfseSimNao;
 
     Femail: TemailCollection;
     FTipoRecolhimento: string;
@@ -1884,6 +1887,7 @@ type
     property Canhoto: TnfseCanhoto read FCanhoto Write FCanhoto;
     property Transportadora: TDadosTransportadora read FTransportadora write FTransportadora;
     property Despesa: TDespesaCollection read FDespesa write SetDespesa;
+    property infAdicAT: TnfseSimNao read FinfAdicAT write FinfAdicAT;
     // Provedor Governa
     property TipoRecolhimento: string read FTipoRecolhimento write FTipoRecolhimento;
 

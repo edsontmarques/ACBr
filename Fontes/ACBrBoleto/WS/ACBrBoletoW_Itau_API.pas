@@ -69,6 +69,10 @@ type
     procedure GerarPessoaPg(AJson: TACBrJSONObject);
     procedure GerarTipoPessoaPg(AJson: TACBrJSONObject);
     procedure GerarEnderecoPg(AJson: TACBrJSONObject);
+    procedure GerarSacadoAvalista(AJson: TACBrJSONObject);
+    procedure GerarPessoaSacAv(AJson: TACBrJSONObject);
+    procedure GerarTipoPessoaSacAv(AJson: TACBrJSONObject);
+    procedure GerarEnderecoSacAv(AJson: TACBrJSONObject);
     procedure GerarDadosIndividuaisBoleto(AJson: TACBrJSONObject);
     procedure GerarMulta(AJson: TACBrJSONObject);
     procedure GerarJuros(AJson: TACBrJSONObject);
@@ -108,21 +112,27 @@ type
 
   const
 
-  C_URL_PIX     = 'https://secure.api.itau/pix_recebimentos_conciliacoes/v2';
-  C_URL_PIX_HOM = 'https://sandbox.devportal.itau.com.br/itau-ep9-gtw-pix-recebimentos-conciliacoes-v2-ext/v2';
+  C_URL_PIX         = 'https://secure.api.itau/pix_recebimentos_conciliacoes/v2';
+  C_URL_PIX_HOM     = C_URL_PIX;
+  C_URL_PIX_SANDBOX = 'https://sandbox.devportal.itau.com.br/itau-ep9-gtw-pix-recebimentos-conciliacoes-v2-ext/v2';
 
-  C_URL =     'https://api.itau.com.br/cash_management/v2';
-  C_URL_HOM = 'https://sandbox.devportal.itau.com.br/itau-ep9-gtw-cash-management-ext-v2/v2';
+  C_URL         = 'https://api.itau.com.br/cash_management/v2';
+  C_URL_HOM     = C_URL;
+  C_URL_SANDBOX = 'https://sandbox.devportal.itau.com.br/itau-ep9-gtw-cash-management-ext-v2/v2';
 
-  C_URL_CONSULTA = 'https://secure.api.cloud.itau.com.br/boletoscash/v2';
+  C_URL_CONSULTA         = 'https://secure.api.cloud.itau.com.br/boletoscash/v2';
+  C_URL_CONSULTA_HOM     = '';
+  C_URL_CONSULTA_SANDBOX = 'https://sandbox.devportal.itau.com.br/itau-ep9-gtw-cash-management-ext-v2/v2';
 
-  C_URL_FRANCESAS_PROD = 'https://boletos.cloud.itau.com.br/boletos/v3/francesas';
-  C_URL_FRANCESAS_HOM  = 'https://sandbox.devportal.itau.com.br/itau-ep9-gtw-boletos-boletos-v3-ext-aws/v1';
+
+  C_URL_FRANCESAS_PROD     = 'https://boletos.cloud.itau.com.br/boletos/v3/francesas';
+  C_URL_FRANCESAS_HOM      = C_URL_FRANCESAS_PROD;
+  C_URL_FRANCESAS_SANDBOX  = 'https://sandbox.devportal.itau.com.br/itau-ep9-gtw-boletos-boletos-v3-ext-aws/v1/francesas';
 
 
-  C_URL_OAUTH_PROD = 'https://sts.itau.com.br/api/oauth/token';
-
-  C_URL_OAUTH_HOM = 'https://devportal.itau.com.br/api/jwt';
+  C_URL_OAUTH_PROD    = 'https://sts.itau.com.br/api/oauth/token';
+  C_URL_OAUTH_HOM     = C_URL_OAUTH_PROD;
+  C_URL_OAUTH_SANDBOX = 'https://devportal.itau.com.br/api/jwt';
 
   C_ACCEPT_PIX = 'application/json';
   C_ACCEPT     = '';
@@ -141,39 +151,55 @@ uses
 
 procedure TBoletoW_Itau_API.DefinirURL;
 begin
-
-  FPURL := IfThen(Boleto.Configuracoes.WebService.Ambiente in [tawsProducao, tawsHomologacao], C_URL, C_URL_HOM);
+  case Boleto.Configuracoes.WebService.Ambiente of
+    tawsProducao    : FPURL.URLProducao    := C_URL;
+    tawsHomologacao : FPURL.URLHomologacao := C_URL_HOM;
+    tawsSandBox     : FPURL.URLSandBox     := C_URL_SANDBOX;
+  end;
   case Boleto.Configuracoes.WebService.Operacao of
     tpInclui:
       begin
         if Boleto.Cedente.CedenteWS.IndicadorPix then
-         FPURL := IfThen(Boleto.Configuracoes.WebService.Ambiente in [tawsProducao, tawsHomologacao], C_URL_PIX, C_URL_PIX_HOM) + '/boletos_pix'
+        begin
+          case Boleto.Configuracoes.WebService.Ambiente of
+            tawsProducao    : FPURL.URLProducao    := C_URL_PIX;
+            tawsHomologacao : FPURL.URLHomologacao := C_URL_PIX_HOM;
+            tawsSandBox     : FPURL.URLSandBox     := C_URL_PIX_SANDBOX;
+          end;
+          FPURL.SetPathURI(  '/boletos_pix' );
+        end         
         else
-         FPURL := IfThen(Boleto.Configuracoes.WebService.Ambiente  in [tawsProducao, tawsHomologacao], C_URL, C_URL_HOM) + '/boletos';
+         FPURL.SetPathURI( '/boletos' );
       end;
-
-    tpConsulta:
-      begin
-         if Assigned(Boleto.Configuracoes.WebService.Filtro) then
-         begin
-           case Boleto.Configuracoes.WebService.Filtro.indicadorSituacao of
-            isbNenhum:
-              FPURL := IfThen(Boleto.Configuracoes.WebService.Ambiente  in [tawsProducao, tawsHomologacao], C_URL_CONSULTA, C_URL_HOM) + '/boletos?' + DefinirParametros;
-            else
-              FPURL := IfThen(Boleto.Configuracoes.WebService.Ambiente  in [tawsProducao, tawsHomologacao], C_URL_FRANCESAS_PROD, C_URL_FRANCESAS_HOM) + DefinirParametros;
-           end;
-         end;
-      end;
-
+    tpConsulta,
     tpConsultaDetalhe:
-      FPURL := IfThen(Boleto.Configuracoes.WebService.Ambiente  in [tawsProducao, tawsHomologacao],
-        C_URL_CONSULTA, C_URL_HOM) + '/boletos?' + DefinirParametros;
+      begin
+        case Boleto.Configuracoes.WebService.Ambiente of
+          tawsProducao    : FPURL.URLProducao    := C_URL_CONSULTA;
+          tawsHomologacao : FPURL.URLHomologacao := C_URL_CONSULTA_HOM;
+          tawsSandBox     : FPURL.URLSandBox     := C_URL_CONSULTA_SANDBOX;
+        end;
+
+        FPURL.SetPathURI( '/boletos?' + DefinirParametros );
+
+        if (Boleto.Configuracoes.WebService.Operacao = tpConsulta) and
+           Assigned(Boleto.Configuracoes.WebService.Filtro) and
+          (Boleto.Configuracoes.WebService.Filtro.indicadorSituacao <> isbNenhum) then
+          begin
+            case Boleto.Configuracoes.WebService.Ambiente of
+              tawsProducao    : FPURL.URLProducao    := C_URL_FRANCESAS_PROD;
+              tawsHomologacao : FPURL.URLHomologacao := C_URL_FRANCESAS_HOM;
+              tawsSandBox     : FPURL.URLSandBox     := C_URL_FRANCESAS_SANDBOX;
+            end;
+            FPURL.SetPathURI( DefinirParametros );
+          end;
+      end;
 
     tpAltera:
-      FPURL := FPURL + '/boletos/' + DefinirParametros;
+      FPURL.SetPathURI( '/boletos/' + DefinirParametros );
 
     tpBaixa:
-      FPURL := FPURL + '/boletos/' + DefinirParametros;
+      FPURL.SetPathURI( '/boletos/' + DefinirParametros );
   end;
 end;
 
@@ -335,6 +361,8 @@ begin
                                  'dataMovimento DataInicio'));
                 LDataInicio := FormatDateBr(Boleto.Configuracoes.WebService.Filtro.dataMovimento.DataInicio, 'YYYY-MM-DD');
                 LConsulta.Add('/'+LId_Beneficiario+'/movimentacoes?'+'data=' + LDataInicio);
+                if NaoEstaVazio(LCarteira) then
+                  LConsulta.Add('numero_carteira='+LCarteira);
                 LConsulta.Add('tipo_movimentacao='+'liquidacoes');
               end;
               isbCancelado:
@@ -344,6 +372,8 @@ begin
                                  'dataMovimento DataInicio'));
                 LDataInicio := FormatDateBr(Boleto.Configuracoes.WebService.Filtro.dataMovimento.DataInicio, 'YYYY-MM-DD');
                 LConsulta.Add('/'+LId_Beneficiario+'/movimentacoes?'+'data=' + LDataInicio);
+                if NaoEstaVazio(LCarteira) then
+                  LConsulta.Add('numero_carteira='+LCarteira);
                 LConsulta.Add('tipo_movimentacao='+'baixas');
               end;
               isbAberto:
@@ -358,7 +388,7 @@ begin
               begin
                 {ATENÇÃO consulta qq situação antes da francesinha}
                 if Boleto.Configuracoes.WebService.Filtro.dataRegistro.DataInicio = 0 then
-                   raise Exception.Create(ACBrStr('Para consultas isbAberto, utilizar filtro: '+LineBreak+
+                   raise Exception.Create(ACBrStr('Para consultas isbNenhum, utilizar filtro: '+LineBreak+
                                  'dataRegistro DataInicio'));
 
                 LConsulta.Add('id_beneficiario=' + LId_Beneficiario);
@@ -641,6 +671,7 @@ end;
 procedure TBoletoW_Itau_API.GeraDadoBoleto(AJson: TACBrJSONObject);
 var
   LJsonDados: TACBrJSONObject;
+  LAceitarPagamentoParcial : boolean;
 begin
   LJsonDados := TACBrJSONObject.Create;
   try
@@ -652,15 +683,21 @@ begin
     LJsonDados.AddPair('valor_abatimento', IntToStrZero(round(ATitulo.ValorAbatimento * 100), 17));
     LJsonDados.AddPair('data_emissao', FormatDateBr(ATitulo.DataDocumento, 'yyyy-mm-dd'));
 
-    if ATitulo.TipoPagamento = tpAceita_Qualquer_Valor then
-      LJsonDados.AddPair('indicador_pagamento_parcial', 'True')
-    else
-      LJsonDados.AddPair('indicador_pagamento_parcial', 'False');
+    LAceitarPagamentoParcial := ((ATitulo.QtdePagamentoParcial > 0) or (ATitulo.TipoPagamento <> tpNao_Aceita_Valor_Divergente));
+    LJsonDados.AddPair('indicador_pagamento_parcial', LAceitarPagamentoParcial);
 
-    LJsonDados.AddPair('quantidade_maximo_parcial', 0);
+    if ((LAceitarPagamentoParcial) and (ATitulo.QtdePagamentoParcial = 0)) then
+      raise EACBrBoletoWSException.Create
+        (ClassName + sLineBreak+'Quando TipoPagamento aceitar pagamento parcial,'+sLineBreak+
+         'informar QtdePagamentoParcial maior que zero !');
+
+    LJsonDados.AddPair('quantidade_maximo_parcial', ATitulo.QtdePagamentoParcial);
+
     LJsonDados.AddPair('desconto_expresso', 'False');
 
     GerarPagador(LJsonDados);
+    if (ATitulo.Sacado.SacadoAvalista.NomeAvalista<>'') and (Length(ATitulo.Sacado.SacadoAvalista.CNPJCPF)>= 11) then
+       GerarSacadoAvalista(LJsonDados);
     GerarDadosIndividuaisBoleto(LJsonDados);
     GerarMulta(LJsonDados);
     GerarJuros(LJsonDados);
@@ -885,6 +922,74 @@ begin
     GerarPessoaPg(LJsonDadosPagador);
     GerarEnderecoPg(LJsonDadosPagador);
     AJson.AddPair('pagador',LJsonDadosPagador);
+  end;
+end;
+
+procedure TBoletoW_Itau_API.GerarSacadoAvalista(AJson: TACBrJSONObject);
+var
+  LJsonDadosSacadorAvalista: TACBrJSONObject;
+begin
+  if Assigned(ATitulo) and Assigned(AJson) then
+  begin
+    LJsonDadosSacadorAvalista := TacbrJsonObject.Create;
+
+    GerarPessoaSacAv(LJsonDadosSacadorAvalista);
+    GerarEnderecoSacAv(LJsonDadosSacadorAvalista);
+    AJson.AddPair('sacador_avalista',LJsonDadosSacadorAvalista);
+  end;
+end;
+
+procedure TBoletoW_Itau_API.GerarPessoaSacAv(AJson: TACBrJSONObject);
+var
+  LJsonDados: TACBrJSONObject;
+begin
+  if Assigned(ATitulo) and Assigned(AJson) then
+  begin
+    LJsonDados := TACBrJSONObject.Create;
+    LJsonDados.AddPair('nome_pessoa', ATitulo.Sacado.SacadoAvalista.NomeAvalista);
+    GerarTipoPessoaSacAv(LJsonDados);
+
+    AJson.AddPair('pessoa',LJsonDados);
+  end;
+end;
+
+procedure TBoletoW_Itau_API.GerarTipoPessoaSacAv(AJson: TACBrJSONObject);
+var
+  LJsonDados: TACBrJSONObject;
+begin
+  if Assigned(ATitulo) and Assigned(AJson) then
+  begin
+    LJsonDados := TACBrJSONObject.Create;
+
+    if Length(OnlyNumber(ATitulo.Sacado.SacadoAvalista.CNPJCPF)) < 12 then
+    begin
+      LJsonDados.AddPair('codigo_tipo_pessoa', 'F');
+      LJsonDados.AddPair('numero_cadastro_pessoa_fisica', OnlyNumber(ATitulo.Sacado.SacadoAvalista.CNPJCPF));
+    end
+    else
+    begin
+      LJsonDados.AddPair('codigo_tipo_pessoa','J');
+      LJsonDados.AddPair('numero_cadastro_nacional_pessoa_juridica', OnlyNumber(ATitulo.Sacado.SacadoAvalista.CNPJCPF));
+    end;
+
+    AJson.AddPair('tipo_pessoa', LJsonDados);
+  end;
+end;
+
+procedure TBoletoW_Itau_API.GerarEnderecoSacAv(AJson: TACBrJSONObject);
+var
+  LJsonDados: TACBrJSONObject;
+begin
+  if Assigned(ATitulo) and Assigned(AJson) then
+  begin
+    LJsonDados := TacbrJsonObject.Create;
+
+    LJsonDados.AddPair('nome_logradouro', ATitulo.Sacado.SacadoAvalista.Logradouro + ' ' + ATitulo.Sacado.SacadoAvalista.Numero);
+    LJsonDados.AddPair('nome_bairro', ATitulo.Sacado.SacadoAvalista.Bairro);
+    LJsonDados.AddPair('nome_cidade', ATitulo.Sacado.SacadoAvalista.Cidade);
+    LJsonDados.AddPair('sigla_UF', ATitulo.Sacado.SacadoAvalista.UF);
+    LJsonDados.AddPair('numero_CEP', ATitulo.Sacado.SacadoAvalista.CEP);
+    AJson.AddPair('endereco',LJsonDados);
   end;
 end;
 
@@ -1292,10 +1397,11 @@ begin
 
   if Assigned(OAuth) then
   begin
-    if OAuth.Ambiente in [tawsProducao, tawsHomologacao] then
-      OAuth.URL := C_URL_OAUTH_PROD
-    else
-      OAuth.URL := C_URL_OAUTH_HOM;
+    case OAuth.Ambiente of
+      tawsProducao    : OAuth.URL.URLProducao    := C_URL_OAUTH_PROD;
+      tawsHomologacao : OAuth.URL.URLHomologacao := C_URL_OAUTH_HOM;
+      tawsSandBox     : OAuth.URL.URLSandBox     := C_URL_OAUTH_SANDBOX;
+    end;
 
     OAuth.Payload := True;
   end;
