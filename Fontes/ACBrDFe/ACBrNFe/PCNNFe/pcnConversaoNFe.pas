@@ -413,12 +413,6 @@ type
 const
   TtpNFCreditoArrayStrings: array[TtpNFCredito] of string = ('', '01');
 
-type
-  TtpEnteGov  = (tcgUniao, tcgEstados, tcgDistritoFederal, tcgMunicipios);
-
-const
-  TtpEnteGovArrayStrings: array[TtpEnteGov] of string = ('1', '2', '3', '4');
-
 {
   Declaração das funções de conversão
 }
@@ -506,9 +500,6 @@ function StrTotpNFDebito(const s: string): TtpNFDebito;
 
 function tpNFCreditoToStr(const t: TtpNFCredito): string;
 function StrTotpNFCredito(const s: string): TtpNFCredito;
-
-function tpEnteGovToStr(const t: TtpEnteGov): string;
-function StrTotpEnteGov(const s: string): TtpEnteGov;
 
 implementation
 
@@ -1714,26 +1705,6 @@ begin
     end;
   end;
   raise EACBrException.CreateFmt('Valor string inválido para TtpNFCredito: %s', [s]);
-end;
-
-function tpEnteGovToStr(const t: TtpEnteGov): string;
-begin
-  Result := TtpEnteGovArrayStrings[t];
-end;
-
-function StrTotpEnteGov(const s: string): TtpEnteGov;
-var
-  idx: TtpEnteGov;
-begin
-  for idx:= Low(TtpEnteGovArrayStrings) to High(TtpEnteGovArrayStrings)do
-  begin
-    if(TtpEnteGovArrayStrings[idx] = s)then
-    begin
-      Result := idx;
-      exit;
-    end;
-  end;
-  raise EACBrException.CreateFmt('Valor string inválido para TtpEnteGov: %s', [s]);
 end;
 
 initialization

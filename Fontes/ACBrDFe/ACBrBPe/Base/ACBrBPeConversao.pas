@@ -246,13 +246,6 @@ type
 const
   TtpIntegraArrayStrings: array[TtpIntegra] of string = ('', '1', '2');
 
-// Reforma Tributaria
-type
-  TtpEnteGov  = (tcgUniao, tcgEstados, tcgDistritoFederal, tcgMunicipios);
-
-const
-  TtpEnteGovArrayStrings: array[TtpEnteGov] of string = ('1', '2', '3', '4');
-
 {
   Declaração das funções de conversão
 }
@@ -338,9 +331,6 @@ function StrToCSTICMS(out ok: Boolean; const s: string): TCSTIcms;
 
 function tpIntegraToStr(const t: TtpIntegra): string;
 function StrTotpIntegra(out ok: Boolean; const s: string): TtpIntegra;
-
-function tpEnteGovToStr(const t: TtpEnteGov): string;
-function StrTotpEnteGov(const s: string): TtpEnteGov;
 
 implementation
 
@@ -847,26 +837,6 @@ begin
   result := StrToEnumerado(ok, s, ['', '1', '2'],
                                   [tiNaoInformado, tiPagIntegrado,
                                    tiPagNaoIntegrado]);
-end;
-
-function tpEnteGovToStr(const t: TtpEnteGov): string;
-begin
-  Result := TtpEnteGovArrayStrings[t];
-end;
-
-function StrTotpEnteGov(const s: string): TtpEnteGov;
-var
-  idx: TtpEnteGov;
-begin
-  for idx:= Low(TtpEnteGovArrayStrings) to High(TtpEnteGovArrayStrings)do
-  begin
-    if(TtpEnteGovArrayStrings[idx] = s)then
-    begin
-      Result := idx;
-      exit;
-    end;
-  end;
-  raise EACBrException.CreateFmt('Valor string inválido para TtpEnteGov: %s', [s]);
 end;
 
 initialization

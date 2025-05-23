@@ -403,12 +403,6 @@ type
 const
   TtpNFCreditoArrayStrings: array[TtpNFCredito] of string = ('', '01');
 
-type
-  TtpEnteGov  = (tcgUniao, tcgEstados, tcgDistritoFederal, tcgMunicipios);
-
-const
-  TtpEnteGovArrayStrings: array[TtpEnteGov] of string = ('1', '2', '3', '4');
-
 {
   Declaração das funções de conversão
 }
@@ -496,9 +490,6 @@ function StrTotpNFDebito(const s: string): TtpNFDebito;
 
 function tpNFCreditoToStr(const t: TtpNFCredito): string;
 function StrTotpNFCredito(const s: string): TtpNFCredito;
-
-function tpEnteGovToStr(const t: TtpEnteGov): string;
-function StrTotpEnteGov(const s: string): TtpEnteGov;
 
 implementation
 
@@ -1360,8 +1351,8 @@ begin
     3: result := '3-RESERVA DE DOMÍNIO';
     4: result := '4-PENHOR DE VEÍCULOS';
     9: result := '9-OUTRAS'
-    else
-      result := IntToStr(iRestricao)+ 'NÃO DEFINIDO' ;
+  else
+    result := IntToStr(iRestricao)+ 'NÃO DEFINIDO' ;
   end;
 end;
 
@@ -1384,8 +1375,8 @@ begin
     14: result := '14-VERDE';
     15: result := '15-VERMELHA';
     16: result := '16-FANTASIA'
-    else
-      result := sCorDENATRAN + 'NÃO DEFINIDA' ;
+  else
+    result := sCorDENATRAN + 'NÃO DEFINIDA' ;
   end;
 end;
 
@@ -1420,9 +1411,9 @@ begin
     5: result := '05-TRAÇÃO';
     6: result := '06-ESPECIAL';
     7: result := '07-COLEÇÃO'
-    else
+  else
       result := IntToStr(iEspecie ) + 'NÃO DEFINIDA' ;
-    end;
+  end;
 end;
 
 function VeiculosTipoStr( const iTipoVeic : Integer ): String;
@@ -1454,9 +1445,9 @@ begin
     24: result := '24-SIDE-CAR';
     25: result := '25-UTILITÁRIO';
     26: result := '26-MOTOR-CASA'
-    else
+  else
       result := IntToStr(iTipoVeic)+'NÃO DEFINIDO' ;
-    end;
+  end;
 end;
 
 function VeiculosCombustivelStr( const sTpComb : String ): String;
@@ -1480,9 +1471,9 @@ begin
     16: result := '16-ÁLCOOL/GASOLINA';
     17: result := '17-GASOLINA/ÁLCOOL/GNV';
     18: result := '18-GASOLINA/ELÉTRICO'
-    else
+  else
       result := stpComb +'NÃO DEFINIDO' ;
-    end;
+  end;
 end;
 
 function VeiculosTipoOperStr( const TtpOP : TpcnTipoOperacao ): String;
@@ -1493,7 +1484,6 @@ begin
     toVendaDireta         : result := '3-VENDA DIRETA';
     toOutros              : result := '0-OUTROS';
   end;
-
 end;
 
 function ArmaTipoStr( const TtpArma : TpcnTipoArma ): String;
@@ -1654,7 +1644,7 @@ function StrToTtpGuia(const s: String): TtpGuia;
 var
   idx: TtpGuia;
 begin
-  for idx:= Low(TtpGuiaArrayStrings) to High(TtpGuiaArrayStrings)do
+  for idx:= Low(TtpGuiaArrayStrings) to High(TtpGuiaArrayStrings) do
   begin
     if(TtpGuiaArrayStrings[idx] = s)then
     begin
@@ -1675,7 +1665,7 @@ function StrTotpNFDebito(const s: string): TtpNFDebito;
 var
   idx: TtpNFDebito;
 begin
-  for idx:= Low(TtpNFDebitoArrayStrings) to High(TtpNFDebitoArrayStrings)do
+  for idx:= Low(TtpNFDebitoArrayStrings) to High(TtpNFDebitoArrayStrings) do
   begin
     if(TtpNFDebitoArrayStrings[idx] = s)then
     begin
@@ -1695,7 +1685,7 @@ function StrTotpNFCredito(const s: string): TtpNFCredito;
 var
   idx: TtpNFCredito;
 begin
-  for idx:= Low(TtpNFCreditoArrayStrings) to High(TtpNFCreditoArrayStrings)do
+  for idx:= Low(TtpNFCreditoArrayStrings) to High(TtpNFCreditoArrayStrings) do
   begin
     if(TtpNFCreditoArrayStrings[idx] = s)then
     begin
@@ -1704,26 +1694,6 @@ begin
     end;
   end;
   raise EACBrException.CreateFmt('Valor string inválido para TtpNFCredito: %s', [s]);
-end;
-
-function tpEnteGovToStr(const t: TtpEnteGov): string;
-begin
-  Result := TtpEnteGovArrayStrings[t];
-end;
-
-function StrTotpEnteGov(const s: string): TtpEnteGov;
-var
-  idx: TtpEnteGov;
-begin
-  for idx:= Low(TtpEnteGovArrayStrings) to High(TtpEnteGovArrayStrings)do
-  begin
-    if(TtpEnteGovArrayStrings[idx] = s)then
-    begin
-      Result := idx;
-      exit;
-    end;
-  end;
-  raise EACBrException.CreateFmt('Valor string inválido para TtpEnteGov: %s', [s]);
 end;
 
 initialization

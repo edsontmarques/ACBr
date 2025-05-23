@@ -35,10 +35,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+
   String _resultPeso = '0.0';
   bool _ativado = false;
   bool _inicializado = false;
   final acbrbalplugin = Acbrbalplugin();
+
 
   void inicializar() async {
     try {
@@ -93,9 +96,13 @@ class _MyHomePageState extends State<MyHomePage> {
     setResultPeso(0.0);
   }
 
+ //Metodo exemplo para aplicar configurações
+  void onClickConfigurar () async {
+    await acbrbalplugin.configGravarValor("Principal", "LogNivel", "4");
+    await acbrbalplugin.configGravar();
+  }
   @override
   Widget build(BuildContext context) {
-    inicializar();
 
     return Scaffold(
       appBar: AppBar(
@@ -125,11 +132,21 @@ class _MyHomePageState extends State<MyHomePage> {
               text: _ativado ? 'Desativar' : 'Ativar',
               onPressed: toggleAtivado,
             ),
+
+            CustomButton(text: "Configurar", onPressed: onClickConfigurar)
           ],
         ),
       ),
     );
   }
+
+
+  @override
+  void initState() {
+    super.initState();
+    acbrbalplugin.inicializar();
+  }
+
 }
 
 class CustomButton extends StatelessWidget {

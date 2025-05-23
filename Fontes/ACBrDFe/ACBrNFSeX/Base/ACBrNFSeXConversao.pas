@@ -620,12 +620,6 @@ type
 const
   TindCompGovArrayStrings: array[TindCompGov] of string = ('', '1', '0');
 
-type
-  TtpCompraGov  = (tcgUniao, tcgEstados, tcgDistritoFederal, tcgMunicipios);
-
-const
-  TtpCompraGovArrayStrings: array[TtpCompraGov] of string = ('1', '2', '3', '4');
-
 {
   Declaração das funções de conversão
 }
@@ -807,9 +801,6 @@ function StrToLocalPrestacao(out ok: boolean; const s: string): TLocalPrestacao;
 // Reforma Tributária
 function indCompGovToStr(const t: TindCompGov): string;
 function StrToindCompGov(const s: string): TindCompGov;
-
-function tpCompraGovToStr(const t: TtpCompraGov): string;
-function StrTotpCompraGov(const s: string): TtpCompraGov;
 
 const
   SiglaISO2Pais: array[0..247] of string = ('AF', 'AL', 'CW', 'DE', 'BF', 'AD',
@@ -13351,26 +13342,6 @@ begin
     end;
   end;
   raise EACBrException.CreateFmt('Valor string inválido para TindCompGov: %s', [s]);
-end;
-
-function tpCompraGovToStr(const t: TtpCompraGov): string;
-begin
-  Result := TtpCompraGovArrayStrings[t];
-end;
-
-function StrTotpCompraGov(const s: string): TtpCompraGov;
-var
-  idx: TtpCompraGov;
-begin
-  for idx:= Low(TtpCompraGovArrayStrings) to High(TtpCompraGovArrayStrings) do
-  begin
-    if(TtpCompraGovArrayStrings[idx] = s)then
-    begin
-      Result := idx;
-      exit;
-    end;
-  end;
-  raise EACBrException.CreateFmt('Valor string inválido para TtpCompraGov: %s', [s]);
 end;
 
 end.

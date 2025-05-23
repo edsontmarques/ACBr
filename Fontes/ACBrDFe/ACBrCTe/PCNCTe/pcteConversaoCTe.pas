@@ -330,13 +330,6 @@ type
 const
   TtpContratacaoArrayStrings: array[TtpContratacao] of string = ('', '1', '2', '3');
 
-// Reforma Tributaria
-type
-  TtpEnteGov  = (tcgUniao, tcgEstados, tcgDistritoFederal, tcgMunicipios);
-
-const
-  TtpEnteGovArrayStrings: array[TtpEnteGov] of string = ('1', '2', '3', '4');
-
 {
   Declaração das funções de conversão
 }
@@ -462,10 +455,6 @@ function StrToclassDuto(out ok: boolean; const s: string): TclassDuto;
 
 function tpContratacaoToStr(const t: TtpContratacao): string;
 function StrTotpContratacao(out ok: boolean; const s: string): TtpContratacao;
-
-// Reforma Tributária
-function tpEnteGovToStr(const t: TtpEnteGov): string;
-function StrTotpEnteGov(const s: string): TtpEnteGov;
 
 implementation
 
@@ -1163,26 +1152,6 @@ begin
     end;
   end;
   raise EACBrException.CreateFmt('Valor string inválido para TtpContratacao: %s', [s]);
-end;
-
-function tpEnteGovToStr(const t: TtpEnteGov): string;
-begin
-  Result := TtpEnteGovArrayStrings[t];
-end;
-
-function StrTotpEnteGov(const s: string): TtpEnteGov;
-var
-  idx: TtpEnteGov;
-begin
-  for idx:= Low(TtpEnteGovArrayStrings) to High(TtpEnteGovArrayStrings)do
-  begin
-    if(TtpEnteGovArrayStrings[idx] = s)then
-    begin
-      Result := idx;
-      exit;
-    end;
-  end;
-  raise EACBrException.CreateFmt('Valor string inválido para TtpEnteGov: %s', [s]);
 end;
 
 initialization
