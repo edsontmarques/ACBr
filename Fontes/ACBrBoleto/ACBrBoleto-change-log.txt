@@ -48,6 +48,37 @@ Símbolo : Significado
 [+]     : Novo recurso
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
+
+06/06/2025
+-- ACBrBoletoRet_Sicredi_APIV2 --
+[*] TK-6984 Mapeado o EstadoTituloCobranca e CodigoEstadoTituloCobranca
+	https://www.projetoacbr.com.br/forum/topic/82856-retorno-do-sicredi/
+	Por: Daniel Morais InfoCotidiano
+
+06/06/2025
+-- ACBrBoletoW_Santander_API --
+[-] TK-6999 Adicionado a propriedade writeOffQuantityDays para quantidade de dias baixa automatica qdo informado DataBaixa 
+	https://www.projetoacbr.com.br/forum/topic/82157-poss%C3%ADvel-erro-na-api-do-santander/
+	Por: deiviszi
+
+30/05/2025
+-- ACBrBoletoW_Cora --
+[-] TK-6969 Ajustado campos juros "interest" para enviar minusculo conforme suporte e resultou em sucesso. documentacao esta "Interest"
+	https://www.projetoacbr.com.br/forum/topic/82915-banco-cora-dificuldade-no-registro-de-juros-via-api/
+	Por: Daniel Morais InfoCotidiano
+
+29/05/2025
+-- ACBrBoleto.pas --
+[+] TK-7131 Implementada a configuração da tag VersaoDF ao utilizar o método ConfigurarDados. usado no monitor
+	https://www.projetoacbr.com.br/forum/topic/83371-erro-http_code500-no-acbrmonitorplus-ao-enviar-boleto-sicoob-via-api-v3/
+	Por: Júlio Cavalcanti
+
+26/05/2025
+-- ACBrBoleto.pas --
+[*] TK-6783 Mapeado o retorno DataRegistro para ser exibido na lib/monitor; 
+    https://www.projetoacbr.com.br/forum/topic/82408-acbrlibboleto-c-m%C3%A9todo-consultartitulosporperiodo-n%C3%A3o-informa-data-de-registro-dos-boletos/#comment-534372
+    Por: Daniel de Morais InfoCotidiano
+	
 22/05/2025
 --ACBrBoletoW_Sicredi_APIV2--
 [*] TK-6567 - Corrigido tamanho maximo logradouro + numero para 40

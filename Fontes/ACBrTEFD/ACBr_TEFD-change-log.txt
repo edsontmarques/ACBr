@@ -45,6 +45,74 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+06/06/2025
+-- ACBrTEFAPI, ACBrTEFAPIAditum, ACBrTEFAPICliSiTef, ACBrTEFCliSiTefComum,
+  ACBrTEFAPIPayGoWeb, ACBrTEFAPIPayKit, ACBrTEFAPIScope, --
+[+] Implementação do método "VersaoAPI: String"
+    retornando a Versão da DLL, API do TEF utilizado
+    https://www.projetoacbr.com.br/forum/topic/83622-acbrtefapi-contribui%C3%A7%C3%A3o/
+    (por: DSA e  antoniojmsjr)
+
+30/05/2025
+-- ACBrTEFPayKitAPI --
+[-] Correção no CallBack 'TACBrTEFPayKitCallBackSelecionaOpcao' para retornar
+    corretamente, a opção selecionada
+    (por: DSA)
+
+29/05/2025
+-- ACBrTEFMSitefAndroidAPI --
+[-] Correções para tratativas em 'TACBrTEFSIWebAndroid.OnActivityResult',
+    para chamar 'OnDepoisTerminarTransacao' e atribuir o erro 'cErroNoIntent'
+    https://www.projetoacbr.com.br/forum/index.php?showtopic=83475
+    (por: Dércio Luis Zanatta e DSA)
+
+26/05/2025
+-- ACBrTEFPayKitAPI --
+[-] Correção da exibição do título no Callback 'CallBackSolicitaConfirmacao'
+[-] Correção de A.V. na cópia da resposta nos CallBacks 'CallBackEntraCartao',
+    'CallBackEntraDataValidade', 'CallBackEntraData', 'CallBackEntraCodigoSeguranca',
+    'CallBackEntraValor', 'CallBackEntraNumero', 'CallBackEntraString',
+    'CallBackEntraCodigoBarras', 'CallBackEntraCodigoBarrasLido',
+    'CallBackEntraValorEspecial'
+[*] Método 'CalcPayKitPath', modificado com Flag para saber se valida a
+    existência das pastas
+[-] Correção em 'VerificarEAjustarConf', para conseguir criar diretórios da PayKit
+
+-- ACBrTEFAPIPayKit --
+[*] Ajuste em 'TACBrTEFAPIClassPayKit.QuandoPerguntarCampoAPI',  para retornar
+    Resposta do Campo, considerando a mascara de entrada
+    (por: DSA)
+
+25/05/2025
+-- ACBrTEFAPIPayKit --
+[*] Melhoria em 'QuandoExibirQRCodeAPI' para respeitar parâmetros de configuração
+    do componente, quanto a exibição do QRCode na Tela
+[*] Ajustes em 'TACBrTEFAPIClassPayKit.EfetuarPagamento',
+    - Enviar o parâmetro Tipo Operação como String
+    - usar o método 'TransacaoCartaoDebitoCompleta', para transações de Débito
+    - correção na chamada de TransacaoCartaoFrota
+[-] Correção em 'TACBrTEFRespPayKit.ConteudoToProperty' para não tentar "Confirmar"
+    transações de Reimpressão
+[-] Correção em 'TACBrTEFAPIClassPayKit.InterpretarRespostaAPI' para processar
+    corretamente, transação de Reimpressão
+[-] Correção para CallBack 'QuandoPerguntarCampoAPI', para zerar valores default
+[-] Correções no fluxo do Menu Administrativo
+
+-- ACBrTEFPayKitAPI --
+[*] Remoção do tipo 'TACBrTEFPayKitTipoOperacao' (parâmetro modificado para String)
+[*] Melhoria no controle do Flag 'EmTransacao', e limpeza de variáveis de trabalho
+[+] Inclusão do método 'TransacaoCartaoDebitoCompleta'
+[*] Callback 'DisplayErro' modificado para exibir msg com botão OK
+[*] CallBack 'SolicitaConfirmacao', modificado para ignorar chamadas com parâmetro
+    'Mensagem' vazio
+[-] Correção em CallBack 'Comandos', na captura da String do QRCode, desprezava
+    o primeiro caractere
+[-] Correção em 'TransacaoCartaoCreditoCompleta', para não ocorrer A.V.
+[-] Correções para processar corretamente Transação Administrativa de Reimpressao
+[*] M[etodo 'TACBrTEFPayKitAPI.ObtemComprovanteTransacao' modificado para
+    recuperar, cupom de Transação Administrativa de Reimpressao
+    (por: DSA)
+
 14/05/2025
 -- ACBrTEFAPI, ACBrTEFAPIPayKit, ACBrTEFPayKitAPI --
 [+] Novo modelo de TEF suportado "PayKit" (D-TEF Linx)"

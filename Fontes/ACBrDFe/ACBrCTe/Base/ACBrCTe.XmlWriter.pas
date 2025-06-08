@@ -452,7 +452,7 @@ begin
     wAlerta('C11', 'UF', DSC_UF, ERR_MSG_INVALIDO);
 
   Result.AppendChild(AddNode(tcInt, 'C13', 'cPais', 4, 4, 0,
-                                                     CODIGO_BRASIL, DSC_CPAIS));
+                                                    Endereco.cPais, DSC_CPAIS));
 
   Result.AppendChild(AddNode(tcStr, 'C15', 'xPais', 2, 60, 0,
                                      Endereco.xPais, DSC_XPAIS));
@@ -4798,8 +4798,8 @@ function TCTeXmlWriter.Gerar_IBSCBS_gIBSCBS_gIBSCBSCredPres(
 begin
   Result := FDocument.CreateElement(Grupo);
 
-  Result.AppendChild(AddNode(tcInt, 'UB56', 'cCredPres', 2, 2, 1,
-                                        gIBSCredPres.cCredPres, DSC_CCREDPRES));
+  Result.AppendChild(AddNode(tcStr, 'UB56', 'cCredPres', 2, 2, 1,
+                        cCredPresToStr(gIBSCredPres.cCredPres), DSC_CCREDPRES));
 
   Result.AppendChild(AddNode(tcDe4, 'UB57', 'pCredPres', 1, 7, 1,
                                         gIBSCredPres.pCredPres, DSC_PCREDPRES));

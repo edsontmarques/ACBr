@@ -44,6 +44,24 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+06/06/2025
+-- ACBrCTeConhecimentos --
+[+] Implementado os parâmetros: ManterPDFSalvo e sBCC no método: EnviarEmail.
+  Por: Mateus Brunelli/Italo Giurizzato Junior
+
+05/06/2025
+-- ACBrCTe.XmlWriter --
+[*] #TK-7173: Ajustes na escrita do XML para gerar corretamente o código do pais.  
+  Por: Datacamp/Italo Giurizzato Junior
+
+26/05/2025
+-- Diversos --
+[*] O campo cCredPres que antes era do tipo Integer passou a ser do tipo TcCredPres
+-- ACBrCTe.XmlReader
+[*] #TK-7109: Ajustes na leitura dos elementos: Comp, InfCarga, Rodo, Aereo e Aquav,
+    InfNFe e InfDocAnt.  
+  Por: Italo Giurizzato Junior
+
 23/05/2025
 -- ACBrCTe.IniReader, ACBrCTeIniWriter --
 [*] #TK-7103: Ajuste visando a correta geração das informações do veículo e do proprietário quando preenchido NroRegEstadual ao invés do TAF para CTeOS.

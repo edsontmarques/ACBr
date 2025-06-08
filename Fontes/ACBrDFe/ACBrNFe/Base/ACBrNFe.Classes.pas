@@ -1369,8 +1369,8 @@ type
 
   TgIS = class(TObject)
   private
-    FCSTIS: TCSTIBSCBS;
-    FcClassTribIS: TcClassTrib;
+    FCSTIS: TCSTIS;
+    FcClassTribIS: TcClassTribIS;
     FvBCIS: Double;
     FpIS: Double;
     FpISEspec: Double;
@@ -1380,8 +1380,8 @@ type
   public
     procedure Assign(Source: TgIS);
 
-    property CSTIS: TCSTIBSCBS read FCSTIS write FCSTIS;
-    property cClassTribIS: TcClassTrib read FcClassTribIS write FcClassTribIS;
+    property CSTIS: TCSTIS read FCSTIS write FCSTIS;
+    property cClassTribIS: TcClassTribIS read FcClassTribIS write FcClassTribIS;
     property vBCIS: Double read FvBCIS write FvBCIS;
     property pIS: Double read FpIS write FpIS;
     property pISEspec: Double read FpISEspec write FpISEspec;
@@ -1480,12 +1480,12 @@ type
 
   TgIBSCBSCredPres = class(TObject)
   private
-    FcCredPres: Integer;
+    FcCredPres: TcCredPres;
     FpCredPres: Double;
     FvCredPres: Double;
     FvCredPresCondSus: Double;
   public
-    property cCredPres: Integer read FcCredPres write FcCredPres;
+    property cCredPres: TcCredPres read FcCredPres write FcCredPres;
     property pCredPres: Double read FpCredPres write FpCredPres;
     property vCredPres: Double read FvCredPres write FvCredPres;
     property vCredPresCondSus: Double read FvCredPresCondSus write FvCredPresCondSus;
@@ -1949,7 +1949,6 @@ type
     FgIBSMunTot: TgIBSMunTot;
     FvIBS: Double;
     FvCredPres: Double;
-//    FvCredPresCondSus: Double;
   public
     constructor Create;
     destructor Destroy; override;
@@ -1960,7 +1959,6 @@ type
     property gIBSMunTot: TgIBSMunTot read FgIBSMunTot write FgIBSMunTot;
     property vIBS: Double read FvIBS write FvIBS;
     property vCredPres: Double read FvCredPres write FvCredPres;
-//    property vCredPresCondSus: Double read FvCredPresCondSus write FvCredPresCondSus;
   end;
 
   { TgCBSTot }
@@ -1971,13 +1969,11 @@ type
     FvDevTrib: Double;
     FvCBS: Double;
     FvCredPres: Double;
-//    FvCredPresCondSus: Double;
   public
     property vDif: Double read FvDif write FvDif;
     property vDevTrib: Double read FvDevTrib write FvDevTrib;
     property vCBS: Double read FvCBS write FvCBS;
     property vCredPres: Double read FvCredPres write FvCredPres;
-//    property vCredPresCondSus: Double read FvCredPresCondSus write FvCredPresCondSus;
   end;
 
   { TgMono }
@@ -5140,7 +5136,6 @@ begin
   gIBSMunTot := Source.gIBSMunTot;
   vIBS := Source.vIBS;
   vCredPres := Source.vCredPres;
-//  vCredPresCondSus := Source.vCredPresCondSus;
 end;
 
 constructor TgIBSTot.Create;

@@ -1818,8 +1818,8 @@ begin
 
   if AINIRec.SectionExists(sSecao) then
   begin
-    ISel.CSTIS := StrToCSTIBSCBS(AINIRec.ReadString(sSecao, 'CSTIS', '000'));
-    ISel.cClassTribIS := StrTocClassTrib(AINIRec.ReadString(sSecao, 'cClassTribIS', '000001'));
+    ISel.CSTIS := StrToCSTIS(AINIRec.ReadString(sSecao, 'CSTIS', ''));
+    ISel.cClassTribIS := StrTocClassTribIS(AINIRec.ReadString(sSecao, 'cClassTribIS', ''));
     ISel.vBCIS := StringToFloatDef(AINIRec.ReadString(sSecao, 'vBCIS', ''), 0);
     ISel.pIS := StringToFloatDef(AINIRec.ReadString(sSecao, 'pIS', ''), 0);
     ISel.pISEspec := StringToFloatDef(AINIRec.ReadString(sSecao, 'pISEspec', ''), 0);
@@ -1964,7 +1964,7 @@ begin
 
   if AINIRec.SectionExists(sSecao) then
   begin
-    IBSCredPres.cCredPres := AINIRec.ReadInteger(sSecao, 'cCredPres', 0);
+    IBSCredPres.cCredPres := StrTocCredPres(AINIRec.ReadString(sSecao, 'cCredPres', ''));
     IBSCredPres.pCredPres := StringToFloatDef(AINIRec.ReadString(sSecao, 'pCredPres', ''), 0);
     IBSCredPres.vCredPres := StringToFloatDef(AINIRec.ReadString(sSecao, 'vCredPres', ''), 0);
     IBSCredPres.vCredPresCondSus := StringToFloatDef(AINIRec.ReadString(sSecao, 'vCredPresCondSus', ''), 0);
@@ -2069,7 +2069,6 @@ begin
   begin
     IBS.vIBS := StringToFloatDef(AINIRec.ReadString(sSecao, 'vIBS', ''), 0);
     IBS.vCredPres := StringToFloatDef(AINIRec.ReadString(sSecao, 'vCredPres', ''), 0);
-//    IBS.vCredPresCondSus := StringToFloatDef(AINIRec.ReadString(sSecao, 'vCredPresCondSus', ''), 0);
 
     Ler_IBSCBSTot_gIBS_gIBSUFTot(AINIRec, IBS.gIBSUFTot);
     Ler_IBSCBSTot_gIBS_gIBSMunTot(AINIRec, IBS.gIBSMunTot);
@@ -2119,7 +2118,6 @@ begin
     gCBS.vDevTrib := StringToFloatDef(AINIRec.ReadString(sSecao, 'vDevTrib', ''), 0);
     gCBS.vCBS := StringToFloatDef(AINIRec.ReadString(sSecao, 'vCBS', ''), 0);
     gCBS.vCredPres := StringToFloatDef(AINIRec.ReadString(sSecao, 'vCredPres', ''), 0);
-//    gCBS.vCredPresCondSus := StringToFloatDef(AINIRec.ReadString(sSecao, 'vCredPresCondSus', ''), 0);
   end;
 end;
 

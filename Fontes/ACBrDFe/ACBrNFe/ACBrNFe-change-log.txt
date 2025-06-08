@@ -44,6 +44,42 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+06/06/2025
+-- ACBrNFeNotasFiscais --
+[+] Implementado os parâmetros: ManterPDFSalvo e sBCC no método: EnviarEmail.
+  Por: Mateus Brunelli/Italo Giurizzato Junior
+
+05/06/2025
+-- ACBrNFe.EnvEvento --
+[*] #TK-7088: Alteração visando gerar a tag xJust no evento de Desconhecimento da Operação.
+  Por: Diego Folieni/Italo Giurizzato Junior
+-- ACBrNFe.RetEnvEvento --
+[*] #TK-7037: Alimentar as propriedades do retorno do evento ECONF e Cancelamento do ECONF
+  Por: Renato Rubinho
+
+29/05/2025
+-- ACBrNFeWebServices --
+[-] #TK-7129: Remove o uso do ParseText no tratamento do retorno do envio de evento afim de evitar decodificação indevida das HTML Entitys.
+  Por: Diego Folieni
+
+28/05/2025
+-- Diversos --
+[*] Remoção de linhas de código comentadas.
+  Por: Italo Giurizzato Junior
+
+27/05/2025
+-- ACBrNFeServicos.ini --
+[*] A SEFAZ-CE contratou a SVRS para recepcionar as NFCe, alterado o envio para o
+    ambiente de produção para a SVRS.
+  Por: Alexandre de Paula
+
+26/05/2025
+-- Diversos --
+[*] O campo CSTIS que antes era do tipo TCSTIBSCBS passou a ser do tipo TCSTIS,
+    o campo cClassTribIS que antes era do tipo TcClassTrib passou a ser do tipo TcClassTribIS,
+    o campo cCredPres que antes era do tipo Integer passou a ser do tipo TcCredPres
+  Por: Italo Giurizzato Junior
+
 22/05/2025
 -- ACBrNFeServicos --
 [+] #TK-7044: Adiciona a URL da Consulta de Cadastro para Sefaz Amazonas.

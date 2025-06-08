@@ -1672,8 +1672,8 @@ procedure TNFeXmlReader.Ler_ISel(ISel: TgIS; const ANode: TACBrXmlNode);
 begin
   if not Assigned(ANode) then Exit;
 
-  ISel.CSTIS := StrToCSTIBSCBS(ObterConteudo(ANode.Childrens.Find('CSTIS'), tcStr));
-  ISel.cClassTribIS := StrTocClassTrib(ObterConteudo(ANode.Childrens.Find('cClassTribIS'), tcStr));
+  ISel.CSTIS := StrToCSTIS(ObterConteudo(ANode.Childrens.Find('CSTIS'), tcStr));
+  ISel.cClassTribIS := StrTocClassTribIS(ObterConteudo(ANode.Childrens.Find('cClassTribIS'), tcStr));
   ISel.vBCIS := ObterConteudo(ANode.Childrens.Find('vBCIS'), tcDe2);
   ISel.pIS := ObterConteudo(ANode.Childrens.Find('pIS'), tcDe2);
   ISel.pISEspec := ObterConteudo(ANode.Childrens.Find('pISEspec'), tcDe2);
@@ -1806,7 +1806,7 @@ procedure TNFeXmlReader.Ler_IBSCBSSel_gIBSCBS_gIBSCBSCredPres(
 begin
   if not Assigned(ANode) then Exit;
 
-  gIBSCredPres.cCredPres := ObterConteudo(ANode.Childrens.Find('cCredPres'), tcInt);
+  gIBSCredPres.cCredPres := StrTocCredPres(ObterConteudo(ANode.Childrens.Find('cCredPres'), tcStr));
   gIBSCredPres.pCredPres := ObterConteudo(ANode.Childrens.Find('pCredPres'), tcDe4);
   gIBSCredPres.vCredPres := ObterConteudo(ANode.Childrens.Find('vCredPres'), tcDe2);
   gIBSCredPres.vCredPresCondSus := ObterConteudo(ANode.Childrens.Find('vCredPresCondSus'), tcDe2);
@@ -1888,7 +1888,6 @@ begin
 
   gIBS.vIBS := ObterConteudo(ANode.Childrens.Find('vIBS'), tcDe2);
   gIBS.vCredPres := ObterConteudo(ANode.Childrens.Find('vCredPres'), tcDe2);
-//  gIBS.vCredPresCondSus := ObterConteudo(ANode.Childrens.Find('vCredPresCondSus'), tcDe2);
 end;
 
 procedure TNFeXmlReader.Ler_IBSCBSTot_gIBS_gIBSUFTot(gIBSUFTot: TgIBSUFTot;
@@ -1920,7 +1919,6 @@ begin
   gCBS.vDevTrib := ObterConteudo(ANode.Childrens.Find('vDevTrib'), tcDe2);
   gCBS.vCBS := ObterConteudo(ANode.Childrens.Find('vCBS'), tcDe2);
   gCBS.vCredPres := ObterConteudo(ANode.Childrens.Find('vCredPres'), tcDe2);
-//  gCBS.vCredPresCondSus := ObterConteudo(ANode.Childrens.Find('vCredPresCondSus'), tcDe2);
 end;
 
 procedure TNFeXmlReader.Ler_IBSCBSTot_gMono(gMono: TgMono;
