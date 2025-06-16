@@ -121,7 +121,7 @@ type
   C_URL_SANDBOX = 'https://sandbox.devportal.itau.com.br/itau-ep9-gtw-cash-management-ext-v2/v2';
 
   C_URL_CONSULTA         = 'https://secure.api.cloud.itau.com.br/boletoscash/v2';
-  C_URL_CONSULTA_HOM     = '';
+  C_URL_CONSULTA_HOM     =  C_URL_CONSULTA;
   C_URL_CONSULTA_SANDBOX = 'https://sandbox.devportal.itau.com.br/itau-ep9-gtw-cash-management-ext-v2/v2';
 
 
@@ -214,15 +214,23 @@ begin
     case Boleto.Configuracoes.WebService.Operacao of
       tpAltera:
         begin
-          case Integer(ATitulo.OcorrenciaOriginal.Tipo) of
-            3, 4:     Result := 'abatimento';
-            5,52,53:  Result := 'desconto';
-            7:        Result := 'data_vencimento';
-            9,10,12:  Result := 'protesto';
-            18:       Result := 'seu_numero';
-            37:       Result := 'juros';
-            50,51:    Result := 'multa';
-            55:       Result := 'data_limite_pagamento' ;
+          case ATitulo.OcorrenciaOriginal.Tipo of
+            toRemessaConcederAbatimento, toRemessaCancelarAbatimento:
+              Result := 'abatimento';
+            toRemessaConcederDesconto, toRemessaAlterarDesconto, toRemessaNaoConcederDesconto, toRemessaCancelarDesconto:
+              Result := 'desconto';
+            toRemessaAlterarVencimento:
+              Result := 'data_vencimento';
+            toRemessaProtestar, toRemessaSustarProtesto, toRemessaCancelarInstrucaoProtesto:
+              Result := 'protesto';
+            toRemessaAlterarSeuNumero:
+              Result := 'seu_numero';
+            toRemessaCobrarJurosMora:
+              Result := 'juros';
+            toRemessaAlterarMulta, toRemessaDispensarMulta:
+              Result := 'multa';
+            toRemessaAlterarPrazoLimiteRecebimento:
+              Result := 'data_limite_pagamento';
           end;
         end;
       tpBaixa:
@@ -363,7 +371,15 @@ begin
                 LConsulta.Add('/'+LId_Beneficiario+'/movimentacoes?'+'data=' + LDataInicio);
                 if NaoEstaVazio(LCarteira) then
                   LConsulta.Add('numero_carteira='+LCarteira);
-                LConsulta.Add('tipo_movimentacao='+'liquidacoes');
+                if Boleto.Cedente.CedenteWS.IndicadorPix then
+                  begin
+                    {recebimento qrCode, volta em Baixas como BL}
+                    LConsulta.Add('tipo_cobranca='+'bolecode');
+                    LConsulta.Add('tipo_movimentacao='+'baixas');
+                  end
+                else
+                  {recebimento linhaDigitavel e Barras volta como liquidacoes}
+                  LConsulta.Add('tipo_movimentacao='+'liquidacoes')
               end;
               isbCancelado:
               begin
@@ -725,7 +741,11 @@ begin
   if Assigned(ATitulo) and Assigned(AJson) then
   begin
     LJsonDados := TACBrJSONObject.Create;
-    LJsonDados.AddPair('etapa_processo_boleto', IfThen(OAuth.Ambiente=tawsProducao,'efetivacao','validacao'));
+    // Validacao, endpoint sem Bolecode, para bolecode usar simulacao
+    if boleto.Cedente.CedenteWS.IndicadorPix then
+      LJsonDados.AddPair('etapa_processo_boleto', IfThen(OAuth.Ambiente=tawsProducao,'efetivacao','simulacao'))
+    else
+      LJsonDados.AddPair('etapa_processo_boleto', IfThen(OAuth.Ambiente=tawsProducao,'efetivacao','validacao'));
     LJsonDados.AddPair('codigo_canal_operacao', 'API');
     GeraIdBeneficiario(LJsonDados);
     GeraDadoBoleto(LJsonDados);
@@ -766,67 +786,70 @@ begin
 
     LJson := TACBrJSONObject.Create;
     try
-
-      case Integer(ATitulo.OcorrenciaOriginal.Tipo) of
-        3: // RemessaConcederAbatimento
+      case ATitulo.OcorrenciaOriginal.Tipo of
+        toRemessaConcederAbatimento:
           begin
             if (ATitulo.ValorAbatimento > 0) then
-              LJson.AddPair('valor_abatimento', StringReplace(FormatFloat('0.00',ATitulo.ValorAbatimento),',','.',[]));
+              LJson.AddPair('valor_abatimento', StringReplace(FormatFloat('0.00', ATitulo.ValorAbatimento), ',', '.', [ ]));
           end;
-        4: // RemessaCancelarAbatimento
+        toRemessaCancelarAbatimento:
           begin
-            LJson.AddPair('valor_abatimento', StringReplace(FormatFloat('0.00',0),',','.',[]));
+            LJson.AddPair('valor_abatimento', StringReplace(FormatFloat('0.00', 0), ',', '.', [ ]));
           end;
-        5: //RemessaConcederDesconto
+        toRemessaConcederDesconto:
           begin
             AtribuirDesconto(LJson);
           end;
-        7: //RemessaAlterarVencimento
+        toRemessaAlterarVencimento: //RemessaAlterarVencimento
           begin
-              LJson.AddPair('data_vencimento', FormatDateBr(ATitulo.Vencimento, 'YYYY-MM-DD'));
+            LJson.AddPair('data_vencimento', FormatDateBr(ATitulo.Vencimento, 'YYYY-MM-DD'));
           end;
-        9:  //RemessaProtestar
-          begin
-            AlterarProtesto(LJson);
-          end;
-        10:  //RemessaSustarProtesto
+        toRemessaProtestar:
           begin
             AlterarProtesto(LJson);
           end;
-        12:  //RemessaCancelarInstrucaoProtesto
+        toRemessaSustarProtesto:
           begin
             AlterarProtesto(LJson);
           end;
-        18:  //RemessaAlterarSeuNumero
+        toRemessaCancelarInstrucaoProtesto:
+          begin
+            AlterarProtesto(LJson);
+          end;
+        toRemessaAlterarSeuNumero:
           begin
             if (ATitulo.SeuNumero <> '') then
-              LJson.AddPair('texto_seu_numero', PadLeft(ATitulo.SeuNumero,10,'0'))
+              LJson.AddPair('texto_seu_numero', PadLeft(ATitulo.SeuNumero, 10, '0'))
             else
-              raise Exception.Create(ACBrStr('Seu número é a identificação do boleto que poderá ' + sLineBreak +
-                                 ' ter letras e números e OBRIGATÓRIAMENTE 10 posições' + sLineBreak));
+              raise Exception.Create(ACBrStr('Seu número é a identificação do boleto que poderá ' + sLineBreak + ' ter letras e números e OBRIGATÓRIAMENTE 10 posições' +
+                    sLineBreak));
           end;
 
-        37: //RemessaCobrarJurosMora
+        toRemessaCobrarJurosMora:
           begin
             AtribuirJuros(LJson);
           end;
-        50:  //RemessaAlterarMulta
+        toRemessaAlterarMulta:
           begin
-             AtribuirMulta(LJson);
+            AtribuirMulta(LJson);
           end;
-        51:  //RemessaDispensarMulta
+        toRemessaDispensarMulta:
           begin
-             AtribuirMulta(LJson);
+            AtribuirMulta(LJson);
           end;
-        52: //RemessaAlterarDesconto
-          begin
-            AtribuirDesconto(LJson);
-          end;
-        53: //toRemessaNaoConcederDesconto
+        toRemessaAlterarDesconto:
           begin
             AtribuirDesconto(LJson);
           end;
-        55:  //toRemessaAlterarPrazoLimiteRecebimento
+        toRemessaNaoConcederDesconto:
+          begin
+            AtribuirDesconto(LJson);
+          end;
+        toRemessaCancelarDesconto:
+          begin
+            AtribuirDesconto(LJson);
+          end;
+        toRemessaAlterarPrazoLimiteRecebimento:
           begin
             if (ATitulo.DataLimitePagto > 0) then
               LJson.AddPair('data_limite_pagamento', FormatDateBr(ATitulo.DataLimitePagto, 'YYYY-MM-DD'));

@@ -42,7 +42,13 @@ uses
      {$IFNDEF NOGUI}
        Graphics,
      {$ENDIF}
-     Contnrs,
+     {$IF DEFINED(HAS_SYSTEM_GENERICS)}
+       System.Generics.Collections, System.Generics.Defaults,
+     {$ELSEIF DEFINED(DELPHICOMPILER16_UP)}
+       System.Contnrs,
+     {$Else}
+       Contnrs,
+     {$IfEnd}
      IniFiles,
      {$IFDEF FPC}
        LResources,
@@ -646,6 +652,7 @@ type
     procedure EhObrigatorioConta; virtual;
     procedure EhObrigatorioContaDV; virtual;
     procedure EhObrigatorioNomeBeneficiario; virtual;
+    procedure NaoPermiteFiltroWSNenhum; virtual;
   public
     Constructor create(AOwner: TACBrBanco);
     Destructor Destroy; override ;
@@ -1178,7 +1185,7 @@ type
   end;
 
   { TListadeNFes }
-  TACBrListadeNFes = class(TObjectList)
+  TACBrListadeNFes = class(TObjectList{$IfDef HAS_SYSTEM_GENERICS}<TACBrDadosNFe>{$EndIf})
   protected
     procedure SetObject (Index: Integer; Item: TACBrDadosNFe);
     function  GetObject (Index: Integer): TACBrDadosNFe;
@@ -1344,7 +1351,7 @@ type
      function GerarPDF : string; overload;
      procedure GerarPDF(AStream: TStream); overload;
      procedure EnviarEmail(const sPara, sAssunto: String; sMensagem: TStrings;
-      EnviaPDF: Boolean; sCC: TStrings = Nil; Anexos: TStrings = Nil;AReplyTo: TStrings=nil);
+      EnviaPDF: Boolean; sCC: TStrings = Nil; Anexos: TStrings = Nil; AReplyTo: TStrings=nil; sBCC: TStrings = Nil);
 
      property ACBrBoleto        : TACBrBoleto read fACBrBoleto;
      property LocalPagamento    : String      read fLocalPagamento    write fLocalPagamento;
@@ -1452,7 +1459,7 @@ type
    end;
 
   { TListadeBoletos }
-  TListadeBoletos = class(TObjectList)
+  TListadeBoletos = class(TObjectList{$IfDef HAS_SYSTEM_GENERICS}<TACBrTitulo>{$EndIf})
   protected
     procedure SetObject (Index: Integer; Item: TACBrTitulo);
     function  GetObject (Index: Integer): TACBrTitulo;
@@ -1550,7 +1557,7 @@ type
     procedure GerarJPG;
 
     procedure EnviarEmail(const sPara, sAssunto: String; sMensagem: TStrings;
-      EnviaPDF: Boolean; sCC: TStrings = Nil; Anexos: TStrings = Nil; AReplyTo: TStrings = Nil);
+      EnviaPDF: Boolean; sCC: TStrings = Nil; Anexos: TStrings = Nil; AReplyTo: TStrings = Nil; sBCC: TStrings = Nil);
 
     procedure AdicionarMensagensPadroes(Titulo : TACBrTitulo; AStringList: TStrings);
 
@@ -1565,6 +1572,7 @@ type
     procedure EhObrigatorioConta;
     procedure EhObrigatorioContaDV;
     procedure EhObrigatorioNomeBeneficiario;
+    procedure NaoPermiteFiltroWSNenhum;
 
     function EnviarBoleto: Boolean; deprecated {$IfDef SUPPORTS_DEPRECATED_DETAILS} 'Use o método Enviar' {$ENDIF};
     function Enviar: Boolean;
@@ -2367,12 +2375,12 @@ end;
 { TListadeNFes }
 function TACBrListadeNFes.GetObject(Index: Integer): TACBrDadosNFe;
 begin
-   Result := inherited GetItem(Index) as TACBrDadosNFe ;
+   Result := inherited Items[Index] as TACBrDadosNFe ;
 end;
 
 procedure TACBrListadeNFes.SetObject(Index: Integer; Item: TACBrDadosNFe);
 begin
-   inherited SetItem (Index, Item) ;
+   inherited Items[Index] := Item;
 end;
 
 procedure TACBrListadeNFes.Insert(Index: Integer; Obj: TACBrDadosNFe);
@@ -3018,7 +3026,8 @@ begin
 end;
 
 procedure TACBrTitulo.EnviarEmail(const sPara, sAssunto: String;
-  sMensagem: TStrings; EnviaPDF: Boolean; sCC: TStrings; Anexos: TStrings; AReplyTo: TStrings);
+  sMensagem: TStrings; EnviaPDF: Boolean; sCC: TStrings; Anexos: TStrings;
+  AReplyTo: TStrings; sBCC: TStrings);
 begin
   if not Assigned(ACBrBoleto.ACBrBoletoFC) then
     raise EACBrBoleto.Create( ACBrStr('Nenhum componente "ACBrBoletoFC" associado' ) );
@@ -3031,7 +3040,7 @@ begin
 
   ACBrBoleto.ACBrBoletoFC.IndiceImprimirIndividual :=  fACBrBoleto.ListadeBoletos.IndexOf(Self);
   try
-    ACBrBoleto.EnviarEmail(sPara, sAssunto, sMensagem, EnviaPDF, sCC, Anexos, AReplyTo);
+    ACBrBoleto.EnviarEmail(sPara, sAssunto, sMensagem, EnviaPDF, sCC, Anexos, AReplyTo, sBCC);
   finally
     ACBrBoleto.ACBrBoletoFC.IndiceImprimirIndividual:= -1;
   end;
@@ -3453,7 +3462,8 @@ begin
 end;
 
 procedure TACBrBoleto.EnviarEmail(const sPara, sAssunto: String;
-  sMensagem: TStrings; EnviaPDF: Boolean; sCC: TStrings; Anexos: TStrings;AReplyTo: TStrings );
+  sMensagem: TStrings; EnviaPDF: Boolean; sCC: TStrings; Anexos: TStrings;
+  AReplyTo: TStrings; sBCC: TStrings);
 var
   i: Integer;
   EMails: TStringList;
@@ -3517,6 +3527,12 @@ begin
   begin
     for i := 0 to Anexos.Count - 1 do
       FMAIL.AddAttachment(Anexos[i],ExtractFileName(Anexos[i]));
+  end;
+
+  if Assigned(sBCC) then
+  begin
+    for i := 0 to sBCC.Count - 1 do
+      FMAIL.AddBCC(sBCC[i]);
   end;
 
   FMAIL.Send;
@@ -3778,6 +3794,11 @@ end;
 procedure TACBrBoleto.EhObrigatorioNomeBeneficiario;
 begin
   fBanco.BancoClass.EhObrigatorioNomeBeneficiario;
+end;
+
+procedure TACBrBoleto.NaoPermiteFiltroWSNenhum;
+begin
+  fBanco.BancoClass.NaoPermiteFiltroWSNenhum;
 end;
 
 function TACBrBoleto.EnviarBoleto: Boolean;
@@ -4323,10 +4344,9 @@ begin
 
       Sessao := 'ConsultaAPI';
       sFim   := IniBoletos.ReadString(Sessao,'IndicadorSituacaoBoleto','0');
-      if (sFim <> '0')  then
-        Configuracoes.WebService.Filtro.indicadorSituacao := TACBrIndicadorSituacaoBoleto(StrToInt64Def(sFim,0))
-      else
-        raise EACBrBoleto.Create('Nenhum Indicador de Situacao definido para consulta!');
+
+      Configuracoes.WebService.Filtro.indicadorSituacao := TACBrIndicadorSituacaoBoleto(StrToInt64Def(sFim,0));
+      NaoPermiteFiltroWSNenhum;
 
       DtMovimento  := Trim(IniBoletos.ReadString(Sessao,'DataInicioMovimento','0'));
       DtVencimento := Trim(IniBoletos.ReadString(Sessao,'DataInicioVencimento','0'));
@@ -4575,12 +4595,12 @@ end;
 { TListadeBoletos }
 procedure TListadeBoletos.SetObject ( Index: Integer; Item: TACBrTitulo ) ;
 begin
-   inherited SetItem (Index, Item) ;
+   inherited Items[Index] := Item;
 end;
 
 function TListadeBoletos.GetObject ( Index: Integer ) : TACBrTitulo;
 begin
-   Result := inherited GetItem(Index) as TACBrTitulo ;
+   Result := inherited Items[Index] as TACBrTitulo ;
 end;
 
 procedure TListadeBoletos.Insert ( Index: Integer; Obj: TACBrTitulo ) ;
@@ -5052,6 +5072,12 @@ procedure TACBrBancoClass.EhObrigatorioNomeBeneficiario;
 begin
   if ACBrBanco.ACBrBoleto.Cedente.Nome = '' then
     Raise EACBrBoleto.Create(ACBrStr('Nome do cedente não informado'));
+end;
+
+procedure TACBrBancoClass.NaoPermiteFiltroWSNenhum;
+begin
+  if ACBrBanco.ACBrBoleto.Configuracoes.WebService.Filtro.indicadorSituacao = isbNenhum then
+    Raise EACBrBoleto.Create(ACBrStr('IndicadorSituacao não informado'));
 end;
 
 procedure TACBrBancoClass.GerarRegistroHeader400(NumeroRemessa: Integer; ARemessa: TStringList);

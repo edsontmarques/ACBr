@@ -48,6 +48,51 @@ Símbolo : Significado
 [+]     : Novo recurso
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
+16/06/2025
+-- ACBrBoletoW_Itau_API --
+[-] #TK-7218 Corrigido o metodo toRemessaCancelarDesconto e nao estava enviando um parametro. corrigido tbm enumerados para facilitar a leitura dos fontes.
+	https://www.projetoacbr.com.br/forum/topic/83709-funcionalidade-toremessacancelardesconto-banco-itau/
+    Por: Daniel de Morais
+
+12/06/2025
+-- ACBrBoleto --
+[+] Implementado o parâmetro  sBCC no método: EnviarEmail.
+    Por: Mateus Brunelli / Júlio Cavalcanti
+
+12/06/2025
+-- ACBrBoletoRet_Itau_API.pas --
+[*] TK-7092 Após reunião com JT, decidido nao alimentar os dados. deixar como esta vindo do banco.
+	www.projetoacbr.com.br/forum/topic/83348-retorno-do-banco-itau-boleto-pago-via-pix/page/2/
+	Por: Daniel Morais InfoCotidiano
+
+12/06/2025
+-- ACBrBoletoRet_Itau_API.pas --
+[*] TK-7092 Ajustes no tratamento Retorno BL Bolecode. Como é baixado até a presente data ,nao vem informacoes pagamentos. ajustado p devolver valor documento.
+	Fizemos um reunião ontem com o Consultor Itau, e por enq não é possivel trazer isso nas fracesinhas.
+	www.projetoacbr.com.br/forum/topic/83348-retorno-do-banco-itau-boleto-pago-via-pix/page/2/
+	Por: Daniel Morais InfoCotidiano
+
+11/06/2025
+-- ACBrBoletoRet_Itau_API.pas --
+[*] TK-7092 Ajustes no tratamento da paginação do retorno da consulta
+	www.projetoacbr.com.br/forum/topic/83348-retorno-do-banco-itau-boleto-pago-via-pix/page/2/
+	Por: Daniel Morais InfoCotidiano
+
+11/06/2025
+-- ACBrBoleto --
+[+] Implementa função o para não permitir  IndicadorSituacao.isbNenhum
+[*] Usa função para validar a propriedade IndicadorSituacao
+    Por: Júlio Cavalcanti, Daniel Morais InfoCotidiano e Victor Gonzales Pandaaa
+
+-- ACBrBancoItau --
+[*] Sobrescreve função para permitir IndicadorSituacao.isbNenhum
+    Por: Júlio Cavalcanti, Daniel Morais InfoCotidiano e Victor Gonzales Pandaaa
+
+11/06/2025
+-- ACBrBoletoRet_Itau_API.pas, ACBrBoletoW_Itau_API.pas --
+[*] TK-7092 Ajustes na Tpconsulta bolecode (usar indicadorPIX liquidado bolecode), ajustes no tratamento dos retornos
+	www.projetoacbr.com.br/forum/topic/83348-retorno-do-banco-itau-boleto-pago-via-pix/page/2/
+	Por: Daniel Morais InfoCotidiano
 
 06/06/2025
 -- ACBrBoletoRet_Sicredi_APIV2 --
