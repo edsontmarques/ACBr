@@ -44,6 +44,34 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+02/07/2025
+-- ACBrNFe.RetConsSit --
+[-] #TK-7260: Correção visando ler corretamente o grupo infCanc.
+  Por: Italo Giurizzato Junior
+
+27/06/2025
+-- ACBrNFe.XmlReader --
+[-] #TK-7251: Correção visando ler corretamente os grupos gIBSUF e gIBSMun em totais.
+  Por: Aguiarle
+
+20/06/2025
+-- ACBrNFe.XmlWriter --
+[-] #TK-7244: Correção no tamanho mínimo e máximo da tag qrCode para atender
+    a versão 3 do QR-Code.
+  Por: Italo Giurizzato Junior
+-- ACBrNFe.IniWriter --
+[-] #TK-7237: Correção na nomenclatura do campo refCTe no arquivo INI.
+  Por: ProgenBR
+-- ACBrNFe.XmlWriter --
+[-] #TK-7239: Correção na geração dos grupos obsFisco e obsCont dos Itens.
+  Por: Francisco IBS
+
+17/06/2025
+-- ACBrNFeWebServices --
+[*] #TK-7205: Melhorias no Consultar visando salvar o XML do evento retornado 
+    levando em consideração da data/hora de emissão do evento.
+  Por: Luiz Alberto da Silva Lope
+
 16/06/2025
 -- ACBrNFeServicos --
 [*] Alterado as URLs de homologação e de produção do QR-Code da NFC-e da SEFAZ-GO. 

@@ -207,8 +207,7 @@ begin
       DataHoraTransacaoHost := jsCharge.AsISODateTime['captureDateTime'];
       DataHoraTransacaoLocal := jsCharge.AsISODateTime['creationDateTime'];
       NFCeSAT.DonoCartao := jsCharge.AsString['cardHolderName'];
-      BIN := jsCharge.AsString['cardNumber'];
-
+      PAN := jsCharge.AsString['cardNumber'];
       jsReceipt := jsCharge.AsJSONArray['cardholderReceipt'];
       ImagemComprovante1aVia.Clear;
       for i := 0 to jsReceipt.Count-1 do
@@ -577,7 +576,7 @@ end;
 procedure TACBrTEFAPIClassAditum.Autenticar;
 var
   js, jspinpadMessages, jsMerchantInfo, jsHostInfo: TACBrJSONObject;
-  sBody, cnpjTEF: String;
+  sBody, cnpjTEF, s: String;
   jsa: TACBrJSONArray;
   i: Integer;
 begin
@@ -595,7 +594,12 @@ begin
     js.AddPair('applicationVersion', fpACBrTEFAPI.DadosAutomacao.VersaoAplicacao );
     js.AddPair('activationCode', fpACBrTEFAPI.DadosTerminal.CodTerminal );
     if not jspinpadMessages.ValueExists('mainMessage') then
-      jspinpadMessages.AddPair('mainMessage', fpACBrTEFAPI.DadosEstabelecimento.RazaoSocial);
+    begin
+      s := fpACBrTEFAPI.DadosAutomacao.MensagemPinPad;
+      if (s = '') then
+        s := fpACBrTEFAPI.DadosEstabelecimento.RazaoSocial;
+      jspinpadMessages.AddPair('mainMessage', s);
+    end;
 
     js.AddPair('pinpadMessages', jspinpadMessages);
     sBody := js.ToJSON;

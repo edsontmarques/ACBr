@@ -48,7 +48,7 @@ uses
 const
   CSUBDIRETORIO_PAYGOWEB = 'PGWeb';
 
-// https://dev.softwareexpress.com.br/en/docs/clisitef/clisitef_documento_principal/
+// https://dev.softwareexpress.com.br/docs/clisitef/clisitef_documento_principal/
 
 type
 
@@ -715,6 +715,7 @@ begin
         TefAPI.QuandoExibirMensagem('', telaTodas, -1);
 
       StrPCopy(Buffer, Resposta);
+      //Move(Resposta[1], Buffer[0], Length(Resposta));
     until (fUltimoRetornoAPI <> 10000);
   finally
     fIniciouRequisicao := False;

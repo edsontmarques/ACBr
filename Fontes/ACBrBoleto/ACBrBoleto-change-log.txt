@@ -48,7 +48,35 @@ Símbolo : Significado
 [+]     : Novo recurso
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
-16/06/2025
+30/06/2025
+-- ACBrBoletoW_Itau_API --
+[*] TK-7263 Refatorado as instrções de cobrança conforme documentação da API.
+	https://www.projetoacbr.com.br/forum/topic/83927-acbrlibboleto-ita%C3%BA-erro-ao-registrar-titulos/#comment-544777
+    Por: Daniel de Morais InfoCotidiano / Victor H. Gonzales Pandaaaa
+
+30/06/2025
+-- ACBrBoletoRet_Sicredi_APIV2.pas --
+[+] #TK-7243 Mapeado campo nossonumero sicredi no NossoNumeroCorrespondente tratar a concatenação e deixar somente nossonumero. (LerNossoNumeroCompleto=true devolve com DV)
+	https://www.projetoacbr.com.br/forum/topic/83614-mapear-o-campo-nossonumero-sicredi/
+    Por: Daniel de Morais InfoCotidiano
+
+25/06/2025
+-- ACBrBancoSofisa, ACBrBoleto, ACBr_Boleto, ACBr_Boleto.dpk, ACBr_Boleto.lpk --
+[+] #TK-6590/TK-6973 Implementado banco Sofisa
+    Por: Giovanne Fontenele Trevia / Renato Rubinho
+
+23/06/2025
+-- ACBrBancoBrasil.pas --
+[*] TK-7235 Ajuste conforme manual header posição 077 a 094 header CNAB 400
+	https://www.projetoacbr.com.br/forum/topic/83764-acbrli-boleto-remessa-banco-do-brasil-cnab-400-header-posi%C3%A7%C3%B5es%C2%A0077-a-094/
+    Por: Daniel de Morais
+
+20/06/2025
+-- ACBrBoletoRet_Sicoob_V3 --
+[-] #TK-7248 Mapeado a data da baixa , devido a isso o cliente nao estava encontrando o boleto baixado na consulta movimento
+	https://www.projetoacbr.com.br/forum/topic/83360-resultado-da-consulta-movimenta%C3%A7%C3%A3o-diferente-da-consulta-detalhe-sicoob-api/#comment-544172
+    Por: Daniel de Morais
+	
 -- ACBrBoletoW_Itau_API --
 [-] #TK-7218 Corrigido o metodo toRemessaCancelarDesconto e nao estava enviando um parametro. corrigido tbm enumerados para facilitar a leitura dos fontes.
 	https://www.projetoacbr.com.br/forum/topic/83709-funcionalidade-toremessacancelardesconto-banco-itau/

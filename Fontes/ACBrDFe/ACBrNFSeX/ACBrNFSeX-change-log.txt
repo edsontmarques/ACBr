@@ -42,6 +42,86 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+02/07/2025
+-- ISSSaoPaulo.Provider --
+[*] #TK-7231: Invertida a ordem de pesquisa na lista interna do componente para:
+    primeiro procurar pelo numero da NFS-e e depois pelo numero do RPS.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[*] #TK-7277: A cidade de Coromandel/MG aderiu a emissão da NFS-e Padrão Nacional.
+   Por: DanielF
+[*] #TK-7276: A cidade de Colorado do Oeste/RO alterou de http para https, o provedor
+    continua o mesmo.
+   Por: Claudio Visky
+[*] #TK-7275: A cidade de Viana/ES alterou para versão 2.04 bem como as URLs, o provedor
+    continua o mesmo.
+   Por: Caio0203
+[+] #TK-7273: Inclusão da cidade de Ciriaco/RS, o provedor é DataSmart.
+   Por: Doglas Stumpf
+[+] #TK-7268: Inclusão da cidade de Mampituba/RS, o provedor é Betha.
+   Por: Mario Inacio
+[*] #TK-7267: A cidade de Confresa/MT alterou as URLs, o provedor continua o mesmo.
+   Por: Luiz Eduardo Bodo
+[*] #TK-7256: Alterado a URL de homologação do provedor SigISSWeb.
+   Por: ActioSistemas
+
+27/06/2025
+-- ACBrNFSeXServicos --
+[*] #TK-7264: A cidade de Maua/SP, voltou a usar o provedor Ginfes.
+   Por: Dino Rodrigo S. Moreira
+[*] #TK-7261: Alterado a versão e URLs da cidade de Santa Helena/PR, o provedor
+    continua o mesmo.
+   Por: Arthur Haupt Pacheco
+[*] #TK-7266: Incluido a URL do Link da cidade de Indaiatuba/SP.
+   Por: Adilson Pazzini
+-- DeiSS.Provider --
+[*] #TK-7266: Alterado o TratarXmlRetornado, pois não estava retornando em UTF-8.
+   Por: Italo Giurizzato Junior
+
+20/06/2025
+-- ACBrNFSeXServicos --
+[*] #TK-7242: A cidade de Campos de Guajara-Mirim/RO mudou a URL de produção, o provedor continua o mesmo.
+   Por: Desenvolvimento.microline (Luis Fernando)
+
+18/06/2025
+-- ACBrNFSeXServicos --
+[*] #TK-7226: A cidade de Campos de Julio/MT mudou a URL de produção, o provedor continua o mesmo.
+   Por: Diego Reckziegel
+[*] #TK-7229: A cidade de Itaqui/RS mudou a versão para 2.04, o provedor continua o mesmo.
+   Por: Anderson Grolli
+[*] #TK-7232: A cidade de Alvorada/RS mudou a versão e as URLs, o provedor continua o mesmo.
+   Por: Juliano D. Rosa
+[*] #TK-7233: A cidade de Santa Tereza do Oeste/PR mudou de provedor, agora é EloTech versao 2.03
+   Por: Arthur Haupt Pacheco
+-- ACBrNFSeXConversao/ACBrNFSeXLerXml/Conam.LerXml --
+[+] #TK-6995: Implementado a leitura dos arquivos INI do RPS e NFS-e.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXProviderBase --
+[*] #TK-7236: Alteração visando salvar o XML da nota na pasta com base na data de
+    emissão da mesma.
+   Por: Italo Giurizzato Junior
+
+17/06/2025
+-- SigISSWeb.LerXml --
+[*] #TK-7222: Alteração a leitura da tag regime.
+   Por: Soma Soluções em TI
+-- ACBrNFSeXDANFSeClass/ACBrNFSeXDANFSeRL/ACBrNFSeXDANFSeRLClass --
+-- ACBrNFSeXDANFSeRLISSNet/ACBrNFSeXDANFSeRLRetrato/ACBrNFSeXDANFSeRLSimplISS --
+[-] #TK-7224: Alteração visando imprimir corretamente os DANFSE quando é carregado
+    diversos XML de NFS-e.
+   Por: Italo Giurizzato Junior
+
+16/06/2025
+-- ACBrNFSeXServicos --
+[+] #TK-7216: Incluída a cidade de Santo Estevão/BA, o provedor é Fisco.
+   Por: Italo Giurizzato Junior
+[*] #TK-7215: A cidade de Sao Roque/SP mudou de provedor, agora é Pronim versao 2.03
+   Por: Italo Giurizzato Junior
+[*] #TK-7225: Incluído o Params NaoDividir100 para a cidade de Jaguariuna/SP.
+   Por: Quality Automação
+[*] #TK-7178: A cidade de Ivinhema/MS mudou de provedor, agora é Fiorilli.
+   Por: Marcos Pereda
+
 13/06/2025
 -- Giap.Provider --
 [*] Ajustado a procedure Configuracao para a versão 1.01 que é usada por Araraquara/SP
@@ -66,7 +146,7 @@ Símbolo : Significado
     json retornado pelo provedor.
   Por: Italo Giurizzato Junior
 -- Giap.GravarXml/Giap.Provider --
-[*] R#TK-7194: ealizado uma alteração visando gerar o XML da NFS-e, uma vez que o provedor
+[*] R#TK-7194: Realizado uma alteração visando gerar o XML da NFS-e, uma vez que o provedor
     retorna apenas um resumo em vez de retornar o XML da nota.
     Requer testes para saber se vai funcionar conforme o esperado.
   Por: Italo Giurizzato Junior

@@ -131,6 +131,10 @@ type
     procedure CarregarImagemPinPad(const NomeImagem: String; AStream: TStream;
       TipoImagem: TACBrTEFAPIImagemPinPad ); override;
     procedure ExibirImagemPinPad(const NomeImagem: String); override;
+    procedure ObterListaImagensPinPad(ALista: TStrings); override;
+    procedure ApagarImagemPinPad(const NomeImagem: String); override;
+    function MenuPinPad(const Titulo: String; Opcoes: TStrings; TimeOut: Integer = 30000): Integer; override;
+
     function VersaoAPI: String; override;
 
     property TEFPayGoAPI: TACBrTEFPGWebAPI read fTEFPayGoAPI;
@@ -193,6 +197,10 @@ begin
     ADir := PathWithDelim(fpACBrTEFAPI.DiretorioTrabalho) + CSUBDIRETORIO_PAYGOWEB
   else
     ADir := fDiretorioTrabalho;
+  fTEFPayGoAPI.DiretorioTrabalho := ADir;
+
+  fTEFPayGoAPI.CNPJEstabelecimento := fpACBrTEFAPI.DadosEstabelecimento.CNPJ;
+  fTEFPayGoAPI.NomeEstabelecimento := fpACBrTEFAPI.DadosEstabelecimento.RazaoSocial;
 
   IpStr := fpACBrTEFAPI.DadosTerminal.EnderecoServidor;
   PortaStr := '';
@@ -203,18 +211,21 @@ begin
     IpStr := copy(IpStr, 1, p-1);
   end;
 
-  fTEFPayGoAPI.DiretorioTrabalho := ADir;
   fTEFPayGoAPI.EnderecoIP := IpStr;
   fTEFPayGoAPI.PortaTCP := PortaStr;
+
+  fTEFPayGoAPI.PontoCaptura := fpACBrTEFAPI.DadosTerminal.CodTerminal;
+  fTEFPayGoAPI.PortaPinPad := StrToIntDef(OnlyNumber(fpACBrTEFAPI.DadosTerminal.PortaPinPad), 0);
+
   fTEFPayGoAPI.NomeAplicacao := fpACBrTEFAPI.DadosAutomacao.NomeAplicacao;
   fTEFPayGoAPI.VersaoAplicacao := fpACBrTEFAPI.DadosAutomacao.VersaoAplicacao;
   fTEFPayGoAPI.SoftwareHouse := fpACBrTEFAPI.DadosAutomacao.NomeSoftwareHouse;
-  fTEFPayGoAPI.NomeEstabelecimento := fpACBrTEFAPI.DadosEstabelecimento.RazaoSocial;
   fTEFPayGoAPI.SuportaSaque := fpACBrTEFAPI.DadosAutomacao.SuportaSaque;
   fTEFPayGoAPI.SuportaDesconto := fpACBrTEFAPI.DadosAutomacao.SuportaDesconto;
   fTEFPayGoAPI.SuportaViasDiferenciadas := fpACBrTEFAPI.DadosAutomacao.SuportaViasDiferenciadas;
   fTEFPayGoAPI.ImprimeViaClienteReduzida := fpACBrTEFAPI.DadosAutomacao.ImprimeViaClienteReduzida;
   fTEFPayGoAPI.UtilizaSaldoTotalVoucher := fpACBrTEFAPI.DadosAutomacao.UtilizaSaldoTotalVoucher;
+  fTEFPayGoAPI.MensagemPinPad := fpACBrTEFAPI.DadosAutomacao.MensagemPinPad;
   i := Integer(TACBrTEFAPI(fpACBrTEFAPI).ExibicaoQRCode);
   fTEFPayGoAPI.ExibicaoQRCode := TACBrTEFPGWebAPIExibicaoQRCode(i);
 
@@ -669,7 +680,7 @@ begin
   if FileExists(tmpFile) then
   begin
     try
-      fTEFPayGoAPI.ExibirImagemPinPad(tmpFile);
+      fTEFPayGoAPI.CarregarImagemPinPad(tmpFile, NomeImagem);
     finally
       DeleteFile(tmpFile);
     end;
@@ -678,7 +689,23 @@ end;
 
 procedure TACBrTEFAPIClassPayGoWeb.ExibirImagemPinPad(const NomeImagem: String);
 begin
-  {Não implementado em PGWebLib. Ignora Exception da classe mãe}
+  fTEFPayGoAPI.ExibirImagemPinPad(NomeImagem);
+end;
+
+procedure TACBrTEFAPIClassPayGoWeb.ObterListaImagensPinPad(ALista: TStrings);
+begin
+  fTEFPayGoAPI.ObterListaImagensPinPad(ALista);
+end;
+
+procedure TACBrTEFAPIClassPayGoWeb.ApagarImagemPinPad(const NomeImagem: String);
+begin
+  fTEFPayGoAPI.ApagarImagemPinPad(NomeImagem);
+end;
+
+function TACBrTEFAPIClassPayGoWeb.MenuPinPad(const Titulo: String;
+  Opcoes: TStrings; TimeOut: Integer): Integer;
+begin
+  Result := fTEFPayGoAPI.MenuPinPad(Titulo, Opcoes, TimeOut);
 end;
 
 function TACBrTEFAPIClassPayGoWeb.VersaoAPI: String;

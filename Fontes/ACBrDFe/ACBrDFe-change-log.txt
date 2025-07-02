@@ -39,6 +39,23 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+20/06/2025
+-- ACBrDFe.Conversao --
+[*] TK-7238: Incluído os enumerados: tcgNenhum ao tipo TtpEnteGov e 
+    togNenhum ao tipo TtpOperGov para a situação de não existir compra governamental.
+   Por: bnobre/Italo Giurizzato Junior
+
+18/06/2025
+-- ACBrDFe.Conversao --
+[*] Incluído novos CST, cClassTrib e os cCredPres com base nas tabelas 
+    disponibilizadas no portal da SEFAZ-Virtual do RS.
+   Por: Italo Giurizzato Junior
+
+16/06/2025
+-- ACBrXmlWriter --
+[*] Estava gerando a tag Transform com espaço em branco no final.
+   Por: Luiz Alberto da Silva Lope
+
 11/06/2025
 -- ACBrDFeConsts --
 [*] Correção no nome da constante e inclusão de uma nova constante.
