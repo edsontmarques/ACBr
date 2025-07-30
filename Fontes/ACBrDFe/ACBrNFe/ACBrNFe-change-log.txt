@@ -44,6 +44,44 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+28/07/2025
+-- ACBrNFe.XmlReader --
+[-] #TK-7392: Correção no tipo de campo da tag cMunFG do grupo retTransp.
+   Por: Italo Giurizzato Junior
+
+26/07/2025
+-- ACBrNFe.XmlWriter --
+[*] Ajuste nas condições para gerar o grupo gRed.
+   Por: Italo Giurizzato Junior
+
+24/07/2025
+-- ACBrNFe.XmlWriter --
+[*] #TK-7359: Alterado as condições para gerar o grupo gRed.
+  Por: Simons/Italo Giurizzato Junior
+
+22/07/2025
+-- ACBrNFe.XmlWriter --
+[*] #TK-7355: Removido o cst410 do case, pois para este CST não se calcula o IBS/CBS.
+  Por: Daniel Pohren
+
+18/07/2025
+-- ACBrNFe.XmlWriter --
+[*] #TK-7355: Alteração visando gerar os grupos gIBSCBS e IBSCBSTot para o CST = 410.
+  Por: Daniel Pohren/Italo Giurizzato Junior
+
+11/07/2025
+-- ACBrNFe.XmlWriter --
+[*] #TK-7311: Correção visando gerar o grupo Monofasia corretamente.
+  Por: Uillian Chagas Prates
+-- ACBrNFe.EnvEvento --
+[-] #TK-7307: Correção visando ler corretamente o evento ECONF.
+  Por: Desenvolvimento Farol Soft
+
+08/07/2025
+-- ACBrNFe.XmlReader --
+[-] #TK-7299: Correção visando ler corretamente o grupo detPag.
+  Por: Bochnia
+
 02/07/2025
 -- ACBrNFe.RetConsSit --
 [-] #TK-7260: Correção visando ler corretamente o grupo infCanc.

@@ -85,6 +85,7 @@ type
     FModeloDF: TpcnModeloDF;
     FtpAmb: TpcnTipoAmbiente;
     FtpEmis: TpcnTipoEmissao;
+    FpGerarGrupoIBSCBSTot: Boolean;
 
     function GerarInfNFe: TACBrXmlNode;
     function GerarIde: TACBrXmlNode;
@@ -4152,11 +4153,14 @@ begin
     Result.AppendChild(AddNode(tcDe2, 'UB08', 'pISEspec', 1, 5, 0,
                                               ISel.pISEspec, DSC_PIMPSELESPEC));
 
-    Result.AppendChild(AddNode(tcStr, 'UB09', 'uTrib', 1, 6, 1,
+    if (ISel.uTrib <> '') or (ISel.qTrib > 0) then
+    begin
+      Result.AppendChild(AddNode(tcStr, 'UB09', 'uTrib', 1, 6, 1,
                                                         ISel.uTrib, DSC_UTRIB));
 
-    Result.AppendChild(AddNode(tcDe4, 'UB10', 'qTrib', 1, 15, 0,
+      Result.AppendChild(AddNode(tcDe4, 'UB10', 'qTrib', 1, 15, 0,
                                                         ISel.qTrib, DSC_QTRIB));
+    end;
 
     Result.AppendChild(AddNode(tcDe2, 'UB11', 'vIS', 1, 15, 1,
                                                         ISel.vIS, DSC_VIMPSEL));
@@ -4166,10 +4170,11 @@ end;
 function TNFeXmlWriter.Gerar_IBSCBS(IBSCBS: TIBSCBS): TACBrXmlNode;
 begin
   Result := nil;
+  FpGerarGrupoIBSCBSTot := False;
 
-  if (IBSCBS.gIBSCBS.vBC > 0) or (IBSCBS.gIBSCBSMono.adRemIBS > 0) or
-     (IBSCBS.gTransfCred.vIBS > 0) or (IBSCBS.gTransfCred.vCBS > 0) then
+  if (IBSCBS.CST <> cstNenhum) and (IBSCBS.cClassTrib <> ctNenhum) then
   begin
+    FpGerarGrupoIBSCBSTot := True;
     Result := FDocument.CreateElement('IBSCBS');
 
     Result.AppendChild(AddNode(tcStr, 'UB12', 'CST', 3, 3, 0,
@@ -4178,17 +4183,35 @@ begin
     Result.AppendChild(AddNode(tcStr, 'UB13', 'cClassTrib', 6, 6, 0,
                            cClassTribToStr(IBSCBS.cClassTrib), DSC_CCLASSTRIB));
 
-    if IBSCBS.gIBSCBS.vBC > 0 then
-      Result.AppendChild(Gerar_IBSCBS_gIBSCBS(IBSCBS.gIBSCBS))
-    else
-    if IBSCBS.gIBSCBSMono.adRemIBS > 0 then
-      Result.AppendChild(Gerar_IBSCBS_gIBSCBSMono(IBSCBS.gIBSCBSMono))
-    else
-    if (NFe.Ide.modelo = 55) and (IBSCBS.CST = cst800) then
-      Result.AppendChild(Gerar_IBSCBS_gTransfCred(IBSCBS.gTransfCred));
+    case IBSCBS.CST of
+      cst000, cst200, cst220, cst510:
+        Result.AppendChild(Gerar_IBSCBS_gIBSCBS(IBSCBS.gIBSCBS));
 
-    if (NFe.Ide.modelo = 55) and (IBSCBS.gCredPresIBSZFM.tpCredPresIBSZFM <> tcpNenhum) then
-      Result.AppendChild(Gerar_IBSCBS_gCredPresIBSZFM(IBSCBS.gCredPresIBSZFM));
+      cst550:
+        if (NFe.Ide.modelo = 55) then
+          Result.AppendChild(Gerar_IBSCBS_gIBSCBS(IBSCBS.gIBSCBS));
+
+      cst620:
+        Result.AppendChild(Gerar_IBSCBS_gIBSCBSMono(IBSCBS.gIBSCBSMono));
+
+      cst800:
+        if (NFe.Ide.modelo = 55) then
+          Result.AppendChild(Gerar_IBSCBS_gTransfCred(IBSCBS.gTransfCred));
+
+      cst810:
+        if (NFe.Ide.modelo = 55) and (IBSCBS.gCredPresIBSZFM.tpCredPresIBSZFM <> tcpNenhum) then
+          Result.AppendChild(Gerar_IBSCBS_gCredPresIBSZFM(IBSCBS.gCredPresIBSZFM));
+    end;
+
+
+//  cst010 = Tributação com alíquotas uniformes sem informações de qual DF-e usar
+//  cst011 = Tributação com alíquotas uniformes reduzidas sem informações de qual DF-e usar
+//  cst221 = Alíquota fixa rateada usado na NFSe
+//  cst222 = Redução de Base de Cálculo sem informação de qual DF-e usar
+//  cst400 = Isenção usado na NFSe e BPeTM
+//  cst410 = Imunidade e não incidência usado em praticante todos DF-e mas não se calcula IBS/CBS
+//  cst820 = Tributação em declaração de regime especifico usado na NFSe
+//  cst830 = Exclusão da Base de Cálculo usado na NF3e
   end;
 end;
 
@@ -4212,7 +4235,7 @@ begin
   if IBSCBS.gCBSCredPres.pCredPres > 0 then
     Result.AppendChild(Gerar_IBSCBS_gIBSCBS_gIBSCBSCredPres(IBSCBS.gCBSCredPres, 'gCBSCredPres'));
 
-  if IBSCBS.gTribCompraGov.pAliqIBSUF > 0 then
+  if (IBSCBS.gTribCompraGov.pAliqIBSUF > 0) and (NFe.Ide.gCompraGov.tpEnteGov <> tcgNenhum) then
     Result.AppendChild(Gerar_IBSCBS_gIBSCBS_gTribCompraGov(IBSCBS.gTribCompraGov));
 end;
 
@@ -4230,7 +4253,8 @@ begin
   if IBSUF.gDevTrib.vDevTrib > 0 then
     Result.AppendChild(Gerar_IBSCBS_gIBSCBS_gIBSCBSUFMun_gDevTrib(IBSUF.gDevTrib));
 
-  if IBSUF.gRed.pRedAliq > 0 then
+  if (IBSUF.gRed.pRedAliq > 0) or (IBSUF.gRed.pAliqEfet > 0) or
+     (NFe.Ide.gCompraGov.pRedutor > 0) then
     Result.AppendChild(Gerar_IBSCBS_gIBSCBS_gIBSCBSUFMun_gRed(IBSUF.gRed));
 
   Result.AppendChild(AddNode(tcDe2, 'UB35', 'vIBSUF', 1, 15, 1,
@@ -4296,7 +4320,8 @@ begin
   if IBSMun.gDevTrib.vDevTrib > 0 then
     Result.AppendChild(Gerar_IBSCBS_gIBSCBS_gIBSCBSUFMun_gDevTrib(IBSMun.gDevTrib));
 
-  if IBSMun.gRed.pRedAliq > 0 then
+  if (IBSMun.gRed.pRedAliq > 0) or (IBSMun.gRed.pAliqEfet > 0) or
+     (NFe.Ide.gCompraGov.pRedutor > 0) then
     Result.AppendChild(Gerar_IBSCBS_gIBSCBS_gIBSCBSUFMun_gRed(IBSMun.gRed));
 
   Result.AppendChild(AddNode(tcDe2, 'UB35', 'vIBSMun', 1, 15, 1,
@@ -4316,7 +4341,8 @@ begin
   if CBS.gDevTrib.vDevTrib > 0 then
     Result.AppendChild(Gerar_IBSCBS_gIBSCBS_gIBSCBSUFMun_gDevTrib(CBS.gDevTrib));
 
-  if CBS.gRed.pRedAliq > 0 then
+  if (CBS.gRed.pRedAliq > 0) or (CBS.gRed.pAliqEfet > 0) or
+     (NFe.Ide.gCompraGov.pRedutor > 0) then
     Result.AppendChild(Gerar_IBSCBS_gIBSCBS_gIBSCBSUFMun_gRed(CBS.gRed));
 
   Result.AppendChild(AddNode(tcDe2, 'UB83', 'vCBS', 1, 15, 1,
@@ -4541,7 +4567,7 @@ function TNFeXmlWriter.Gerar_IBSCBSTot(IBSCBSTot: TIBSCBSTot): TACBrXmlNode;
 begin
   Result := nil;
 
-  if IBSCBSTot.vBCIBSCBS > 0 then
+  if FpGerarGrupoIBSCBSTot then
   begin
     Result := FDocument.CreateElement('IBSCBSTot');
 

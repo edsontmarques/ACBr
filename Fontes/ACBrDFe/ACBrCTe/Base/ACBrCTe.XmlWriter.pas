@@ -4467,7 +4467,7 @@ begin
 
     if (idCSRT <> 0) and (CSRT <> '') then
     begin
-      Result.AppendChild(AddNode(tcInt, '#086', 'idCSRT', 2, 2, 1,
+      Result.AppendChild(AddNode(tcInt, '#086', 'idCSRT', 3, 3, 1,
                                                            idCSRT, DSC_IDCSRT));
 
       Result.AppendChild(AddNode(tcStr, '#087', 'hashCSRT', 28, 28, 1,
@@ -4607,7 +4607,7 @@ function TCTeXmlWriter.Gerar_IBSCBS(IBSCBS: TIBSCBS): TACBrXmlNode;
 begin
   Result := nil;
 
-  if (IBSCBS.gIBSCBS.vBC > 0) then
+  if (IBSCBS.CST <> cstNenhum) and (IBSCBS.cClassTrib <> ctNenhum) then
   begin
     Result := FDocument.CreateElement('IBSCBS');
 
@@ -4632,6 +4632,10 @@ begin
 
   Result.AppendChild(Gerar_IBSCBS_gIBSCBS_gIBSUF(gIBSCBS.gIBSUF));
   Result.AppendChild(Gerar_IBSCBS_gIBSCBS_gIBSMun(gIBSCBS.gIBSMun));
+
+  Result.AppendChild(AddNode(tcDe2, '#26a', 'vIBS', 1, 15, 1,
+                                                       gIBSCBS.vIBS, DSC_VIBS));
+
   Result.AppendChild(Gerar_IBSCBS_gIBSCBS_gCBS(gIBSCBS.gCBS));
 
   if gIBSCBS.gTribRegular.pAliqEfetRegIBSUF > 0 then
@@ -4661,7 +4665,8 @@ begin
   if gIBSUF.gDevTrib.vDevTrib > 0 then
     Result.AppendChild(Gerar_IBSCBS_gIBSCBS_gIBSUFMunCBS_gDevTrib(gIBSUF.gDevTrib));
 
-  if gIBSUF.gRed.pRedAliq > 0 then
+  if (gIBSUF.gRed.pRedAliq > 0) or (gIBSUF.gRed.pAliqEfet > 0) or
+     (CTe.Ide.gCompraGov.pRedutor > 0) then
     Result.AppendChild(Gerar_IBSCBS_gIBSCBS_gIBSUFMunCBS_gRed(gIBSUF.gRed));
 
   Result.AppendChild(AddNode(tcDe2, '#23', 'vIBSUF', 1, 15, 1,
@@ -4697,7 +4702,7 @@ begin
   Result.AppendChild(AddNode(tcDe4, '#15', 'pRedAliq', 1, 7, 1,
                                                    Red.pRedAliq, DSC_PREDALIQ));
 
-  Result.AppendChild(AddNode(tcDe2, '#16', 'pAliqEfet', 1, 7, 1,
+  Result.AppendChild(AddNode(tcDe4, '#16', 'pAliqEfet', 1, 7, 1,
                                                  Red.pAliqEfet, DSC_PALIQEFET));
 end;
 
@@ -4715,7 +4720,8 @@ begin
   if gIBSMun.gDevTrib.vDevTrib > 0 then
     Result.AppendChild(Gerar_IBSCBS_gIBSCBS_gIBSUFMunCBS_gDevTrib(gIBSMun.gDevTrib));
 
-  if gIBSMun.gRed.pRedAliq > 0 then
+  if (gIBSMun.gRed.pRedAliq > 0) or (gIBSMun.gRed.pAliqEfet > 0) or
+     (CTe.Ide.gCompraGov.pRedutor > 0) then
     Result.AppendChild(Gerar_IBSCBS_gIBSCBS_gIBSUFMunCBS_gRed(gIBSMun.gRed));
 
   Result.AppendChild(AddNode(tcDe2, '#23', 'vIBSMun', 1, 15, 1,
@@ -4748,7 +4754,8 @@ begin
   if gCBS.gDevTrib.vDevTrib > 0 then
     Result.AppendChild(Gerar_IBSCBS_gIBSCBS_gIBSUFMunCBS_gDevTrib(gCBS.gDevTrib));
 
-  if gCBS.gRed.pRedAliq > 0 then
+  if (gCBS.gRed.pRedAliq > 0) or (gCBS.gRed.pAliqEfet > 0) or
+     (CTe.Ide.gCompraGov.pRedutor > 0) then
     Result.AppendChild(Gerar_IBSCBS_gIBSCBS_gIBSUFMunCBS_gRed(gCBS.gRed));
 
   Result.AppendChild(AddNode(tcDe2, '#61', 'vCBS', 1, 15, 1,

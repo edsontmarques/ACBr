@@ -198,6 +198,7 @@ type
     btCriarCobrancaImediata: TBitBtn;
     cbAilosTipoChave: TComboBox;
     cbBanrisulTipoChave: TComboBox;
+    cbPIXPDVVersaoAPI: TComboBox;
     cbC6BankTipoChave: TComboBox;
     cbConsultarCobsRStatus: TComboBox;
     cbConsultarLocationsRecComIdLocRed: TCheckBox;
@@ -235,6 +236,7 @@ type
     CobVConsultarRodapeLista: TPanel;
     dtConsultarCobrancas_Fim: TDateTimePicker;
     edCancelarCobRTxID: TEdit;
+    edConsultarRecorrenciaTxId: TEdit;
     edDesvincularLocRecId: TEdit;
     edConsultarLocationsRecConvenio: TEdit;
     edConsultarLocationsRecFim: TDateTimePicker;
@@ -522,6 +524,8 @@ type
     Label16: TLabel;
     Label17: TLabel;
     Label18: TLabel;
+    lbConsultarRecorrenciatxId: TLabel;
+    lbPIXPDVVersaoAPI: TLabel;
     lbCancelarCobRTxID: TLabel;
     lbDesvincularLocRecId: TLabel;
     lbConsultarLocationsRecConvenio: TLabel;
@@ -780,7 +784,7 @@ type
     lConsultarDevolucaoPixE2eid3: TLabel;
     lConsultarDevolucaoPixE2eid5: TLabel;
     lConsultarDevolucaoPixIdentificadorDevolucao1: TLabel;
-    lConsultarDevolucaoPixIdentificadorDevolucao2: TLabel;
+    lbCriarCobrancaImediata_SolicitacaoAoPagador: TLabel;
     lConsultarPixE2eid: TLabel;
     edtBBClientID: TEdit;
     edtConsultarPixE2eid: TEdit;
@@ -1496,7 +1500,7 @@ uses
   {$IfDef FPC}
    fpjson, jsonparser, jsonscanner,
   {$Else}
-    {$IFDEF DELPHIXE2_UP}JSON,{$ENDIF}
+    {$IFDEF DELPHIXE6_UP}JSON,{$ENDIF}
   {$EndIf}
   TypInfo, Clipbrd, IniFiles, DateUtils, synacode, synautil, pcnConversao,
   ACBrDelphiZXingQRCode, ACBrImage, ACBrValidador, ACBrPIXUtil, ACBrConsts,
@@ -2144,7 +2148,7 @@ procedure TForm1.btConsultarRecorrenciaClick(Sender: TObject);
 begin
   VerificarConfiguracao;
   mmConsultarRecorrencia.Lines.Clear;
-  if ACBrPixCD1.PSP.epRec.ConsultarRecorrencia(edConsultarRecorrenciaIdRec.Text) then
+  if ACBrPixCD1.PSP.epRec.ConsultarRecorrencia(edConsultarRecorrenciaIdRec.Text, edConsultarRecorrenciaTxId.Text) then
     mmConsultarRecorrencia.Lines.Text := FormatarJSON(ACBrPixCD1.PSP.epRec.RecorrenciaCompleta.AsJSON)
   else
     mmConsultarRecorrencia.Lines.Text := FormatarJSON(ACBrPixCD1.PSP.epRec.Problema.AsJSON);
@@ -5045,6 +5049,7 @@ begin
     edPixPDVCNPJ.Text := Ini.ReadString('PixPDV', 'CNPJ', '');
     edPixPDVToken.Text := Ini.ReadString('PixPDV', 'Token', '');
     edPixPDVSecretKey.Text := Ini.ReadString('PixPDV', 'SecretKey', '');
+    cbPIXPDVVersaoAPI.ItemIndex := Ini.ReadInteger('PixPDV', 'VersaoAPI', cbPIXPDVVersaoAPI.ItemIndex);
 
     edAilosChavePIX.Text := Ini.ReadString('Ailos', 'ChavePIX', '');
     edAilosClientID.Text := Ini.ReadString('Ailos', 'ClientID', '');
@@ -5199,6 +5204,7 @@ begin
     Ini.WriteString('PixPDV', 'CNPJ', edPixPDVCNPJ.Text);
     Ini.WriteString('PixPDV', 'Token', edPixPDVToken.Text);
     Ini.WriteString('PixPDV', 'SecretKey', edPixPDVSecretKey.Text);
+    Ini.WriteInteger('PixPDV', 'VersaoAPI', cbPIXPDVVersaoAPI.ItemIndex);
 
     Ini.WriteString('Ailos', 'ChavePIX', edAilosChavePIX.Text);
     Ini.WriteString('Ailos', 'ClientID', edAilosClientID.Text);
@@ -5457,6 +5463,7 @@ var
   t: TACBrPIXStatusRecorrencia;
   u: TACBrPIXTipoConta;
   v: TACBrPIXStatusRegistroCobranca;
+  w: TACBrPIXPDVAPIVersao;
 begin
   cbxPSPAtual.Items.Clear;
   for i := 0 to pgPSPs.PageCount-1 do
@@ -5553,6 +5560,11 @@ begin
   for v := Low(TACBrPIXStatusRegistroCobranca) to High(TACBrPIXStatusRegistroCobranca) do
     cbConsultarCobsRStatus.Items.Add(PIXStatusRegistroCobrancaToString(v));
   cbConsultarCobsRStatus.ItemIndex := 0;
+
+  cbPIXPDVVersaoAPI.Items.Clear;
+  for w := Low(TACBrPIXPDVAPIVersao) to High(TACBrPIXPDVAPIVersao) do
+    cbPIXPDVVersaoAPI.Items.Add(GetEnumName(TypeInfo(TACBrPIXPDVAPIVersao), Integer(w)));
+  cbPIXPDVVersaoAPI.ItemIndex := 0;
 
   edCobVVencimento.DateTime := IncDay(Now, 7);
   edCriarRecorrenciaDataInicial.DateTime := IncMonth(Now, 1);
@@ -5714,6 +5726,7 @@ begin
   ACBrPSPPixPDV1.CNPJ := edPixPDVCNPJ.Text;
   ACBrPSPPixPDV1.Token := edPixPDVToken.Text;
   ACBrPSPPixPDV1.ClientSecret := edPixPDVSecretKey.Text;
+  ACBrPSPPixPDV1.APIVersao := TACBrPIXPDVAPIVersao(cbPIXPDVVersaoAPI.ItemIndex);
 
   ACBrPSPInter1.ChavePIX := edInterChavePIX.Text;
   ACBrPSPInter1.ClientID := edInterClientID.Text;
@@ -5919,7 +5932,7 @@ var
   jdata: TJSONData;
   ms: TMemoryStream;
 {$ELSE}
-  {$IFDEF DELPHIXE2_UP}
+  {$IFDEF DELPHIXE6_UP}
   var
     wJsonValue: TJSONValue;
   {$ENDIF}
@@ -5944,7 +5957,7 @@ begin
         jdata.Free;
     end;
     {$ELSE}
-      {$IFDEF DELPHIXE2_UP}
+      {$IFDEF DELPHIXE6_UP}
       wJsonValue := TJSONObject.ParseJSONValue(AJSON);
       try
         if Assigned(wJsonValue) then
@@ -6221,7 +6234,7 @@ begin
       for J := 0 to ColCount - 1 do
         Cells[J, I] := Cells[J, I+1];
 
-    RowCount := RowCount - 1
+    RowCount := RowCount - 1;
   end;
 end;
 

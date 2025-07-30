@@ -42,6 +42,374 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+
+29/07/2025
+-- AssessorPublico.LerXml --
+[*] #TK-7431: Alteração visando a leitura correta da Insc. Municipal do prestador.
+   Por: João Vitor Bogo
+
+-- fintelISS.GravarXml/fintelISS.Provider --
+[*] Ajuste para usar corretamente a pasta com os schemas da versão 2.04
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[*] Acrescentado o Params para definir apenas 2 casas decimais para a alíquota 
+    para a cidade Criciuma/SC.
+   Por: Desenvolvimento total S
+
+28/07/2025
+-- ACBrNFSeXServicos --
+[+] #TK-7430: Incluído diversas cidades do Espirito Santo.
+[+] #TK-7429: Incluído diversas cidades do Rio de Janeiro.
+[+] #TK-7426: Incluído diversas cidades de Minas Gerais.
+   Por: Anderson Grolli
+-- ACBrNFSeXDANFSeRLRetrato --
+[*] #TK-7423: Alteração visando imprimir o Código Serviço mesmo quando essa informação
+    não existe na lista de serviços dentro da tag Discriminacao.
+   Por: João Vitor Bogo
+-- ACBrNFSeXServicos --
+[*] #TK-7424: A cidade Luiz Alves/SC trocou de provedor, agora IPI versão 1.01
+   Por: C4Dev
+[*] #TK-7407: Acrescentado o Params GerarTag para a cidade Santa Helena/PR.
+   Por: Alex Heinen
+-- ACBrNFSeXProviderABRASFv1/ACBrNFSeXProviderABRASFv2/ACBrNFSeXProviderBase --
+-- ACBrNFSeXWebservicesResponse/PadraoNacional.Provider --
+[+] #TK-7422: Implementado a propriedade PathNome para retornar o caminho o nome
+    do arquivo de processamento do cancelamento.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[+] #TK-7408: Incluída a cidade Cerro Branco/RS, provedor Pronim.
+   Por: diogo.guerra/Nuvem Fiscal
+
+25/07/2025
+-- Betha.Provider --
+[*] Alterações visando atender a cidade Criciuma/SC.
+   Por: Diogo Loff/Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[*] Acrescentado o Params SubVersao para a cidade Criciuma/SC.
+   Por: Italo Giurizzato Junior
+[*] Alteração das URLs de homologação e produção da cidade Criciuma/SC, provedor
+    Betha versão 1.00
+   Por: Italo Giurizzato Junior
+
+24/07/2025
+-- ACBrNFSeXServicos --
+[+] #TK-7404: Incluído diversas cidades da Bahia.
+[+] #TK-7396: Incluído diversas cidades de Alagoas.
+   Por: Anderson Grolli
+
+23/07/2025
+-- ACBrNFSeXServicos --
+[+] #TK-7394: Cidades incluídas: Aquidaba/SE, Carmopolis/SE, Laranjeiras/SE, 
+    Maruim/SE, Moita Bonita/SE, Monte Alegre de Sergipe/SE, Muribeca/SE, 
+    Nossa Senhora da Gloria/SE, Tobias Barreto/SE
+   Por: Anderson Grolli
+[*] #TK-7379: Corrigido o valor do params CodigoCidade da cidade São João/PR.
+   Por: Desenvolvimento GDL Sistemas
+[*] #TK-7395: Alterado as URLs de homologação e produção da cidade Atibaia/SP.
+   Por: Strategix
+[+] #TK-7400: Incluída a cidade Pitanga/PR, o provedor é EloTech versão 2.03.
+   Por: tryideas sistemas
+[*] Alterado as URLs de homologação e produção da cidade Criciuma/SC, 
+    mudou para versão 2.02.
+   Por: Italo Giurizzato Junior
+[+] #TK-7403: Incluída a cidade Ico/CE, o provedor é SpeedGov.
+   Por: João Antônio
+
+22/07/2025
+-- SimplISS.Provider --
+[*] #TK-7389: Alteração na função TratarXmlRetornado visando corrigir o erro:
+              Erro de Conexão: xmlParseEntityRef: no name.
+   Por: Fernando Batista
+-- SigISSWeb.Provider --
+[*] #TK-7353: Ajustes para salvar o XML na codificação correta.
+   Por: Areco Desenv/Italo Giurizzato Junior
+-- Giap.Provider --
+[*] Possível solução para gerar o XML da NFS-e para Araraquara.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[+] #TK-7388: Cidades incluídas: Afranio/PE, Agrestina/PE, Agua Preta/PE, 
+    Altinho/PE, Amaraji/PE, Arcoverde/PE, Barra de Guabiraba/PE, 
+    Belem de Maria/PE, Belo Jardim/PE, Bom Conselho/PE, Bom Jardim/PE, 
+    Bonito/PE, Brejo da Madre de Deus/PE, Buique/PE, Camocim de Sao Felix/PE, 
+    Camutanga/PE, Canhotinho/PE, Carnaiba/PE, Casinhas/PE, Catende/PE, 
+    Cha Grande/PE, Condado/PE, Cupira/PE, Feira Nova/PE, Ferreiros/PE, 
+    Gloria do Goita/PE, Granito/PE, Gravata/PE, Ibirajuba/PE, Iguaracy/PE, 
+    Ingazeira/PE, Ipubi/PE, Ilha de Itamaraca/PE, Itambe/PE, Itaquitinga/PE, 
+    Jaqueira/PE, Joao Alfredo/PE, Joaquim Nabuco/PE, Jupi/PE, Lagoa do Carro/PE, 
+    Lagoa do Itaenga/PE, Lagoa dos Gatos/PE, Lajedo/PE, Machados/PE, Moreno/PE, 
+    Orobo/PE, Oroco/PE, Ouricuri/PE, Panelas/PE, Paudalho/PE, Pesqueira/PE, 
+    Pocao/PE, Pombos/PE, Primavera/PE, Riacho das Almas/PE, Ribeirao/PE, 
+    Salgadinho/PE, Santa Cruz/PE, Santa Filomena/PE, Sao Joaquim do Monte/PE, 
+    Serra Talhada/PE, Serrita/PE, Sertania/PE, Moreilandia/PE, Tamandare/PE, 
+    Timbauba/PE, Toritama/PE, Tracunhaem/PE, Trindade/PE, Verdejante/PE, 
+    Vertentes/PE, Vicencia/PE, Xexeu/PE
+   Por: Anderson Grolli
+[*] #TK-7390: A cidade Águas Frias/SC trocou de provedor, agora é IPM versão 2.04
+   Por: C4Dev
+[+] #TK-7387: Cidades incluídas: Agua Branca/PB, Aguiar/PB, Alagoa Nova/PB, 
+    Alhandra/PB, Aparecida/PB, Aracagi/PB, Araruna/PB, Barauna/PB, 
+    Barra de Santa Rosa/PB, Belem/PB, Bom Jesus/PB, Borborema/PB, Caapora/PB, 
+    Cachoeira dos Indios/PB, Cacimba de Areia/PB, Cacimba de Dentro/PB, 
+    Cajazeiras/PB, Cajazeirinhas/PB, Carrapateira/PB, Catole do Rocha/PB, 
+    Cruz do Espirito Santo/PB, Cubati/PB, Cuitegi/PB, Cuite de Mamanguape/PB, 
+    Damiao/PB, Esperanca/PB, Frei Martinho/PB, Gurinhem/PB, Gurjao/PB, 
+    Itabaiana/PB, Itapororoca/PB, Itatuba/PB, Jerico/PB, Lagoa/PB, 
+    Lagoa de Dentro/PB, Logradouro/PB, Lucena/PB, Malta/PB, Manaira/PB, Mari/PB, 
+    Mataraca/PB, Monteiro/PB, Nazarezinho/PB, Nova Floresta/PB, Nova Olinda/PB, 
+    Olho D Agua/PB, Ouro Velho/PB, Paulista/PB, Pedra Branca/PB, Pedra Lavrada/PB, 
+    Pedras de Fogo/PB, Picui/PB, Piloezinhos/PB, Pirpirituba/PB, Poco Dantas/PB, 
+    Princesa Isabel/PB, Pedro Regis/PB, Riachao/PB, Riachao do Poco/PB, 
+    Riacho dos Cavalos/PB, Rio Tinto/PB, Santa Cecilia/PB, Santa Cruz/PB, 
+    Santa Helena/PB, Santa Ines/PB, Santana de Mangueira/PB, Sao Domingos/PB, 
+    Sao Francisco/PB, Sao Jose da Lagoa Tapada/PB, Sao Jose dos Ramos/PB, 
+    Sao Jose de Piranhas/PB, Sao Sebastiao do Umbuzeiro/PB, Sape/PB, Serido/PB, 
+    Serra Redonda/PB, Serraria/PB, Sertaozinho/PB, Solanea/PB, Soledade/PB, Sousa/PB, 
+    Tenorio/PB, Triunfo/PB, Uirauna/PB, Umbuzeiro/PB, Vieiropolis/PB
+   Por: Anderson Grolli
+[*] #TK-7386: Alterado as URLs da cidade Tres Corações/MG, o provedor continua o mesmo.
+   Por: Bruno Italo
+[+] #TK-7375: Cidades incluídas: Acari/RN, Acu/RN, Bento Fernandes/RN, 
+    Caicara do Rio do Vento/RN, Campo Redondo/RN, Carnaubais/RN, 
+    Coronel Joao Pessoa/RN, Cruzeta/RN, Currais Novos/RN, Espirito Santo/RN, 
+    Extremoz/RN, Frutuoso Gomes/RN, Goianinha/RN, Itaja/RN, Lagoa de Pedras/RN, 
+    Lagoa Nova/RN, Lucrecia/RN, Luis Gomes/RN, Nisia Floresta/RN, Parana/RN, 
+    Parau/RN, Rio do Fogo/RN, Pau dos Ferros/RN, Pedro Avelino/RN, Pedro Velho/RN, 
+    Portalegre/RN, Presidente Juscelino/RN, Pureza/RN, Riachuelo/RN, 
+    Rodolfo Fernandes/RN, Santana do Serido/RN, Sao Bento do Norte/RN, 
+    Sao Fernando/RN, Sao Francisco do Oeste/RN, Sao Joao do Sabugi/RN, 
+    Sao Miguel do Gostoso/RN, Sao Tome/RN, Sao Vicente/RN, 
+    Senador Georgino Avelino/RN, Serra de Sao Bento/RN, Serra do Mel/RN, 
+    Serra Negra do Norte/RN, Serrinha/RN, Severiano Melo/RN, Tangara/RN, 
+    Tenente Ananias/RN, Timbauba dos Batistas/RN, Touros/RN, Umarizal/RN, Venha-Ver/RN
+   Por: Anderson Grolli
+
+18/07/2025
+-- SigISSWeb.GravarXML --
+[-] Ajuste visando corrigir erro de compilação no Delphi 7
+   Por: Diego Folieni
+-- ACBrNFSeXClass --
+[*] #TK-7322: Inclusão do campo Transacao na Classe: TNFSe.
+   Por: Italo Giurizzato Junior
+-- NFSeBrasil.Provider/NFSeBrasil.GravarXml --
+[*] #TK-7358: Possível solução para o envio correto do RPS.
+   Por: Italo Giurizzato Junior
+-- ISSDSF.Provider/ISSSaoPaulo.Provider --
+[*] #TK-7322: Alteração visando usar o campo Transacao no envio do lote de RPS.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXLerXml/ACBrNFSeXGravarXml --
+[*] #TK-7322: Acrescentado o campo Transacao na seção IdentificacaoNFSe,
+              cujo valor pode ser 1 = True ou 2 = False.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXLerXml_ABRASFv2 --
+[*] #TK-7354: Possível solução para gerar o link da NFS-e.
+   Por: Italo Giurizzato Junior
+-- Agili.GravarXml --
+[*] #TK-7327: Possível solução para gerar as tags corretas com os valores corretos,
+              dos campos CodigoAtividadeEconomica, CodigoCnaeAtividadeEconomica e
+              ItemLei116AtividadeEconomica.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXWebserviceBase --
+[*] #TK-7351: Alteração visando apresentar algumas mensagens de erros mais claras.
+   Por: João Vitor Bogo
+-- SigISSWeb.GravarXml --
+[*] #TK-7314: Alteração visando gerar o XML corretamente para tomador fora do pais.
+   Por: ArecoDesenv
+-- Pronim.GravarXml --
+[*] #TK-7281: Alterado a condição para gerar a tag Aliquota em função se o prestador
+    é optante pelo simples nacional ou não.
+   Por: Maiquel
+-- ACBrNFSeXServicos --
+[*] #TK-7361: Incluída o Params Versao 2.04 para a cidade Congonhas do Norte/MG.
+   Por: Alysson Rengel
+[+] #TK-7365: Cidades incluídas: Acarau/CE, Aiuaba/CE, Altaneira/CE, Amontada/CE, 
+              Araripe/CE, Barroquinha/CE, Bela Cruz/CE, Caninde/CE, Capistrano/CE, 
+              Carius/CE, Cascavel/CE, Chorozinho/CE, Cruz/CE, Deputado Irapuan Pinheiro/CE, 
+              Groairas/CE, Itaicaba/CE, Jaguaretama/CE, Monsenhor Tabosa/CE, Morrinhos/CE, 
+              Mucambo/CE, Ocara/CE, Senador Sa/CE
+   Por: Anderson Grolli
+[*] #TK-7366: Incluída a URL de homologação da cidade Penapolis/SP.
+   Por: João Vitor Bogo
+
+17/07/2025
+-- ACBrNFSeXServicos --
+[+] #TK-7362: Cidades incluídas: Acaua/PI, Agricolandia/PI, Alagoinha do Piaui/PI, 
+              Altos/PI, Baixa Grande do Ribeiro/PI, Bela Vista do Piaui/PI, 
+              Belem do Piaui/PI, Betania do Piaui/PI, Bom Principio do Piaui/PI, 
+              Buriti Dos Lopes/PI, Cajueiro da Praia/PI, Caldeirao Grande do Piaui/PI, 
+              Campo Alegre do Fidalgo/PI, Capitao de Campos/PI, 
+              Capitao Gervasio Oliveira/PI, Caracol/PI, Caraubas do Piaui/PI, Cocal/PI, 
+              Cocal dos Alves/PI, Coronel Jose Dias/PI, Curral Novo do Piaui/PI, 
+              Demerval Lobao/PI, Dirceu Arcoverde/PI, Dom Expedito Lopes/PI, 
+              Elesbao Veloso/PI, Francinopolis/PI, Francisco Ayres/PI, 
+              Francisco Macedo/PI, Gilbues/PI, Ilha Grande/PI, Ipiranga do Piaui/PI, 
+              Jacobina do Piaui/PI, Jardim do Mulato/PI, Joaquim Pires/PI, 
+              Jose de Freitas/PI, Julio Borges/PI, Lagoa do Barro do Piaui/PI, 
+              Lagoa do Sitio/PI, Marcolandia/PI, Miguel Alves/PI, 
+              Novo Oriente do Piaui/PI, Padre Marcos/PI, Parnagua/PI, Pedro II/PI, 
+              Pimenteiras/PI, Porto Alegre do Piaui/PI, Queimada Nova/PI, 
+              Ribeira do Piaui/PI, Santa Filomena/PI, Santa Rosa do Piaui/PI, 
+              Sao Goncalo do Gurgueia/PI, Sao Goncalo do Piaui/PI, 
+              Sao Joao do Piaui/PI, Sao Miguel do Tapuio/PI, Sao Raimundo Nonato/PI, 
+              Uniao/PI, Wall Ferraz/PI.
+   Por: Anderson Grolli
+[*] #TK-7349: A cidade Guatambu/SC mudou para versão 2.04 e a URL, o provedor continua
+    o mesmo IPM.
+   Por: Lucas atz
+
+14/07/2025
+-- ACBrNFSeXServicos --
+[*] #TK-7309: A cidade Rio Fortuna/SC mudou de provedor, agora é Betha versão 1.00
+   Por: João Carlos Gielow
+[+] #TK-7342: Incluída a cidade Virmond/PR, o provedor é Equiplano.
+   Por: Desenvolvimento GDL Sistemas
+
+11/07/2025
+-- IPM.LerXml --
+[-] #TK-7319: Correção na grafia da tag data do fato gerador.
+   Por: Microsys Sistemas
+-- IPM.LerXml --
+[+] #TK-7330: Incluído a leitura das tags referente as parcelas.
+   Por: Alex Leiva
+-- Infisc.LerXml --
+[*] #TK-7334: Alteração visando a leitura do XML do RPS para não alterar as
+    tags localTributacao e infAdicLT.
+   Por: Tiago Tecchio
+-- ACBrNFSeXServicos --
+[*] #TK-7335: A cidade Barra do Garças/MT mudou as URLs de homologação, o provedor
+    continua o mesmo.
+   Por: Márcio Baroni
+
+10/07/2025
+-- ACBrNFSeXServicos --
+[*] #TK-7316: A cidade Itabirito/MG mudou de provedor, agora é IPM versão 2.04
+   Por: DeveloperATS
+[*] #TK-7325: A cidade Garuva/SC mudou as URLs, o provedo continua o mesmo.
+   Por: forbostec
+[+] #TK-7325: Incluída a cidade São João/PE, o provedor é Tributus.
+   Por: João Antônio
+
+08/07/2025
+-- ACBrNFSeXGravarXml_ABRASFv2 --
+[*] #TK-7246: Alterado o tamanho mínimo e máximo dos campos DataEmissao e Competencia
+    de 19 para 10.
+   Por: Fernando Batista
+-- ACBrNFSeXDANFSeClass/ACBrNFSeXDANFSeRLRetrato/ACBrNFSeXDANFSeRLSimplISS --
+[+] Criada a propriedade de configuração DataCompletenciaCompleta do
+    tipo Boolean cujo valor padrão é False.
+    Se False imprime Mês/Ano, se True imprime Dia/Mês/Ano.
+   Por: Italo Giurizzato Junior
+-- ISSNet.GravarXml --
+[*] #TK-7294: Ajuste para emissão de nota para Estrangeiro.
+   Por: nenelvida
+-- DSF.Provider --
+[-] #TK-7296: Possível solução para a leitura correta dos retornos do provedor na
+              versão 2.03
+   Por: Diego Folieni/Italo Giurizzato Junior
+
+07/07/2025
+-- ACBrNFSeXServicos --
+[+] #TK-7305: Cidades incluídas: Alenquer/PA, Anapu/PA, Augusto Correa/PA, 
+              Aveiro/PA, Baiao/PA, Bannach/PA, Brasil Novo/PA, 
+              Brejo Grande do Araguaia/PA, Cachoeira do Arari/PA, 
+              Canaa Dos Carajas/PA, Capanema/PA, Capitao Poco/PA, 
+              Cumaru do Norte/PA, Curionopolis/PA, Curua/PA, Curuca/PA, 
+              Igarape-Miri/PA, Inhangapi/PA, Ipixuna do Para/PA, 
+              Itupiranga/PA, Jacareacanga/PA, Mae do Rio/PA, 
+              Medicilandia/PA, Melgaco/PA, Mocajuba/PA, Moju/PA, 
+              Mojui dos Campos/PA, Monte Alegre/PA, Muana/PA, 
+              Nova Ipixuna/PA, Obidos/PA, Ourilandia do Norte/PA, 
+              Pau D Arco/PA, Placas/PA, Ponta de Pedras/PA, 
+              Porto de Moz/PA, Ruropolis/PA, Salinopolis/PA, 
+              Santa Luzia do Para/PA, Santa Maria das Barreiras/PA, 
+              Sao Domingos do Araguaia/PA, Sao Domingos do Capim/PA, 
+              Sao Geraldo do Araguaia/PA, Sao Joao da Ponta/PA, 
+              Sao Joao de Pirabas/PA, Sao Miguel do Guama/PA, 
+              Sapucaia/PA, Senador Jose Porfirio/PA, Soure/PA, 
+              Terra Santa/PA, Tome-Acu/PA, Trairao/PA, Ulianopolis/PA, 
+              Uruara/PA, Viseu/PA, Vitoria do Xingu/PA
+[+] #TK-7304: Cidades incluídas: Abreulandia/TO, Almas/TO, 
+              Aparecida do Rio Negro/TO, Aragominas/TO, Arraias/TO, 
+              Augustinopolis/TO, Axixa do Tocantins/TO, Barra do Ouro/TO, 
+              Barrolandia/TO, Bom Jesus do Tocantins/TO, Brejinho de Nazare/TO, 
+              Cariri do Tocantins/TO, Caseara/TO, Combinado/TO, 
+              Conceicao do Tocantins/TO, Couto Magalhaes/TO, Cristalandia/TO, 
+              Divinopolis do Tocantins/TO, Dois Irmaos do Tocantins/TO, 
+              Fatima/TO, Filadelfia/TO, Formoso do Araguaia/TO, 
+              Fortaleza do Tabocao/TO, Goianorte/TO, Ipueiras/TO, Itaguatins/TO, 
+              Itapora do Tocantins/TO, Juarina/TO, Lajeado/TO, Lavandeira/TO, 
+              Lizarda/TO, Marianopolis do Tocantins/TO, Mateiros/TO, 
+              Maurilandia do Tocantins/TO, Monte do Carmo/TO, 
+              Monte Santo do Tocantins/TO, Palmeiras do Tocantins/TO, 
+              Muricilandia/TO, Natividade/TO, Novo Acordo/TO, Novo Jardim/TO, 
+              Palmeiropolis/TO, Peixe/TO, Pequizeiro/TO, Pindorama do Tocantins/TO, 
+              Ponte Alta do Tocantins/TO, Porto Alegre do Tocantins/TO, 
+              Praia Norte/TO, Presidente Kennedy/TO, Recursolandia/TO, Riachinho/TO, 
+              Santa Maria do Tocantins/TO, Santa Rita do Tocantins/TO, 
+              Santa Terezinha do Tocantins/TO, Sao Felix do Tocantins/TO, 
+              Sao Salvador do Tocantins/TO, Sao Sebastiao do Tocantins/TO, 
+              Sao Valerio da Natividade/TO, Silvanopolis/TO, Taguatinga/TO, 
+              Taipas do Tocantins/TO, Talisma/TO, Tocantinia/TO, Tupiratins/TO, 
+              Wanderlandia/TO
+[+] #TK-7297: Cidades incluídas: Pedra Branca do Amapari/AP, Cutias/AP, 
+              Mazagao/AP, Santana/AP, Tartarugalzinho/AP, Vitoria do Jari/AP
+[+] #TK-7300: Cidades incluídas: Alcantara/MA, Aldeias Altas/MA, 
+              Alto Alegre do Maranhao/MA, Amarante do Maranhao/MA, Anajatuba/MA, 
+              Arame/MA, Barra do Corda/MA, Bela Vista do Maranhao/MA, Bom Lugar/MA, 
+              Buriti Bravo/MA, Buritirana/MA, Cajapio/MA, Campestre do Maranhao/MA, 
+              Capinzal do Norte/MA, Carolina/MA, Cidelandia/MA, Coelho Neto/MA, 
+              Cururupu/MA, Dom Pedro/MA, Esperantinopolis/MA, Formosa da Serra Negra/MA, 
+              Governador Edison Lobao/MA, Governador Newton Bello/MA, 
+              Humberto de Campos/MA, Igarape do Meio/MA, Itinga do Maranhao/MA, 
+              Matinha/MA, Matoes/MA, Matoes do Norte/MA, Mirador/MA, Montes Altos/MA, 
+              Morros/MA, Olho D Agua das Cunhas/MA, Paco do Lumiar/MA, Parnarama/MA, 
+              Pastos Bons/MA, Penalva/MA, Peritoro/MA, Pio Xii/MA, Pocao de Pedras/MA, 
+              Presidente Dutra/MA, Presidente Juscelino/MA, Presidente Vargas/MA, 
+              Primeira Cruz/MA, Raposa/MA, Rosario/MA, Santa Helena/MA, 
+              Santa Luzia do Parua/MA, Santo Amaro do Maranhao/MA, Sao Bento/MA, 
+              Sao Domingos do Azeitao/MA, Sao Felix de Balsas/MA, Sao Joao do Caru/MA, 
+              Sao Joao do Soter/MA, Sao Joao Dos Patos/MA, Sao Jose de Ribamar/MA, 
+              Sao Luis Gonzaga do Maranhao/MA, Sao Mateus do Maranhao/MA, 
+              Sao Pedro Dos Crentes/MA, Sao Raimundo das Mangabeiras/MA, Sitio Novo/MA, 
+              Tasso Fragoso/MA, Timbiras/MA, Trizidela do Vale/MA, Turiacu/MA, Tutoia/MA, 
+              Viana/MA, Vitoria do Mearim/MA, Ze Doca/MA
+   Por: Anderson Grolli
+[*] #TK-7303: A cidade de Ouro/SC mudou as URLs e a versão, o provedor continua o mesmo.
+   Por: Willian Delan
+[*] #TK-7302: A cidade de Cristalina/Go mudou de provedor, agora é o Centi versão 2.02
+   Por: Flavio Realtec
+
+03/07/2025
+-- ACBrNFSeXServicos --
+[+] #TK-7278: Cidades incluídas: Acrelandia/AC, Assis Brasil/AC, Brasileia/AC,
+              Bujari/AC, Capixaba/AC, Feijo/AC, Jordao/AC, Manoel Urbano/AC, 
+              Marechal Thaumaturgo/AC, Placido de Castro/AC, Porto Walter/AC, 
+              Santa Rosa do Purus/AC, Sena Madureira/AC, Porto Acre/AC o provedor é Betha.
+[+] #TK-7283: Cidades incluídas: Cerejeiras/RO, Corumbiara/RO, Novo Horizonte do Oeste/RO,
+              Cacaulandia/RO, Campo Novo de Rondonia/RO, Chupinguaia/RO,
+              Governador Jorge Teixeira/RO, Nova Uniao/RO, Pimenteiras do Oeste/RO, 
+              Theobroma/RO, Vale do Paraiso/RO o provedor é Fiorilli.
+              Rio Crespo/RO, Sao Miguel do Guapore/RO, Castanheiras/RO, Seringueiras/RO
+              o provedor é EloTech.
+              Santa Luzia D Oeste/RO, Ministro Andreazza/RO o provedor é Agili.
+[+] #TK-7284: Cidades incluídas: Apui/AM, Manaquiri/AM, Presidente Figueiredo/AM, 
+              Rio Preto da Eva/AM o provedor é Fiorilli.
+              Autazes/AM, Manicore/AM o provedor é Betha.
+              Novo Airao/AM o provedor é Betha versão 2.02
+[*] #TK-7284: A Cidade de Tefe/AM trocou de provedor, agora é Fiorilli.
+[+] #TK-7286: Cidades incluídas: Alto Alegre/RR, Caroebe/RR, Pacaraima/RR, 
+              Sao Joao da Baliza/RR, Sao Luiz/RR, Uiramuta/RR o provedor é Saatri 2.03
+   Por: Anderson Grolli
+[+] #TK-7285: Inclusão da cidade de Cantagalo/RJ, o provedor é EL versão 2.04
+   Por: João Antônio
+[+] #TK-7282: Inclusão das cidades de Seritinga/MG e Rio Pomba/MG, o provedor é 
+              Futurize versão 2.02
+[*] #TK-7282: A cidade de Guarani/MG mudou as URLs, o provedor continua o mesmo.
+   Por: ASL Software LTDA
+-- Centi.LerXml --
+[*] #TK-7184: Ajuste para pegar o ID da NFS-e para ser usado na montagem da
+    strig do QR-Code
+   Por: Italo Giurizzato Junior
+
 02/07/2025
 -- ISSSaoPaulo.Provider --
 [*] #TK-7231: Invertida a ordem de pesquisa na lista interna do componente para:

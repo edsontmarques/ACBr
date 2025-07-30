@@ -3,7 +3,7 @@
 {  Biblioteca multiplataforma de componentes Delphi para interação com equipa- }
 { mentos de Automação Comercial utilizados no Brasil                           }
 {                                                                              }
-{ Direitos Autorais Reservados (c) 2024 Daniel Simoes de Almeida               }
+{ Direitos Autorais Reservados (c) 2025 Daniel Simoes de Almeida               }
 {                                                                              }
 { Colaboradores nesse arquivo:                                                 }
 {                                                                              }
@@ -66,7 +66,8 @@ type
                       tefScopeAPI,
                       tefDestaxaAPI,
                       tefTPag,
-                      tefPayKit);
+                      tefEquals,
+                      tefDirectPin );
 
   TACBrTEFAPIExibicaoQRCode = ( qrapiNaoSuportado,
                                 qrapiAuto,
@@ -299,7 +300,8 @@ uses
   ACBrTEFAPIScope,
   ACBrTEFAPIDestaxa,
   ACBrTEFAPITPag,
-  ACBrTEFAPIPayKit;
+  ACBrTEFAPIPayKit,
+  ACBrTEFAPIDirectPin;
 
 { TACBrTEFAPIClass }
 
@@ -675,7 +677,8 @@ begin
     tefScopeAPI    : fpTEFAPIClass := TACBrTEFAPIClassScope.Create( Self );
     tefDestaxaAPI  : fpTEFAPIClass := TACBrTEFAPIClassDestaxa.Create( Self );
     tefTPag        : fpTEFAPIClass := TACBrTEFAPIClassTPag.Create( Self );
-    tefPayKit      : fpTEFAPIClass := TACBrTEFAPIClassPayKit.Create( Self );
+    tefEquals      : fpTEFAPIClass := TACBrTEFAPIClassPayKit.Create( Self );
+    tefDirectPin   : fpTEFAPIClass := TACBrTEFAPIDirectPin.Create( Self );
   else
     fpTEFAPIClass := TACBrTEFAPIClass.Create( Self );
   end;

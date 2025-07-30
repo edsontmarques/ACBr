@@ -48,6 +48,55 @@ Símbolo : Significado
 [+]     : Novo recurso
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
+30/07/2025
+-- ACBrBoletoW_Cora.pas --
+[+] #TK-7437 adicionado tpBaixa Método POST para Baixa
+	https://www.projetoacbr.com.br/forum/topic/84597-cancelamento-boleto-api-banco-cora/
+    Por: Daniel de Morais InfoCotidiano
+
+28/07/2025
+-- ACBrBoletoW_Cresol.pas,ACBrBoletoRet_Cresol.pas --
+[+] #TK-7419 Ajustado tpConsultaDetalhada para executar somente qdo for enviado id boleto. ajustado o retorno para devolver id boleto no nossoNumeroCorrespondente
+	https://www.projetoacbr.com.br/forum/topic/84530-acbrlib-boletoapi-retornos-banco-cresol/
+    Por: Daniel de Morais InfoCotidiano
+
+-- ACBrBancoVortx.pas --
+[*] #TK-7409 Geração da remessa utilizando Agência com DV e correção do cálculo do DV - https://www.projetoacbr.com.br/forum/topic/84480-atualiza%C3%A7%C3%A3o-da-unit-de-boletos-referente-ao-banco-vortx/
+    Por: roberto.fermino
+
+25/07/2025
+-- ACBrBoletoW_Itau_API.pas --
+[+] #TK-7382 Adicionado metodo para alteração do valor nominal.
+    https://www.projetoacbr.com.br/forum/topic/84407-acbrboletow_itau_api-adicionada-a-altera%C3%A7%C3%A3o-do-valor-do-boleto-valor_nominal
+    Por: Fabricio Furtado / Daniel de Morais InfoCotidiano
+
+25/07/2025
+-- ACBrBoletoRet_Santander_API.pas --
+[*] #TK-7416 Ajustes retorno da consultadetalhe para tratar boleto hibrido estava vindo como "baixado" e nao como "Liquidado"
+    https://www.projetoacbr.com.br/forum/topic/84507-recebimento-boleto-santander-via-pix/
+    Por: Magistech / Daniel de Morais InfoCotidiano
+
+25/07/2025
+-- ACBrBancoSantander.pas --
+[*] #TK-7378 Ajustes no banco CNAB400 retorno para gerar o QrCODE/EMV
+    https://www.projetoacbr.com.br/forum/topic/84366-retorno-santander-pix/
+    Por: Daniel de Morais InfoCotidiano
+
+16/07/2025
+-- ACBrBancoSofisaSantander --
+[*] #TK-7255 Ajustes no banco cobBancoSofisaSantander para NumeroDocumento Somente Letras e Números, NomeSacado com 30 bytes e 10 espaços na sequência
+    Por: Daniel de Morais InfoCotidiano
+
+14/07/2025
+-- ACBrBancoBanrisul --
+[+] #TK-6823 Implementada emissão de boleto Híbrido do banco 041-Banrisul CNAB240
+    Por: Mateus Brunelli
+
+04/07/2025
+-- ACBrBancoVortx, ACBrBoleto, ACBr_Boleto, ACBr_Boleto.dpk, ACBr_Boleto.lpk --
+[+] #TK-5773 Implementado banco Vortx
+    Por: tiago.istuque / Roberto rrrFerminoRrrrrerw / Renato Rubinho
+
 30/06/2025
 -- ACBrBoletoW_Itau_API --
 [*] TK-7263 Refatorado as instrções de cobrança conforme documentação da API.

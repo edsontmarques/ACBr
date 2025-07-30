@@ -1156,7 +1156,7 @@ begin
     Result[i].AppendChild(AddNode(tcInt, '#07', 'tara', 1, 6, 1,
                                       MDFe.Rodo.veicReboque[i].tara, DSC_TARA));
 
-    Result[i].AppendChild(AddNode(tcInt, '#08', 'capKG', 1, 6, 0,
+    Result[i].AppendChild(AddNode(tcInt, '#08', 'capKG', 1, 6, 1,
                                     MDFe.Rodo.veicReboque[i].capKG, DSC_CAPKG));
 
     Result[i].AppendChild(AddNode(tcInt, '#09', 'capM3', 1, 6, 0,
@@ -2801,7 +2801,7 @@ begin
 
     if (idCSRT <> 0) and (CSRT <> '') then
     begin
-      Result.AppendChild(AddNode(tcInt, '#315', 'idCSRT', 2, 2, 1,
+      Result.AppendChild(AddNode(tcInt, '#315', 'idCSRT', 3, 3, 1,
                                                            idCSRT, DSC_IDCSRT));
 
       Result.AppendChild(AddNode(tcStr, '#316', 'hashCSRT', 28, 28, 1,

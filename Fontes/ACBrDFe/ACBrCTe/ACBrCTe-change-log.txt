@@ -44,6 +44,35 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+28/07/2025
+-- ACBrCTe.XmlReader/ACBrCTe.XmlWriter --
+[*] #TK-7425: Alterado tanto a geração quanto a leitura do campo pAliqEfet para 4
+    casas decimais.
+   Por: Simons/Italo Giurizzato Junior
+
+26/07/2025
+-- ACBrCTe.XmlWriter --
+[*] Ajuste nas condições para gerar o grupo gRed.
+   Por: Italo Giurizzato Junior
+
+24/07/2025
+-- Diversos --
+[*] #TK-7370: Implementado a versão 1.06 da NT da Reforma Tributária.
+   Por: Italo Giurizzato Junior
+-- ACBrCTe.IniReader --
+[-] #TK-7391: Ajuste para leitura de InfCteNormal quando CTe de Substituição
+   Por: Diego Folieni / Italo Giurizzato Junior
+
+18/07/2025
+-- ACBrCTe.XmlWriter --
+[*] Correção no tamanho mínimo e máximo da tag idCSRT.
+   Por: Italo Giurizzato Junior
+
+11/07/2025
+-- ACBrCTeWebServices --
+[-] #TK-7306: Correção para leitura do ID do evento para versão 3 e 4 do CT-e.
+  Por: Italo Giurizzato Junior
+
 23/06/2025
 -- ACBrCTe.XmlReader --
 [-] #TK-7249: Correção para realizar a leitura correta do grupo infCTeSub

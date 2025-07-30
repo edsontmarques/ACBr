@@ -81,6 +81,7 @@ const
 
   CContentTypeUTF8 = 'charset=utf-8';
   CContentTypeTextPlain = 'text/plain';
+  CContentTypeApplicationPDF = 'application/pdf';
   CContentTypeApplicationJSon = 'application/json';
   CContentTypeApplicationWwwFormUrlEncoded = 'application/x-www-form-urlencoded';
 
@@ -305,7 +306,7 @@ type
 
     function CriarRecorrencia: Boolean;
     function RevisarRecorrencia(const aIdRec: String): Boolean;
-    function ConsultarRecorrencia(aIdRec: String): Boolean;
+    function ConsultarRecorrencia(aIdRec: String; aTxId: String = ''): Boolean;
     function ConsultarRecorrencias(aInicio: TDateTime; aFim: TDateTime;
       const aCpfCnpj: String = ''; aLocationPresente: Boolean = False;
       aStatus: TACBrPIXStatusRecorrencia = strNENHUM; aConvenio: String = '';
@@ -1229,7 +1230,7 @@ begin
     fPSP.TratarRetornoComErro(ResultCode, RespostaHttp, Problema);
 end;
 
-function TACBrPixEndPointRec.ConsultarRecorrencia(aIdRec: String): Boolean;
+function TACBrPixEndPointRec.ConsultarRecorrencia(aIdRec: String; aTxId: String): Boolean;
 var
   RespostaHttp: AnsiString;
   ResultCode: Integer;
@@ -1241,6 +1242,10 @@ begin
   Clear;
   fPSP.PrepararHTTP;
   fPSP.URLPathParams.Add(aIdRec);
+
+  if NaoEstaVazio(aTxId) then
+    fPSP.URLQueryParams.Values['txid'] := aTxId;
+
   fPSP.AcessarEndPoint(ChttpMethodGET, EndPoint, ResultCode, RespostaHttp);
   Result := (ResultCode = HTTP_OK);
 
@@ -3197,7 +3202,7 @@ begin
     scRecWrite: Result := 'rec.write';
     scRecRead: Result := 'rec.read';
     scSolicRecWrite: Result := 'solicrec.write';
-    scSolicRecRead: Result := 'rec.read';
+    scSolicRecRead: Result := 'solicrec.read';
   end;
 end;
 
