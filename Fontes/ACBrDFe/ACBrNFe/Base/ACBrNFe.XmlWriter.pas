@@ -67,7 +67,6 @@ type
     // ForcarGerarTagRejeicao938 (NT 2018.005 v 1.20) -> Campo-Seq: N12-81 e N12a-50 | Campos: N26, N26a, N26b
     property ForcarGerarTagRejeicao938: TForcarGeracaoTag read FForcarGerarTagRejeicao938 write FForcarGerarTagRejeicao938;
     property ForcarGerarTagRejeicao906: TForcarGeracaoTag read FForcarGerarTagRejeicao906 write FForcarGerarTagRejeicao906;
-
   end;
 
   TNFeXmlWriter = class(TACBrXmlWriter)
@@ -1001,6 +1000,8 @@ begin
       OnlyNumber(NFe.Retirada.fone), DSC_FONE));
     Result.AppendChild(AddNode(tcStr, 'F14', 'email', 01, 60, 0,
       NFe.Retirada.Email, DSC_EMAIL));
+    Result.AppendChild(AddNode(tcStr, 'F15', 'IE', 02, 14, 0,
+      OnlyNumber(NFe.Retirada.IE), DSC_IE));
   end;
 end;
 
@@ -2006,7 +2007,7 @@ begin
             01, 15, 1, NFe.Det[i].Imposto.ICMS.qBCMono, DSC_QBCMONO));
           xmlNode.AppendChild(AddNode(tcDe4, 'N15', 'adRemICMS',
             01, 5, 0, NFe.Det[i].Imposto.ICMS.adRemICMS, DSC_ADREMICMS));
-          xmlNode.AppendChild(AddNode(tcDe4, 'N15', 'vICMSMonoOp',
+          xmlNode.AppendChild(AddNode(tcDe2, 'N15', 'vICMSMonoOp',
             01, 15, 0, NFe.Det[i].Imposto.ICMS.vICMSMonoOp, DSC_VICMSMONOOP));
           xmlNode.AppendChild(AddNode(tcDe4, 'N15', 'pDif',
             01, 5, 0, NFe.Det[i].Imposto.ICMS.pDif, DSC_PDIF));
@@ -4139,7 +4140,7 @@ begin
                                               CSTISToStr(ISel.CSTIS), DSC_CST));
 
   Result.AppendChild(AddNode(tcStr, 'UB04', 'cClassTribIS', 6, 6, 1,
-                         cClassTribISToStr(ISel.cClassTribIS), DSC_CCLASSTRIB));
+                                            ISel.cClassTribIS, DSC_CCLASSTRIB));
 
   if (ISel.vBCIS > 0) or (ISel.pIS > 0) or (ISel.uTrib <> '') or
      (ISel.qTrib > 0) or (ISel.vIS > 0) then
@@ -4172,16 +4173,16 @@ begin
   Result := nil;
   FpGerarGrupoIBSCBSTot := False;
 
-  if (IBSCBS.CST <> cstNenhum) and (IBSCBS.cClassTrib <> ctNenhum) then
+  if (IBSCBS.CST <> cstNenhum) and (IBSCBS.cClassTrib <> '') then
   begin
     FpGerarGrupoIBSCBSTot := True;
     Result := FDocument.CreateElement('IBSCBS');
 
-    Result.AppendChild(AddNode(tcStr, 'UB12', 'CST', 3, 3, 0,
+    Result.AppendChild(AddNode(tcStr, 'UB12', 'CST', 3, 3, 1,
                                           CSTIBSCBSToStr(IBSCBS.CST), DSC_CST));
 
-    Result.AppendChild(AddNode(tcStr, 'UB13', 'cClassTrib', 6, 6, 0,
-                           cClassTribToStr(IBSCBS.cClassTrib), DSC_CCLASSTRIB));
+    Result.AppendChild(AddNode(tcStr, 'UB13', 'cClassTrib', 6, 6, 1,
+                                            IBSCBS.cClassTrib, DSC_CCLASSTRIB));
 
     case IBSCBS.CST of
       cst000, cst200, cst220, cst510:
@@ -4358,7 +4359,7 @@ begin
                                   CSTIBSCBSToStr(TribRegular.CSTReg), DSC_CST));
 
   Result.AppendChild(AddNode(tcStr, '#57', 'cClassTribReg', 6, 6, 1,
-                   cClassTribToStr(TribRegular.cClassTribReg), DSC_CCLASSTRIB));
+                                    TribRegular.cClassTribReg, DSC_CCLASSTRIB));
 
   Result.AppendChild(AddNode(tcDe4, '#58', 'pAliqEfetRegIBSUF', 1, 7, 1,
                                      TribRegular.pAliqEfetRegIBSUF, DSC_PALIQ));
@@ -4574,10 +4575,11 @@ begin
     Result.AppendChild(AddNode(tcDe2, 'W35', 'vBCIBSCBS', 1, 15, 1,
                                            IBSCBSTot.vBCIBSCBS, DSC_VBCIBSCBS));
 
-    if IBSCBSTot.gIBS.vIBS > 0 then
+    if (IBSCBSTot.gIBS.vIBS > 0) or
+       (IBSCBSTot.gIBS.gIBSUFTot.vDif > 0) or (IBSCBSTot.gIBS.gIBSMunTot.vDif > 0) then
       Result.AppendChild(Gerar_IBSCBSTot_gIBS(IBSCBSTot.gIBS));
 
-    if IBSCBSTot.gCBS.vCBS > 0 then
+    if (IBSCBSTot.gCBS.vCBS > 0) or (IBSCBSTot.gCBS.vDif > 0) then
       Result.AppendChild(Gerar_IBSCBSTot_gCBS(IBSCBSTot.gCBS));
 
     if (IBSCBSTot.gMono.vIBSMono > 0) or (IBSCBSTot.gMono.vCBSMono > 0) or

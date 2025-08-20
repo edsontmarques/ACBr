@@ -47,6 +47,39 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+19/08/2025
+-- ACBrSchemasAppLess --
+[-] Correção da propriedade customerSocialName.
+
+12/08/2025
+-- ACBrPIXPSPAppLess --
+[*] Alteração para preencher a propriedade correta ao informar um CNPJ na criação da cobrança.
+
+-- ACBrSchemasAppLess --
+[-] Correção da propriedade customerCPF;
+[+] Inclusão da propriedade customerCNPJ.
+    por: Julio Cavalcanti
+
+05/08/2025
+-- ACBrPIXPSPAppLess --
+[*] Alteração para disparar exception caso o PSP AppLess não esteja configurado em ambiente de produção.
+    por: Elias César
+
+31/07/2025
+-- ACBrPIXPSPAppLess --
+[*] Incluída validação do parâmetro E2Eid ao efetuar uma devolução com PSP AppLess.
+    por: Elias César
+
+30/07/2025
+-- ACBrPIXPSPAppLess --
+[*] Alterações para funcionar o endpoint /pix padrão Bacen com PSP AppLess.
+    por: Elias César
+
+30/07/2025
+-- ACBrPIXSchemasCobV --
+[*] Ajuste nas propriedades do devedor que faltavam ao ler as informações do INI.
+    por: Elias César
+
 29/07/2025
 -- ACBrPIXCD --
 [*] Inclusão do parâmetro 'txId' no método de consulta de uma recorrência.

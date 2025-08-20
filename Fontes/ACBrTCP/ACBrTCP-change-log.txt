@@ -36,6 +36,21 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+11/08/2025
+-- ACBr_TCP.dpk, ACBrTCP.lpk --
+[+] TK-7332 - ACBrConsultaCNPJ - Adicionando provedor MinhaReceita nos pacotes de instalação
+  Por: Renato Rubinho
+
+01/08/2025
+-- ACBrConsultaCNPJ --
+[+] TK-7373 - ACBrConsultaCNPJ - Criadas propriedades que faltavam do Mei e Simples. - https://www.projetoacbr.com.br/forum/topic/84281-consulta-de-cnpj-usando-o-componente-acbrnfe/?&_rid=62658#findComment-547398
+  Por: Renato Rubinho
+
+30/07/2025
+-- ACBrConsultaCNPJ.WS.BrasilAPI, ACBrConsultaCNPJ.WS.CNPJWS, ACBrConsultaCNPJ.WS.ReceitaWS --
+[*] TK-7373 - ACBrConsultaCNPJ - Validadas respostas dos provedores e dados do componente. - https://www.projetoacbr.com.br/forum/topic/84281-consulta-de-cnpj-usando-o-componente-acbrnfe/?&_rid=62658#findComment-547398
+  Por: Renato Rubinho
+
 25/07/2025
 -- ACBrTCP --
 [+] Inclusão do componente ACBrIMendes no pacote ACBrTCP.

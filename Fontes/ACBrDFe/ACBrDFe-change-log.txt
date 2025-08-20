@@ -39,6 +39,33 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+19/08/2025
+-- ACBrDFe.Conversao --
+[*] O campo cClassTrib deixa de ser enumerado e passa a ser string.
+   Por: Italo Giurizzato Junior
+
+15/08/2025
+-- ACBrXmlDocument --
+[*] TK-7506: Alterado a string de busca de "CDATA" para "<![CDATA[" na procedure SetContent,
+    para evitar realizar alterações quando encontrar nomes de empresa do tipo "TECDATA".
+   Por: leomcl
+
+04/08/2025
+-- ACBrDFe, ACBrDFeWebService --
+[+] Inclusão do evento OnTransmitted em TACBrDFe.
+
+-- ACBrDFeDANFeReport --
+[+] Inclusão do método 'ImprimirCupomVerde' responsável pela impressão Reduzida do Cupom Verde.
+
+-- ACBrNFeDANFeESCPOS --
+[+] Implementação do novo método 'ImprimirCupomVerde'.
+    por: Elias César
+
+31/07/2025
+-- ACBrXmlBase --
+[*] Acrescentado a troca de </br> por ; (ponto e virgula) na função RemoverCaracteresDesnecessarios.
+   Por: Sergio Fuchs
+
 18/07/2025
 -- ACBrDFe.Conversao --
 [*] TK-7355: Correção do cClassTrib estava ct410099 sendo que o correto é ct410999.

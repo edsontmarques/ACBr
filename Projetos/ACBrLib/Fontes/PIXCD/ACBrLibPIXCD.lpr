@@ -71,6 +71,7 @@ exports
 
   //PIXCD
   PIXCD_GerarQRCodeEstatico,
+  PIXCD_GerarQRCodeEstaticoComChavePix,
 
   //EndPoint /pix
   PIXCD_ConsultarPix,
@@ -117,6 +118,7 @@ begin
   {$ENDIF}
 
   MainThreadID := GetCurrentThreadId();
+  Application.FindGlobalComponentEnabled := False;
   Application.Initialize;
 end.
 

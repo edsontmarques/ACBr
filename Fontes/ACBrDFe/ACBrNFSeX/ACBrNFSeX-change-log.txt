@@ -43,11 +43,148 @@ Símbolo : Significado
 [-]     : Correção de Bug (assim esperamos)
 
 
+18/08/2025
+-- Diversos --
+[*] #TK-7301: Ajustes visando a versão 1.2 da NT 2025/003 da Reforma Tributária,
+    implementado a leitura do XML do DPS do Padrão Nacional.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[*] #TK-7525: Alterado os Links da cidade de Tangara da Serra/MT.
+   Por: acf Batista/Leandro Ledo
+[*] #TK-7521: Alterado as URLs da cidade de Araquari/SC.
+   Por: Desenv. AT Info Sistemas
+[*] #TK-7520: A cidade Juara/MT trocou de provedor, agora é Agili.
+   Por: Leandro Ledo
+
+15/08/2025
+-- ACBrNFSeXWebservicesResponse/PadraoNacional.Provider --
+[*] #TK-7510: Acrescentados novos campos na lista de resumos para trazer informações dados
+    dos eventos baixados pelo ConsultarDFe.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[*] #TK-7509: Incluído o Params: FormatarItemServicoSemZeroEsquerda para a cidade Belford Roxo/RJ.
+[*] #TK-7514: A cidade Sao Goncalo do Sapucai/MG trocou de provedor, agora é Bauhaus.
+   Por: João Antônio
+
+14/08/2025
+-- Sistemas4R.GravarXml/Sistemas4R.Provider --
+[*] #TK-7495: Alteração no TratarXmlRetornando para que o XML retornado seja lido 
+    corretamente, a troca do "&amp;" por "&" estava ocorrendo erro de leitura.
+   Por: Sunny
+-- Agili.GravarXml/Agili.LerXml/Agili.Provider --
+[*] #TK-7503: Alteração impondo condições para gerar as tags: CodigoAtividadeEconomica,
+    CodigoCnaeAtividadeEconomica e ItemLei116AtividadeEconomica para atender as diversas
+    cidades que contrataram o provedor Agili.
+   Por: Diego Reckziegel
+-- ACBrNFSeX --
+[*] #TK-7502: Alterado o método Emitir para que não execute o sleep de forma
+    desnecessária. 
+   Por: Gabriel Bonzanini
+-- ACBrNFSeXNotasFiscais/ACBrNFSeXParametros/ACBrNFSeXClass/ACBrNFSeXConversao --
+-- PadraoNacional.GravarXml/PadraoNacional.LerXml --
+[*] #TK-7301: Ajustes visando a versão 1.2 da NT 2025/003 da Reforma Tributária.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[*] #TK-7501: Alterado as URLs da cidade Panambi/RS, o provedor continua o mesmo.
+   Por: JLuis
+[*] #TK-7500: Alterado as URLs da cidade Guapiaçu/SP, o provedor continua o mesmo.
+   Por: Tiago Istuque
+
+13/08/2025
+-- ACBrNFSeXProviderABRASFv1/ACBrNFSeXProviderABRASFv2/ACBrNFSeXProviderBase --
+-- PadraoNacional.Provider --
+[*] #TK-7422: Ajustes visando a leitura da propriedade PathNome.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXWebservicesResponse --
+[*] Alteração visando não limpar a propriedade PathNome.
+   Por: Italo Giurizzato Junior
+
+12/08/2025
+-- ACBrNFSeXServicos --
+[*] Alterado de https para http a URL da cidade Jurinu/SP.
+   Por: Italo Giurizzato Junior
+[*] A cidade Teresopolis/RJ trocou de provedor, agora é Fiorilli.
+   Por: MagoSchmidt
+
+11/08/2025
+-- ACBrNFSeXConfiguracoes/AssessorPublico.Provider --
+[*] #TK-7432: Criado a propriedade de configuração CodigoImobiliario dentro de Emitente.
+   Por: João Vitor Bogo/Italo Giurizzato Junior
+-- ACBrNFSeX/ACBrNFSeXConsts/ACBrNFSeXWebserviceBase/ACBrNFSeXWebservicesResponse --
+-- Simple.GravarXml/Simple.LerXml/Simple.Provider --
+[*] #TK-7287: Alterações visando gerar o XML de Consulta da NFS-e Por RPS com o campo
+              dDataRecibo.
+   Por: lucasatz/Italo Giurizzato Junior
+
+08/08/2025
+-- ACBrNFSeXServicos --
+[*] #TK-7480: A cidade Cianorte/PR trocou de URL, o provedor continua o mesmo.
+   Por: Arthur Haupt Pacheco
+-- DeISS.GravarXml --
+[*] #TK-7483: Alterado as condições para definir se a tag ValorIss deve ou não ser
+              gerada no XML.
+   Por: Danilo MSI Soluções
+-- ModernizacaoPublica.GravarXml --
+[*] #TK-7477: Removido a linha que defini o formato da aliquota como sendo um valor
+              inteiro.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXLerXml --
+[*] #TK-7477: Trocado a função StrToFloatDef para StringToFloatDef na leitura de
+              campo que contem valores, essa troca visa aceitar tanto o ponto como 
+              a virgula como separador de decimal em função da configuração.
+   Por: Italo Giurizzato Junior
+-- SigISSWeb.LerXml --
+[*] #TK-7475: Trocado o tipo de campo de tcDat para tcDatVcto do campo DataEmissao
+              ao ler o XML de um RPS.
+   Por: jaidomini
+
+07/08/2025
+-- ACBrNFSeXServicos --
+[*] #TK-7451: Incluído o Params NaoFormatarItemServicoSemZeroEsquerda para a cidade 
+              Jundiaí/SP.
+   Por: Italo Giurizzato Junior
+[*] #TK-7466: A cidade Nova Itaberaba/SC trocou de provedor, agora é IPM versão 1.01
+[+] #TK-7466: Incluída a cidade Gramado dos Loureiros/RS, provedor DataSmart versão 2.02
+   Por: VEXCOM Sistemas - Valtair
+[+] #TK-7474: Incluído diversas cidades de Mato Grosso.
+[+] #TK-7478: Incluído diversas cidades de Goias.
+   Por: Anderson Grolli
+[+] #TK-7473: Incluído diversas cidades de Mato Grosso do Sul.
+[+] #TK-7470: Incluído diversas cidades do Rio Grande do Sul.
+[+] #TK-7467: Incluído diversas cidades do Paraná.
+[+] #TK-7469: Incluído diversas cidades de Santa Catarina.
+   Por: Anderson Grolli
+[*] #TK-7471: A cidade Pedra Preta/MT mudou a URL, o provedor continua o mesmo.
+   Por: Anderson Grolli
+[*] #TK-7466: A cidade Tangara da Serra/MT trocou de provedor, agora é Centi versão 2.02
+   Por: Diego Reckziegel
+
+05/08/2025
+-- ACBrNFSeXServicos --
+[+] #TK-7457: Incluído diversas cidades de São Paulo
+   Por: Anderson Grolli
+[*] #TK-7448: A cidade Rio Paranaiba/MG mudou a URL, o provedor continua o mesmo.
+   Por: Flavio Realtec
+[*] #TK-7461: A cidade Ariranha/SP mudou a URL, o provedor continua o mesmo.
+   Por: Gabriel Leal7
+
+31/07/2025
+-- ACBrNFSeXServicos --
+[*] #TK-7436: Incluído o Params GerarTag para a cidade Coronel Bicaco/RS.
+   Por: Pablo Cerbaro
+[*] #TK-7438: A cidade Confresa/MT trocou a URL, o provedor continua o mesmo.
+   Por: Luiz Eduardo Bodo
+[*] #TK-7436: A cidade Coronel Bicaco/RS trocou a URL, o provedor continua o mesmo.
+   Por: Pablo Cerbaro
+[*] #TK-7415: A cidade Mimoso do Sul/ES trocou a URL e a versão, o provedor continua o mesmo.
+   Por: Heronim Antonio Marçal
+[*] #TK-7414: A cidade Comodoro/MT trocou de provedor, agora é Fiorilli.
+   Por: Diego Reckziegel
+
 29/07/2025
 -- AssessorPublico.LerXml --
 [*] #TK-7431: Alteração visando a leitura correta da Insc. Municipal do prestador.
    Por: João Vitor Bogo
-
 -- fintelISS.GravarXml/fintelISS.Provider --
 [*] Ajuste para usar corretamente a pasta com os schemas da versão 2.04
    Por: Italo Giurizzato Junior

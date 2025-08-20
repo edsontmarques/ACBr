@@ -1400,7 +1400,7 @@ type
   TgIS = class(TObject)
   private
     FCSTIS: TCSTIS;
-    FcClassTribIS: TcClassTribIS;
+    FcClassTribIS: string;
     FvBCIS: Double;
     FpIS: Double;
     FpISEspec: Double;
@@ -1411,7 +1411,7 @@ type
     procedure Assign(Source: TgIS);
 
     property CSTIS: TCSTIS read FCSTIS write FCSTIS;
-    property cClassTribIS: TcClassTribIS read FcClassTribIS write FcClassTribIS;
+    property cClassTribIS: string read FcClassTribIS write FcClassTribIS;
     property vBCIS: Double read FvBCIS write FvBCIS;
     property pIS: Double read FpIS write FpIS;
     property pISEspec: Double read FpISEspec write FpISEspec;
@@ -1541,7 +1541,7 @@ type
   TgTribRegular = class(TObject)
   private
     FCSTReg: TCSTIBSCBS;
-    FcClassTribReg: TcClassTrib;
+    FcClassTribReg: string;
     FpAliqEfetRegIBSUF: Double;
     FvTribRegIBSUF: Double;
     FpAliqEfetRegIBSMun: Double;
@@ -1551,7 +1551,7 @@ type
   public
     procedure Assign(Source: TgTribRegular);
     property CSTReg: TCSTIBSCBS read FCSTReg write FCSTReg;
-    property cClassTribReg: TcClassTrib read FcClassTribReg write FcClassTribReg;
+    property cClassTribReg: string read FcClassTribReg write FcClassTribReg;
     property pAliqEfetRegIBSUF: Double read FpAliqEfetRegIBSUF write FpAliqEfetRegIBSUF;
     property vTribRegIBSUF: Double read FvTribRegIBSUF write FvTribRegIBSUF;
     property pAliqEfetRegIBSMun: Double read FpAliqEfetRegIBSMun write FpAliqEfetRegIBSMun;
@@ -1585,6 +1585,7 @@ type
   TgIBSCBS = class(TObject)
   private
     FvBC: Double;
+    FvIBS: Double;
     FgIBSUF: TgIBSUF;
     FgIBSMun: TgIBSMun;
     FgCBS: TgCBS;
@@ -1600,6 +1601,7 @@ type
     procedure Assign(Source: TgIBSCBS);
 
     property vBC: Double read FvBC write FvBC;
+    property vIBS: Double read FvIBS write FvIBS;
     property gIBSUF: TgIBSUF read FgIBSUF write FgIBSUF;
     property gIBSMun: TgIBSMun read FgIBSMun write FgIBSMun;
     property gCBS: TgCBS read FgCBS write FgCBS;
@@ -1700,7 +1702,7 @@ type
   TIBSCBS = class(TObject)
   private
     FCST: TCSTIBSCBS;
-    FcClassTrib: TcClassTrib;
+    FcClassTrib: string;
 
     FgIBSCBS: TgIBSCBS;
     FgIBSCBSMono: TgIBSCBSMono;
@@ -1712,7 +1714,7 @@ type
     procedure Assign(Source: TIBSCBS);
 
     property CST: TCSTIBSCBS read FCST write FCST;
-    property cClassTrib: TcClassTrib read FcClassTrib write FcClassTrib;
+    property cClassTrib: string read FcClassTrib write FcClassTrib;
 
     property gIBSCBS: TgIBSCBS read FgIBSCBS write FgIBSCBS;
     property gIBSCBSMono: TgIBSCBSMono read FgIBSCBSMono write FgIBSCBSMono;
@@ -5062,6 +5064,7 @@ end;
 procedure TgIBSCBS.Assign(Source: TgIBSCBS);
 begin
   vBC := Source.vBC;
+  vIBS := Source.vIBS;
   gIBSUF.Assign(Source.gIBSUF);
   gIBSMun.Assign(Source.gIBSMun);
   gCBS.Assign(Source.gCBS);
