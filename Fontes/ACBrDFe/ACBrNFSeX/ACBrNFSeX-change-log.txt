@@ -42,6 +42,75 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+27/08/2025
+-- ACBrNFSeXServicos --
+[*] #ACBr-7956 Incluída a cidade Boa Esperanca do Norte/MT, o provedor é Agili.
+   Por: VEXCOM Sistemas - Valtair
+[*] #ACBr-7955 Alterado o Params da cidade Horizontina/RS, o provedor continua o mesmo.
+   Por: Fabricio Fries
+[*] #ACBr-7953 Alterado as URLs da cidade Ararangua/SC, o provedor continua o mesmo.
+   Por: Mario Inacio
+[*] #ACBr-7952 A cidade Bastos/SP trocou de provedor, agora é Fiorilli.
+   Por: Luiz Eduardo Bodo
+[*] #ACBr-7946 Alterado as URLs da cidade Santa Rosa/RS, o provedor continua o mesmo.
+   Por: maico.smaniotto
+[*] #ACBr-7946 Alterado as URLs da cidade Guaranirin/SC, o provedor continua o mesmo.
+   Por: Diogo Loff
+[*] #ACBr-7946 Alterado as URLs da cidade Cascavel/PR, o provedor continua o mesmo.
+   Por: christian@adminfo.com.br
+[*] #ACBr-7931 Alterado o Params da cidade Rondonopolis/MT, o provedor continua o mesmo.
+   Por: Italo Giurizzato Junior
+
+25/08/2025
+-- SigISSWeb.GravarXml --
+[*] #ACBr-7932: Ajustes visando a emissão de uma nota com ISSRetido com deduções.
+   Por: Anderson Grolli
+-- SigISSWeb.GravarXml --
+[*] #ACBr-7930: Ajustes visando a emissão de uma nota com tomador do exterior.
+   Por: ArecoDesenv
+-- Diversos --
+[*] #ACBr-7925: Ajustes visando a versão 1.1 da NT 2025/004 da Reforma Tributária,
+    implementado a escrita do XML do DPS e a leitura do XML da NFSe do Padrão Nacional.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[*] #ACBr-7947 A cidade Timbo Grande/SC trocou de provedor, agora é Publica.
+   Por: Lux.sistemas
+
+21/08/2025
+-- ACBrNFSeXServicos --
+[*] #TK-7544 Alterado a URL da cidade de Pontal/SP, o provedor continua o mesmo.
+   Por: colmanetti
+[*] #TK-7543 Alterado a URL da cidade de Concordia/SC, o provedor continua o mesmo.
+   Por: Wesley Santos
+[*] #TK-7542 Incluido o Link da cidade de Salvador/BA, o provedor continua o mesmo.
+   Por: tryideas sistemas
+[*] #TK-7541 A cidade Três Barras/SC mudou de provedor, agora é IPM.
+   Por: Raianne Gottschalk
+[*] #TK-7540 A cidade Guarantã do Norte/MT mudou de provedor, agora é Agili.
+   Por: Denise Maria Cotoman
+[*] #TK-7539 Incluido o Params: NaoDividir100 para a cidade Frutal/MG.
+   Por: Diego Reckziegel
+[*] #TK-7538 A cidade Imperatriz/MA trocou de provedor, agora é Bauhaus.
+   Por: Bruno
+[*] #TK-7537 Alterado a URL da cidade Massaranduba/SC, o provedor continua o mesmo.
+   Por: Ramon Valentim
+[*] #TK-7530 Alterado as URLs de Homologação da cidade Varzea Grande/MT, o provedor continua o mesmo.
+   Por: Anderson Grolli
+[*] #TK-7529 A cidade Teresina/PI trocou de provedor, agora é DSF versão 2.03
+   Por: Anderson Grolli
+[*] #TK-7526 Incluido o Params NaoDividir100 para a cidade Coronel Frabiciano/MG.
+   Por: C4Dev
+[*] ACBR-7928 Alterado as URLs da cidade Horizontina/RS, o provedor continua o mesmo.
+   Por: BSSOFT/Maico Smaniotto
+[*] ACBR-7927 A cidade Anchieta/SC trocou de provedor, agora é Betha.
+   Por: Lux.sistemas
+[*] ACBR-7926 A cidade Santana de Parnaiba/SP trocou de provedor, agora é SimplISS.
+   Por: Rodrigo Alvim
+
+20/08/2025
+-- ACBrNFSeXServicos --
+[*] Atualiza URL da cidade de Morro Agudo/SP
+   Por: Weber de Paula
 
 18/08/2025
 -- Diversos --
