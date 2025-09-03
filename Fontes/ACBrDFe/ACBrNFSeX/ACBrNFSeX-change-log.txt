@@ -42,6 +42,43 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+02/09/2025
+-- ACBrNFSeXServicos --
+[*] #ACBr-7985 Alterado as URLs da cidade Novo Hamburgo/RS, o provedor continua o mesmo.
+   Por: Roberto Krug
+[*] #ACBr-7989 Alterado as URLs da cidade Lapa/PR, o provedor continua o mesmo.
+   Por: Anderson Grolli
+
+29/08/2025
+-- ACBrNFSeXServicos --
+[*] #ACBr-7980 Alterado as URLs da cidade Brotas/SP, o provedor continua o mesmo.
+   Por: Fabio Tellini
+
+28/08/2025
+-- ACBrNFSeXServicos --
+[*] #ACBr-7972 A cidade Curionopolis/PA trocou de provedor, agora é Aspec
+   Por: Guilherme Araujo
+[*] #ACBr-7970 Alterado as URLs da cidade Morro Agudo/SP, o provedor continua o mesmo.
+   Por: Weber de Paula
+[*] #ACBr-7964 Alterado as URLs e a versão da cidade Barra Velha/SC, o provedor continua o mesmo.
+   Por: Raianne Gottschalk
+[*] #ACBr-7965 Alterado as URLs da cidade Nova Iguaçu/RJ, o provedor continua o mesmo.
+   Por: João Antônio
+[*] #ACBr-7969 Alterado as URLs da cidade Imbituba/SC, o provedor continua o mesmo.
+   Por: PrimeSoftware
+[*] #ACBr-7975 Alterado as URLs da cidade Lontras/SC, o provedor continua o mesmo.
+   Por: C4Dev
+[*] #ACBr-7977 Alterado as URLs da cidade Brusque/SC, o provedor continua o mesmo.
+   Por: Dercide Alvarez
+[*] #ACBr-7978 A cidade Lagamar/MG trocou de provedor, agora é Gorverna versão 1.01
+   Por: João Antônio
+-- SigISSWeb.Provider --
+[+] #ACBr-7950 Implementado o ConsultarNFSePorRps.
+   Por: Soma Soluções em TI
+-- ACBrNFSeXDANFSeRLRetrato --
+[*] #ACBr-7954 Incluída no DANFSE a impressão do NBS se este estiver presente no XML da NFS-e.
+   Por: Soma Soluções em TI
+
 27/08/2025
 -- ACBrNFSeXServicos --
 [*] #ACBr-7956 Incluída a cidade Boa Esperanca do Norte/MT, o provedor é Agili.

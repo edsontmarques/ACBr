@@ -45,10 +45,23 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+02/09/2025
+-- ACBrTEFDestaxaComum --
+[*] Alteração para exibir mensagem quando automacao_coleta_retorno="1".
+    por: Elias César
+
 27/08/2025
 -- ACBrTEFDestaxaComum --
 [*] Alteração do fluxo ao receber resposta automacao_coleta_retorno="1".
     por: Elias César
+
+22/08/2025
+-- ACBrTEFPayGoWebComum --
+[+] Adicionado Propriedade 'TemProtecao: Boolean', para saber se a biblioteca
+    carregada, está com a proteção ativa, ou não
+[+] Adicionada chamada a PW_iPPSetIdleImage, na inicialização do TEF, para
+    definir a Mensagem e Imagem do PinPad em repouso.
+    (por: DSA)
 
 21/08/2025
 -- ACBrTEFScopeAPI --
