@@ -55,7 +55,9 @@ uses
   ACBrNFe.Consts,
   ACBrNFe.EnvEvento,
   ACBrNFe.RetEnvEvento,
-  pcnDistDFeInt, pcnRetDistDFeInt,
+//  pcnDistDFeInt, pcnRetDistDFeInt,
+  ACBrDFeComum.DistDFeInt,
+  ACBrDFeComum.RetDistDFeInt,
   ACBrDFeComum.RetEnvio,
   ACBrNFeNotasFiscais, ACBrNFeConfiguracoes;
 
@@ -522,6 +524,7 @@ type
 
   TDistribuicaoDFe = class(TNFeWebService)
   private
+    FOwner: TACBrDFe;
     FcUFAutor: integer;
     FCNPJCPF: String;
     FultNSU: String;
@@ -2182,7 +2185,7 @@ end;
 
 function TNFeConsulta.TratarResposta: Boolean;
 
-procedure SalvarEventos(Retorno: string);
+procedure SalvarEventos(Retorno, Versao: string);
 var
   aEvento, aProcEvento, aIDEvento, sPathEvento, sCNPJCPF: string;
   DhEvt: TDateTime;
@@ -2199,7 +2202,7 @@ begin
 
     Retorno := Copy(Retorno, Fim + 1, Length(Retorno));
 
-    aProcEvento := '<procEventoNFe versao="' + FVersao + '" xmlns="' + ACBRNFE_NAMESPACE + '">' +
+    aProcEvento := '<procEventoNFe versao="' + Versao + '" xmlns="' + ACBRNFE_NAMESPACE + '">' +
                       SeparaDados(aEvento, 'procEventoNFe') +
                    '</procEventoNFe>';
 
@@ -2228,7 +2231,7 @@ end;
 var
   NFeRetorno: TRetConsSitNFe;
   SalvarXML, NFCancelada, Atualiza: Boolean;
-  aEventos, sPathNFe, NomeXMLSalvo: String;
+  aEventos, sPathNFe, NomeXMLSalvo, VersaoEventos: string;
   AProcNFe: TProcNFe;
   I, J, Inicio, Fim: integer;
   dhEmissao: TDateTime;
@@ -2507,13 +2510,14 @@ begin
                 Fim    := Pos('</retConsSitNFe', FPRetWS) -1;
 
                 aEventos := Copy(FPRetWS, Inicio, Fim - Inicio + 1);
+                VersaoEventos := RetornarConteudoEntre(aEventos, 'versao="', '"');
 
                 FRetNFeDFe := '<' + ENCODING_UTF8 + '>' +
                               '<NFeDFe>' +
                                '<procNFe versao="' + FVersao + '">' +
                                  SeparaDados(XMLOriginal, 'nfeProc') +
                                '</procNFe>' +
-                               '<procEventoNFe versao="' + FVersao + '">' +
+                               '<procEventoNFe versao="' + VersaoEventos + '">' +
                                  aEventos +
                                '</procEventoNFe>' +
                               '</NFeDFe>';
@@ -2550,7 +2554,7 @@ begin
 
                   // Salva o XML de eventos retornados ao consultar um NF-e
                   if ExtrairEventos then
-                    SalvarEventos(aEventos);
+                    SalvarEventos(aEventos, VersaoEventos);
                 end;
               end;
 
@@ -2568,9 +2572,10 @@ begin
           Fim    := Pos('</retConsSitNFe', FPRetWS) -1;
 
           aEventos := Copy(FPRetWS, Inicio, Fim - Inicio + 1);
+          VersaoEventos := RetornarConteudoEntre(aEventos, 'versao="', '"');
 
           // Salva o XML de eventos retornados ao consultar um NF-e
-          SalvarEventos(aEventos);
+          SalvarEventos(aEventos, VersaoEventos);
         end;
       end;
     end;
@@ -3836,6 +3841,8 @@ end;
 constructor TDistribuicaoDFe.Create(AOwner: TACBrDFe);
 begin
   inherited Create(AOwner);
+
+  FOwner := AOwner;
 end;
 
 destructor TDistribuicaoDFe.Destroy;
@@ -3860,7 +3867,7 @@ begin
   if Assigned(FretDistDFeInt) then
     FretDistDFeInt.Free;
 
-  FretDistDFeInt := TRetDistDFeInt.Create('NFe');
+  FretDistDFeInt := TRetDistDFeInt.Create(FOwner, 'NFe');
 
   if Assigned(FlistaArqs) then
     FlistaArqs.Free;
@@ -3914,10 +3921,11 @@ begin
     DistDFeInt.NSU := trim(FNSU);
     DistDFeInt.Chave := trim(FchNFe);
 
-    AjustarOpcoes( DistDFeInt.Gerador.Opcoes );
-    DistDFeInt.GerarXML;
+    FPDadosMsg := DistDFeInt.GerarXML;
+//    AjustarOpcoes( DistDFeInt.Gerador.Opcoes );
+//    DistDFeInt.GerarXML;
 
-    FPDadosMsg := DistDFeInt.Gerador.ArquivoFormatoXML;
+//    FPDadosMsg := DistDFeInt.Gerador.ArquivoFormatoXML;
   finally
     DistDFeInt.Free;
   end;
@@ -3935,7 +3943,8 @@ begin
 
   // Processando em UTF8, para poder gravar arquivo corretamente //
   //A função UTF8ToNativeString deve ser removida quando for refatorado para usar ACBrXMLDocument
-  FretDistDFeInt.Leitor.Arquivo := UTF8ToNativeString(ParseText(FPRetWS));
+//  FretDistDFeInt.Leitor.Arquivo := UTF8ToNativeString(ParseText(FPRetWS));
+  FretDistDFeInt.XmlRetorno := FPRetWS;
   FretDistDFeInt.LerXml;
 
   for I := 0 to FretDistDFeInt.docZip.Count - 1 do
