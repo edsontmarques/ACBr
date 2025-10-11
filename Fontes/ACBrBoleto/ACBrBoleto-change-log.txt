@@ -48,11 +48,35 @@ Símbolo : Significado
 [+]     : Novo recurso
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
+
+10/10/2025
+-- ACBrBoletoRet_BancoBrasil_API --
+[*] Preenchida url do boleto nas propriedades de retorno do envio da cobrança do BB via API
+   Por Renato Rubinho
+
+09/10/2025
+-- ACBrBancoItau --
+[*] Implementado o metodo LerNossoNumeroCompleto no Itau CNAB400
+    ACBr-8155 - https://www.projetoacbr.com.br/forum/topic/86236-trazer-o-nosso-numero-completo-no-retorno-itau/#comment-560567
+	Por: Daniel de Morais InfoCotidano
+
+
+08/10/2025
+-- ACBrBancoSicoob --
+[-] Quando carteira 9, CNAB 240 segmento P posicao 58, informar "1!
+    ACBr-8174 - https://www.projetoacbr.com.br/forum/topic/85963-sicoob-cnab-240-como-configurar-carteira-e-id-neg%C3%B3cio-na-homologa%C3%A7%C3%A3o/
+	Por: Daniel de Morais InfoCotidano
+	
+07/10/2025
+-- ACBrBoletoW_Banrisul --
+[-] Correção do codigo de protesto. (DiasDeProtesto enviado apenas qdo codigo = 1)
+    ACBr-8164 - https://www.projetoacbr.com.br/forum/topic/86259-boleto-banrisul-api-instru%C3%A7%C3%A3o-de-protesto-com-problema/
+	Por: MGWare Dev / Validado: Daniel de Morais InfoCotidano
+
 03/10/2025
 -- ACBrBoletoW_Bradesco --
 [-] correção dias protesto
 	Por: Daniel de Morais
-
 
 30/09/2025
 -- ACBrBoletoW_Bradesco --

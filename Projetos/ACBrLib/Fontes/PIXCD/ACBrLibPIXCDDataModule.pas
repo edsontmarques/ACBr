@@ -324,6 +324,7 @@ begin
       SenhaPFX            := pLibPIXCDConfig.PIXCDBradesco.SenhaPFX;
       ArquivoChavePrivada := pLibPIXCDConfig.PIXCDBradesco.ArqChavePrivada;
       ArquivoCertificado  := pLibPIXCDConfig.PIXCDBradesco.ArqCertificado;
+      APIVersao           := pLibPIXCDConfig.PIXCDBradesco.APIVersao;
       Scopes              := pLibPIXCDConfig.PIXCDBradesco.Scopes;
     end;
 
@@ -334,7 +335,6 @@ begin
       ClientSecret        := pLibPIXCDConfig.PIXCDSicredi.ClientSecret;
       ArquivoChavePrivada := pLibPIXCDConfig.PIXCDSicredi.ArqChavePrivada;
       ArquivoCertificado  := pLibPIXCDConfig.PIXCDSicredi.ArqCertificado;
-      APIVersion          := pLibPIXCDConfig.PIXCDSicredi.APIVersion;
       Scopes              := pLibPIXCDConfig.PIXCDSicredi.Scopes;
     end;
 
@@ -345,7 +345,6 @@ begin
       TokenSandbox        := pLibPIXCDConfig.PIXCDSiccob.TokenSandbox;
       ArquivoChavePrivada := pLibPIXCDConfig.PIXCDSiccob.ArqChavePrivada;
       ArquivoCertificado  := pLibPIXCDConfig.PIXCDSiccob.ArqCertificado;
-      APIVersion          := pLibPIXCDConfig.PIXCDSiccob.APIVersion;
       Scopes              := pLibPIXCDConfig.PIXCDSiccob.Scopes;
     end;
 
@@ -364,7 +363,6 @@ begin
       ConsumerSecret     := pLibPIXCDConfig.PIXCDSantander.ConsumerSecret;
       ArquivoPFX         := pLibPIXCDConfig.PIXCDSantander.ArqCertificadoPFX;
       SenhaPFX           := pLibPIXCDConfig.PIXCDSantander.SenhaCertificadoPFX;
-      APIVersion         := pLibPIXCDConfig.PIXCDSantander.APIVersion;
       Scopes             := pLibPIXCDConfig.PIXCDSantander.Scopes;
     end;
 
@@ -394,7 +392,6 @@ begin
       ClientSecret        := pLibPIXCDConfig.PIXCDItau.ClientSecret;
       ArquivoChavePrivada := pLibPIXCDConfig.PIXCDItau.ArqChavePrivada;
       ArquivoCertificado  := pLibPIXCDConfig.PIXCDItau.ArqCertificado;
-      APIVersion          := pLibPIXCDConfig.PIXCDItau.APIVersion;
       Scopes              := pLibPIXCDConfig.PIXCDItau.Scopes;
     end;
 
@@ -428,7 +425,6 @@ begin
       ArquivoPFX              := pLibPIXCDConfig.PIXCDBancoDoBrasil.ArqPFX;
       SenhaPFX                := pLibPIXCDConfig.PIXCDBancoDoBrasil.SenhaPFX;
       BBAPIVersao             := pLibPIXCDConfig.PIXCDBancoDoBrasil.BBAPIVersao;
-      APIVersion              := pLibPIXCDConfig.PIXCDBancoDoBrasil.APIVersion;
       Scopes                  := pLibPIXCDConfig.PIXCDBancoDoBrasil.Scopes;
     end;
 

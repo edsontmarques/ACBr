@@ -42,6 +42,66 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+09/10/2025
+-- ACBrNFSeXServicos --
+[*] Correção nos endpoints e Params da cidade Jaragua do Sul/SC.
+   Por: Alexandre de Paula
+
+09/10/2025
+-- Infisc.GravarXml --
+[*] Possível solução para realizar a compilação e instalação.
+   Por: Italo Giurizzato Junior
+-- Libre.LerXml --
+[*] #ACBr-8143 Alterações visando a leitura de todos os dados do prestador.
+   Por: Bruno Italo
+-- Bauhaus.GravarXml --
+[*] #ACBr-8150 Incluido a geração do elemento: CodigoLC116.
+   Por: Juliana G Viana
+-- ACBrNFSeXClass/ACBrNFSeXConversao/PadraoNacional.GravarXml/PadraoNacional.LerXml --
+[*] #ACBr-8132 Ajustes para atender as alterações realizadas nos schemas.
+   Por: Italo Giurizzato Junior
+-- Diversos --
+[*] Acrescentado a unit ACBrDFe.Conversao visando a Reforma Tributária.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[*] Correção da URL para obter o DANFSE em PDF PadraoNacional.
+   Por: dna.automacao
+[*] Correção no Params da cidade Rondonopolis/MT.
+   Por: Italo Giurizzato Junior
+
+08/10/2025
+-- ACBrNFSeXLerXml_ABRASFv1/ACBrNFSeXLerXml_ABRASFv2 --
+[*] Ajustes na leitura de campos numericos do arquivo INI.
+   Por: Italo Giurizzato Junior
+-- Diversos --
+[*] Acrescentado a unit ACBrDFe.Conversao visando a Reforma Tributária.
+   Por: Italo Giurizzato Junior
+
+07/10/2025
+-- Diversos --
+[*] #ACBr-8142 Ajustes para usar a nova URL do serviço ObterDANFSE do Padrão Nacional.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[*] #ACBr-8153 A cidade Rio das Ostras/RJ trocou a versão e as URLs, o provedor continua 
+    o mesmo.
+   Por: João Antônio
+[*] #ACBr-8152 A cidade Manhuaçu/MG trocou a versão e as URLs, o provedor continua 
+    o mesmo.
+   Por: Wesley Lamb
+[*] #ACBr-8149 A cidade Ubirata/PR trocou de provedor, agora é EloTech.
+   Por: Arthur Haupt Pacheco
+[*] #ACBr-8145 Incluido o Link da URL do QR-Code da cidade Xinguara/PR.
+   Por: Valter Digital
+[*] #ACBr-8144 A cidade Presidente Nereu/SC trocou a URL, o provedor continua o mesmo.
+   Por: Alysson Rengel
+[*] #ACBr-8140 A cidade Jandaia do Sul/PR trocou de provedor, agora é EloTech.
+   Por: Caviuna
+[*] #ACBr-8137 A cidade Goiania/GO alterou as URLs, o provedor continua o mesmo.
+   Por: Neto233/Igor Cibiac/PrimeSoftware/WellingtonMiguel
+[*] #ACBr-8125 A cidade Jaragua do Sul/SC trocou a versão e as URLs, o provedor continua 
+    o mesmo.
+   Por: BluData/TiagoFZ
+
 29/09/2025
 -- Conam.GravarXml/Conam.LerXml/Conam.Provider --
 [*] #ACBr-8105 Ajustes para leitura de um lote de notas no retorno do ConsultarLote.
