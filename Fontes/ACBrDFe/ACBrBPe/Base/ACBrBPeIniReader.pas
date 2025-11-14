@@ -177,7 +177,7 @@ begin
   //
   // Seção [Ide] Identificação do BP-e
   //
-  Ide.tpAmb   := StrToTipoAmbiente(OK, AINIRec.ReadString('ide', 'tpAmb', IntToStr(Ambiente)));
+  Ide.tpAmb   := StrToTipoAmbiente(AINIRec.ReadString('ide', 'tpAmb', IntToStr(Ambiente)));
   Ide.modelo  := AINIRec.ReadInteger('ide', 'mod', 63);
   Ide.serie   := AINIRec.ReadInteger('ide', 'serie', 1);
   Ide.nBP     := AINIRec.ReadInteger('ide', 'nBP', 0);
@@ -719,6 +719,7 @@ begin
     IBSCBS.indDoacao := StrToTIndicadorEx(ok, AINIRec.ReadString(sSecao, 'indDoacao', ''));
 
     Ler_IBSCBS_gIBSCBS(AINIRec, IBSCBS.gIBSCBS, Idx1, Idx2);
+    Ler_gEstornoCred(AINIRec, IBSCBS.gEstornoCred, Idx1, Idx2);
   end;
 end;
 
@@ -741,7 +742,6 @@ begin
     Ler_gCBS(AINIRec, gIBSCBS.gCBS, Idx1, Idx2);
     Ler_gTribReg(AINIRec, gIBSCBS.gTribRegular, Idx1, Idx2);
     Ler_gTribCompraGov(AINIRec, gIBSCBS.gTribCompraGov, Idx1, Idx2);
-    Ler_gEstornoCred(AINIRec, gIBSCBS.gEstornoCred, Idx1, Idx2);
   end;
 end;
 

@@ -39,6 +39,7 @@ interface
 uses
   SysUtils, Classes, Variants,
   ACBrJSON, ACBrDFeSSL,
+  ACBrBase,
   ACBrXmlBase,
   ACBrXmlDocument,
   ACBrNFSeXNotasFiscais,
@@ -51,6 +52,8 @@ uses
 
 type
   TACBrNFSeXWebservicePadraoNacional = class(TACBrNFSeXWebserviceRest)
+  protected
+    procedure SetHeaders(aHeaderReq: THTTPHeader); override;
   public
     function GerarNFSe(const ACabecalho, AMSG: string): string; override;
     function ConsultarNFSePorRps(const ACabecalho, AMSG: string): string; override;
@@ -125,8 +128,12 @@ uses
 { TACBrNFSeProviderPadraoNacional }
 
 procedure TACBrNFSeProviderPadraoNacional.Configuracao;
+var
+  VersaoDFe: string;
 begin
   inherited Configuracao;
+
+  VersaoDFe := VersaoNFSeToStr(TACBrNFSeX(FAOwner).Configuracoes.Geral.Versao);
 
   with ConfigGeral do
   begin
@@ -137,6 +144,7 @@ begin
     FormatoArqRetorno := tfaJson;
     FormatoArqEnvioSoap := tfaJson;
     FormatoArqRetornoSoap := tfaJson;
+    UseAuthorizationHeader := ConfigGeral.Params.TemParametro('UseToken');
 
     ServicosDisponibilizados.EnviarUnitario := True;
     ServicosDisponibilizados.ConsultarNfseChave := True;
@@ -152,8 +160,9 @@ begin
 
   with ConfigWebServices do
   begin
-    VersaoDados := '1.00';
-    VersaoAtrib := '1.00';
+    VersaoDados := VersaoDFe;
+    VersaoAtrib := VersaoDFe;
+
     AtribVerLote := 'versao';
   end;
 
@@ -182,11 +191,11 @@ begin
 
   with ConfigSchemas do
   begin
-    GerarNFSe := 'DPS_v1.00.xsd';
-    ConsultarNFSe := 'DPS_v1.00.xsd';
-    ConsultarNFSeRps := 'DPS_v1.00.xsd';
-    EnviarEvento := 'pedRegEvento_v1.00.xsd';
-    ConsultarEvento := 'DPS_v1.00.xsd';
+    GerarNFSe := 'DPS_v' + VersaoDFe + '.xsd';
+    ConsultarNFSe := 'DPS_v' + VersaoDFe + '.xsd';
+    ConsultarNFSeRps := 'DPS_v' + VersaoDFe + '.xsd';
+    EnviarEvento := 'pedRegEvento_v' + VersaoDFe + '.xsd';
+    ConsultarEvento := 'DPS_v' + VersaoDFe + '.xsd';
   end;
 end;
 
@@ -797,6 +806,7 @@ begin
             Response.Data := ObterConteudoTag(ANode.Childrens.FindAnyNs('dhProc'), tcDatHor);
             Response.idEvento := IDEvento;
             Response.tpEvento := StrTotpEvento(Ok, Copy(IDEvento, 51, 6));
+            Response.XmlRetorno := EventoXml;
 
             case Response.tpEvento of
               teCancelamento:
@@ -1114,7 +1124,7 @@ begin
                 Response.nSeqEvento := ObterConteudoTag(ANode.Childrens.FindAnyNs('nSeqEvento'), tcInt);
                 Response.Data := ObterConteudoTag(ANode.Childrens.FindAnyNs('dhProc'), tcDatHor);
                 Response.idEvento := IDEvento;
-                Response.tpEvento := StrTotpEvento(Ok, Copy(IDEvento, 51, 6));
+                Response.tpEvento := StrTotpEvento(Ok, 'e' + Copy(IDEvento, 51, 6));
 
                 ANode := ANode.Childrens.FindAnyNs('pedRegEvento');
                 ANode := ANode.Childrens.FindAnyNs('infPedReg');
@@ -1415,7 +1425,18 @@ begin
     Exit
   end;
 
-  SalvarPDFNfse(Response.ChaveNFSe, Response.ArquivoRetorno);
+  if Pos('"title":"Not Found","status":404', Response.ArquivoRetorno) > 0 then
+  begin
+    AErro := Response.Erros.New;
+    AErro.Codigo := Cod214;
+    AErro.Descricao := ACBrStr(Desc214);
+    Exit
+  end;
+
+  Response.Sucesso := (Response.Erros.Count = 0);
+
+  if Response.Sucesso then
+    SalvarPDFNfse(Response.ChaveNFSe, Response.ArquivoRetorno);
 end;
 
 procedure TACBrNFSeProviderPadraoNacional.ValidarSchema(
@@ -1583,6 +1604,19 @@ begin
   Request := AMSG;
 
   Result := Executar('', Request, [], []);
+end;
+
+procedure TACBrNFSeXWebservicePadraoNacional.SetHeaders(
+  aHeaderReq: THTTPHeader);
+var
+  Auth: string;
+begin
+  if TACBrNFSeX(FPDFeOwner).Provider.ConfigGeral.UseAuthorizationHeader then
+  begin
+    Auth := TConfiguracoesNFSe(FPConfiguracoes).Geral.Emitente.WSChaveAcesso;
+
+    aHeaderReq.AddHeader('token', Auth);
+  end;
 end;
 
 function TACBrNFSeXWebservicePadraoNacional.TratarXmlRetornado(

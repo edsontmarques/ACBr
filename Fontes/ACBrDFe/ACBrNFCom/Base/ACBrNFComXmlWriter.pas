@@ -659,10 +659,10 @@ begin
   Result.AppendChild(AddNode(tcStr, '#63', 'tpServUtil', 1, 1, 1,
                   tpServUtilToStr(NFCom.assinante.tpServUtil), DSC_TPSERVUTIL));
 
-  Result.AppendChild(AddNode(tcStr, '#64', 'nContrato', 1, 20, 1,
+  Result.AppendChild(AddNode(tcStr, '#64', 'nContrato', 1, 20, 0,
                                      NFCom.assinante.nContrato, DSC_NCONTRATO));
 
-  Result.AppendChild(AddNode(tcDat, '#65', 'dContratoIni', 10, 10, 1,
+  Result.AppendChild(AddNode(tcDat, '#65', 'dContratoIni', 10, 10, 0,
                                NFCom.assinante.dContratoIni, DSC_DCONTRATOINI));
 
   Result.AppendChild(AddNode(tcDat, '#66', 'dContratoFim', 10, 10, 0,
@@ -1385,7 +1385,7 @@ function TNFComXmlWriter.Gerar_gFat: TACBrXmlNode;
 begin
   Result := nil;
 
-  if NFCom.gFat.dVencFat > 0 then
+  if (NFCom.gFat.dVencFat > 0) and (NFCom.gFatCentral.CNPJ = '') then
   begin
     Result := FDocument.CreateElement('gFat');
 
@@ -1483,7 +1483,7 @@ function TNFComXmlWriter.Gerar_gFatCentral: TACBrXmlNode;
 begin
   Result := nil;
 
-  if NFCom.gFatCentral.CNPJ <> '' then
+  if (NFCom.gFat.dVencFat = 0) and (NFCom.gFatCentral.CNPJ <> '') then
   begin
     Result := FDocument.CreateElement('gFatCentral');
 
@@ -1627,6 +1627,9 @@ begin
 
     if IBSCBS.CST = cst000 then
       Result.AppendChild(Gerar_IBSCBS_gIBSCBS(IBSCBS.gIBSCBS));
+
+  if (IBSCBS.gEstornoCred.vIBSEstCred > 0) or (IBSCBS.gEstornoCred.vCBSEstCred > 0) then
+    Result.AppendChild(Gerar_gEstornoCred(IBSCBS.gEstornoCred));
   end;
 end;
 
@@ -1651,9 +1654,6 @@ begin
 
   if (gIBSCBS.gTribCompraGov.pAliqIBSUF > 0) and (NFCom.Ide.gCompraGov.tpEnteGov <> tcgNenhum) then
     Result.AppendChild(Gerar_gTribCompraGov(gIBSCBS.gTribCompraGov));
-
-  if (gIBSCBS.gEstornoCred.vIBSEstCred > 0) or (gIBSCBS.gEstornoCred.vCBSEstCred > 0) then
-    Result.AppendChild(Gerar_gEstornoCred(gIBSCBS.gEstornoCred));
 end;
 
 function TNFComXmlWriter.Gerar_IBSCBS_gIBSCBS_gIBSUF(
@@ -1847,6 +1847,8 @@ end;
 
 function TNFComXmlWriter.Gerar_IBSCBSTot(IBSCBSTot: TIBSCBSTot): TACBrXmlNode;
 begin
+  Result := nil;
+
   if FpGerarGrupoIBSCBSTot then
   begin
     Result := FDocument.CreateElement('IBSCBSTot');

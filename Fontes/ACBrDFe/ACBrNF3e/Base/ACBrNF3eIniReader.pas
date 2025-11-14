@@ -41,7 +41,6 @@ uses
   IniFiles,
   ACBrXmlBase,
   ACBrDFe.Conversao,
-  pcnConversao,
   ACBrNF3eClass,
   ACBrNF3eConversao,
   ACBrDFeComum.Proc;
@@ -193,13 +192,13 @@ var
   Ok: Boolean;
 begin
   sSecao := 'ide';
-  Ide.tpAmb   := StrToTipoAmbiente(OK, AINIRec.ReadString(sSecao, 'tpAmb', IntToStr(Ambiente)));
+  Ide.tpAmb   := StrToTipoAmbiente(AINIRec.ReadString(sSecao, 'tpAmb', IntToStr(Ambiente)));
   Ide.modelo := AINIRec.ReadInteger(sSecao, 'Modelo', 62);
   Ide.serie := AINIRec.ReadInteger(sSecao, 'Serie', 1);
   Ide.nNF := AINIRec.ReadInteger(sSecao, 'nNF', 0);
   Ide.cNF := AINIRec.ReadInteger(sSecao, 'cNF', 0);
   Ide.dhEmi := StringToDateTime(AINIRec.ReadString(sSecao, 'dhEmi', '0'));
-  Ide.tpEmis  := StrToTipoEmissao(OK, AINIRec.ReadString(sSecao, 'tpEmis', IntToStr(tpEmis)));
+  Ide.tpEmis  := StrToTipoEmissao(AINIRec.ReadString(sSecao, 'tpEmis', IntToStr(tpEmis)));
   Ide.nSiteAutoriz := StrToSiteAutorizator(AINIRec.ReadString(sSecao, 'nSiteAutoriz', '0'));
   Ide.finNF3e := StrToFinNF3e(AINIRec.ReadString(sSecao, 'finNF3e', '0'));
   Ide.verProc := AINIRec.ReadString(sSecao, 'verProc', 'ACBrNFCom');
@@ -1106,7 +1105,7 @@ begin
   sSecao := 'procNF3e';
   if AINIRec.SectionExists(sSecao) then
   begin
-    procNF3e.tpAmb := StrToTipoAmbiente(ok, AINIRec.ReadString(sSecao, 'tpAmb', ''));
+    procNF3e.tpAmb := StrToTipoAmbiente(AINIRec.ReadString(sSecao, 'tpAmb', ''));
     procNF3e.verAplic := AINIRec.ReadString(sSecao, 'verAplic', '');
     procNF3e.chDFe := AINIRec.ReadString(sSecao, 'chNF3e', '');
     procNF3e.dhRecbto := AINIRec.ReadDateTime(sSecao, 'dhRecbto', 0);
@@ -1123,7 +1122,6 @@ end;
 procedure TNF3eIniReader.Ler_IBSCBS(AINIRec: TMemIniFile; IBSCBS: TIBSCBS; Idx1, Idx2: Integer);
 var
   sSecao: string;
-  ok: Boolean;
 begin
   sSecao := 'IBSCBS' + IntToStrZero(Idx1, 2) + IntToStrZero(Idx2, 3);
 
@@ -1131,9 +1129,9 @@ begin
   begin
     IBSCBS.CST := StrToCSTIBSCBS(AINIRec.ReadString(sSecao, 'CST', ''));
     IBSCBS.cClassTrib := AINIRec.ReadString(sSecao, 'cClassTrib', '');
-    IBSCBS.indDoacao := StrToTIndicadorEx(ok, AINIRec.ReadString(sSecao, 'indDoacao', ''));
-
+    IBSCBS.indDoacao := StrToTIndicadorEx(AINIRec.ReadString(sSecao, 'indDoacao', ''));
     Ler_IBSCBS_gIBSCBS(AINIRec, IBSCBS.gIBSCBS, Idx1, Idx2);
+    Ler_gEstornoCred(AINIRec, IBSCBS.gEstornoCred, Idx1, Idx2);
   end;
 end;
 
@@ -1153,7 +1151,6 @@ begin
     Ler_gCBS(AINIRec, gIBSCBS.gCBS, Idx1, Idx2);
     Ler_gTribReg(AINIRec, gIBSCBS.gTribRegular, Idx1, Idx2);
     Ler_gTribCompraGov(AINIRec, gIBSCBS.gTribCompraGov, Idx1, Idx2);
-    Ler_gEstornoCred(AINIRec, gIBSCBS.gEstornoCred, Idx1, Idx2);
   end;
 end;
 

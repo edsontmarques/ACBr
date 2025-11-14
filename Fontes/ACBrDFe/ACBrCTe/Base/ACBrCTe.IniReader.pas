@@ -40,6 +40,8 @@ uses
   Classes, SysUtils,
   IniFiles,
   ACBrCTe.Classes,
+  ACBrXmlBase,
+  ACBrDFe.Conversao,
   pcteProcCTe,
   pcnConversao,
   pcteConversaoCTe;
@@ -148,9 +150,7 @@ implementation
 
 uses
   StrUtils,
-  ACBrDFe.Conversao,
   ACBrCTe,
-  ACBrXmlBase,
   ACBrUtil.Base,
   ACBrUtil.Strings,
   ACBrUtil.FilesIO,
@@ -993,7 +993,11 @@ begin
   I := 1;
   while true do
   begin
-    sSecao := 'infNFe'+IntToStrZero(I,3);
+    //Pode ter até 2000 ocorrências, mas só mudar o índice de 3 para 4 causaria problemas indesejados...
+    if I > 999 then
+      sSecao := 'infNFe'+IntToStrZero(I,4)
+    else
+      sSecao := 'infNFe'+IntToStrZero(I,3);
     sFim   := AINIRec.ReadString(sSecao,'chave','FIM');
     if FimLoop(sFim) then
       break;
@@ -2340,6 +2344,7 @@ begin
     IBSCBS.indDoacao := StrToTIndicadorEx(ok, AINIRec.ReadString(sSecao, 'indDoacao', ''));
 
     Ler_IBSCBS_gIBSCBS(AINIRec, IBSCBS.gIBSCBS);
+    Ler_gEstornoCred(AINIRec, IBSCBS.gEstornoCred);
   end;
 end;
 
@@ -2359,7 +2364,6 @@ begin
     Ler_gCBS(AINIRec, gIBSCBS.gCBS);
     Ler_gTribReg(AINIRec, gIBSCBS.gTribRegular);
     Ler_gTribCompraGov(AINIRec, gIBSCBS.gTribCompraGov);
-    Ler_gEstornoCred(AINIRec, gIBSCBS.gEstornoCred);
   end;
 end;
 

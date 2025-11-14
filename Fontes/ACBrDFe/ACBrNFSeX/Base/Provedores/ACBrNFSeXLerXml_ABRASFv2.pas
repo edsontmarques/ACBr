@@ -60,7 +60,7 @@ type
     function LerCodigoPaisServico(const ANode: TACBrXmlNode): Integer; virtual;
     function LerCodigoPaisTomador(const ANode: TACBrXmlNode): Integer; virtual;
 
-    procedure LerInfNfse(const ANode: TACBrXmlNode);
+    procedure LerInfNfse(const ANode: TACBrXmlNode); virtual;
 
     procedure LerValoresNfse(const ANode: TACBrXmlNode);
 
@@ -1102,6 +1102,9 @@ begin
   if AuxNode <> nil then
   begin
     NFSe.NfseSubstituidora := ObterConteudo(AuxNode.Childrens.FindAnyNs('NfseSubstituidora'), tcStr);
+
+    if NFSe.NfseSubstituidora <> '' then
+      NFSe.SituacaoNfse := snSubstituido;
   end;
 end;
 
