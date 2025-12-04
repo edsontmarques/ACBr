@@ -42,6 +42,51 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+04/12/2025
+-- ACBrNFSeXServicos --
+[*] ACBR-8378 - A cidade Jacareí/SP mudou de provedor, agora é PadraoNacional
+   Por: Raphael Sanini
+
+03/12/2025
+-- WebISS.GravarXml --
+[+] ACBR-8529 - Realizada alterações visando gerar o grupo IBSCBS.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[*] ACBR-8527 - Alterado a versão da cidade São José do Cedro/SC, o provedor continua o mesmo.
+   Por: C4Dev
+-- ACBrNFSeXConfiguracoes/ACBrNFSeXClass/ACBrNFSeXGravarXml_ABRASFv2 --
+-- ACBrNFSeXLerXml_ABRASFv1/ACBrNFSeXLerXml_ABRASFv2 --
+[-] Correção para não gerar de forma indevida o grupo de Endereço no Exterior.
+   Por: Italo Giurizzato Junior
+-- ISSSaoPaulo.GravarXml/ISSSaoPaulo.Provider --
+[*] ACBR-8525 - Ajustes na geração do campo Assinatura, pois a versão 2 é diferente.
+   Por: Hunes/Italo Giurizzato Junior
+-- Diversos --
+[*] ACBR-8511/8496 - Varias alterações visando atender o provedor: ISSNet no que se refere a 
+    adoção ao layout da NFS-e Padrão Nacional
+   Por: Italo Giurizzato Junior
+-- PadraoNacional.GravarXml --
+[-] Possível solução para a geração do grupo: totTrib.
+   Por: Italo Giurizzato Junior
+
+02/12/2025
+-- fintelISS.GravarXml --
+[*] ACBR-8509 - Ajustes por conta da alteração nos schemas disponibilizado pelo provedor.
+   Por: aslsoftwareltda/Italo Giurizzato Junior
+-- IPM.GravarXml --
+[*] ACBR-8510 - Ajustes por conta da alteração nos schemas disponibilizado pelo provedor.
+   Por: marciost
+-- Diversos --
+[*] Varias alterações visando atender os provedores: Betha, Città, E&L, Pronim, SimplISS,
+    Tiplan, SilTecnologia, RLZ, Infisc no que se refere a adoção ao layout da NFS-e
+    Padrão Nacional
+   Por: Italo Giurizzato Junior
+
+01/12/2025
+-- ACBrNFSeXServicos --
+[*] ACBR-8512 - Alterado a versão e as URLs das cidades Mamborê/PR o provedor continua o mesmo.
+   Por: Arthur Haupt Pacheco
+
 28/11/2025
 -- Infisc.GravarXml --
 [+] ACBR-8493 - Acrescentado os campos opcionais que consta nos schemas, mas não estavam sendo gerados caso alimentados.
