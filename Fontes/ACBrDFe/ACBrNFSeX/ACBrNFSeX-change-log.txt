@@ -42,8 +42,78 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+
+11/12/2025
+-- ACBrNFSeXServicos --
+[*] ACBR-8565 - Incluída a cidade Harmonia/RS, o provedor é Tecnos versão 2.01
+   Por: C4Dev
+-- ISSSaoPaulo.GravarXml --
+[-] No XML só deve constar o CPF/CNP do Intermediário.
+   Por: Italo Giurizzato Junior
+-- Bauhaus.GravarJson/Bauhaus.LerJson --
+[-] Não estava lendo a seção Itens.
+   Por: Italo Giurizzato Junior
+-- Diversos --
+[*] Ajustes para emitir uma NFS-e usando a API própria do provedor Citta.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[*] ACBR-8558 - A cidade Mogi das Cruzes/SP mudou de provedor, agora é SilTecnologia
+   Por: Marcos Pereda
+[*] ACBR-8562 - Incluído as URLs da API própria para cidade Macaé/RJ, o provedor continua o mesmo.
+   Por: cezar.sakugawa
+
+09/12/2025
+-- Diversos --
+[*] Ajustes para gerar a tag CodigoNbs para os provedores que usam a versão 2 do layout da ABRASF.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXConversao --
+[*] Acrescentado as Naturezas de Operação: 602 e 603.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXGravarXml/Citta.GravarXml/Citta.Provider --
+-- PadraoNacional.GravarXml/PadraoNacional.Provider --
+[*] Possível solução para atender a API Própria do provedor Citta.
+   Por: Italo Giurizzato Junior
+-- WebISS.LerXml --
+[*] Alteração visando a leitura correta do grupo IBSCBS.
+   Por: Tiago  Tecchio
+
+08/12/2025
+-- EL.GravarXml --
+[-] Correção para evitar erro de validação.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXLerXml --
+[-] Correção para evitar loop infinito.
+   Por: Italo Giurizzato Junior
+-- Pronim.Provider --
+[+] ACBR-8541 - Implementado a Consulta ao DPS por numero e serie do mesmo.
+    Consulta exclusiva para o provedor Pronim - API Própria.
+   Por: Italo Giurizzato Junior
+-- PadraoNacional.GravarXml --
+[*] ACBR-8551 - Alterado a condição para gerar o grupo comExt, pois o valor do serviço pode ser zero.
+   Por: Leonardo Gomes
+-- ISSSaoPaulo.Provider --
+[*] ACBR-8550 - Se não tem Intermediário não é necessário incluir na assinatura adicional.
+   Por: Leonardo Gomes
+-- ACBrNFSeXClass/Tecnos.GravarXml --
+[*] ACBR-8458 - Alterações para atender o provedor Tecnos no que se refere a Reforma Tributária.
+   Por: Italo Giurizzato Junior
+-- Diversos --
+[*] ACBR-8508/8520 - Alterações em diversas units para atender o provedor Publica no 
+    que se refere a Reforma Tributária.
+   Por: Italo Giurizzato Junior
+
+05/12/2025
+-- ACBrNFSeXLerXml_ABRASFv2/WebISS.GravarXml/WebISS.LerXml --
+[*] ACBR-8538 - Ajustes para gerar a tag CodigoNbs e a leitura do grupo IBSCBS.
+   Por: Tiago Tecchio/Italo Giurizzato Junior
+-- ACBrNFSeXClass/ACBrNFSeXLerXml/SigISSWeb.GravarXml --
+[+] ACBR-8497 - Implementado os novos campos para atender a reforma tributária.
+   Por: Italo Giurizzato Junior
+
 04/12/2025
 -- ACBrNFSeXServicos --
+[*] A cidade Ribeirão Pires/SP mudou de provedor, agora é Giss
+   Por: Raquel Basani
 [*] ACBR-8378 - A cidade Jacareí/SP mudou de provedor, agora é PadraoNacional
    Por: Raphael Sanini
 

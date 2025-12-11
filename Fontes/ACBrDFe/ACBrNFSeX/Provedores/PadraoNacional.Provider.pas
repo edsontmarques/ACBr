@@ -466,6 +466,7 @@ begin
 
       if NFSeXml <> '' then
       begin
+//        NFSeXml := DecodeToString(DeCompress(DecodeBase64(NFSeXml)), True);
         NFSeXml := DeCompress(DecodeBase64(NFSeXml));
         LerNFSe(NFSeXml);
       end;
@@ -787,7 +788,7 @@ begin
 
       if EventoXml <> '' then
       begin
-        EventoXml := DeCompress(DecodeBase64(EventoXml));
+        EventoXml := DecodeToString(DeCompress(DecodeBase64(EventoXml)), True);
 
         DocumentXml := TACBrXmlDocument.Create;
 
@@ -947,6 +948,8 @@ begin
         else
           ArquivoXml := DeCompress(DecodeBase64(ArquivoXml));
 
+        ArquivoXml := DecodeToString(ArquivoXml, True);
+
         if ArquivoXml = '' then
         begin
           AErro := Response.Erros.New;
@@ -1066,7 +1069,7 @@ begin
           AResumo.TipoEvento := JSon.AsString['TipoEvento'];
 
           ArquivoXml := JSon.AsString['ArquivoXml'];
-          ArquivoXml := DeCompress(DecodeBase64(ArquivoXml));
+          ArquivoXml := DecodeToString(DeCompress(DecodeBase64(ArquivoXml)), True);
 
           if ArquivoXml = '' then
           begin
