@@ -266,6 +266,7 @@ type
     fDiretorioTrabalho: String;
     fTEFRespClass: TACBrTEFRespClass;
     fIdentificadorTransacao: String;
+    fDataHoraIdentificador: TDateTime;
     fGravarRespostas: Boolean;
     fLimparRespostasPorTransacao: Boolean;
     procedure SetIdentificadorTransacao(const AValue: String);
@@ -283,6 +284,8 @@ type
       const DirTrabalho: String; GravarRespostas: Boolean;
       LimparRespostasPorTransacao: Boolean);
     destructor Destroy; override;
+    procedure Clear;
+    procedure Assign(Source: TACBrTEFAPIRespostas);
 
     function AdicionarRespostaTEF(ATEFResp: TACBrTEFResp): Integer;
     procedure SalvarRespostasTEF;
@@ -296,6 +299,7 @@ type
     procedure AtualizarTransacaoComTerceiraPerna(const Rede, NSU, CodigoFinalizacao: String); overload;
     procedure AtualizarTransacaoComTerceiraPerna(ATEFResp: TACBrTEFResp); overload;
 
+    property DataHoraIdentificador: TDateTime read fDataHoraIdentificador;
     property IdentificadorTransacao: String read fIdentificadorTransacao
       write SetIdentificadorTransacao;
     property Items[Index: Integer]: TACBrTEFResp read GetItem; default;
@@ -607,12 +611,32 @@ begin
   fDiretorioTrabalho := PathWithDelim(DirTrabalho);
 
   fTEFRespList := TACBrTEFRespostas.Create(True);
+  Clear;
 end;
 
 destructor TACBrTEFAPIRespostas.Destroy;
 begin
   fTEFRespList.Free;
   inherited;
+end;
+
+procedure TACBrTEFAPIRespostas.Clear;
+begin
+  fTEFRespList.Clear;
+  fIdentificadorTransacao := '';
+  fDataHoraIdentificador := 0;
+end;
+
+procedure TACBrTEFAPIRespostas.Assign(Source: TACBrTEFAPIRespostas);
+var
+  i: Integer;
+begin
+  Clear;
+  for i := 0 to Source.Count-1 do
+    AddClone(Source.Items[i]);
+
+  fIdentificadorTransacao := Source.IdentificadorTransacao;
+  fDataHoraIdentificador := Source.DataHoraIdentificador;
 end;
 
 function TACBrTEFAPIRespostas.AcharTransacao(const Rede, NSU: String;
@@ -687,7 +711,7 @@ var
 begin
   VerificarDiretorioTrabalho;
 
-  fTEFRespList.Clear;
+  Clear;
   SL := TStringList.Create;
   try
     FindFiles(ObterMascaraTodosArquivosDiretorioTrabalho, SL, True, fstFileName, fsdAscending );
@@ -700,6 +724,7 @@ begin
 
       fTEFRespList.Add(NovaResp);
       fIdentificadorTransacao := NovaResp.DocumentoVinculado;
+      fDataHoraIdentificador := NovaResp.DataHoraTransacaoLocal;
     end;
   finally
     SL.Free;
@@ -710,6 +735,7 @@ procedure TACBrTEFAPIRespostas.LimparRespostasTEF;
 begin
   while (fTEFRespList.Count > 0) do
     ApagarRespostaTEF(0);
+  Clear;
 end;
 
 procedure TACBrTEFAPIRespostas.ApagarRespostaTEF(AIndex: Integer);
@@ -799,14 +825,23 @@ begin
 end;
 
 procedure TACBrTEFAPIRespostas.SetIdentificadorTransacao(const AValue: String);
+var
+  s: String;
+  n: TDateTime;
 begin
-  if (fIdentificadorTransacao = AValue) then
+  s := Trim(AValue);
+  if (fIdentificadorTransacao = s) then
     Exit;
 
   if fLimparRespostasPorTransacao then
     LimparRespostasTEF;
 
-  fIdentificadorTransacao := AValue;
+  n := Now;
+  if (s = '') then
+    s := FormatDateTime('YYYYMMDDHHNNSS', n );
+
+  fIdentificadorTransacao := s;
+  fDataHoraIdentificador := n;
 end;
 
 function TACBrTEFAPIRespostas.AddClone(ATEFResp: TACBrTEFResp): Integer;
@@ -1005,7 +1040,7 @@ begin
     end;
 
     TACBrTEFRespHack(UltimaRespostaTEF).fpHeader := AHeader;
-    UltimaRespostaTEF.Conteudo.GravaInformacao(899,100, AHeader);
+    UltimaRespostaTEF.Conteudo.GravaInformacao(899, CTEF_RESP_HEADER, AHeader);
     if (UltimaRespostaTEF.ArqBackup <> '') then
       UltimaRespostaTEF.Conteudo.GravarArquivo(UltimaRespostaTEF.ArqBackup);
   end;
@@ -1510,7 +1545,7 @@ begin
                                                      fDiretorioTrabalho,
                                                      False, False);
   try
-    fpTEFAPIClass.CarregarRespostasPendentes( RespostasTEFAtuais );
+    RespostasTEFAtuais.Assign(fRespostasTEF);
 
     p := 0;  // No Passo 0, vamos processar primeiro os CNCs e ADMs, e as Não Confirmadas, depois Todas
     i := 0;
