@@ -42,7 +42,52 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+06/01/2026
+-- ACBrNFSeXLerXml_ABRASFv2.pas --
+[*] ACBR-8673: Adicionado ler propriedade SituacaoTributariaPISCOFINS
+   https://www.projetoacbr.com.br/forum/topic/88675-erro-valida%C3%A7%C3%A3o-nfservi%C3%A7o-referente-situacaotributariapiscofins
+   Por: Daniel de Morais InfoCotidiano
+   
+06/01/2026
+-- PadraoNacional.GravarXml/SilTecnologia.GravarXml --
+[*] ACBR-8717: Alterações visando gerar corretamente o XML da NFS-e do provedor SilTecnologia.
+   Por: Innovae Brasil Engenharia
+-- PadraoNacional.GravarXml --
+[*] ACBR-8701: A tag pRedBCBM é opcional, portanto só deve ser gerada se o valor for maior que zero.
+   Por: Leonardo Gomes
+[*] ACBR-8697: Alterações na geração do grupo piscofins.
+   Por: maxuel82
+
+05/01/2026
+-- ACBrNFSeXServicosRTC.ini --
+[*] Atualização em diversas cidades.
+   Por: Italo Giurizzato Junior
+[+] Implementado o envio dos Eventos de Cancelamento e Substituição.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXGravarXml/ACBrNFSeXProviderManager/PadraoNacional.GravarXml --
+-- Digifred.GravarXml/Digifred.LerXml/Digifred.Provider --
+[*] Alterações nas units do provedor Digifred visando a Reforma Tributária.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicosRTC.ini --
+[*] A cidade Sonora/MS mudou para o provedor PadraoNacional.
+   Por: Comsystem
+
 02/01/2026
+-- ACBrNFSeXDANFSeRLRetrato --
+[*] ACBR-8687: Alteração visando não imprimir duas vezes as informações complementares do Padrão Nacional.
+  Por: João Vitor Bogo
+-- GeisWeb.GravarXml/GeisWeb.Provider --
+[*] ACBR-8688: Alterações visando o novo webservice do provedor.
+  Por: Italo Giurizzato Junior
+-- Publica.GravarXml/Publica.LerXml --
+[*] ACBR-8689: Ajustes na geração do XML com os novos campos da Reforma Tributária
+  Por: Roger Rodrigues
+-- GovDigital.GravarXml --
+[+] ACBR-8671: Alterações visando atender a Reforma Tributária.
+  Por: Italo Giurizzato Junior
+-- ACBrNFSeXConversao/SpeedGov.GravarXml/SpeedGov.Provider --
+[+] ACBR-8675: Alterações visando atender a Reforma Tributária.
+  Por: Dorivan Sousa
 -- Pronim.Provider --
 [+] ACBR-8695: Implementado o envio de eventos.
   Por: Italo Giurizzato Junior

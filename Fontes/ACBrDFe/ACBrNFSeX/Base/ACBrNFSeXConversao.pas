@@ -406,11 +406,11 @@ const
 
 type
   TvincPrest = (vpSemVinculo, vpControlada, vpControladora, vpColigada,
-                vpMatriz, vpFilial, vpOutro);
+                vpMatriz, vpFilial, vpOutro, vpDesconhecido);
 
 const
   TvincPrestArrayStrings: array[TvincPrest] of string = ('0', '1', '2', '3',
-    '4', '5', '6');
+    '4', '5', '6', '9');
 
 type
   TmecAFComexP = (mapsDesconhecido, mapsNenhum, mapsACC, mapsACE,
@@ -524,10 +524,12 @@ const
     '05', '06', '07', '08', '09');
 
 type
-  TtpRetPisCofins = (trpcRetido, trpcNaoRetido, trpcNenhum);
+  TtpRetPisCofins = (trpcRetido, trpcNaoRetido, trpcPISRetido, trpcCOFINSRetido,
+                     trpcNenhum);
 
 const
-  TtpRetPisCofinsArrayStrings: array[TtpRetPisCofins] of string = ('1', '2', '');
+  TtpRetPisCofinsArrayStrings: array[TtpRetPisCofins] of string = ('1', '2', '3',
+    '4', '');
 
 type
   TindTotTrib = (indNao, indSim);
@@ -12970,17 +12972,19 @@ end;
 function vincPrestToStr(const t: TvincPrest): string;
 begin
   result := EnumeradoToStr(t,
-                           ['0', '1', '2', '3', '4', '5', '6'],
+                           ['0', '1', '2', '3', '4', '5', '6', '9'],
                            [vpSemVinculo, vpControlada, vpControladora,
-                            vpColigada, vpMatriz, vpFilial, vpOutro]);
+                            vpColigada, vpMatriz, vpFilial, vpOutro,
+                            vpDesconhecido]);
 end;
 
 function StrTovincPrest(out ok: Boolean; const s: string): TvincPrest;
 begin
   result := StrToEnumerado(ok, s,
-                           ['0', '1', '2', '3', '4', '5', '6'],
+                           ['0', '1', '2', '3', '4', '5', '6', '9'],
                            [vpSemVinculo, vpControlada, vpControladora,
-                            vpColigada, vpMatriz, vpFilial, vpOutro]);
+                            vpColigada, vpMatriz, vpFilial, vpOutro,
+                            vpDesconhecido]);
 end;
 
 function mecAFComexPToStr(const t: TmecAFComexP): string;
@@ -13222,15 +13226,17 @@ end;
 function tpRetPisCofinsToStr(const t: TtpRetPisCofins): string;
 begin
   result := EnumeradoToStr(t,
-                           ['1', '2', ''],
-                           [trpcRetido, trpcNaoRetido, trpcNenhum]);
+                           ['1', '2', '3', '4', ''],
+                           [trpcRetido, trpcNaoRetido, trpcPISRetido,
+                            trpcCOFINSRetido, trpcNenhum]);
 end;
 
 function StrTotpRetPisCofins(out ok: Boolean; const s: string): TtpRetPisCofins;
 begin
   result := StrToEnumerado(ok, s,
-                           ['1', '2', ''],
-                           [trpcRetido, trpcNaoRetido, trpcNenhum]);
+                           ['1', '2', '3', '4', ''],
+                           [trpcRetido, trpcNaoRetido, trpcPISRetido,
+                            trpcCOFINSRetido, trpcNenhum]);
 end;
 
 function indTotTribToStr(const t: TindTotTrib): string;
