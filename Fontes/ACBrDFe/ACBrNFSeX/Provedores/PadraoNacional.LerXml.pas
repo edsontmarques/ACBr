@@ -88,6 +88,7 @@ type
     procedure LerXMLEnderecoExteriorEvento(const ANode: TACBrXmlNode);
     procedure LerXMLExploracaoRodoviaria(const ANode: TACBrXmlNode);
     procedure LerXMLInformacoesComplementares(const ANode: TACBrXmlNode);
+    procedure LerXMLInformacoesComplementaresgItemPed(const ANode: TACBrXMLNode);
 
     procedure LerXMLValores(const ANode: TACBrXmlNode);
     procedure LerXMLServicoPrestado(const ANode: TACBrXmlNode);
@@ -118,7 +119,7 @@ type
     procedure LerINIIdentificacaoNFSe(AINIRec: TMemIniFile);
     procedure LerINIIdentificacaoRps(AINIRec: TMemIniFile);
     procedure LerININFSeSubstituicao(AINIRec: TMemIniFile);
-    procedure LerINIDadosEmitente(AINIRec: TMemIniFile);
+    procedure LerINIDadosEmitente(AINIRec: TMemIniFile); virtual;
     procedure LerINIValoresNFSe(AINIRec: TMemIniFile);
 
     procedure LerINIDadosPrestador(AINIRec: TMemIniFile);
@@ -131,6 +132,7 @@ type
     procedure LerINIEvento(AINIRec: TMemIniFile);
     procedure LerINIRodoviaria(AINIRec: TMemIniFile);
     procedure LerINIInformacoesComplementares(AINIRec: TMemIniFile);
+    procedure LerINIInformacoesComplementaresgItemPed(AINIRec: TMemINIFile);
     procedure LerINIValores(AINIRec: TMemIniFile);
     procedure LerINIDocumentosDeducoes(AINIRec: TMemIniFile);
     procedure LerINIDocumentosDeducoesFornecedor(AINIRec: TMemIniFile;
@@ -835,7 +837,8 @@ begin
   if AuxNode <> nil then
   begin
     NFSe.infID.ID := OnlyNumber(ObterConteudoTag(AuxNode.Attributes.Items['Id']));
-    NFSe.DataEmissao := ObterConteudo(AuxNode.Childrens.FindAnyNs('dhEmi'), tcDatHor);
+    NFSe.DataEmissaoRPS := ObterConteudo(AuxNode.Childrens.FindAnyNs('dhEmi'), tcDatHor);
+    NFSe.DataEmissao := NFSe.DataEmissaoRPS;
     NFSe.verAplic := ObterConteudo(AuxNode.Childrens.FindAnyNs('verAplic'), tcStr);
     NFSe.IdentificacaoRps.Serie := ObterConteudo(AuxNode.Childrens.FindAnyNs('serie'), tcStr);
     NFSe.IdentificacaoRps.Numero := ObterConteudo(AuxNode.Childrens.FindAnyNs('nDPS'), tcStr);
@@ -901,6 +904,7 @@ begin
 
     NFSe.Servico.MunicipioIncidencia := NFSe.infNFSe.cLocIncid;
     NFSe.Servico.xMunicipioIncidencia := NFSe.infNFSe.xLocIncid;
+    NFSe.DataEmissao := NFSe.infNFSe.dhProc;
 
     LerXMLEmitente(AuxNode);
     LerXMLValoresNFSe(AuxNode);
@@ -943,12 +947,29 @@ begin
     begin
       idDocTec := ObterConteudo(AuxNode.Childrens.FindAnyNs('idDocTec'), tcStr);
       docRef := ObterConteudo(AuxNode.Childrens.FindAnyNs('docRef'), tcStr);
+      xPed := ObterConteudo(AuxNode.Childrens.FindAnyNs('xPed'), tcStr);
+      LerXMLInformacoesComplementaresgItemPed(AuxNode.Childrens.FindAnyNs('gItemPed'));
       xInfComp := ObterConteudo(AuxNode.Childrens.FindAnyNs('xInfComp'), tcStr);
       xInfComp := StringReplace(xInfComp, FpQuebradeLinha,
                                                     sLineBreak, [rfReplaceAll]);
 
       NFSe.OutrasInformacoes := NFSe.OutrasInformacoes + sLineBreak + xInfComp;
     end;
+  end;
+end;
+
+procedure TNFSeR_PadraoNacional.LerXMLInformacoesComplementaresgItemPed(const ANode: TACBrXMLNode);
+var
+  AuxNodeArray: TACBrXMLNodeArray;
+  i: Integer;
+begin
+  if not Assigned(ANode) then
+    exit;
+
+  AuxNodeArray := ANode.Childrens.FindAllAnyNs('xItemPed');
+  for i := 0 to Length(AuxNodeArray)-1 do
+  begin
+    NFSe.Servico.infoCompl.gItemPed.New.xItemPed := ObterConteudoTag(AuxNodeArray[i], tcStr);
   end;
 end;
 
@@ -1406,6 +1427,9 @@ begin
     NFSe.Servico.Valores.Aliquota := NFSe.infNFSe.valores.Aliquota;
     NFSe.Servico.Valores.ValorIss := NFSe.infNFSe.valores.ValorIss;
   end;
+
+  if NFSe.OutrasInformacoes = '' then
+    NFSe.OutrasInformacoes := ObterConteudo(ANode.Childrens.FindAnyNs('xOutInf'), tcStr);
 end;
 
 procedure TNFSeR_PadraoNacional.LerXMLValorTotalTributos(
@@ -1531,6 +1555,7 @@ begin
   LerINIEvento(AINIRec);
   LerINIRodoviaria(AINIRec);
   LerINIInformacoesComplementares(AINIRec);
+  LerINIInformacoesComplementaresgItemPed(AINIRec);
   LerINIValores(AINIRec);
   LerINIDocumentosDeducoes(AINIRec);
   LerINIValoresTribMun(AINIRec);
@@ -1636,8 +1661,14 @@ begin
     NFSe.IdentificacaoRps.Serie := AINIRec.ReadString(sSecao, 'Serie', '0');
 
     sData := AINIRec.ReadString(sSecao, 'DataEmissao', '');
+    if sData = '' then
+      sData := AINIRec.ReadString(sSecao, 'DataEmissaoRPS', '');
+
     if sData <> '' then
+    begin
       NFSe.DataEmissao := StringToDateTimeDef(sData, 0);
+      NFSe.DataEmissaoRps := NFSe.DataEmissao;
+    end;
 
     sData := AINIRec.ReadString(sSecao, 'Competencia', '');
     if sData <> '' then
@@ -1645,6 +1676,7 @@ begin
 
     NFSe.verAplic := AINIRec.ReadString(sSecao, 'verAplic', 'ACBrNFSeX-1.00');
     NFSe.tpEmit := StrTotpEmit(Ok, AINIRec.ReadString(sSecao, 'tpEmit', '1'));
+    NFSe.cLocEmi := AINIRec.ReadString(sSecao, 'cLocEmi', '');
     NFSe.cMotivoEmisTI := StrTocMotivoEmisTI(AINIRec.ReadString(sSecao, 'cMotivoEmisTI', ''));
   end;
 end;
@@ -1671,7 +1703,7 @@ begin
   sSecao := 'Emitente';
   if AINIRec.SectionExists(sSecao) then
   begin
-    NFSe.infNFSe.emit.Identificacao.CpfCnpj := AINIRec.ReadString(sSecao, 'CNPJ', '');
+    NFSe.infNFSe.emit.Identificacao.CpfCnpj := AINIRec.ReadString(sSecao, 'CNPJCPF', AINIRec.ReadString(sSecao, 'CNPJ', ''));
     NFSe.infNFSe.emit.Identificacao.InscricaoMunicipal := AINIRec.ReadString(sSecao, 'InscricaoMunicipal', '');
 
     NFSe.infNFSe.emit.RazaoSocial := AINIRec.ReadString(sSecao, 'RazaoSocial', '');
@@ -1733,13 +1765,13 @@ end;
 
 procedure TNFSeR_PadraoNacional.LerINIDadosPrestador(AINIRec: TMemIniFile);
 var
-  sSecao: string;
+  sSecao, sCampo: string;
   Ok: Boolean;
 begin
   sSecao := 'Prestador';
   if AINIRec.SectionExists(sSecao) then
   begin
-    NFSe.Prestador.IdentificacaoPrestador.CpfCnpj := AINIRec.ReadString(sSecao, 'CNPJ', '');
+    NFSe.Prestador.IdentificacaoPrestador.CpfCnpj := AINIRec.ReadString(sSecao, 'CNPJCPF', AINIRec.ReadString(sSecao, 'CNPJ', ''));
     NFSe.Prestador.IdentificacaoPrestador.InscricaoMunicipal := AINIRec.ReadString(sSecao, 'InscricaoMunicipal', '');
 
     NFSe.Prestador.IdentificacaoPrestador.Nif := AINIRec.ReadString(sSecao, 'NIF', '');
@@ -1766,7 +1798,8 @@ begin
     if AINIRec.ReadString(sSecao, 'RegimeApuracaoSN', '') <> '' then
       NFSe.RegimeApuracaoSN := StrToRegimeApuracaoSN(Ok, AINIRec.ReadString(sSecao, 'RegimeApuracaoSN', '1'));
 
-    NFSe.RegimeEspecialTributacao := FpAOwner.StrToRegimeEspecialTributacao(Ok, AINIRec.ReadString(sSecao, 'Regime', '0'));
+    sCampo := AINIRec.ReadString(sSecao, 'RegimeEspTrib', AINIRec.ReadString(sSecao, 'Regime', '0'));
+    NFSe.RegimeEspecialTributacao := FpAOwner.StrToRegimeEspecialTributacao(Ok, sCampo);
   end;
 end;
 
@@ -1895,6 +1928,7 @@ begin
   begin
     NFSe.ConstrucaoCivil.CodigoObra := AINIRec.ReadString(sSecao, 'CodigoObra', '');
     NFSe.ConstrucaoCivil.inscImobFisc := AINIRec.ReadString(sSecao, 'inscImobFisc', '');
+    NFSe.ConstrucaoCivil.Cib := AINIRec.ReadInteger(sSecao, 'Cib', 0);
 
     NFSe.ConstrucaoCivil.Endereco.CEP := AINIRec.ReadString(sSecao, 'CEP', '');
     NFSe.ConstrucaoCivil.Endereco.xMunicipio := AINIRec.ReadString(sSecao, 'xMunicipio', '');
@@ -1957,6 +1991,22 @@ begin
     NFSe.Servico.infoCompl.idDocTec := AINIRec.ReadString(sSecao, 'idDocTec', '');
     NFSe.Servico.infoCompl.docRef := AINIRec.ReadString(sSecao, 'docRef', '');
     NFSe.Servico.infoCompl.xInfComp := AINIRec.ReadString(sSecao, 'xInfComp', '');
+  end;
+end;
+
+procedure TNFSeR_PadraoNacional.LerINIInformacoesComplementaresgItemPed(AINIRec: TMemINIFile);
+var
+  sSecao: string;
+  i: Integer;
+begin
+  i := 1;
+  while True do
+  begin
+    sSecao := 'gItemPed' + IntToStrZero(i, 2);
+    if not AINIRec.SectionExists(sSecao) then
+      break;
+    NFSe.Servico.infoCompl.gItemPed.New.xItemPed := AINIRec.ReadString(sSecao, 'xItemPed', '');
+    Inc(i);
   end;
 end;
 
@@ -2031,6 +2081,7 @@ begin
     fornec.Identificacao.Nif := AINIRec.ReadString(sSecao, 'NIF', '');
     fornec.Identificacao.cNaoNIF := StrToNaoNIF(Ok, AINIRec.ReadString(sSecao, 'cNaoNIF', '0'));
     fornec.Identificacao.CAEPF := AINIRec.ReadString(sSecao, 'CAEPF', '');
+    fornec.RazaoSocial := AINIRec.ReadString(sSecao, 'RazaoSocial', '');
 
     fornec.Endereco.CEP := AINIRec.ReadString(sSecao, 'CEP', '');
     fornec.Endereco.xMunicipio := AINIRec.ReadString(sSecao, 'xMunicipio', '');

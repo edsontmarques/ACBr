@@ -294,6 +294,8 @@ procedure TNFeXmlWriter.AjustarMunicipioUF(out xUF: string; out xMun: string;
 var
   PaisBrasil: boolean;
 begin
+  if EstaZerado(cPais) then
+    cPais := CODIGO_BRASIL;
   PaisBrasil := cPais = CODIGO_BRASIL;
   cMun := IfThen(PaisBrasil, vcMun, CMUN_EXTERIOR);
   xMun := IfThen(PaisBrasil, vxMun, XMUN_EXTERIOR);
@@ -304,7 +306,6 @@ begin
       cMun := ObterCodigoMunicipio(xMun, xUF, Opcoes.FPathArquivoMunicipios)
     else if ((EstaVazio(xMun)) and (cMun <> CMUN_EXTERIOR)) then
       xMun := ObterNomeMunicipio(cMun, xUF, Opcoes.FPathArquivoMunicipios);
-
 end;
 
 function TNFeXmlWriter.ObterNomeArquivo: string;
@@ -2319,8 +2320,8 @@ begin
             NrOcorr := 0;
 
             // UFs que requerem as informações mesmo elas sendo zeradas
-            // RJ, PR
-            if NFe.Ide.cUF in [33, 41] then
+            // RJ, SP, PR
+            if NFe.Ide.cUF in [33, 35, 41] then
               NrOcorr := 1;
 
             if NFe.Det[i].Imposto.ICMS.modBC <> dbiNenhum then
@@ -4178,8 +4179,11 @@ function TNFeXmlWriter.Gerar_ISel(ISel: TgIS): TACBrXmlNode;
 begin
   Result := FDocument.CreateElement('IS');
 
+  //Usar string até a publicação de uma tabela de CSTs oficial para o IS
+//  Result.AppendChild(AddNode(tcStr, 'UB03', 'CSTIS', 3, 3, 1,
+//                                              CSTISToStr(ISel.CSTIS), DSC_CST));
   Result.AppendChild(AddNode(tcStr, 'UB03', 'CSTIS', 3, 3, 1,
-                                              CSTISToStr(ISel.CSTIS), DSC_CST));
+                                              ISel.CSTIS, DSC_CST));
 
   Result.AppendChild(AddNode(tcStr, 'UB04', 'cClassTribIS', 6, 6, 1,
                                             ISel.cClassTribIS, DSC_CCLASSTRIB));

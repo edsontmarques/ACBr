@@ -387,7 +387,14 @@ begin
           end;
         end;
 
-      proFiorilli:   Result := TACBrNFSeProviderFiorilli200.Create(ACBrNFSe);
+      proFiorilli:
+        begin
+          if APIPropria then
+            Result := TACBrNFSeProviderFiorilliAPIPropria.Create(ACBrNFSe)
+          else
+            Result := TACBrNFSeProviderFiorilli200.Create(ACBrNFSe);
+        end;
+
       proFisco:      Result := TACBrNFSeProviderFisco203.Create(ACBrNFSe);
       proFISSLex:    Result := TACBrNFSeProviderFISSLex.Create(ACBrNFSe);
       proFuturize:   Result := TACBrNFSeProviderFuturize202.Create(ACBrNFSe);
@@ -480,7 +487,14 @@ begin
       proISSCuritiba:
         Result := TACBrNFSeProviderISSCuritiba.Create(ACBrNFSe);
 
-      proISSDigital: Result := TACBrNFSeProviderISSDigital200.Create(ACBrNFSe);
+      proISSDigital:
+        begin
+          if APIPropria then
+            Result := TACBrNFSeProviderISSDigitalAPIPropria.Create(ACBrNFSe)
+          else
+            Result := TACBrNFSeProviderISSDigital200.Create(ACBrNFSe);
+        end;
+
       proISSDSF:     Result := TACBrNFSeProviderISSDSF.Create(ACBrNFSe);
       proISSe:       Result := TACBrNFSeProviderISSe201.Create(ACBrNFSe);
 
@@ -537,7 +551,12 @@ begin
       proMitra: Result := TACBrNFSeProviderMitra200.Create(ACBrNFSe);
 
       proModernizacaoPublica:
-        Result := TACBrNFSeProviderModernizacaoPublica202.Create(ACBrNFSe);
+        begin
+          if APIPropria then
+            Result := TACBrNFSeProviderModernizacaoPublicaAPIPropria.Create(ACBrNFSe)
+          else
+            Result := TACBrNFSeProviderModernizacaoPublica202.Create(ACBrNFSe);
+        end;
 
       proNEAInformatica:
         Result := TACBrNFSeProviderNEAInformatica200.Create(ACBrNFSe);
@@ -735,6 +754,7 @@ begin
             ve200: Result := TACBrNFSeProviderVersaTecnologia200.Create(ACBrNFSe);
             ve201: Result := TACBrNFSeProviderVersaTecnologia201.Create(ACBrNFSe);
             ve202: Result := TACBrNFSeProviderVersaTecnologia202.Create(ACBrNFSe);
+            ve204: Result := TACBrNFSeProviderVersaTecnologia204.Create(ACBrNFSe);
           else
             Result := nil;
           end;

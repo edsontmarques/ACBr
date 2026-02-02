@@ -39,6 +39,7 @@ interface
 uses
   SysUtils, Classes, StrUtils,
   ACBrXmlBase,
+  ACBrXmlDocument,
   ACBrNFSeXGravarXml_ABRASFv2;
 
 type
@@ -56,12 +57,16 @@ type
   protected
     procedure Configuracao; override;
 
+    function GerarServico: TACBrXmlNode; override;
+    function GerarInfDeclaracaoPrestacaoServico: TACBrXmlNode; override;
+    function GerarConstrucaoCivil: TACBrXmlNode; override;
   end;
 
 implementation
 
 uses
-  ACBrDFe.Conversao;
+  ACBrDFe.Conversao,
+  ACBrNFSeXConsts;
 
 //==============================================================================
 // Essa unit tem por finalidade exclusiva gerar o XML do RPS do provedor:
@@ -98,8 +103,60 @@ begin
   NrOcorrCepTomador := 1;
   NrOcorrAliquota := 1;
   NrOcorrCodigoPaisTomador := -1;
+  NrOcorrCodigoNBS := -1;
 
   TagTomador := 'TomadorServico';
+end;
+
+function TNFSeW_SigCorp204.GerarConstrucaoCivil: TACBrXmlNode;
+var
+  vEnderecoObra: TACBrXmlNode;
+begin
+  Result := nil;
+
+  if (NFSe.ConstrucaoCivil.CodigoObra <> '') then
+  begin
+    Result := CreateElement('Obra');
+
+    Result.AppendChild(AddNode(tcStr, '#51', 'CodigoObra', 1, 15, 1,
+                                   NFSe.ConstrucaoCivil.CodigoObra, DSC_COBRA));
+  end
+  else
+  if NFSe.ConstrucaoCivil.Endereco.Endereco <> '' then
+  begin
+    Result := CreateElement('Obra');
+
+    vEnderecoObra := CreateElement('EnderecoObra');
+
+    vEnderecoObra.AppendChild(AddNode(tcStr, '#52', 'Logradouro', 1, 100, 1,
+                            NFSe.ConstrucaoCivil.Endereco.Endereco, DSC_EOBRA));
+
+    vEnderecoObra.AppendChild(AddNode(tcStr, '#53', 'Numero', 1, 10, 0,
+                             NFSe.ConstrucaoCivil.Endereco.Numero, DSC_NEOBRA));
+
+    vEnderecoObra.AppendChild(AddNode(tcStr, '#54', 'Bairro', 1, 100, 1,
+                             NFSe.ConstrucaoCivil.Endereco.Bairro, DSC_BEOBRA));
+
+    vEnderecoObra.AppendChild(AddNode(tcStr, '#55', 'Cep', 1, 10, 1,
+                               NFSe.ConstrucaoCivil.Endereco.CEP, DSC_CEPOBRA));
+
+    Result.AppendChild(vEnderecoObra);
+  end;
+end;
+
+function TNFSeW_SigCorp204.GerarInfDeclaracaoPrestacaoServico: TACBrXmlNode;
+begin
+  Result := inherited GerarInfDeclaracaoPrestacaoServico;
+
+  Result.AppendChild(GerarXMLIBSCBSNFSe);
+end;
+
+function TNFSeW_SigCorp204.GerarServico: TACBrXmlNode;
+begin
+  Result := inherited GerarServico;
+
+  Result.AppendChild(AddNode(tcStr, '#32', 'cNBS', 1, 9, 1,
+                                                   NFSe.Servico.CodigoNBS, ''));
 end;
 
 end.

@@ -281,6 +281,7 @@ type
     rgReformaTributaria: TRadioGroup;
     btnConsultarDPSporNumeroPN: TButton;
     btnLerXml: TButton;
+    btnConsultarSitPN: TButton;
 
     procedure FormCreate(Sender: TObject);
     procedure btnSalvarConfigClick(Sender: TObject);
@@ -376,6 +377,7 @@ type
     procedure btnInformacoesClick(Sender: TObject);
     procedure btnConsultarDPSporNumeroPNClick(Sender: TObject);
     procedure btnLerXmlClick(Sender: TObject);
+    procedure btnConsultarSitPNClick(Sender: TObject);
   private
     CidAC: Integer;
     CidAL: Integer;
@@ -631,6 +633,7 @@ begin
         infNFSe.ambGer := agPrefeitura;
         // tePadraoNacional, teProprio
         infNFSe.tpEmis := teProprio;
+        infNFSe.xTribNac := 'Servico Gerais';
 
         // Valores
         infNFSe.Valores.BaseCalculo := 0;
@@ -920,10 +923,11 @@ begin
 
         IBSCBS.valores.trib.gIBSCBS.gTribRegular.CSTReg := cstNenhum;
         IBSCBS.valores.trib.gIBSCBS.gTribRegular.cClassTribReg := '';
-
+        {
         IBSCBS.valores.trib.gIBSCBS.gDif.pDifUF := 0.1;
         IBSCBS.valores.trib.gIBSCBS.gDif.pDifMun := 0;
         IBSCBS.valores.trib.gIBSCBS.gDif.pDifCBS := 0.9;
+        }
       end;
     end;
   end;
@@ -1940,6 +1944,8 @@ begin
         proSiapSistemas:
           // código padrão ABRASF acrescido de um sub-item
           Servico.ItemListaServico := '01.05.00';
+        proISSNatal:
+          Servico.ItemListaServico := '010500';
       else
         // código padrão da ABRASF
         Servico.ItemListaServico := '09.01';
@@ -1993,7 +1999,7 @@ begin
       Servico.MunicipioIncidencia := StrToIntDef(edtCodCidade.Text, 0);
 
       if ACBrNFSeX1.Configuracoes.Geral.Provedor in [proISSSalvador,
-           proSilTecnologia] then
+           proSilTecnologia, proISSNatal] then
       begin
         Servico.CodigoNBS := '115021000';
         Servico.cClassTrib := '000001';
@@ -2111,6 +2117,15 @@ begin
       // Reforma Tributária
       if rgReformaTributaria.ItemIndex = 0 then
       begin
+        Servico.CodigoNBS := '115021000';
+        Servico.CodigoMunicipioLocalPrestacao := StrToIntDef(edtCodCidade.Text, 0);
+        Servico.INDOP := '123456';
+        Servico.CClassTrib := '000001';
+
+        Servico.Valores.totTrib.pTotTribFed := 0.9;
+        Servico.Valores.totTrib.pTotTribEst := 0.1;
+        Servico.Valores.totTrib.pTotTribMun := 0;
+
         IBSCBS.finNFSe := fnfsRegular;
         IBSCBS.indFinal := ifSim;
         IBSCBS.cIndOp := '123456';
@@ -2130,7 +2145,7 @@ begin
         IBSCBS.tpEnteGov := tcgNenhum;
         // idTomadorAdquirenteDestinatarioIguais, idTomadorAdquirenteIguais,
         IBSCBS.indDest := idTomadorAdquirenteDestinatarioIguais;
-
+        {
         IBSCBS.dest.CNPJCPF := '12345678901';
         IBSCBS.dest.Nif := '';
         IBSCBS.dest.cNaoNIF := tnnNaoInformado;
@@ -2143,7 +2158,8 @@ begin
         IBSCBS.dest.ender.nro := '100';
         IBSCBS.dest.ender.xCpl := '';
         IBSCBS.dest.ender.xBairro := 'CENTRO';
-
+        }
+        {
         IBSCBS.imovel.inscImobFisc := '12345678901';
         IBSCBS.imovel.cCIB := '12345678';
         IBSCBS.imovel.ender.cep := '14800000';
@@ -2154,7 +2170,7 @@ begin
         IBSCBS.imovel.ender.nro := '100';
         IBSCBS.imovel.ender.xCpl := '';
         IBSCBS.imovel.ender.xBairro := 'CENTRO';
-
+        }
         with IBSCBS.valores.gReeRepRes.documentos.New do
         begin
           {
@@ -2228,7 +2244,8 @@ begin
         IBSCBS.valores.trib.gIBSCBS.gDif.pDifMun := 5;
         IBSCBS.valores.trib.gIBSCBS.gDif.pDifCBS := 5;
 
-        if ACBrNFSeX1.Configuracoes.Geral.Provedor in [proSpeedGov] then
+        if ACBrNFSeX1.Configuracoes.Geral.Provedor in [proSpeedGov,
+             proISSNatal] then
         begin
           infNFSe.IBSCBS.valores.uf.pIBSUF := IBSCBS.valores.IbsEstadual;
           infNFSe.IBSCBS.valores.uf.pRedAliqUF := 0;
@@ -3652,6 +3669,27 @@ begin
   ChecarResposta(tmConsultarSituacao);
 end;
 
+procedure TfrmACBrNFSe.btnConsultarSitPNClick(Sender: TObject);
+var
+  Protocolo, Lote: String;
+begin
+  Protocolo := '';
+  if not (InputQuery('Consultar Lote', 'Número do Protocolo (Obrigatório):', Protocolo)) then
+    exit;
+
+  Lote := '';
+  if ACBrNFSeX1.Configuracoes.Geral.Provedor in [proAssessorPublico,
+      proEquiplano, proISSSaoPaulo] then
+  begin
+    if not (InputQuery('Consultar Lote', 'Número do Lote:', Lote)) then
+      exit;
+  end;
+
+  ACBrNFSeX1.ConsultarSituacao(Protocolo, Lote);
+
+  ChecarResposta(tmConsultarSituacao);
+end;
+
 procedure TfrmACBrNFSe.btnDataValidadeClick(Sender: TObject);
 begin
   ShowMessage(FormatDateTimeBr(ACBrNFSeX1.SSL.CertDataVenc));
@@ -4452,8 +4490,8 @@ begin
     memoLog.Lines.Add('------------------------------------');
     memoLog.Lines.Add('Informações sobre o provedor: ' + xProvedor +
             ' - Versão: ' + VersaoNFSeToStr(ACBrNFSeX1.Configuracoes.Geral.Versao) +
-            ' - Layout: ' + IfThen(ACBrNFSeX1.Configuracoes.Geral.Layout = loABRASF,
-                                   'ABRASF', 'Próprio'));
+            ' - Layout: ' + LayoutToStr(ACBrNFSeX1.Configuracoes.Geral.Layout));
+
     memoLog.Lines.Add('');
     memoLog.Lines.Add('Autenticação');
     memoLog.Lines.Add('');
@@ -6203,7 +6241,6 @@ end;
 
 procedure TfrmACBrNFSe.ConfigurarComponente;
 var
-  Ok, Ano2026: Boolean;
   PathMensal: String;
 begin
   ACBrNFSeX1.Configuracoes.Certificados.ArquivoPFX  := '';
@@ -6319,14 +6356,6 @@ begin
     PathGer          := edtPathLogs.Text;
     PathMensal       := GetPathGer(0);
     PathSalvar       := PathMensal;
-
-    Ano2026 := True;
-    {
-    if Ano2026 then
-      IniServicos := 'C:\ACBr\trunk2\Fontes\ACBrDFe\ACBrNFSeX\ACBrNFSeXServicosRTC.ini'
-    else
-      IniServicos := '';
-    }
   end;
 
   if ACBrNFSeX1.DANFSE <> nil then
@@ -6381,6 +6410,8 @@ begin
 
   lblSchemas.Caption := ACBrNFSeX1.Configuracoes.Geral.xProvedor;
 
+  lblLayout.Caption := LayoutToStr(ACBrNFSeX1.Configuracoes.Geral.Layout);
+  (*
   if ACBrNFSeX1.Configuracoes.Geral.Layout = loABRASF then
     lblLayout.Caption := 'ABRASF'
   else
@@ -6391,7 +6422,7 @@ begin
     else
       lblLayout.Caption := 'Próprio';
   end;
-
+  *)
   lblVersaoSchemas.Caption := VersaoNFSeToStr(ACBrNFSeX1.Configuracoes.Geral.Versao);
 
   if (ACBrNFSeX1.Configuracoes.Geral.Provedor = proPadraoNacional) or

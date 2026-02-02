@@ -39,6 +39,7 @@ interface
 uses
   Classes,
   SysUtils,
+  ACBrBase,
   {$IfDef FPC}
    fileinfo,
   {$EndIf}
@@ -717,7 +718,7 @@ begin
     libHandle^.Lib := Nil;
     libHandle^.Lib := pLibClass.Create(ArqConfig, eChaveCrypt);
     libHandle^.Lib.Inicializar;
-    libHandle^.Lib.GravarLog('LIB_Inicializar( ' + IfThen(libHandle^.Lib.Config.EhMemory, CLibMemory, libHandle^.Lib.Config.NomeArquivo) + ', ' + StringOfChar('*', Length(ChaveCrypt)) + ' )', logSimples);
+    libHandle^.Lib.GravarLog('LIB_Inicializar( ' + IfThen(libHandle^.Lib.Config.EhMemory, CLibMemory, libHandle^.Lib.Config.NomeArquivo) + ',  *** ) ', logSimples);
     libHandle^.Lib.GravarLog('   ' + libHandle^.Lib.Nome + ' - ' + libHandle^.Lib.Versao + ' - ' + libHandle
     ^.Lib.informacaoAdicional, logSimples);
 
@@ -729,9 +730,17 @@ begin
 
     Result := 0;
   except
+
     on E: EACBrLibException do
     begin
       Result := E.Erro;
+      LiberarLib(libHandle);
+    end;
+
+
+    on E: EACBrConversaoEnumeradoException do
+    begin
+      Result:= ErrConfigLer;
       LiberarLib(libHandle);
     end;
 
