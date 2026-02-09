@@ -58,7 +58,6 @@ type
   private
     FpVersao: string;
   protected
-    procedure Configuracao; override;
     function GerarXMLInfDps: TACBrXmlNode; override;
 
   public
@@ -105,6 +104,7 @@ begin
   FormatoCompetencia := tcDat;
 
   NrOcorrCodigoPaisTomador := 0;
+  NrOcorrCodigoNbs := -1;
   NrOcorrDiscriminacao_1 := -1;
   NrOcorrCodigoMunic_1 := -1;
 
@@ -113,13 +113,6 @@ begin
 end;
 
 { TNFSeW_FiorilliAPIPropria }
-
-procedure TNFSeW_FiorilliAPIPropria.Configuracao;
-begin
-  inherited Configuracao;
-
-  PrefixoPadrao := 'nfse1';
-end;
 
 function TNFSeW_FiorilliAPIPropria.GerarXml: Boolean;
 var
@@ -146,7 +139,6 @@ begin
                          NFSe.IdentificacaoRps.Numero);
 
   NFSe.InfID.ID := 'DPS' + chave;
-  PrefixoPadrao := 'nfse';
 
   NFSeNode := CreateElement('DPS');
   NFSeNode.SetAttribute('versao', FpVersao);
@@ -162,7 +154,6 @@ end;
 
 function TNFSeW_FiorilliAPIPropria.GerarXMLInfDps: TACBrXmlNode;
 begin
-  PrefixoPadrao := 'nfse1';
   Result := CreateElement('infDPS');
 
   if (FpAOwner.ConfigGeral.Identificador <> '') then

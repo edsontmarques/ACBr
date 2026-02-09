@@ -42,7 +42,76 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+
+08/02/2026
+-- Coplan.Provider --
+[*] ACBR-8907 - Implementado os serviços disponibilizados na API do Padrão Nacional:
+    ConsultarNFSePorChave, ConsultarEvento, ConsultarDFe, ConsultarParam, ObterDANFSE.
+   Por: Italo Giurizzato Junior
+[*] ACBR-8907 - Implementado os serviços disponibilizados no webservice do provedor:
+    Recepcionar Lote modo Assíncrono, Recepcionar Lote modo Síncrono, GerarNFSe,
+    ConsultarLote, ConsultarNFSePorDPS, ConsultarNFSePorFaixa, ConsultarNFSeServicoPrestado,
+    ConsultarNFSeServicoTomado, CancelarNFSe e SubstituirNFSe.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXProviderBase/Fiorilli.GravarXml/Fiorilli.Provider --
+[*] Removido da geração do XML do DPS os prefixos.
+   Por: Italo Giurizzato Junior
+
+06/02/2026
+-- Centi.GravarXml/Centi.Provider --
+[*] ACBR-8880 - Ajustes visando compatibilização com alterações feitas para atender a RTC
+   Por: Valter Patrick
+-- PadraoNacional.LerXml --
+[*] ACBR-8935 - Correção no carregamento do Valor Total da Nota na leitura do xml do Padrão Nacional - https://www.projetoacbr.com.br/forum/topic/90121-acbr-8935-erro-na-impressao-do-campo-valor-total-dos-produtos-na-nota-de-servi%C3%A7o-prefeitura-baurusp/
+   Por: Renato Rubinho
+
+05/02/2026
+-- ACBrNFSeXLerXml --
+[-] ACBR-8756 - Ajuste visando correta normatização do campo ItemListaServico nos casos que vier com 5 dígitos.
+   Por: Diego Folieni
+[*] Incluído a leitura do campo xNBS na seção Serviço.
+   Por: Italo Giurizzato Junior
+-- Sudoeste.GravarXml --
+[*] Alterado a procedure Configuração para não gerar a tag CodigoNBS.
+   Por: Italo Giurizzato Junior
+-- PadraoNacional.LerXml --
+[*] Ajustes no calculo do valor total e valor liquido da nota no que se refere a retenção.
+   Por: Italo Giurizzato Junior
+
+04/02/2026
+--GeisWeb.GravarXml --
+[-] ACBR-8895 - Ajuste visando sanar problema de leitura do XML quando não houver finNFSe no arquivo.
+   Por: Diego Folieni
+-- PadraoNacional.GravarXml --
+[*] ACBR-8881 - Ajustes nos tamanhos e cardinalidades e alguns campos para coincidir com os schemas do Padrão Nacional.
+   Por: Valter Patrick
+-- ACBRNFSeXGravarXml_ABRASFv1/ACBrNFSeXLerXml_ABRASFv1/SpeedGov.GravarXml/SpeedGov.LerXml --
+[-] ACBR-8730 - Ajustes para o correto preenchimento das propriedades o ler um XML e um INI.
+   Por: Diego Folieni
+
+03/02/2026
+-- ACBrNFSeXConversao/PadraoNacional.GravarXml/PadraoNacional.LerXml/PadraoNacional.Provider --
+[-] Correção na leitura do arquivo INI para os provedores Citta, Digifred e SilTecnologia,
+    seção ValoresNFSe.
+-- Fiorilli.GravarXml --
+[-] Correção, estava gerando a tag CodigoNbs indevidamente.
+   Por: Italo Giurizzato Junior
+-- Ginfes.LerXml --
+[*] ACBR-8812: Ajuste para ler os campos conforme gravados em Ginfes.GravarXml.
+    https://www.projetoacbr.com.br/forum/topic/89457-ginfes-problema-na-leitura-do-ini-rt/
+
+-- ACBrNFSeXGravarXml_ABRASFv1, ACBrNFSeXGravarXml_ABRASFv2 --
+[+] Inclusão da gravação de CodigoNBS no método GerarINISecaoServico.
+
+-- ACBrNFSeXLerXml_ABRASFv1 --
+[*] Alteração dos métodos LerValores e LerTomadorServico para virtual;
+[+] Inclusão da leitura do CodigoNBS no método LerINISecaoServico.
+    por: Elias
+
 02/02/2026
+-- SilTecnologia.Provider --
+[-] Correção na montagem do ID do Evento.
+   Por: Italo Giurizzato Junior
 -- ISSFortaleza.Provider --
 [*] ACBR-8896 - Ajustes para a versão 4 dos serviços do provedor.
    Por: Italo Giurizzato Junior

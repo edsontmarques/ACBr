@@ -60,12 +60,13 @@ type
     function GerarValores: TACBrXmlNode; override;
     function GerarServico: TACBrXmlNode; override;
     function GerarDadosDPS: TACBrXmlNode;
-    function GerarDestinatario: TACBrXmlNode;
+    function GerarDestinatario: TACBrXmlNode;override;
     function GerarControleIBSCBS: TACBRXmlNode;
     function GerarIBSCBS: TACBrXmlNode;
 
     //======Arquivo INI===========================================
     procedure GerarINISecaoIdentificacaoNFSe(const AINIRec: TMemIniFile); override;
+    procedure GerarINISecaoValores(const AINIRec: TMemIniFile); override;
     procedure GerarINIIBSCBSValores(AINIRec: TMemIniFile; Valores: Tvalorestrib); override;
   public
     function GerarIni: string; override;
@@ -252,9 +253,6 @@ begin
 end;
 
 function TNFSeW_SpeedGov.GerarIBSCBS: TACBrXmlNode;
-var
-  item: string;
-  Valores: TACBrXmlNode;
 begin
   Result := CreateElement('IBSCBS');
 
@@ -396,10 +394,17 @@ begin
   AINIRec.WriteString(lSecao, 'verAplic', NFSe.verAplic);
 end;
 
+procedure TNFSeW_SpeedGov.GerarINISecaoValores(const AINIRec: TMemIniFile);
+var
+  lSecao: String;
+begin
+  inherited GerarINISecaoValores(AINIRec);
+  lSecao := 'Valores';
+  AINIRec.WriteString(lSecao, 'tribISSQN', tribISSQNToStr(NFSe.Servico.Valores.tribMun.tribISSQN));
+end;
+
 function TNFSeW_SpeedGov.GerarServico: TACBrXmlNode;
 var
-  nodeArray: TACBrXmlNodeArray;
-  i: Integer;
   item: string;
 begin
   Result := CreateElement('Servico');
@@ -434,9 +439,6 @@ begin
 end;
 
 function TNFSeW_SpeedGov.GerarTomador: TACBrXmlNode;
-var
-  tomadorIdentificado, tipoPessoa, item, cnpjCpfDestinatario,
-  xCidade, xUF: string;
 begin
   Result := inherited GerarTomador;
 end;
