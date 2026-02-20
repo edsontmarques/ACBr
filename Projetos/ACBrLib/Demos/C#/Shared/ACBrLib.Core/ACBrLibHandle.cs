@@ -11,7 +11,7 @@ using System.Text;
 namespace ACBrLib.Core
 {
     /// <inheritdoc />
-    public abstract partial class ACBrLibHandle : SafeHandle
+    public abstract partial class ACBrLibHandle : SafeHandle, IACBrLibBase
     {
         #region Fields
 
@@ -209,6 +209,8 @@ namespace ACBrLib.Core
 
         public abstract string ExportarConfig();
 
+        public abstract string OpenSSLInfo();
+
         protected async void Base64ToStream(string base64, Stream aStream)
         {
             var pdfBytes = Convert.FromBase64String(base64);
@@ -224,7 +226,7 @@ namespace ACBrLib.Core
         {
             if (IsInvalid) return true;
 
-            FinalizeLib();
+            Finalizar();
 
             var ret = LibLoader.FreeLibrary(handle);
 
@@ -238,7 +240,11 @@ namespace ACBrLib.Core
 
         protected abstract string GetUltimoRetorno(int iniBufferLen = 0);
 
-        protected abstract void FinalizeLib();
+        public abstract void Finalizar();
+
+        public abstract void Inicializar(string eArqConfig = "", string eChaveCrypt = "");
+
+
 
         protected virtual T ConvertValue<T>(string value)
         {
@@ -357,6 +363,7 @@ namespace ACBrLib.Core
 
         protected string ProcessResult(StringBuilder buffer, int bufferLen) => bufferLen > BUFFER_LEN ? GetUltimoRetorno(bufferLen) : FromUTF8(buffer);
 
+       
         protected virtual void CheckResult(int ret)
         {
             if (ret >= 0) return;

@@ -3,19 +3,22 @@ using ACBrLib.Core;
 
 namespace ACBrLib.BAL
 {
-    public sealed partial class ACBrBAL : ACBrLibHandle
+    public sealed partial class ACBrBAL : ACBrLibHandle, IACBrLibBAL
     {
         #region Constructors
 
         public ACBrBAL(string eArqConfig = "", string eChaveCrypt = "") : base(IsWindows ? "ACBrBAL64.dll" : "libacbrbal64.so",
                                                                                IsWindows ? "ACBrBAL32.dll" : "libacbrbal32.so")
         {
-            var inicializar = GetMethod<BAL_Inicializar>();
-            var ret = ExecuteMethod(() => inicializar(ToUTF8(eArqConfig), ToUTF8(eChaveCrypt)));
-
-            CheckResult(ret);
-
+            Inicializar(eArqConfig, eChaveCrypt);
             Config = new BALConfig(this);
+        }
+
+        public override void Inicializar(string eArqConfig = "", string eChaveCrypt = "")
+        {
+            var inicializarLib = GetMethod<BAL_Inicializar>();
+            var ret = ExecuteMethod<int>(() => inicializarLib(ToUTF8(eArqConfig), ToUTF8(eChaveCrypt)));
+            CheckResult(ret);
         }
 
         #endregion Constructors
@@ -184,10 +187,10 @@ namespace ACBrLib.BAL
 
         #region Private Methods
 
-        protected override void FinalizeLib()
+        public override void Finalizar()
         {
-            var finalizar = GetMethod<BAL_Finalizar>();
-            var ret = ExecuteMethod(() => finalizar());
+            var finalizarLib = GetMethod<BAL_Finalizar>();
+            var ret = ExecuteMethod(() => finalizarLib());
             CheckResult(ret);
         }
 
@@ -210,6 +213,20 @@ namespace ACBrLib.BAL
         }
 
         #endregion Private Methods
+
+
+         public override string OpenSSLInfo()
+        {
+            var bufferLen = BUFFER_LEN;
+            var buffer = new StringBuilder(bufferLen);
+
+            var method = GetMethod<BAL_OpenSSLInfo>();
+            var ret = ExecuteMethod(() => method(buffer, ref bufferLen));
+
+            CheckResult(ret);
+
+            return ProcessResult(buffer, bufferLen);
+        }
 
         #endregion Methods
     }

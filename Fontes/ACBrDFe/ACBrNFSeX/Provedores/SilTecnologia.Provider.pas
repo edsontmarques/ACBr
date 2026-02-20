@@ -138,7 +138,7 @@ type
 
     procedure ProcessarMensagemDeErros(LJson: TACBrJSONObject;
                                      Response: TNFSeWebserviceResponse;
-                                     const AListTag: string = 'Erros'); virtual;
+                                     const AListTag: string = 'Erros'); override;
 
     function PrepararArquivoEnvio(const aXml: string; aMetodo: TMetodo): string; override;
 
@@ -1024,6 +1024,8 @@ end;
 function TACBrNFSeProviderSilTecnologiaAPIPropria.PrepararArquivoEnvio(
   const aXml: string; aMetodo: TMetodo): string;
 begin
+  Result := aXml;
+
   if aMetodo in [tmGerar, tmEnviarEvento] then
     Result := ChangeLineBreak(aXml, '');
 end;
@@ -1173,7 +1175,7 @@ begin
       nPedRegEvento := 1;
 
     IdAttrPRE := 'Id="' + 'PRE' + ID + '"';
-    IdAttrEVT := 'Id="' + 'EVT' + ID + '"' + FormatFloat('000', nPedRegEvento);
+    IdAttrEVT := 'Id="' + 'EVT' + ID + FormatFloat('000', nPedRegEvento)+ '"';
 
     case tpEvento of
       teCancelamento:

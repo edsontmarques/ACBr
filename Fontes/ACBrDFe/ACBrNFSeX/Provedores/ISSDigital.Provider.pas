@@ -532,7 +532,7 @@ begin
   with ConfigGeral do
   begin
     Layout := loPadraoNacional;
-    Identificador := 'id';
+    Identificador := 'Id';
     QuebradeLinha := '|';
     ConsultaLote := False;
     FormatoArqEnvio := tfaXml;
@@ -583,8 +583,8 @@ begin
     EnviarEvento := True;
   end;
 
-  SetNomeXSD('SchemaDPS.xsd');
-  {
+  SetNomeXSD('***');
+
   with ConfigSchemas do
   begin
     GerarNFSe := 'DPS_v' + VersaoDFe + '.xsd';
@@ -592,11 +592,7 @@ begin
     ConsultarNFSeRps := 'DPS_v' + VersaoDFe + '.xsd';
     EnviarEvento := 'pedRegEvento_v' + VersaoDFe + '.xsd';
     ConsultarEvento := 'DPS_v' + VersaoDFe + '.xsd';
-
-    Validar := False;
   end;
-  }
-  ConfigSchemas.Validar := False;
 end;
 
 function TACBrNFSeProviderISSDigitalAPIPropria.CriarGeradorXml(
@@ -620,7 +616,7 @@ var
 begin
   URL := GetWebServiceURL(AMetodo);
 
-  if AMetodo in [tmGerar, tmEnviarEvento, tmConsultarSituacao] then
+  if AMetodo in [tmGerar, tmConsultarLote, tmConsultarSituacao] then
     AMimeType := 'text/xml'
   else
     AMimeType := 'application/json';
@@ -760,6 +756,8 @@ end;
 function TACBrNFSeProviderISSDigitalAPIPropria.PrepararArquivoEnvio(
   const aXml: string; aMetodo: TMetodo): string;
 begin
+  Result := aXml;
+
   if aMetodo in [tmGerar, tmEnviarEvento] then
     Result := ChangeLineBreak(aXml, '');
 end;
@@ -883,6 +881,7 @@ procedure TACBrNFSeProviderISSDigitalAPIPropria.PrepararConsultaSituacao(
   Response: TNFSeConsultaSituacaoResponse);
 var
   AErro: TNFSeEventoCollectionItem;
+  CNPJ, IM: string;
 begin
   if EstaVazio(Response.Protocolo) then
   begin
@@ -892,10 +891,16 @@ begin
     Exit;
   end;
 
+  CNPJ := OnlyAlphaNum(TACBrNFSeX(FAOwner).Configuracoes.Geral.Emitente.CNPJ);
+  IM := OnlyAlphaNum(TACBrNFSeX(FAOwner).Configuracoes.Geral.Emitente.InscMun);
+
   Response.ArquivoEnvio :=
          '<ConsultarStatusDps xmlns="http://www.sped.fazenda.gov.br/nfse">' +
+           '<CNPJ>' + CNPJ + '</CNPJ>' +
+           '<IM>' + IM + '</IM>' +
            '<Protocolo>' + Response.Protocolo + '</Protocolo>' +
          '</ConsultarStatusDps>';
+
   Path := '';
   Method := 'POST';
 end;
@@ -948,6 +953,7 @@ procedure TACBrNFSeProviderISSDigitalAPIPropria.PrepararConsultaLoteRps(
   Response: TNFSeConsultaLoteRpsResponse);
 var
   AErro: TNFSeEventoCollectionItem;
+  CNPJ, IM: string;
 begin
   if EstaVazio(Response.Protocolo) then
   begin
@@ -957,10 +963,16 @@ begin
     Exit;
   end;
 
+  CNPJ := OnlyAlphaNum(TACBrNFSeX(FAOwner).Configuracoes.Geral.Emitente.CNPJ);
+  IM := OnlyAlphaNum(TACBrNFSeX(FAOwner).Configuracoes.Geral.Emitente.InscMun);
+
   Response.ArquivoEnvio :=
          '<ConsultarDps xmlns="http://www.sped.fazenda.gov.br/nfse">' +
+           '<CNPJ>' + CNPJ + '</CNPJ>' +
+           '<IM>' + IM + '</IM>' +
            '<Protocolo>' + Response.Protocolo + '</Protocolo>' +
          '</ConsultarDps>';
+
   Path := '';
   Method := 'POST';
 end;

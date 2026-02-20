@@ -4,14 +4,14 @@ using ACBrLib.Core.NFe;
 
 namespace ACBrLib.NFe
 {
-    public sealed class ACBrNFeConfig : ACBrLibDFeConfig<ACBrNFe>
+    public sealed class ACBrNFeConfig : ACBrLibDFeConfig<IACBrLibNFe>
     {
         #region Constructors
 
-        public ACBrNFeConfig(ACBrNFe acbrnfe) : base(acbrnfe, ACBrSessao.NFe)
+        public ACBrNFeConfig(IACBrLibNFe acbrnfe) : base(acbrnfe, ACBrSessao.NFe)
         {
             DANFe = new DANFeConfig(acbrnfe);
-            PosPrinter = new PosPrinterConfig<ACBrNFe>(acbrnfe);
+            PosPrinter = new PosPrinterConfig<IACBrLibNFe>(acbrnfe);
         }
 
         #endregion Constructors
@@ -23,7 +23,7 @@ namespace ACBrLib.NFe
         /// </summary>
         public DANFeConfig DANFe { get; }
 
-        public PosPrinterConfig<ACBrNFe> PosPrinter { get; }
+        public PosPrinterConfig<IACBrLibNFe> PosPrinter { get; }
 
         public string IdCSC
         {
