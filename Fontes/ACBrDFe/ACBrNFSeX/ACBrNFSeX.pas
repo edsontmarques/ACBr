@@ -413,7 +413,7 @@ begin
   xCNPJ := ANFSe.Prestador.IdentificacaoPrestador.CpfCnpj;
 
   if (Configuracoes.Geral.Provedor = proPadraoNacional) or
-     Configuracoes.Geral.APIPropria then
+     Configuracoes.Geral.APIPropria or (ANFSe.infNFSe.nNFSe <> '') then
   begin
     Result := NomeXmlPadraoNacional;
 
@@ -485,7 +485,8 @@ begin
     Exit;
 
   if Configuracoes.Geral.ConsultaLoteAposEnvio and
-     (FWebService.Emite.ModoEnvio = meLoteAssincrono) then
+     ((FWebService.Emite.ModoEnvio = meLoteAssincrono) or
+      Configuracoes.Geral.APIPropria) then
   begin
     if (FWebService.Emite.Protocolo <> '') or (FWebService.Emite.NumeroLote <> '') then
     begin

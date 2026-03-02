@@ -100,8 +100,6 @@ namespace ACBrLib.Core
         /// <param name="method"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        /// <exception cref="ApplicationException"></exception>
-        [HandleProcessCorruptedStateExceptions]
         public virtual T ExecuteMethod<T>(Func<T> method)
         {
             try
@@ -146,29 +144,36 @@ namespace ACBrLib.Core
         /// <returns></returns>
         protected virtual string[] GetLibrarySearchPath()
         {
-            var path = new List<string>();
+            var listPaths = new List<string>();
+            var baseDir = AppDomain.CurrentDomain.BaseDirectory;
+
+            if (!string.IsNullOrEmpty(baseDir))
+            {
+                var uri = new Uri(baseDir);
+                var pathStr = Path.GetDirectoryName(!uri.IsFile ? uri.ToString() : uri.LocalPath + Uri.UnescapeDataString(uri.Fragment));
+                var acbrlibPath = Path.Combine(pathStr, "ACBrLib", Environment.Is64BitProcess ? "x64" : "x86");
+
+                listPaths.Add(pathStr);
+                listPaths.Add(acbrlibPath);
+            }
 
             var assemblyLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             if (!string.IsNullOrEmpty(assemblyLocation))
-                path.Add(assemblyLocation);
+                listPaths.Add(assemblyLocation);
 
             var currentDirectory = Directory.GetCurrentDirectory();
-            if (!string.IsNullOrEmpty(currentDirectory) && !path.Contains(currentDirectory))
-                path.Add(currentDirectory);
-
-            var acbrlibPath = Path.Combine(assemblyLocation, "ACBrLib", Environment.Is64BitProcess ? "x64" : "x86");
-            if (!path.Contains(acbrlibPath))
-                path.Add(acbrlibPath);
+            if (!string.IsNullOrEmpty(currentDirectory) && !listPaths.Contains(currentDirectory))
+                listPaths.Add(currentDirectory);
 
 
             if (PlatformID.Unix == Environment.OSVersion.Platform)
             {
-                path.Add("/usr/local/lib");
-                path.Add("/usr/lib");
-                path.Add("/lib");
+                listPaths.Add("/usr/local/lib");
+                listPaths.Add("/usr/lib");
+                listPaths.Add("/lib");
             }
 
-            return path.ToArray();
+            return listPaths.ToArray();
         }
 
 

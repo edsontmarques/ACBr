@@ -45,6 +45,18 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+26/02/2026
+-- pgnreConfigUF, pgnreRetConsConfigUF, pgnreRetReceita --
+[+] ACBR-8563: Implementadas alterações das versões 2.12 a 2.14 do manual e schemas.
+  Por: Renato Rubinho
+
+02/02/2026
+-- ACBrGNReGuiaRLClass --
+--ACBrGNReGuiaRLRetrato --
+[-] ACBr-8878: Corrige Duplicate name: A component named "frlGuiaRLRetrato" already exists
+[-] Mitigação para AV ao atribuir valor a variavel RepresentacaoNumerica.Caption
+  Por:doszapro
+
 27/09/2025
 -- ACBrGNREGuiaClass --
 [*] Comentado a propriedade TamanhoPapel, pois não é utilizada pelo componente.

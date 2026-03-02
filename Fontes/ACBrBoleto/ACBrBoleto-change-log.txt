@@ -48,6 +48,23 @@ Símbolo : Significado
 [+]     : Novo recurso
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
+26/02/2026
+-- ACBrBoletoW_BancoBrasil_API  --
+[*] Remoção dos zeros a esquerda agencia e conta na consulta conforma orientação do banco. evitando erro Contrato de cobrança não localizado.
+   https://discord.com/channels/798697718800318484/809129039159230514/1476317837982175299
+   Por: UpSolucoes
+
+23/02/2026
+-- ACBrBoletoW_Bradesco.pas, ACBrBoletoRet_Bradesco.pas  --
+[*] Implementação de Lista de Boletos Liquido com QR CODE Bradesco via API do site bradesco developers
+   https://www.projetoacbr.com.br/forum/topic/88636-acbr-8655implementa%C3%A7%C3%A3o-de-lista-de-boletos-liquido-com-qr-code-bradesco-via-api-do-site-bradesco-developers
+   Por: Jhonlenon Ribeiro
+
+23/02/2026
+-- ACBrBoletoW_Safra.pas  --
+[*] Ajsutes para Consutas Banco Safra Homologação.
+   https://www.projetoacbr.com.br/forum/topic/85230-problema-na-homologa%C3%A7%C3%A3o-banco-safra
+   Por: João Vitor Bogo / Daniel de Morais InfoCotidano
 
 18/02/2026
 -- ACBrBoletoW_Santander_API  --
