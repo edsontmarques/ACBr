@@ -42,6 +42,84 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+06/03/2026
+-- ACBrNFSeXDANFSeRLPadraoNacional --
+[*] Melhorias na impressão estava cortando os dados do Intermediário.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXClass --
+[*] ACBR-9054 - Inclusão de novos campos na classe TItemServicoCollectionItem para atender a leitura da 
+    seção [Itensxxx]
+-- ACBrNFSeX.LerIni --
+[*] ACBR-9054 - Inclusão dos novos campos na leitura da seção [Itemxxx]
+-- ACBrNFSeXGravarXml --
+[*] ACBR-9054 - Inclusão dos novos campos na procedure: ConsolidarVariosItensServicosEmUmSo
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXLerXml --
+[*] ACBR-9091 - Correção na leitura dos campos da procedure: LerXMLgReeRepRes
+   Por: Bruno Italo/Italo Giurizzato Junior
+-- Diversos --
+[*] ACBR-9002 - Alterações em diversas units para poder implementar serviços do Padrão Nacional 
+    em provedores que trabalham com WebService Soap.
+    https://www.projetoacbr.com.br/forum/topic/90459-acbr-9002-recuperar-danfse-nacional-provedores-sem-implementa%C3%A7%C3%A3o/
+   Por: Diogo Loff/Italo Giurizzato Junior
+-- ACBrNFSeXDANFSeRLPadraoNacional --
+[*] ACBR-9068 - Mais alguns ajustes no DANFSE.
+    https://www.projetoacbr.com.br/forum/topic/90733-acbr-9068-novo-danfse-segundo-o-layout-do-padr%C3%A3o-nacional/?&_rid=37999#findComment-591675
+   Por: netstart
+
+05/03/2026
+-- PadraoNacional.LerXml/ACBrNFSeXClass --
+[*] ACBR-9038 - Altera inicialização de indTotTrib visando evitar rejeição E0713 ao gerar XML
+   Por: Diego Folieni
+   Veja: https://www.projetoacbr.com.br/forum/topic/90206-acbr-8970-rejei%C3%A7%C3%A3o-e0713-para-n%C3%A3o-optante-n%C3%A3o-deve-informar-totais-de-tributos/page/3/?&_rid=124795#findComment-591831 
+-- Ginfes.GravarXml --
+[-] Ajuste para correta geração do grupo TotTrib.
+   https://www.projetoacbr.com.br/forum/topic/90648-ginfes-fora-da-estrutura/#comment-591670
+   Por: Italo Giurizzato Junior
+-- PadraoNacional.LerXml --
+[-] ACBR-9083 - Ajuste para correta geração do grupo TotTrib a partir de um XML como fonte de dados.
+   Por: Diego Folieni
+   Veja: https://www.projetoacbr.com.br/forum/topic/90822-acbr-9083-nfse-gerando-o-elemento-tottrib-com-valor-que-n%C3%A3o-foi-informado/ 
+-- WebFisco.LerXml --
+[-] ACBR-8969 - Atualiza a rotina de leitura para capturar corretamente a Descricao do Serviço
+   Por: mlgoncalves / Diego Folieni
+   Veja: https://www.projetoacbr.com.br/forum/topic/90155-acbr-8969-nfs-e-tr%C3%AAs-riosrj-n%C3%A3o-sincroniza-com-portal-nacional/?&_rid=124795#findComment-591601  
+
+04/03/2026
+-- ACBrNFSeXServicos --
+[+] Incluído o Params: ServicosPadraoNacional para todas as cidades dos provedores IPM e SigCorp.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXWebServiceBase/Fiorilli.Provider/ACBrNFSeXServicos --
+[+] ACBR-8782 - Implementa o envio de evento através dos ServicosPadraoNacional para o Fiorilli
+ * Implementa nova classe WebService Misto.
+   Por: Italo Giurizzato Junior / Diego Folieni
+   Veja: https://www.projetoacbr.com.br/forum/topic/90696-nfs-e-fiorilli/
+-- ACBrNFSeX.LerIni --
+[+] ACBR-9054 - Implementado uma unit exclusiva para realizar a leitura do arquivo INI que contem os 
+    dados do serviço prestado, esse arquivo INI vai ser utilizado para todos os provedores.
+    Observação: a unit ainda não esta em uso, pois requer testes.
+   Por: Italo Giurizzato Junior
+-- PadraoNacional.GravarXml --
+[*] ACBR-8786 - Ajuste para gerar corretamente o Local de incidência.
+    https://www.projetoacbr.com.br/forum/topic/89349-acbr-8786-informar-munic%C3%ADpio-de-incid%C3%AAncia-do-iss/
+   Por: mlgoncalves
+
+03/03/2026
+-- ACBrNFSeXDANFSeRLPadraoNacional --
+[*] ACBR-9068 - Ajustes na geração do DANFSE - Padrão Nacional - Fortes Report
+   Por: Armando Boza
+
+02/03/2026
+-- ACBrNFSeXServicos --
+[+] ACBR-9032 - Incluída a cidade Coari/AM, o provedor é Betha.
+   Por: Cezar Sakugawa
+[*] ACBR-9018 - A cidade São Caetano do Sul/SP mudou o portal e não o provedor, continua sendo o Ginfes.
+   Por: João Siscom
+-- Diversos --
+[+] ACBR-8724 - Implementado o DANFSE em Fortes Report com o layout do Padrão Nacional.
+    Criado a propriedade LogoNFSe para informar o caminho e o nome da imagem do Logo da NFS-e.
+   Por: Italo Giurizzato Junior
+
 28/02/2026
 -- ACBrNFSeXServicos --
 [*] ACBR-9018 - A cidade São Caetano do Sul/SP mudou de provedor, agora é Giss.

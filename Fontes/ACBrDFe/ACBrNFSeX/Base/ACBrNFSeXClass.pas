@@ -341,6 +341,7 @@ type
     FindTotTrib: TindTotTrib;
     FpTotTribSN: Double;
   public
+    constructor Create;
     property vTotTribFed: Double read FvTotTribFed write FvTotTribFed;
     property vTotTribEst: Double read FvTotTribEst write FvTotTribEst;
     property vTotTribMun: Double read FvTotTribMun write FvTotTribMun;
@@ -656,6 +657,8 @@ type
     FCodigoServicoNacional: string;
     FEndereco: TEndereco;
     FCodigoTributacaoNacional: string;
+    FValorRecebido: Double;
+    FAliqDeducoes: Double;
   public
     constructor Create;
     destructor Destroy; override;
@@ -673,6 +676,7 @@ type
     property ValorTotal: Double read FValorTotal write FValorTotal;
     property BaseCalculo: Double read FBaseCalculo write FBaseCalculo;
 
+    property AliqDeducoes: Double read FAliqDeducoes write FAliqDeducoes;
     property ValorDeducoes: Double read FValorDeducoes write FValorDeducoes;
     property xJustDeducao: string read FxJustDeducao write FxJustDeducao;
 
@@ -767,6 +771,8 @@ type
     property Endereco: TEndereco read FEndereco write FEndereco;
     // Provedor iiBrasil
     property CodigoTributacaoNacional: string read FCodigoTributacaoNacional write FCodigoTributacaoNacional;
+    // Provedor PadraoNacionl
+    property ValorRecebido: Double read FValorRecebido write FValorRecebido;
   end;
 
   TItemServicoCollection = class(TACBrObjectList)
@@ -3741,6 +3747,14 @@ destructor TinfoCompl.Destroy;
 begin
   FgItemPed.Free;
   inherited;
+end;
+
+{ TtotTrib }
+
+constructor TtotTrib.Create;
+begin
+  inherited Create;
+  FindTotTrib := indSim;
 end;
 
 end.
