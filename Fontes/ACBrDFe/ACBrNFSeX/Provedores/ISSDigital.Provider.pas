@@ -573,14 +573,22 @@ begin
     XmlRps.InfElemento := 'infDPS';
     XmlRps.DocElemento := 'DPS';
 
-    EnviarEvento.InfElemento := 'infEvento';
-    EnviarEvento.DocElemento := 'evento';
+    EnviarEvento.InfElemento := 'infPedReg';
+    EnviarEvento.DocElemento := 'pedRegEvento';
+
+    ConsultarSituacao.InfElemento := 'ConsultarStatusDps';
+    ConsultarSituacao.DocElemento := 'ConsultarStatusDps';
+
+    ConsultarLote.InfElemento := 'ConsultarDps';
+    ConsultarLote.DocElemento := 'ConsultarDps';
   end;
 
   with ConfigAssinar do
   begin
     RpsGerarNFSe := True;
     EnviarEvento := True;
+    ConsultarSituacao := True;
+    ConsultarLote := True;
   end;
 
   SetNomeXSD('***');
@@ -759,7 +767,29 @@ begin
   Result := aXml;
 
   if aMetodo in [tmGerar, tmEnviarEvento] then
+  begin
     Result := ChangeLineBreak(aXml, '');
+
+    case aMetodo of
+      tmGerar:
+        begin
+          Path := '';
+        end;
+
+      tmEnviarEvento:
+        begin
+          Result := '{"pedidoRegistroEventoXmlGZipB64":"' + Result + '"}';
+          Path := '/nfse/' + Chave + '/eventos';
+        end;
+    else
+      begin
+        Result := '';
+        Path := '';
+      end;
+    end;
+
+    Method := 'POST';
+  end;
 end;
 
 procedure TACBrNFSeProviderISSDigitalAPIPropria.PrepararEmitir(
@@ -881,7 +911,7 @@ procedure TACBrNFSeProviderISSDigitalAPIPropria.PrepararConsultaSituacao(
   Response: TNFSeConsultaSituacaoResponse);
 var
   AErro: TNFSeEventoCollectionItem;
-  CNPJ, IM: string;
+  CNPJ, IM, IdAttrib: string;
 begin
   if EstaVazio(Response.Protocolo) then
   begin
@@ -891,11 +921,21 @@ begin
     Exit;
   end;
 
+  if EstaVazio(Response.NumeroLote) then
+  begin
+    AErro := Response.Erros.New;
+    AErro.Codigo := Cod126;
+    AErro.Descricao := ACBrStr(Desc126);
+    Exit;
+  end;
+
+
   CNPJ := OnlyAlphaNum(TACBrNFSeX(FAOwner).Configuracoes.Geral.Emitente.CNPJ);
   IM := OnlyAlphaNum(TACBrNFSeX(FAOwner).Configuracoes.Geral.Emitente.InscMun);
+  IdAttrib := Response.NumeroLote;
 
   Response.ArquivoEnvio :=
-         '<ConsultarStatusDps xmlns="http://www.sped.fazenda.gov.br/nfse">' +
+         '<ConsultarStatusDps xmlns="http://www.sped.fazenda.gov.br/nfse" Id="' + IdAttrib + '">' +
            '<CNPJ>' + CNPJ + '</CNPJ>' +
            '<IM>' + IM + '</IM>' +
            '<Protocolo>' + Response.Protocolo + '</Protocolo>' +
@@ -953,7 +993,7 @@ procedure TACBrNFSeProviderISSDigitalAPIPropria.PrepararConsultaLoteRps(
   Response: TNFSeConsultaLoteRpsResponse);
 var
   AErro: TNFSeEventoCollectionItem;
-  CNPJ, IM: string;
+  CNPJ, IM, IdAttrib: string;
 begin
   if EstaVazio(Response.Protocolo) then
   begin
@@ -963,11 +1003,20 @@ begin
     Exit;
   end;
 
+  if EstaVazio(Response.NumeroLote) then
+  begin
+    AErro := Response.Erros.New;
+    AErro.Codigo := Cod126;
+    AErro.Descricao := ACBrStr(Desc126);
+    Exit;
+  end;
+
   CNPJ := OnlyAlphaNum(TACBrNFSeX(FAOwner).Configuracoes.Geral.Emitente.CNPJ);
   IM := OnlyAlphaNum(TACBrNFSeX(FAOwner).Configuracoes.Geral.Emitente.InscMun);
+  IdAttrib := Response.NumeroLote;
 
   Response.ArquivoEnvio :=
-         '<ConsultarDps xmlns="http://www.sped.fazenda.gov.br/nfse">' +
+         '<ConsultarDps xmlns="http://www.sped.fazenda.gov.br/nfse" Id="' + IdAttrib + '">' +
            '<CNPJ>' + CNPJ + '</CNPJ>' +
            '<IM>' + IM + '</IM>' +
            '<Protocolo>' + Response.Protocolo + '</Protocolo>' +

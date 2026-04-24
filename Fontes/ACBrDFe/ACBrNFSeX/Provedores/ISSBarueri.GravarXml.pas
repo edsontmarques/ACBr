@@ -213,6 +213,25 @@ begin
       PadLeft(FloatToStr(NFSe.Servico.Valores.ValorCsll * 100), 15, '0')
     );
   end;
+
+  if (NFSe.Servico.Valores.RetidoCpp = snSim) and
+     (NFSe.Servico.Valores.ValorCpp > 0) then
+  begin
+    FConteudoTxt.Add(
+      '3'+ // Tipo do Registro S* Numérico 1 1 1
+      '05'+ // Código de Outros Valores S Texto 2 2 3 05 - para CPP
+      PadLeft(FloatToStr(NFSe.Servico.Valores.ValorCpp * 100), 15, '0')
+    );
+  end;
+
+  if (NFSe.Servico.Valores.ValorDespesasNaoTributaveis > 0) then
+  begin
+    FConteudoTxt.Add(
+      '3'+ // Tipo do Registro S* Numérico 1 1 1
+      'VN'+ // Código de Outros Valores S Texto 2 2 3 VN Valor não incluso na BC
+      PadLeft(FloatToStr(NFSe.Servico.Valores.ValorDespesasNaoTributaveis * 100), 15, '0')
+    );
+  end;
 end;
 
 procedure TNFSeW_ISSBarueri.GerarRegistroTipo4;
@@ -228,7 +247,7 @@ begin
     Linha := Linha + ' ';
 
   if NFSe.Servico.CodigoPais <> 1 then
-    Linha := Linha + CodIBGEPaisToSiglaISO2(NFSe.Servico.CodigoPais)
+    Linha := Linha + FormatFloat('000', NFSe.Servico.CodigoPais)
   else
     Linha := Linha + Space(3);
 

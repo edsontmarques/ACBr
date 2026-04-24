@@ -215,11 +215,14 @@ type
     procedure GerarMsgDadosObterDANFSE(Response: TNFSeObterDANFSEResponse); virtual; abstract;
     procedure AssinarObterDANFSE(Response: TNFSeObterDANFSEResponse); virtual;
     procedure TratarRetornoObterDANFSE(Response: TNFSeObterDANFSEResponse); virtual; abstract;
+
   public
     constructor Create(AOwner: TACBrDFe);
     destructor Destroy; override;
 
     function GetSchemaPath: string; virtual;
+    procedure AlteraVersao(const AVersao: TVersaoNFSe); virtual; abstract;
+    function SuportaVersao(const AVersao: TVersaoNFSe): Boolean; virtual; abstract;
 
     function GerarXml(const aNFSe: TNFSe; var aXml, aAlerts: string): Boolean; virtual;
     function LerXML(const aXML: String; var aNFSe: TNFSe; var ATipo: TtpXML;
@@ -324,6 +327,9 @@ type
 
     function StatusRPSToStr(const t: TStatusRPS): string; virtual;
     function StrToStatusRPS(out ok: boolean; const s: string): TStatusRPS; virtual;
+
+    function tpDedRedToStr(const t: TtpDedRed): string; virtual;
+    function StrTotpDedRed(out ok: Boolean; const s: string): TtpDedRed; virtual;
   end;
 
 implementation
@@ -940,14 +946,14 @@ var
     if (ConfigWebServices.Producao.LinkURL = '') or
        (TACBrNFSeX(FAOwner).Configuracoes.Geral.Provedor = proPadraoNacional) then
     begin
-      Sessao := 'PadraoNacional'; // Configuracoes.Geral.xProvedorOrigem;
+      Sessao := 'PadraoNacional';
       ConfigWebServices.LoadlinkUrlProducao(IniParams, Sessao);
     end;
 
     if (ConfigWebServices.Homologacao.LinkURL = '') or
        (TACBrNFSeX(FAOwner).Configuracoes.Geral.Provedor = proPadraoNacional) then
     begin
-      Sessao := 'PadraoNacional'; // Configuracoes.Geral.xProvedorOrigem;
+      Sessao := 'PadraoNacional';
       ConfigWebServices.LoadLinkUrlHomologacao(IniParams, Sessao);
     end;
   end;
@@ -982,7 +988,6 @@ begin
     // Depois verifica as URLs definidas para o provedor
     Sessao := TACBrNFSeX(FAOwner).Configuracoes.Geral.xProvedor;
     // Verifica se na seção do provedor tem o Params: APIPropria
-//    Sessao := TACBrNFSeX(FAOwner).Configuracoes.Geral.xProvedorOrigem;
     APIPropria := (Pos('APIPropria:', IniParams.ReadString(Sessao, 'Params', '')) > 0);
 
     if not APIPropria then
@@ -1621,8 +1626,10 @@ begin
   AWriter := CriarGeradorXml(aNFSe);
 
   try
-    Result := AWriter.GerarIni;
+    AWriter.Opcoes.GerarTodasSecoes := TACBrNFSeX(FAOwner).Configuracoes.Geral.GerarTodasSecoes;
+    AWriter.Opcoes.Documentar := TACBrNFSeX(FAOwner).Configuracoes.Geral.Documentar;
 
+    Result := AWriter.GerarIni;
   finally
     AWriter.Destroy;
   end;
@@ -1950,6 +1957,15 @@ begin
                             ttExpServicos]);
 end;
 
+function TACBrNFSeXProvider.tpDedRedToStr(const t: TtpDedRed): string;
+begin
+  result := EnumeradoToStr(t,
+                           ['1', '2', '3', '4', '5', '6', '7', '8', '9', '99'],
+    [drAlimentacao, drMateriais, drProducaoExt, drReembolso, drRepasseConsorciado,
+     drRepassePlanoSaude, drServicos, drSubEmpreitada, drProfissionalParceiro,
+     drOutrasDeducoes]);
+end;
+
 function TACBrNFSeXProvider.StrToTipoTributacaoRPS(out ok: Boolean;
   const s: string): TTipoTributacaoRPS;
 begin
@@ -1960,6 +1976,16 @@ begin
                             ttTribnoMunImune, ttTribforaMunImune,
                             ttTribnoMunSuspensa, ttTribforaMunSuspensa,
                             ttExpServicos]);
+end;
+
+function TACBrNFSeXProvider.StrTotpDedRed(out ok: Boolean;
+  const s: string): TtpDedRed;
+begin
+  result := StrToEnumerado(ok, s,
+                           ['1', '2', '3', '4', '5', '6', '7', '8', '9', '99'],
+    [drAlimentacao, drMateriais, drProducaoExt, drReembolso, drRepasseConsorciado,
+     drRepassePlanoSaude, drServicos, drSubEmpreitada, drProfissionalParceiro,
+     drOutrasDeducoes]);
 end;
 
 function TACBrNFSeXProvider.CondicaoPagToStr(

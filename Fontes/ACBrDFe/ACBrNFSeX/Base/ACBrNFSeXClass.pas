@@ -283,6 +283,7 @@ type
     FpAliq: Double;
     FtpRetISSQN: TtpRetISSQN;
   public
+    constructor Create;
     property tribISSQN: TtribISSQN read FtribISSQN write FtribISSQN;
     property cPaisResult: Integer read FcPaisResult write FcPaisResult;
     property tpBM: TtpBM read FtpBM write FtpBM;
@@ -2535,6 +2536,7 @@ begin
     FValorTotalNotaFiscal := 0;
   end;
 
+  FMunicipioIncidencia := 0;
   FItemServico := TItemServicoCollection.Create;
   FDeducao := TDeducaoCollection.Create;
   FcomExt := TComExterior.Create;
@@ -3286,7 +3288,7 @@ end;
 constructor TinfNFSe.Create;
 begin
   inherited Create;
-
+  FcLocIncid := 0;
   Femit := TDadosPessoa.Create;
   Fvalores := TValoresNfse.Create;
   FIBSCBS := TIBSCBSNfse.Create;
@@ -3479,7 +3481,7 @@ end;
 constructor TIBSCBSNfse.Create;
 begin
   inherited Create;
-
+  FcLocalidadeIncid := 0;
   Fvalores := TvaloresIBSCBS.Create;
 
   FtotCIBS := TtotCIBS.Create;
@@ -3755,6 +3757,16 @@ constructor TtotTrib.Create;
 begin
   inherited Create;
   FindTotTrib := indSim;
+end;
+
+{ TtribMun }
+
+constructor TtribMun.Create;
+begin
+  inherited Create;
+  FtpBM := tbNenhum;
+  FtpSusp := tsNenhum;
+  FtpImunidade := timNenhum;
 end;
 
 end.

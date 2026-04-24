@@ -48,6 +48,64 @@ Símbolo : Significado
 [+]     : Novo recurso
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
+13/04/2026
+-- ACBrBancoSicredi.pas --
+[-] Correção no comportamento do CNAB240 propriedade MultaValorFixo
+   [ACBR-8920] - https://www.projetoacbr.com.br/forum/topic/84603-banco-sicredi-n%C3%A3o-est%C3%A1-convertendo-multa-de-valor-fixo-para-percentual-cnab-240/
+   Por: Igor Rafael Martins / Valter Patrick
+
+09/04/2026
+-- ACBrBancoInter.pas --
+[-] Corrigido MontarCodigoBarras devido a divirgencia entre as carteiras 110/112;
+   [ACBR-9236] - https://www.projetoacbr.com.br/forum/topic/91415-boleto-inter-linha-digit%C3%A1vel
+   Por: Daniel de Morais InfoCotidano / Victor H. Gonzales Pandaaaa
+
+08/04/2026
+-- Particularidades --
+[*] Adicionado particularidades C6 responsavel da emissao que impacta na barras e linha digitavel do boleto.
+   Por: Daniel de Morais InfoCotidano
+
+07/04/2026
+-- ACBrBoletoW_Banrisul.pas --
+[*] ACBR-9008 - Adicionado a opção de Alterar Data de Vencimento e Alterar Valor do Abatimento
+   https://www.projetoacbr.com.br/forum/topic/89444-acbr-9008-boleto-api-banrisul-adicionado-a-op%C3%A7%C3%A3o-de-alterar-data-de-vencimento-e-alterar-valor-do-abatimento
+   Por: Pablo Cerbaro
+
+02/04/2026
+-- ACBrBoletoRet_Sicoob_V3.pas --
+[*] ACBR-8474 - Quando erro de credenciais, não retorna json e sim string, isso gerava erro na hora do parse
+   https://www.projetoacbr.com.br/forum/topic/87538-erro-no-parse-do-retws-no-siccob-v3/#comment-568732
+   Por: Sady Martins Membros / Validado Valter Patrick
+
+01/04/2026
+-- ACBrBoletoW_BancoBrasil_API --
+[*] ACBr-8818 - Implementado TpAltera: Baixa e Cancelamento de Negativação
+   https://www.projetoacbr.com.br/forum/topic/89573-acbr-8818-altera%C3%A7%C3%A3o-negativa%C3%A7%C3%A3o-boletos-banco-do-brasil/
+   Por: Desenvolvimento Eagle / Daniel Morais InfoCotidiano
+
+25/03/2026
+-- ACBrBoletoW_Itau_API --
+[-] ACBR-8971 - Corrigidos vazamentos de memória - https://www.projetoacbr.com.br/forum/topic/90184-acbr-8971-bolecode-ita%C3%BA-api-memory-leak-no-envio-do-boleto-acbrboletow_itau_apipas/
+   Por: Luizfern
+
+-- ACBrBoleto --
+[+] ACBR-8582 - Implementados dados recebidos no parâmetro AReplyTo no EnviarEmail() do ACBrBoleto - https://www.projetoacbr.com.br/forum/topic/88308-acbr-8582-par%C3%A2metro-areplyto-est%C3%A1-sendo-ignorado-no-m%C3%A9todo-tacbrboletoenviaremail/ 
+-- uDemoBoleto --
+[+] ACBR-8582 - Atribuído ACBrMail ao ACBrBoleto na criação dos componentes do programa de exemplo
+   Por: Renato Rubinho
+
+23/03/2026
+-- ACBrBancoDaycoval --
+[-] ACBr-8883 - Ajustado LerNossoNumeroCompleto qdo fpLayoutVersaoArquivo = 6  
+	https://www.projetoacbr.com.br/forum/topic/89820-leitura-do-nosso-n%C3%BAmero-no-retorno-cortando-banco-daycoval/
+   Por: Daniel Morais InfoCotidiano
+
+16/03/2026
+-- ACBrBancoBradesco --
+[-] ACBr-9140 - Ajustado CNAB 400 do Bradesco, para gerar ValorMoraJuros qdo for maior que zero. ja que no 400, não envia Codigo Mora segundo manual.
+	https://www.projetoacbr.com.br/forum/topic/90963-d%C3%BAvida-juros-n%C3%A3o-aparece-no-arquivo-de-remessa
+   Por: Daniel Morais InfoCotidiano
+
 03/03/2026
 -- ACBrBancoAmazonia --
 [-] ACBr-9049 - Ajustado conforme documentação para enviar 7 posições

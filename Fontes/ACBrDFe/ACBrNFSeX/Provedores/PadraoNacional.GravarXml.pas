@@ -156,7 +156,7 @@ type
     procedure GerarIniNfse(AINIRec: TMemIniFile);
   public
     function GerarXml: Boolean; override;
-    function GerarIni: string; override;
+//    function GerarIni: string; override;
   end;
 
 implementation
@@ -384,21 +384,24 @@ begin
   Result.AppendChild(AddNode(tcDe2, '#1', 'vCalcDR', 1, 15, 0,
                                        NFSe.Servico.Valores.ValorDeducoes, ''));
 
-  Result.AppendChild(AddNode(tcStr, '#1', 'tpBM', 1, 1, 0,
+  if NFSe.Servico.Valores.tribMun.tpBM <> tbNenhum then
+  begin
+    Result.AppendChild(AddNode(tcStr, '#1', 'tpBM', 1, 1, 0,
                              tpBMToStr(NFSe.Servico.Valores.tribMun.tpBM), ''));
 
-  case NFSe.Servico.Valores.tribMun.tpBM of
-    tbIsencao:
-      Result.AppendChild(AddNode(tcDe2, '#1', 'vCalcBM', 1, 15, 0, 0, ''));
+    case NFSe.Servico.Valores.tribMun.tpBM of
+      tbIsencao:
+        Result.AppendChild(AddNode(tcDe2, '#1', 'vCalcBM', 1, 15, 0, 0, ''));
 
-    tbReducaoBCvalor:
-      Result.AppendChild(AddNode(tcDe2, '#1', 'vCalcBM', 1, 15, 0,
+      tbReducaoBCvalor:
+        Result.AppendChild(AddNode(tcDe2, '#1', 'vCalcBM', 1, 15, 0,
                                     NFSe.Servico.Valores.tribMun.vRedBCBM, ''));
 
-    tbReducaoBCperc,
-    tbAliquota:
-      Result.AppendChild(AddNode(tcDe2, '#1', 'vCalcBM', 1, 15, 0,
+      tbReducaoBCperc,
+      tbAliquota:
+        Result.AppendChild(AddNode(tcDe2, '#1', 'vCalcBM', 1, 15, 0,
                                     NFSe.Servico.Valores.tribMun.pRedBCBM, ''));
+    end;
   end;
 
   Result.AppendChild(AddNode(tcDe2, '#1', 'vBC', 1, 15, 0,
@@ -513,7 +516,12 @@ begin
   Result.AppendChild(AddNode(tcStr, '#1', 'nNFSe', 1, 13, 1,
                                              NFSe.IdentificacaoRps.Numero, ''));
 
-  if NFSe.infNFSe.IBSCBS.cLocalidadeIncid > 0 then
+  if NFSe.infNFSe.cLocIncid > 0 then
+  begin
+    cLocIncid := NFSe.infNFSe.cLocIncid;
+    xLocIncid := NFSe.infNFSe.xLocIncid;
+  end
+  else if NFSe.infNFSe.IBSCBS.cLocalidadeIncid > 0 then
   begin
     cLocIncid := NFSe.infNFSe.IBSCBS.cLocalidadeIncid;
     xLocIncid := NFSe.infNFSe.IBSCBS.xLocalidadeIncid;
@@ -576,7 +584,12 @@ begin
     Result.AppendChild(AddNode(tcStr, '#1', 'xOutInf', 1, 15, 0,
                                                    NFSe.OutrasInformacoes, ''));
 
-  if GerarIBSCBSNFSe and (NFSe.OptanteSN = osnNaoOptante) then
+//  if GerarIBSCBSNFSe and (NFSe.OptanteSN = osnNaoOptante) then
+
+  if (NFSe.IBSCBS.dest.xNome <> '') or (NFSe.IBSCBS.imovel.cCIB <> '') or
+     (NFSe.IBSCBS.imovel.ender.CEP <> '') or
+     (NFSe.IBSCBS.imovel.ender.endExt.cEndPost <> '') or
+     (NFSe.IBSCBS.valores.trib.gIBSCBS.CST <> cstNenhum) then
   begin
     xmlNode := GerarXMLIBSCBSNFSe;
     Result.AppendChild(xmlNode);
@@ -1318,7 +1331,7 @@ begin
   Result.AppendChild(AddNode(tcDe2, '#1', 'vReceb', 1, 15, 0,
                                        NFSe.Servico.Valores.ValorRecebido, ''));
 
-  Result.AppendChild(AddNode(tcDe2, '#1', 'vServ', 1, 15, 0,
+  Result.AppendChild(AddNode(tcDe2, '#1', 'vServ', 1, 15, 1,
                                        NFSe.Servico.Valores.ValorServicos, ''));
 end;
 
@@ -1425,7 +1438,7 @@ begin
     end;
 
     Result[i].AppendChild(AddNode(tcStr, '#1', 'tpDedRed', 1, 2, 1,
-         tpDedRedToStr(NFSe.Servico.Valores.DocDeducao.Items[i].tpDedRed), ''));
+         FpAOwner.tpDedRedToStr(NFSe.Servico.Valores.DocDeducao.Items[i].tpDedRed), ''));
 
     Result[i].AppendChild(AddNode(tcStr, '#1', 'xDescOutDed', 1, 150, 0,
                      NFSe.Servico.Valores.DocDeducao.Items[i].xDescOutDed, ''));
@@ -1707,9 +1720,43 @@ begin
 end;
 
 function TNFSeW_PadraoNacional.GerarXMLTotalTributos: TACBrXmlNode;
+
+  procedure PercentualouValor;
+  begin
+    if (NFSe.Servico.Valores.totTrib.pTotTribFed > 0) or
+       (NFSe.Servico.Valores.totTrib.pTotTribEst > 0) or
+       (NFSe.Servico.Valores.totTrib.pTotTribMun > 0) then
+      Result.AppendChild(GerarXMLPercentualTotalTributos)
+    else
+      Result.AppendChild(GerarXMLValorTotalTributos);
+  end;
 begin
   Result := CreateElement('totTrib');
 
+  case NFSe.OptanteSN of
+    osnOptanteMEI:
+      begin
+        if (NFSe.Servico.Valores.totTrib.indTotTrib <> indSim) then
+          Result.AppendChild(AddNode(tcStr, '#1', 'indTotTrib', 1, 1, 1,
+                  indTotTribToStr(NFSe.Servico.Valores.totTrib.indTotTrib), ''))
+        else
+          PercentualouValor;
+      end;
+
+    osnOptanteMEEPP:
+      begin
+        if NFSe.Servico.Valores.totTrib.pTotTribSN > 0 then
+          Result.AppendChild(AddNode(tcDe2, '#1', 'pTotTribSN', 1, 5, 1,
+                                   NFSe.Servico.Valores.totTrib.pTotTribSN, ''))
+        else
+          PercentualouValor;
+      end;
+  else
+    begin
+      PercentualouValor;
+    end;
+  end;
+  (*
   if (NFSe.Servico.Valores.totTrib.pTotTribFed > 0) or
      (NFSe.Servico.Valores.totTrib.pTotTribEst > 0) or
      (NFSe.Servico.Valores.totTrib.pTotTribMun > 0) then
@@ -1724,6 +1771,7 @@ begin
                   indTotTribToStr(NFSe.Servico.Valores.totTrib.indTotTrib), ''))
       else
         Result.AppendChild(GerarXMLValorTotalTributos);
+  *)
 end;
 
 function TNFSeW_PadraoNacional.GerarXMLValorTotalTributos: TACBrXmlNode;
@@ -1797,6 +1845,7 @@ begin
 end;
 
 //====== Gerar o Arquivo INI=========================================
+(*
 function TNFSeW_PadraoNacional.GerarIni: string;
 var
   INIRec: TMemIniFile;
@@ -1823,7 +1872,7 @@ begin
     end;
   end;
 end;
-
+*)
 procedure TNFSeW_PadraoNacional.GerarIniNfse(AINIRec: TMemIniFile);
 begin
   GerarINIIdentificacaoNFSe(AINIRec);
@@ -1926,8 +1975,8 @@ begin
 
   AINIRec.WriteString(LSecao, 'Numero', NFSe.IdentificacaoRps.Numero);
   AINIRec.WriteString(LSecao, 'Serie', NFSe.IdentificacaoRps.Serie);
-  AINIRec.WriteString(LSecao, 'DataEmissaoRPS', DateTimeTodh(NFSe.DataEmissaoRps));
-  AINIRec.WriteString(LSecao, 'Competencia', DateTimeTodh(NFSe.Competencia));
+  AINIRec.WriteString(LSecao, 'DataEmissaoRPS', DateTimeToStr(NFSe.DataEmissaoRps));
+  AINIRec.WriteString(LSecao, 'Competencia', DateTimeToStr(NFSe.Competencia));
   AINIRec.WriteString(LSecao, 'verAplic', NFSe.verAplic);
   AINIRec.WriteString(LSecao, 'tpEmit', tpEmitToStr(NFSe.tpEmit));
   AINIRec.WriteString(LSecao, 'cMotivoEmisTI', cMotivoEmisTIToStr(NFSe.cMotivoEmisTI));
@@ -2160,7 +2209,7 @@ begin
     AINIRec.WriteString(LSecao, 'chNFe', NFSe.Servico.Valores.DocDeducao[i].chNFe);
     AINIRec.WriteString(LSecao, 'nDocFisc', NFSe.Servico.Valores.DocDeducao[i].nDocFisc);
     AINIRec.WriteString(LSecao, 'nDoc', NFSe.Servico.Valores.DocDeducao[i].nDoc);
-    AINIRec.WriteString(LSecao, 'tpDedRed', tpDedRedToStr(NFSe.Servico.Valores.DocDeducao[i].tpDedRed));
+    AINIRec.WriteString(LSecao, 'tpDedRed', FpAOwner.tpDedRedToStr(NFSe.Servico.Valores.DocDeducao[i].tpDedRed));
     AINIRec.WriteString(LSecao, 'xDescOutDed', NFSe.Servico.Valores.DocDeducao[i].xDescOutDed);
     AINIRec.WriteString(LSecao, 'dtEmiDoc', DateToStr(NFSe.Servico.Valores.DocDeducao[i].dtEmiDoc));
     AINIRec.WriteFloat(LSecao, 'vDedutivelRedutivel', NFSe.Servico.Valores.DocDeducao[i].vDedutivelRedutivel);

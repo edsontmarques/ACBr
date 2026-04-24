@@ -227,8 +227,6 @@ begin
       Discriminacao := StringReplace(Discriminacao, FpQuebradeLinha,
                                                     sLineBreak, [rfReplaceAll]);
 
-      VerificarSeConteudoEhLista(Discriminacao);
-
       CodigoNBS := ObterConteudo(AuxNode.Childrens.FindAnyNs('cNBS'), tcStr);
       CodigoInterContr := ObterConteudo(AuxNode.Childrens.FindAnyNs('cIntContrib'), tcStr);
     end;
@@ -272,6 +270,9 @@ begin
     begin
       AliquotaDeducoes := ObterConteudo(AuxNode.Childrens.FindAnyNs('pDR'), tcDe2);
       ValorDeducoes := ObterConteudo(AuxNode.Childrens.FindAnyNs('vDR'), tcDe2);
+
+      if (ValorDeducoes = 0) and (NFSe.infNFSe.valores.vCalcDR > 0) then
+        ValorDeducoes := NFSe.infNFSe.valores.vCalcDR;
 
       LerXMLDocDeducoes(AuxNode);
     end;
@@ -320,7 +321,7 @@ begin
 
         nDocFisc := ObterConteudo(ANodes[i].Childrens.FindAnyNs('nDocFisc'), tcStr);
         nDoc := ObterConteudo(ANodes[i].Childrens.FindAnyNs('nDoc'), tcStr);
-        tpDedRed := StrTotpDedRed(Ok, ObterConteudo(ANodes[i].Childrens.FindAnyNs('tpDedRed'), tcStr));
+        tpDedRed := FpAOwner.StrTotpDedRed(Ok, ObterConteudo(ANodes[i].Childrens.FindAnyNs('tpDedRed'), tcStr));
         xDescOutDed := ObterConteudo(ANodes[i].Childrens.FindAnyNs('xDescOutDed'), tcStr);
         dtEmiDoc := ObterConteudo(ANodes[i].Childrens.FindAnyNs('dtEmiDoc'), tcDat);
         vDedutivelRedutivel := ObterConteudo(ANodes[i].Childrens.FindAnyNs('vDedutivelRedutivel'), tcDe2);
@@ -847,6 +848,8 @@ begin
     NFSe.cMotivoEmisTI := StrTocMotivoEmisTI(ObterConteudo(AuxNode.Childrens.FindAnyNs('cMotivoEmisTI'), tcStr));
     NFSe.cLocEmi := ObterConteudo(AuxNode.Childrens.FindAnyNs('cLocEmi'), tcStr);
 
+    NFSe.Producao := FpAOwner.StrToSimNao(Ok, ObterConteudo(AuxNode.Childrens.FindAnyNs('tpAmb'), tcStr));
+
     LerXMLSubstituicao(AuxNode);
     LerXMLPrestador(AuxNode);
     LerXMLTomador(AuxNode);
@@ -982,6 +985,11 @@ begin
 
     // Reforma Tributária
     LerXMLIBSCBSNFSe(AuxNode.Childrens.FindAnyNs('IBSCBS'), NFSe.infNFSe.IBSCBS);
+    if NFSe.InfNFSe.IBSCBS.cLocalidadeIncid = 0 then
+    begin
+      NFSe.InfNFSe.IBSCBS.cLocalidadeIncid := NFSe.InfNFSe.cLocIncid;
+      NFSe.InfNFSe.IBSCBS.xLocalidadeIncid := NFSe.infNFSe.xLocIncid;
+    end;
   end;
 end;
 
@@ -1551,6 +1559,8 @@ begin
   else
     Result := LerXmlRps(XmlNode);
 
+  VerificarSeConteudoEhLista(NFSe.Servico.Discriminacao);
+
   FreeAndNil(FDocument);
 end;
 
@@ -1618,6 +1628,7 @@ begin
   LerINIInformacoesComplementares(AINIRec);
   LerINIInformacoesComplementaresgItemPed(AINIRec);
   LerINIValores(AINIRec);
+  LerINIValoresNFSe(AINIRec);
   LerINIDocumentosDeducoes(AINIRec);
   LerINIValoresTribMun(AINIRec);
   LerINIValoresTribFederal(AINIRec);
@@ -1832,13 +1843,21 @@ end;
 
 procedure TNFSeR_PadraoNacional.LerINIValoresNFSe(AINIRec: TMemIniFile);
 var
-  sSecao: string;
+  sSecao, lValtpBM: string;
+  Ok: Boolean;
 begin
   sSecao := 'ValoresNFSe';
   if AINIRec.SectionExists(sSecao) then
   begin
     NFSe.infNFSe.valores.vCalcDR := StringToFloatDef(AINIRec.ReadString(sSecao, 'vCalcDR', ''), 0);
-    NFSe.infNFSe.valores.tpBM := AINIRec.ReadString(sSecao, 'tpBM', '');
+    lValtpBM := '';
+    lValtpBM := AINIRec.ReadString(sSecao, 'tpBM', '');
+    if Trim(lValtpBM) <> '' then
+    begin
+      NFSe.infNFSe.valores.tpBM := lValtpBM;
+      NFSe.Servico.Valores.tribMun.tpBM := StrTotpBM(Ok, lValtpBM)
+    end;
+
     NFSe.infNFSe.valores.vCalcBM := StringToFloatDef(AINIRec.ReadString(sSecao, 'vCalcBM', ''), 0);
     NFSe.infNFSe.valores.BaseCalculo := StringToFloatDef(AINIRec.ReadString(sSecao, 'vBC', ''), 0);
     NFSe.infNFSe.valores.Aliquota := StringToFloatDef(AINIRec.ReadString(sSecao, 'pAliqAplic', ''), 0);
@@ -2141,7 +2160,7 @@ begin
     Item.chNFe := AINIRec.ReadString(sSecao, 'chNFe', '');
     Item.nDocFisc := AINIRec.ReadString(sSecao, 'nDocFisc', '');
     Item.nDoc := AINIRec.ReadString(sSecao, 'nDoc', '');
-    Item.tpDedRed := StrTotpDedRed(Ok, AINIRec.ReadString(sSecao, 'tpDedRed', '1'));
+    Item.tpDedRed := FpAOwner.StrTotpDedRed(Ok, AINIRec.ReadString(sSecao, 'tpDedRed', '1'));
     Item.xDescOutDed := AINIRec.ReadString(sSecao, 'xDescOutDed', '');
     Item.dtEmiDoc := AINIRec.ReadDate(sSecao, 'dtEmiDoc', Now);
     Item.vDedutivelRedutivel := StringToFloatDef(AINIRec.ReadString(sSecao, 'vDedutivelRedutivel', ''), 0);

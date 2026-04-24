@@ -60,6 +60,7 @@ type
     function GerarXMLDocumentos: TACBrXmlNodeArray; override;
 
     function GerarXMLIBSCBS(IBSCBS: TIBSCBSDPS): TACBrXmlNode; override;
+    function GerarXMLDestinatario(Dest: TDadosdaPessoa): TACBrXmlNode; override;
     function GerarXMLImovel(Imovel: TDadosimovel): TACBrXmlNode;
   public
     function GerarXml: Boolean; override;
@@ -343,12 +344,11 @@ begin
 
   if VersaoNFSe = ve200 then
   begin
-    if NFSe.Servico.Valores.ValorInicialCobrado > 0 then
-      LNFSeNode.AppendChild(AddNode(tcDe2, '#1', 'ValorInicialCobrado', 1, 15, 1,
-                                  NFSe.Servico.Valores.ValorInicialCobrado, ''))
-    else
-      LNFSeNode.AppendChild(AddNode(tcDe2, '#1', 'ValorFinalCobrado', 1, 15, 1,
-                                   NFSe.Servico.Valores.ValorFinalCobrado, ''));
+    if (NFSe.Servico.Valores.ValorInicialCobrado > 0) and (NFSe.Servico.Valores.ValorFinalCobrado = 0) then
+      NFSe.Servico.Valores.ValorFinalCobrado := NFSe.Servico.Valores.ValorInicialCobrado;
+
+    LNFSeNode.AppendChild(AddNode(tcDe2, '#1', 'ValorFinalCobrado', 1, 15, 1,
+                                 NFSe.Servico.Valores.ValorFinalCobrado, ''));
   end;
 
   LNFSeNode.AppendChild(AddNode(tcDe2, '#1', 'ValorMulta', 1, 15, 0,
@@ -407,6 +407,29 @@ begin
     LNFSeNode.AppendChild(GerarXMLIBSCBS(NFSe.IBSCBS));
 
   Result := True;
+end;
+
+function TNFSeW_ISSSaoPaulo.GerarXMLDestinatario(
+  Dest: TDadosdaPessoa): TACBrXmlNode;
+begin
+  Result := CreateElement('dest');
+
+  if Dest.CNPJCPF <> '' then
+    Result.AppendChild(AddNodeCNPJCPF('#1', '#1', Dest.CNPJCPF))
+  else
+  if Dest.Nif <> '' then
+    Result.AppendChild(AddNode(tcStr, '#1', 'NIF', 1, 40, 1, Dest.Nif, ''))
+  else
+    Result.AppendChild(AddNode(tcStr, '#1', 'NaoNIF', 1, 1, 1,
+                                                NaoNIFToStr(Dest.cNaoNIF), ''));
+
+  Result.AppendChild(AddNode(tcStr, '#1', 'xNome', 1, 300, 1, Dest.xNome, ''));
+
+  Result.AppendChild(GerarXMLEnderecoDestinatario(Dest.ender));
+
+  Result.AppendChild(AddNode(tcStr, '#1', 'fone', 6, 20, 0, Dest.fone, ''));
+
+  Result.AppendChild(AddNode(tcStr, '#1', 'email', 1, 80, 0, Dest.email, ''));
 end;
 
 function TNFSeW_ISSSaoPaulo.GerarXMLDocumentos: TACBrXmlNodeArray;

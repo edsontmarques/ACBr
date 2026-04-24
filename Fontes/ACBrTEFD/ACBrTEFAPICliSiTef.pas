@@ -281,12 +281,25 @@ begin
     if (NumeroTerminal = '') then
       fpACBrTEFAPI.DoException(ACBrStr(sErroCliSiTef_SemTerminal));
   end
-  else  // homologação
+  else  // homologação ou NãoDefinido
   begin
-    fpACBrTEFAPI.GravarLog( 'Ajustando Loja e Terminal para ambiente de homologacao') ;
-    EnderecoIP := IfEmptyThen(EnderecoIP, CURL_LOCALHOST);
-    CodLoja := IfEmptyThen(CodLoja, '00000000' );
-    NumeroTerminal := IfEmptyThen(NumeroTerminal, 'SE000001');
+    if (EnderecoIP = '') then
+    begin
+      fpACBrTEFAPI.GravarLog( 'Ajustando IP para: '+CURL_LOCALHOST);
+      EnderecoIP := CURL_LOCALHOST;
+    end;
+
+    if (CodLoja = '') then
+    begin
+      fpACBrTEFAPI.GravarLog( 'Ajustando CodLoja para: 00000000');
+      CodLoja := '00000000';
+    end;
+
+    if (NumeroTerminal = '') then
+    begin
+      fpACBrTEFAPI.GravarLog( 'Ajustando NumeroTerminal para: SE000001');
+      NumeroTerminal := 'SE000001';
+    end;
   end;
 
   // Poderiamos ajustar o Diretorio de trabalho na Clisitef.ini,
@@ -448,7 +461,7 @@ begin
   else
   begin
     DataHora := Now;
-    DoctoStr := FormatDateTime('YYYYMMDDHHNNSS', DataHora );
+    DoctoStr := FormatDateTime('YYMMDDHHNNSSZZZ', DataHora );
   end;
 
   DataStr := FormatDateTime('YYYYMMDD', DataHora );
@@ -461,13 +474,21 @@ begin
     if not ParamTemChave(ParamAdicFuncao, CPARAM_ExibeMsgOperadorPinpad) then
       ParamAdicFuncao.Values[CPARAM_ExibeMsgOperadorPinpad] := '1';
 
-  // Exibe QRCode na tela ?
-  // https://dev.softwareexpress.com.br/docs/clisitef-interface-aplicacao/parametro-adicional-tratamento-de-qrcode
-  if (TACBrTEFAPI(fpACBrTEFAPI).ExibicaoQRCode = qrapiExibirAplicacao) then
-    if not ParamTemChave(ParamAdicFuncao, CPARAM_DevolveStringQRCode) then
-      ParamAdicFuncao.Values[CPARAM_DevolveStringQRCode] := '1';
-
   ParamAdicStr := StringReplace(Trim(ParamAdicFuncao.Text), sLineBreak, ';', [rfReplaceAll]);
+
+  // Se a automação vai exibir o QRCode, solicitar que a CliSiTef devolva a String do QRCode
+  // no fluxo iterativo (comandos 50/51/52).
+  // https://dev.softwareexpress.com.br/docs/clisitef-interface-aplicacao/parametro-adicional-tratamento-de-qrcode
+  if (pos(CPARAM_DevolveStringQRCode, ParamAdicStr) = 0) then
+  begin
+    if (TACBrTEFAPI(fpACBrTEFAPI).ExibicaoQRCode = qrapiExibirAplicacao) then
+    begin
+      if NaoEstaVazio(ParamAdicStr) then
+        ParamAdicStr := ParamAdicStr + ';';
+      ParamAdicStr := ParamAdicStr + '{' + CPARAM_DevolveStringQRCode + '=1;}';
+    end;
+  end;
+
   fDocumentosFinalizados := '' ;
 
   fpACBrTEFAPI.UltimaRespostaTEF.Clear;
@@ -839,7 +860,7 @@ end;
 function TACBrTEFAPIClassCliSiTef.ParamTemChave(AParam: TACBrTEFParametros;
   const Chave: String): Boolean;
 begin
-  Result := (AParam.IndexOf(Chave) >= 0);
+  Result := (AParam.IndexOfName(Chave) >= 0);
 end;
 
 procedure TACBrTEFAPIClassCliSiTef.QuandoGravarLogAPI(const ALogLine: String; var Tratado: Boolean);
@@ -981,6 +1002,7 @@ end;
 
 procedure TACBrTEFAPIClassCliSiTef.DoExibirQRCode(const DadosQRCode: String);
 begin
+  fpACBrTEFAPI.GravarLog( 'TACBrTEFAPIClassCliSiTef.DoExibirQRCode( '+DadosQRCode+' )');
   with TACBrTEFAPI(fpACBrTEFAPI) do
   begin
     if Assigned(QuandoExibirQRCode) then
