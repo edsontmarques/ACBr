@@ -44,6 +44,21 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+01/06/2026
+-- pcnConversaoNFe --
+[+] ACBr-9415 - Incluído o enumerado tcRetornoRecusaParcial para o campo tpNFCredito.
+   Por: Italo Giurizzato Junior
+
+26/05/2026
+-- ACBrNFe.Classes/ACBrNFe.XmlReader --
+[+] ACBr-9316 - Implementado a leitura do grupo infPAA
+   Por: Italo Giurizzato Junior
+
+19/05/2026
+-- ACBrNFeServicos --
+[-] Alteração nas URLs de produção e homologação referente ao QR-Code e consulta via portal da SEFAZ-RN
+   Por: Italo Giurizzato Junior
+
 04/05/2026
 -- ACBrNFeXmlReader --
 [-] ACBr-8858 Corrige erro de parse de nomes com elementos XML/XHTML

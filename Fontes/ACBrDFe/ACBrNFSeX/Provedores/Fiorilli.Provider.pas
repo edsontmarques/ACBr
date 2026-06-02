@@ -889,6 +889,9 @@ var
 begin
   AResponse.Data := ObterConteudoTag(ARootNode.Childrens.FindAnyNs('DataRecebimento'), tcDatHor);
   AResponse.Protocolo := ObterConteudoTag(ARootNode.Childrens.FindAnyNs('protocolo'), tcStr);
+  if AResponse.Protocolo = '' then
+    AResponse.Protocolo :=
+      ObterConteudoTag(ARootNode.Childrens.FindAnyNs('Protocolo'), tcStr);
   AResponse.Situacao := ObterConteudoTag(ARootNode.Childrens.FindAnyNs('Status'), tcStr);
 
   ANode := ARootNode.Childrens.FindAnyNs('NFSe');
@@ -1842,7 +1845,7 @@ begin
 
   Request := RemoverDeclaracaoXML(AMSG);
 
-  Result := Executar('ConsultarNfseEnvio', Request, [],
+  Result := Executar('consultarNfse', Request, [],
                     [{'xmlns:fio="http://www.fiorilli.com.br/nfse-nacional"'}]);
 end;
 
@@ -1855,7 +1858,7 @@ begin
 
   Request := RemoverDeclaracaoXML(AMSG);
 
-  Result := Executar('ConsultarNfseEnvio', Request, [],
+  Result := Executar('consultarNfse', Request, [],
                     [{'xmlns:fio="http://www.fiorilli.com.br/nfse-nacional"'}]);
 end;
 

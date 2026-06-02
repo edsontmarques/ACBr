@@ -37,7 +37,9 @@ unit ACBrCIOTConversao;
 interface
 
 uses
-  SysUtils, StrUtils, Classes;
+  SysUtils,
+  StrUtils,
+  Classes;
 
 const
   NAME_SPACE_CIOT  = '';
@@ -69,10 +71,9 @@ type
                  LayPamcard);
 
 const
-  TLayOutCIOTArrayStrings: array[TLayOutCIOT] of string = ('eFreteLogon',
-    'eFreteProprietarios', 'eFreteVeiculos', 'eFreteMotoristas',
-    'eFreteOperacaoTransporte', 'eFreteFaturamentoTransportadora',
-    'Pamcard');
+  TLayOutCIOTArrayStrings: array[TLayOutCIOT] of string =
+                           ('eFreteLogon', 'eFreteProprietarios', 'eFreteVeiculos', 'eFreteMotoristas',
+                           'eFreteOperacaoTransporte', 'eFreteFaturamentoTransportadora', 'Pamcard');
 
 type
   TpOperacao = (opLogin, opLogout,
@@ -120,11 +121,11 @@ const
     'Fardo', 'Tanque');
 
 type
-  TpTipoViagem = (Indefinido, Padrao, TAC_Agregado, Frota);
+  TpTipoViagem = (Indefinido, Padrao, TAC_Agregado, Frota, Fracionado);
 
 const
   TpTipoViagemArrayStrings: array[TpTipoViagem] of string = ('Indefinido',
-    'Padrao', 'TAC_Agregado', 'Frota');
+    'Padrao', 'TAC_Agregado', 'Frota', 'Fracionado');
 
 type
   TpUnidadeDeMedidaDaMercadoria = (umIndefinido, umTonelada, umKg);

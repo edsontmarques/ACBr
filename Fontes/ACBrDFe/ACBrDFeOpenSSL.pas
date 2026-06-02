@@ -39,7 +39,6 @@ interface
 uses
   Classes, SysUtils,
   ACBrDFeSSL,
-  {$IfDef MSWINDOWS}ACBrDFeWinCrypt, ACBr_WinCrypt,{$EndIf}
   OpenSSLExt;
 
 resourcestring
@@ -176,14 +175,7 @@ end;
 
 function TDFeOpenSSL.GetCertContextWinApi: Pointer;
 begin
-  {$IfDef MSWINDOWS}
-   CarregarCertificadoSeNecessario;
-   if FCertContextWinApi = nil then
-     PFXDataToCertContextWinApi( FpDFeSSL.DadosPFX, FpDFeSSL.Senha,
-                                 FStoreWinApi, FCertContextWinApi);
-  {$Else}
-   FCertContextWinApi := Nil;
-  {$EndIf}
+  FCertContextWinApi := Nil;
 
   Result := FCertContextWinApi;
 end;
@@ -192,14 +184,6 @@ procedure TDFeOpenSSL.DescarregarCertificado;
 begin
   DestroyKey;
   DestroyCert;
-
-  {$IfDef MSWINDOWS}
-  if Assigned(FCertContextWinApi) then
-    CertFreeCertificateContext(FCertContextWinApi);
-
-  if Assigned(FStoreWinApi) then
-    CertCloseStore(FStoreWinApi, CERT_CLOSE_STORE_FORCE_FLAG);
-  {$EndIf}
 
   FCertContextWinApi := Nil;
   FStoreWinApi := Nil;
