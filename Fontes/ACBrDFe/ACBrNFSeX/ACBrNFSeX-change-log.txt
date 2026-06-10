@@ -42,8 +42,47 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+08/06/2026
+-- SpeedGov.Provider --
+[*] Transcreve as rotinas de conversão da informação do RegEspTrib visando maior compatibilidade com os valores válidos para o provedor.
+   Por: Diego Folieni
+05/06/2026
+-- SigISS.LerXml --
+[-] ACBR-9395 - Alteração visando a correta leitura da informação da tag dt_conversao
+   Por: Diego Folieni
+   Veja: https://www.projetoacbr.com.br/forum/topic/92351-acbr-9395-problema-na-impress%C3%A3o-da-nfs-e-data-e-hora-de-emiss%C3%A3o-fixa-no-provedor-sigiss/
+-- ACBrNFSeXDANFSeRLPadraoNacional --
+[*] Ajuste na posição do QR-Code
+   Por: Italo Giurizzato Junior
+-- HM2.GravarXml/HM2.LerXml/HM2.Provider --
+[+] ACBR-9105 - Implementado os Métodos de consultas e de cancelamento.
+   Por: Italo Giurizzato Junior
+-- Diversos --
+[*] Eliminação de Hits
+   Por: Italo Giurizzato Junior
+
+03/06/2026
+-- HM2.Provider --
+[+] ACBR-9105 - Implementado o Método Emitir, falta os demais.
+   Por: Italo Giurizzato Junior
+-- Tinus.Provider --
+[*] Removida a linha que desativava a validação do XML antes do seu envio para o WebService do provedor.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXClass/ACBrNFSeXLerXml/PadraoNacional.LerXml/ACBrNFSeXDANFSeRLPadraoNacional --
+[*] Alterações visando atender a versão 2.00 do DANFSE - Padrão Nacional em Fortes Report.
+   Por: Italo Giurizzato Junior
+
 02/06/2026
+-- ACBrNFSeXConversao/ACBrNFSeXProviderManager --
+[+] ACBR-9105 - Criado o enumerado para o provedor HM2 (proHM2).
+   Por: Italo Giurizzato Junior
+-- HM2.GravarXml/HM2.LerXml/HM2.Provider --
+[+] ACBR-9105 - Implementação do provedor HM2 para a cidade de Carpina/PE, não esta 100%.
+   Por: Italo Giurizzato Junior
 -- ACBrNFSeXServicos --
+[*] ACBR-9234 - O município de Santa Maria de Jetiba/ES mudou de provedor padrão nacional para o provedor EL
+   Por: Larissa Santos
+   Veja: https://www.projetoacbr.com.br/forum/topic/91667-acbr-9234-acbrnfsexservicosini-santa-maria-de-jetibaes-ibge-n%C2%BA-3204559/#comment-605446
 [*] Ajuste nas URLs e versão das cidades atendidas pelo provedor GeisWeb.
    Por: Italo Giurizzato Junior
 -- GeisWeb.GravarXml/GeisWeb.Provider --
