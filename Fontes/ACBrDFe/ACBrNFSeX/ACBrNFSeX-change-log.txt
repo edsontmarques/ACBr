@@ -42,6 +42,27 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+23/06/2026
+-- SpeedGov.GravarXml --
+[*] ACBR-9541 - Adiciona regra para que a tag regEspTrib seja gerada com valor diferente de RegimeEspecialTributacao conforme condições especificas.
+   Por: Diego Folieni
+   Veja: https://www.projetoacbr.com.br/forum/topic/92734-acbr-9541-campo-regesptrib-com-valor-diferente-do-configurado/ 
+22/06/2026
+-- ACBrNFSeXServicos --
+[*] ACBR-9481 - Adiciona param para gerar a tag cPais no grupo endNac do tomador.
+   Por: Diego Folieni
+-- PadraoNacional.GravarXml/SilTecnologia.GravarXml --
+[*] ACBR-9481 - Adiciona a tag cPais no grupo endNac do tomador
+   Por: Diego Folieni
+-- Tecnos.GravarXml --
+[*] ACBR-9514 - Adiciona as tags CodigoSituacaoTributariaPisCofins e TipoRetencaoPisCofins na geração do XML.
+   Por: Daniel Ostoic / Diego Folieni
+   Veja: https://www.projetoacbr.com.br/forum/topic/92933-acbr-9514-obrigatoriamente-o-envio-des-seguintes-tags-provedor-tecnos/ 
+-- Betha.GravarXml/Betha.LerXml --
+[*] ACBR-9537 - O que tudo indica que agora o provedor esta trabalhando com o layout atualizado e não mais com 
+    o que foi publicado na NT 003 versão 1.2, alteração visando usar o layout atualizado.
+   Por: Italo Giurizzato Junior
+
 12/06/2026
 -- ACBrNFSeXServicos --
 [*] A cidade de Bataguassu/MS mudou para o provedor Fiorilli - Padrão Nacional versão 1.01
