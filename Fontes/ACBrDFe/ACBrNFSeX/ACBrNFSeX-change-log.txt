@@ -42,6 +42,42 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+26/06/2026
+-- IPM.GravarXML --
+[*] ACBR-9525 - Adiciona fallback para o valor CodigoNBS pegar priorizar o valor da Lista de Itens.
+   Por: Valter Patrick
+   Veja: https://www.projetoacbr.com.br/forum/topic/92957-acbr-9525-erro-de-nfsex-municipio-de-de-rio-do-sul-provedor-pr%C3%B3prio-ipm/
+-- ACBrNFSeXConversao/IPM.GravarXml --
+[*] ACBr-9303 - Acrescentados novos valores de CST usados pelo provedor IPM.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[*] ACBR-9503 - A cidade de Bertioga/SP trocou de provedor, agora é o GISS na versão 2.04
+   Por: Destak
+   Veja: https://www.projetoacbr.com.br/forum/topic/92890-acbr-9503cidade-de-bertiogasp-mudou-de-ginfes-para-giss/
+[*] ACBR-9503 - A cidade de Carmo do Cajuru/MG trocou de provedor, agora é o Padrão Nacional.
+   Por: MS
+[*] Alterado para o WS novo do provedor Fiorilli versão 1.01 a cidade de Motuca/SP
+   Por: Italo Giurizzato Junior
+-- VersaTecnologia.Provider --
+[*] ACBr-9509 - Ajustes para atender a versão 2.04
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[*] Todas as cidades atendidas pelo provedor VersaTecnologia mudaram para a versão 2.04
+   Por: Italo Giurizzato Junior
+
+25/06/2026
+-- ACBrNFSeXServicos --
+[*] ACBr-9527 - O municipio de Guaraquecaba/PR trocou de provedor para Elotech
+	Por: Light System Software
+	Veja: https://www.projetoacbr.com.br/forum/topic/92960-acbr-9527-erro-na-emissao-para-o-municipio-de-guaraquecaba-pr/
+[-] ACBr-9472 - Mudança de layout e URL para o município de Macae/RJ para a nova API do Padrão Nacional
+	Por: Larissa Santos
+	Veja: https://www.projetoacbr.com.br/forum/topic/92723-acbr-9472-rejei%C3%A7%C3%A3o-l9999-ao-tentar-emitir-uma-nfs-e-para-o-exterior/
+-- ISSNet.GravarXml --
+[*] O que tudo indica o provedor liberou todas as cidades para realizar testes em ambiente de homologação
+    do seu novo WS que recepciona o XML segundo o layout do Padrão Nacional.
+   Por: Italo Giurizzato Junior
+
 23/06/2026
 -- SpeedGov.GravarXml --
 [*] ACBR-9541 - Adiciona regra para que a tag regEspTrib seja gerada com valor diferente de RegimeEspecialTributacao conforme condições especificas.
