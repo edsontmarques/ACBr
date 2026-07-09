@@ -42,6 +42,36 @@ Símbolo : Significado
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
 
+09/07/2026
+-- ACBrNFSeXServicos --
+[*] A cidade de Registro/SP mudou de provedor, agora é o Giss na versão 2.04
+   Por: EasySoft Sistemas
+   Veja: https://www.projetoacbr.com.br/forum/topic/93256-nfs-e-problema-ao-emitir-nfse-cidade-de-registro/?&_rid=124795#findComment-610343
+
+08/07/2026
+-- Diversos --
+[+] Implementado o provedor Agape que no momento atende a cidade Boquim/SE
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXServicos --
+[+] ACBR-9502 - Incluída a cidade Gentil/RS, o provedor é Citta
+   Por: C4Dev
+-- Citta.Provider --
+[*] ACBR-9502 - Alteração visando setar com o valor True no campo SucessoCanc quanto a nota
+    for cancelada com sucesso.
+   Por: C4Dev
+
+07/07/2026
+-- ACBrNFSeXLerXml/GovDigital.GravarXml --
+[*] ACBR-9469 - Ajustes para gerar corretamente os campos CST e TpRetPisCofins.
+   Por: Advance/Italo Giurizzato Junior
+-- ACBrNFSeXProviderBase --
+[-] ACBR-9534 - Ajustes visando a correta definição e leitura das URLS e do parâmetro API Própria.
+   Por: Diego Folieni
+   Veja: https://www.projetoacbr.com.br/forum/topic/93047-acbr-9534acbr-9541-nfse-juazeiro-do-norte-ce-speedgov-parou-de-funcionar/?&_rid=124795#findComment-608247
+-- Diversos --
+[+] Implementado o provedor TaxTecnologia que no momento atende a cidade Santa Izabel do Para/PA
+   Por: Italo Giurizzato Junior
+
 06/07/2026
 -- ACBrNFSeXServicos --
 [*] ACBR-9505 - O municipio de Sao Marcos/SP continua usando o provedor Tecnos e não aderiu ao Padrão Nacional
