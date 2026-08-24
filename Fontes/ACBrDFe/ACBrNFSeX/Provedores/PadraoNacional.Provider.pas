@@ -428,6 +428,7 @@ var
 
         ANota := CarregarXmlNfse(ANota, DocumentXml.Root.OuterXml);
         SalvarXmlNfse(ANota);
+        Response.NomeArq := ANota.NomeArq;
       except
         on E:Exception do
         begin
@@ -465,7 +466,7 @@ begin
       Response.Link := Document.AsString['chaveAcesso'];
       NFSeXml := Document.AsString['nfseXmlGZipB64'];
 
-      if NFSeXml <> '' then
+      if (NFSeXml <> '') and (Pos('<', NFSeXml) = 0) then
       begin
         NFSeXml := DeCompress(DecodeBase64(NFSeXml));
 
@@ -491,7 +492,7 @@ procedure TACBrNFSeProviderPadraoNacional.PrepararConsultaNFSeporRps(
 var
   AErro: TNFSeEventoCollectionItem;
 begin
-  if EstaVazio(Response.NumeroRps) then
+  if EstaVazio(Response.idRps) then
   begin
     AErro := Response.Erros.New;
     AErro.Codigo := Cod126;
@@ -499,7 +500,7 @@ begin
     Exit;
   end;
 
-  Path := '/dps/' + Response.NumeroRps;
+  Path := '/dps/' + Response.idRps;
   Response.ArquivoEnvio := Path;
   Method := 'GET';
 end;
@@ -595,7 +596,7 @@ begin
         { acrescenta a função DecodeToString visando o tratamento correto de
           vogais acentuadas e cedilha.
         }
-        if NFSeXml <> '' then
+        if (NFSeXml <> '') and (Pos('<', NFSeXml) = 0) then
           NFSeXml := DeCompress(DecodeBase64(NFSeXml));
 
         NFSeXml := TrocaEscapeporConchete(NFSeXml);
@@ -673,7 +674,7 @@ begin
 
     xUF := TACBrNFSeX(FAOwner).Configuracoes.WebServices.UF;
 
-    CnpjCpf := OnlyAlphaNum(TACBrNFSeX(FAOwner).Configuracoes.Geral.Emitente.CNPJ);
+    CnpjCpf := OnlyCPFCNPJAlphaNum(TACBrNFSeX(FAOwner).Configuracoes.Geral.Emitente.CNPJ);
     if Length(CnpjCpf) < 14 then
     begin
       xAutorEvento := '<CPFAutor>' +
@@ -747,7 +748,7 @@ begin
     Chave := chNFSe;
 
     nomeArq := '';
-    SalvarXmlEvento(ID + '-pedRegEvento', Response.ArquivoEnvio, nomeArq);
+    SalvarXmlEvento(ID + '-pedRegEvento', Response.ArquivoEnvio, nomeArq, dhEvento);
     Response.PathNome := nomeArq;
   end;
 end;
@@ -781,7 +782,7 @@ begin
 
       EventoXml := Document.AsString['eventoXmlGZipB64'];
 
-      if EventoXml <> '' then
+      if (EventoXml <> '') and (Pos('<', EventoXml) = 0) then
       begin
         EventoXml := DeCompress(DecodeBase64(EventoXml));
 
@@ -830,7 +831,7 @@ begin
             Response.idNota := ObterConteudoTag(ANode.Childrens.FindAnyNs('chNFSe'), tcStr);
 
             nomeArq := '';
-            SalvarXmlEvento(IDEvento + '-procEveNFSe', EventoXml, nomeArq);
+            SalvarXmlEvento(IDEvento + '-procEveNFSe', EventoXml, nomeArq, Response.Data);
             Response.PathNome := nomeArq;
           except
             on E:Exception do
@@ -979,7 +980,7 @@ begin
             Response.idNota := ObterConteudoTag(ANode.Childrens.FindAnyNs('chNFSe'), tcStr);
 
             nomeArq := '';
-            SalvarXmlEvento(IDEvento + '-procEveNFSe', ArquivoXml, nomeArq);
+            SalvarXmlEvento(IDEvento + '-procEveNFSe', ArquivoXml, nomeArq, Response.Data);
             Response.PathNome := nomeArq;
           except
             on E:Exception do
@@ -1144,7 +1145,7 @@ begin
                 Response.idNota := ObterConteudoTag(ANode.Childrens.FindAnyNs('chNFSe'), tcStr);
 
                 nomeArq := '';
-                SalvarXmlEvento(IDEvento + '-procEveNFSe', ArquivoXml, nomeArq);
+                SalvarXmlEvento(IDEvento + '-procEveNFSe', ArquivoXml, nomeArq, Response.Data);
                 Response.PathNome := nomeArq;
 
                 // Monta a Lista de Resumos pois pode conter mais de um evento no retorno
