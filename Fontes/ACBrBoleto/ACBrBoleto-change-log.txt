@@ -48,6 +48,46 @@ Símbolo : Significado
 [+]     : Novo recurso
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
+20/08/2026
+-- ACBrBoletoW_Itau_API --
+[+] Ajustado URL atualização de segurança: https://www.projetoacbr.com.br/forum/topic/94331-aten%C3%A7%C3%A3o-atualiza%C3%A7%C3%A3o-dos-endpoints-e-da-cadeia-de-certificados-das-apis-do-ita%C3%BA-15092026/
+   ACBr-9740: https://www.projetoacbr.com.br/forum/topic/94281-acbr-9740altera%C3%A7%C3%B5es-urls-boleto-itau/
+   Por: Uillian Chagas Prates 
+   
+
+10/08/2026
+-- Particularidades --
+[+] Adiciona descrição do valor "C" para o campo CodigoMora para o Sicredi adicionado na Rev-47349 pelo ValterPatrick 
+   Por: Diego Folieni
+   Veja: https://www.projetoacbr.com.br/forum/topic/93240-acbr-9585-boleto-sicredi-informar-juros-mensais/#comment-609566 
+-- ACBrBoletoW_Safra  --
+[-] Ajustes para funcionar em produção e homologação. 
+   https://www.projetoacbr.com.br/forum/topic/91006-safra-api-conta-e-digito-no-ambiente-de-homologa%C3%A7%C3%A3o/#comment-595652
+   Por: jaidomini
+
+06/08/2026
+-- ACBrBoletoW_Caixa.pas  --
+[-] Ajustes referente alteração e cancelamento do desconto
+   https://www.projetoacbr.com.br/forum/topic/93110-acbr-9561-n%C3%A3o-est%C3%A1-cancelando-desconto-na-api-do-boleto-hibrido-da-caixa/
+   Por: Valter Patrick
+
+06/08/2026
+-- ACBrBoletoW_Bradesco.pas  --
+[-] Ajustes referente a alimentação DataLimitePagto, quando nao informado estava alimentando a propriedade qtdDecurPrz de forma incorreta. 
+   Relatado no canal Corp-ProCel o mesmo validou a minha unit com sucesso
+   Por: Daniel de Morais InfoCotidiano.
+
+04/08/2026
+-- ACBrBancoSicredi, ACBrBoleto ,ACBrBoletoW_Sicredi_APIV2  --
+[*] ACBR-9585 - Ajustes referente ao codigo mora; 
+   Por: Valter Patrick, (Victor H. Gonzales Pandaaa apoiou ACBrBoleto)
+   Veja: https://www.projetoacbr.com.br/forum/topic/93240-acbr-9585-boleto-sicredi-informar-juros-mensais/#comment-609566
+
+30/07/2026
+-- ACBrBoletoW_Bradesco --
+[*] ACBR-9661 - Implementado o indice de continuidade
+   Por: Valter Patrick
+   Veja: https://www.projetoacbr.com.br/forum/topic/93562-acbr-9661-pagina%C3%A7%C3%A3o-consulta-titulos-api-bradesco/
 
 22/07/2026
 -- ACBrBancoSicredi --

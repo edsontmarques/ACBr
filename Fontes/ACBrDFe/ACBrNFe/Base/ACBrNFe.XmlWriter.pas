@@ -1901,6 +1901,7 @@ begin
       tpNFCredito = 03-Retorno por Recusa Total/Não Localização do Destinatário
       tpNFCredito = 04-Redução de valores
       tpNFCredito = 06-Retorno por recusa parcial na entrega
+      tpNFDebito  = 06-Pagamento Antecipado
       tpNFDebito  = 07-Perda em estoque
     A versão anterior desta condição só tratava tpNFCredito=03 (tcRetorno)
     e não considerava tpNFDebito nenhuma exceção, causando XML inconsistente
@@ -1909,7 +1910,7 @@ begin
   if ((not (nfe.Ide.finNFe in [fnCredito, fnDebito]) and
        (nfe.Ide.gCompraGov.tpOperGov <> togRecebimentoPag))
       or (nfe.Ide.tpNFCredito in [tcRetorno, tcReducaoValores, tcRetornoRecusaParcial])
-      or (nfe.Ide.tpNFDebito = tdPerdaEmEstoque)) then
+      or (nfe.Ide.tpNFDebito in [tdPagamentoAntecipado, tdPerdaEmEstoque])) then
   begin
     if ((NFe.Det[i].Imposto.ISSQN.cSitTrib <> ISSQNcSitTribVazio) or
       ((NFe.infNFe.Versao > 3) and (NFe.Det[i].Imposto.ISSQN.cListServ <> ''))) then
@@ -2059,6 +2060,11 @@ begin
             01, 07, 0, NFe.Det[i].Imposto.ICMS.adRemICMS, DSC_ADREMICMS));
           xmlNode.AppendChild(AddNode(tcDe2, 'N15', 'vICMSMonoOp',
             01, 15, 0, NFe.Det[i].Imposto.ICMS.vICMSMonoOp, DSC_VICMSMONOOP));
+
+          xmlNode.AppendChild(AddNode(tcDe4, 'N15', 'qBCMonoDif',
+            01, 15, 0, NFe.Det[i].Imposto.ICMS.qBCMonoDif, DSC_QBCMONODIF));
+          xmlNode.AppendChild(AddNode(tcDe4, 'N15', 'adRemICMSDif',
+            01, 07, 0, NFe.Det[i].Imposto.ICMS.adRemICMSDif, DSC_ADREMICMSDIF));
 
           if NFe.Det[i].Imposto.ICMS.pDif = 100 then
             FormatoAliq4ou2 := tcDe2
@@ -4464,7 +4470,7 @@ function TNFeXmlWriter.Gerar_IBSCBS_gIBSCBS_gDevTrib(
 begin
   Result := FDocument.CreateElement('gDevTrib'); 
 
-  Result.AppendChild(AddNode(tcDe4, '#1', 'pDevTrib', 1, 7, 1,
+  Result.AppendChild(AddNode(tcDe4, '#1', 'pDevTrib', 1, 7, 0,
                                              DevTrib.pDevTrib, DSC_PDEVTRIB));
 
   Result.AppendChild(AddNode(tcDe2, '#2', 'vDevTrib', 1, 15, 1,
