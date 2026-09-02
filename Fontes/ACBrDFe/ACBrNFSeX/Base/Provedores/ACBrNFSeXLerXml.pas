@@ -281,12 +281,7 @@ end;
 
 function TNFSeRClass.NormatizarXml(const aXml: string): string;
 begin
-{$IfDef FPC}
   Result := aXml;
-{$Else}
-  Result := ParseText(aXml);
-  Result := FastStringReplace(Result, '&', '&amp;', [rfReplaceAll]);
-{$EndIf}
 end;
 
 function TNFSeRClass.ObterNomeMunicipioUF(ACodigoMunicipio: Integer; var xUF: string): string;
@@ -1170,6 +1165,7 @@ begin
       Servico.Endereco.Numero := AINIRec.ReadString(sSecao, 'Numero', '');
       Servico.Endereco.xPais := AINIRec.ReadString(sSecao, 'xPais', '');
       Servico.Endereco.UF := AINIRec.ReadString(sSecao, 'UF', '');
+      Servico.Endereco.CodigoMunicipio := Servico.CodigoMunicipio;
 
       // Provedor ISSBarueri
       Servico.LocalPrestacao := StrToLocalPrestacao(Ok, AINIRec.ReadString(sSecao, 'LocalPrestacao', '1'));
@@ -2084,12 +2080,12 @@ begin
   sSecao := 'IBSCBSDPS';
   if AINIRec.SectionExists(sSecao) then
   begin
-    IBSCBS.finNFSe := StrTofinNFSe(AINIRec.ReadString(sSecao, 'finNFSe', ''));
-    IBSCBS.indFinal := StrToindFinal(AINIRec.ReadString(sSecao, 'indFinal', ''));
+    IBSCBS.finNFSe := StrTofinNFSe(AINIRec.ReadString(sSecao, 'finNFSe', '0'));
+    IBSCBS.indFinal := StrToindFinal(AINIRec.ReadString(sSecao, 'indFinal', '1'));
     IBSCBS.cIndOp := AINIRec.ReadString(sSecao, 'cIndOp', '');
     IBSCBS.tpOper := StrTotpOperGovNFSe(AINIRec.ReadString(sSecao, 'tpOper', ''));
     IBSCBS.tpEnteGov := StrTotpEnteGov(AINIRec.ReadString(sSecao, 'tpEnteGov', ''));
-    IBSCBS.indDest := StrToindDest(AINIRec.ReadString(sSecao, 'indDest', ''));
+    IBSCBS.indDest := StrToindDest(AINIRec.ReadString(sSecao, 'indDest', '0'));
 
     // Incluido para atender o provedor SigISSWeb
     IBSCBS.OperExterior := StrToTIndicador(AINIRec.ReadString(sSecao, 'OperExterior', '0'));
