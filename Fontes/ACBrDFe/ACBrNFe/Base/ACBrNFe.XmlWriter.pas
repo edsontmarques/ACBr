@@ -392,7 +392,7 @@ begin
                                                  qrCode, DSC_INFQRCODE, False));
 
     if NFe.infNFe.Versao >= 4 then
-      xmlNode.AppendChild(AddNode(tcStr, 'ZX03', 'urlChave', 21, 85, 1,
+      xmlNode.AppendChild(AddNode(tcStr, 'ZX03', 'urlChave', 21, 100, 1,
                                  NFe.infNFeSupl.urlChave, DSC_URLCHAVE, False));
   end;
 
@@ -1128,16 +1128,16 @@ begin
     AuxNode := Result.Childrens.FindAnyNs('guiaTransito');
 
     AuxNode.AppendChild(AddNode(tcStr, 'ZF06', 'tpGuia', 00, 01, 1,
-                                TtpGuiaToStr(NFe.agropecuario.guiaTransito.tpGuia)));
+                           TtpGuiaToStr(NFe.agropecuario.guiaTransito.tpGuia)));
 
     AuxNode.AppendChild(AddNode(tcStr, 'ZF05', 'UFGuia', 00, 02, 1,
-                                NFe.agropecuario.guiaTransito.UFGuia));
+                                         NFe.agropecuario.guiaTransito.UFGuia));
 
     AuxNode.AppendChild(AddNode(tcStr, 'ZF07', 'serieGuia', 01, 09, 0,
-                                NFe.agropecuario.guiaTransito.serieGuia));
+                                      NFe.agropecuario.guiaTransito.serieGuia));
 
-    AuxNode.AppendChild(AddNode(tcInt, 'ZF08', 'nGuia', 01, 09, 1,
-                                NFe.agropecuario.guiaTransito.nGuia));
+    AuxNode.AppendChild(AddNode(tcStr, 'ZF08', 'nGuia', 01, 09, 1,
+                                          NFe.agropecuario.guiaTransito.nGuia));
   end;
 end;
 
@@ -1901,7 +1901,7 @@ begin
       tpNFCredito = 03-Retorno por Recusa Total/Não Localização do Destinatário
       tpNFCredito = 04-Redução de valores
       tpNFCredito = 06-Retorno por recusa parcial na entrega
-      tpNFDebito  = 06-Pagamento Antecipado
+      tpNFDebito  = 06-Pagamento Antecipado - Incluido pela versão 1.51 da NT.
       tpNFDebito  = 07-Perda em estoque
     A versão anterior desta condição só tratava tpNFCredito=03 (tcRetorno)
     e não considerava tpNFDebito nenhuma exceção, causando XML inconsistente
@@ -1921,10 +1921,13 @@ begin
     end
     else
     begin
-      Result.AppendChild(GerarDetImpostoICMS(i));
+      if nfe.Ide.tpNFDebito <> tdPagamentoAntecipado then
+        Result.AppendChild(GerarDetImpostoICMS(i));
+
       Result.AppendChild(GerarDetImpostoIPI(i));
       Result.AppendChild(GerarDetImpostoII(i));
     end;
+
     Result.AppendChild(GerarDetImpostoPIS(i));
     Result.AppendChild(GerarDetImpostoPISST(i));
     Result.AppendChild(GerarDetImpostoCOFINS(i));

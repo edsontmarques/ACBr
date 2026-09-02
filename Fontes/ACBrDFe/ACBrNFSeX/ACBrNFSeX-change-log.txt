@@ -41,6 +41,83 @@ Símbolo : Significado
 [+]     : Novo recurso
 [*]     : Recurso modificado/melhorado
 [-]     : Correção de Bug (assim esperamos)
+01/09/2026
+[-] ACBR-9790 - Ajuste visando a correta geração do grupo de endereço das atividades de evento.
+    Por: Milton Campanhã / Victor Gonzales
+    Veja: https://www.projetoacbr.com.br/forum/topic/94385-acbr-9790nfse-padr%C3%A3o-nacional-endere%C3%A7o-da-atividadeevento/
+[*] ACBR-9788 - O município de Concordia/SC aderiu ao Padrão Nacional
+	Veja: https://www.projetoacbr.com.br/forum/topic/94526-conc%C3%B3rdiasc-passa-a-usar-provedor-nacional/
+	Por: C4Dev
+
+31/08/2026
+-- ACBrNFSeXServicos --
+[*] ACBR-9769 - O município de Primeiro de Maio/PR aderiu ao Padrão Nacional
+	Veja: https://www.projetoacbr.com.br/forum/topic/94423-primeiro-de-maio-pr-transi%C3%A7%C3%A3o-para-o-emissor-nacional-da-nfs-e/
+	Por: Valmor Moreira/Larissa Santos
+[*] ACBR-9567 - O município de Limeira/SP aderiu ao Padrão Nacional
+	Por: Rodrigo.Pinto/nwsoftware/Larissa Santos
+[*] ACBR-9488 - O município de Novo Hamburgo/RS aderiu ao Padrão Nacional
+	Veja: https://discord.com/channels/798697718800318484/800042186783588364/1515046522520342558
+	Por: Helius_ERP/Larissa Santos
+-- ACBrNFSeXLerXml --
+[*] Não estava lendo corretamente o código do município onde o serviço foi prestado.
+   Por: Italo Giurizzato Junior
+-- Conam.LerXml/Conam.Provider --
+[*] ACBR-9766 - Ajustes para gerar o Reg90 corretamente.
+   Por: Italo Giurizzato Junior
+
+28/08/2026
+-- IPM.LerXml --
+[*] ACBR-9780 - Ajustes para a leitura correta do valor de desconto incondicionado.
+   Por: Italo Giurizzato Junior
+-- DBSeller.Provider/Digifred.Provider/PadraoNacional.Provider/Pronim.Provider --
+[*] ACBR-9771 - Ajustes que ficaram faltando na leitura de retorno de eventos.
+   Por: Paulo Hildebrand Neto/Italo Giurizzato Junior
+
+27/08/2026
+-- ACBrNFSeXServicos --
+[*] Adicionado HomLinkURL na seção ISSNet.
+    Alteração na cidade Getulina/SP para usar o novo webservice do provedor Fiorilli.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXConversao/ACBrNFSeXLerXml/Digifred.Provider/PadraoNacional.Provider/Pronim.Provider --
+[*] ACBR-9771 - Melhorias na leitura de retorno de eventos.
+   Por: Paulo Hildebrand Neto/Italo Giurizzato Junior
+
+26/08/2026
+-- ISSNet.Provider --
+[*] ACBR-9763/ACBR-9770 - Troca do ParseText pela função DecodeHTMLEntities.
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeXLerXml --
+[*] ACBR-9763/ACBR-9770 - Remoção do ParseText da função NormatizarXml.
+    Se for necessário alguma ação a referida função vai ser sobrescrita na unit de leitura
+    do XML do provedor.
+   Por: Italo Giurizzato Junior
+-- ISSSaoPaulo.GravarXml --
+[*] Removida geração do PagamentoParceladoAntecipado conforme o Alerta: 648-O campo PagamentoParceladoAntecipado nao sera mais utilizado e os valores enviados serao desconsiderados
+   Por: Renato Rubinho
+
+25/08/2026
+-- ACBrNFSeXServicos --
+[*] Adicionado parametro para cidade de Araras
+https://www.projetoacbr.com.br/forum/topic/94421-acbrnfsex-ararassp-3503307-sigissweb-%E2%80%94-incluir-paramsformataritemservicosemzeroesquerda/
+	Por: Alexandre de Paula e cezar.sakugawa
+
+25/08/2026
+-- ACBrNFSeXProviderABRASFv1/ACBrNFSeXProviderABRASFv2 --
+[*] Ajustes para o CNPJ Alfa.
+   Por: Italo Giurizzato Junior
+-- IPM.GravarXml --
+[*] Alteração visando gerar a tag cLocalidadeIncid para a versão 2.04
+   Por: Italo Giurizzato Junior
+-- ACBrNFSeX --
+[*] ACBR-9752 - Incluído o parâmetro ACodigoMunicipio no ConsultarParametros.
+   Por: Armando Boza
+-- ACBrNFSeXServicos --
+[*] ACBR-9763 - Incluído o Link para gerar o QR-Code - Provedor ISSNet (Padrão Nacional)
+   Por: Intelelecto Programação
+-- ISSNet.Provider --
+[*] ACBR-9763 - Ajustes na leitura do retorno.
+   Por: Intelelecto Programação
 
 24/08/2026
 -- ACBrNFSeXConversao/ACBrNFSeXProviderManager --
