@@ -41,7 +41,7 @@ interface
 uses
   SysUtils, Classes, Forms, DB, DBClient, Graphics,
   ACBrNFe.EnvEvento,
-  ACBrNFe.RetInut, ACBrNFe.Classes, pcnConversao,
+  ACBrNFe.RetInut, ACBrNFe.Classes, ACBrDFe.Conversao,
   ACBrDFeReport, ACBrDFeDANFeReport, ACBrNFeDANFEClass,
   frxClass, frxExportPDF, frxDBSet, frxBarcode,
   ACBrUtil.FR;
@@ -539,6 +539,10 @@ begin
         FieldDefs.Add('VTribPerc'   , ftFloat);
         FieldDefs.Add('VTribFonte'  , ftString, 100);
         FieldDefs.Add('vTotPago'    , ftFloat);
+        FieldDefs.Add('vNFTot'      , ftFloat);
+        FieldDefs.Add('vCBS'        , ftFloat);
+        FieldDefs.Add('vIBS'        , ftFloat);
+        FieldDefs.Add('vIS'         , ftFloat);
         FieldDefs.Add('vTroco'      , ftFloat);
         FieldDefs.Add('ValorApagar' , ftFloat);
         FieldDefs.Add('VFCP'        , ftFloat);
@@ -952,7 +956,7 @@ begin
       FieldByName('VOutro').AsFloat       := VOutro;
       FieldByName('VNF').AsFloat          := VNF;
 
-      if (FDANFEClassOwner.ImprimeTributos = trbNormal) or (FNFe.Ide.Modelo = 65)  then
+      if (FDANFEClassOwner.ImprimeTributos = trbNormal) or (FNFe.Ide.Modelo = 65) or ((FNFe.Ide.Modelo = 55) and (FNFe.Ide.tpImp = tiSimplificadoTipo2)) then
         FieldByName('VTotTrib').AsFloat     := VTotTrib;
 
       FieldByName('ValorApagar').AsFloat  := VNF;
@@ -978,6 +982,11 @@ begin
         lvTroco := TACBrNFeDANFCEClass(FDANFEClassOwner).vTroco;
       FieldByName('vTroco').AsCurrency    := lvTroco;
       FieldByName('vTotPago').AsCurrency  := lvTroco + vNF;
+
+      FieldByName('vNFTot').AsCurrency  := FNFe.Total.vNFTot;
+      FieldByName('vCBS').AsCurrency    := FNFe.Total.IBSCBSTot.gCBS.vCBS;
+      FieldByName('vIBS').AsCurrency    := FNFe.Total.IBSCBSTot.gIBS.vIBS;
+      FieldByName('vIS').AsCurrency     := FNFe.Total.ISTot.vIS;
     end;
 
     Post;
@@ -1168,7 +1177,7 @@ begin
 
       FieldByName('Consumidor').AsString := '';
 
-      if (cdsIdentificacao.FieldByName('Mod_').AsString = '65') then
+      if ((FNFe.Ide.Modelo = 65) or ((FNFe.Ide.Modelo = 55) and (FNFe.Ide.tpImp = tiSimplificadoTipo2))) then
       begin
         if NaoEstaVazio(idEstrangeiro) then
           FieldByName('Consumidor').AsString := 'ESTRANGEIRO: ' + Trim(FieldByName('CNPJCPF').AsString) + ' ' + trim(FieldByName('XNome').AsString)
@@ -1407,9 +1416,9 @@ begin
     FieldByName('TpNF').AsString    := tpNFToStr( FNFe.Ide.TpNF );
     FieldByName('CMunFG').AsString  := IntToStr(FNFe.Ide.CMunFG);
     FieldByName('TpImp').AsString   := TpImpToStr( FNFe.Ide.TpImp );
-    FieldByName('TpEmis').AsString  := TpEmisToStr( FNFe.Ide.TpEmis );
+    FieldByName('TpEmis').AsString  := TipoEmissaoToStr( FNFe.Ide.TpEmis );
     FieldByName('CDV').AsString     := IntToStr(FNFe.Ide.CDV);
-    FieldByName('TpAmb').AsString   := TpAmbToStr( FNFe.Ide.TpAmb );
+    FieldByName('TpAmb').AsString   := TipoAmbienteToStr( FNFe.Ide.TpAmb );
     FieldByName('FinNFe').AsString  := FinNFeToStr( FNFe.Ide.FinNFe );
     FieldByName('ProcEmi').AsString := procEmiToStr( FNFe.Ide.ProcEmi );
     FieldByName('VerProc').AsString := FNFe.Ide.VerProc;
@@ -1419,15 +1428,15 @@ begin
     else
       FieldByName('HoraSaida').AsString := ifthen(TimeOf(FNFe.ide.dSaiEnt)=0, '', TimeToStr(FNFe.ide.dSaiEnt));
 
-    if (FNFe.Ide.Modelo = 65) then
+    if ((FNFe.Ide.Modelo = 65) or ((FNFe.Ide.Modelo = 55) and (FNFe.Ide.tpImp = tiSimplificadoTipo2))) then
     begin
       FieldByName('DEmi').AsString := FormatDateTimeBr(FNFe.Ide.DEmi);
 
       if (FNFe.Ide.tpEmis <> teNormal) and EstaVazio(FNFe.procNFe.nProt) then
-        FieldByName('MensagemFiscal').AsString := ACBrStr('EMITIDA EM CONTINGÊNCIA'+LineBreak+'Pendente de autorização');
+        FieldByName('MensagemFiscal').AsString := ACBrStr('EMITIDA EM CONTINGÊNCIA'+sLineBreak+'Pendente de autorização');
 
       if FNFe.Ide.TpAmb = taHomologacao then
-        FieldByName('MensagemFiscal').AsString := FieldByName('MensagemFiscal').AsString+LineBreak+LineBreak+ACBrStr('EMITIDA EM AMBIENTE DE HOMOLOGAÇÃO - SEM VALOR FISCAL');
+        FieldByName('MensagemFiscal').AsString := FieldByName('MensagemFiscal').AsString+sLineBreak+sLineBreak+ACBrStr('EMITIDA EM AMBIENTE DE HOMOLOGAÇÃO - SEM VALOR FISCAL');
 
       //if EstaVazio(FieldByName('MensagemFiscal').AsString) then
       //  FieldByName('MensagemFiscal').AsString := ACBrStr('ÁREA DE MENSAGEM FISCAL');
@@ -2051,7 +2060,7 @@ begin
          FieldByName('cStat').AsInteger     := cStat;
          FieldByName('xMotivo').AsString    := xMotivo;
          FieldByName('dhRecbto').AsDateTime := dhRecbto;
-         FieldByName('cUF').AsString        := CUFtoUF(cUF);
+         FieldByName('cUF').AsString        := CodigoUFParaUF(cUF);
 
          case tpAmb of
             taProducao:    FieldByName('tpAmb').AsString := ACBrStr('PRODUÇÃO');
@@ -2314,6 +2323,41 @@ procedure TACBrNFeFRClass.frxReportBeforePrint(Sender: TfrxReportComponent);
 var
   qrcode: String;
   CpTituloReport, CpLogomarca, CpDescrProtocolo, CpTotTrib, CpContingencia1, CpContingencia2 : TfrxComponent;
+  procedure MontarDanfce;
+  begin
+    CpTituloReport := frxReport.FindObject('ReportTitle1');
+    if Assigned(CpTituloReport) then
+      CpTituloReport.Visible := cdsParametros.FieldByName('Imagem').AsString <> '';
+
+    CpLogomarca := frxReport.FindObject('ImgLogo');
+    if Assigned(CpLogomarca) and Assigned(CpTituloReport) then
+      CpLogomarca.Visible := CpTituloReport.Visible;
+
+    if EstaVazio(Trim(NFe.infNFeSupl.qrCode)) then
+      qrcode := TACBrNFe(DANFEClassOwner.ACBrNFe).GetURLQRCode(NFe)
+    else
+      qrcode := NFe.infNFeSupl.qrCode;
+
+    if Assigned(Sender) and (LeftStr(Sender.Name, 9) = 'ImgQrCode') then
+      PintarQRCode(qrcode, TfrxPictureView(Sender).Picture{$IFNDEF FMX}.Bitmap{$ENDIF}, qrUTF8NoBOM);
+
+    CpDescrProtocolo := frxReport.FindObject('Memo25');
+    if Assigned(CpDescrProtocolo) then
+      CpDescrProtocolo.Visible := cdsParametros.FieldByName('Contingencia_Valor').AsString <> '';
+
+    CpTotTrib := frxReport.FindObject('ValorTributos');
+    if Assigned(CpTotTrib) then
+      CpTotTrib.Visible := cdsCalculoImposto.FieldByName('VTotTrib').AsFloat > 0;
+
+    // ajusta Informação de contingência no NFCe
+    CpContingencia1 := frxReport.FindObject('ChildContingenciaCabecalho');
+    if Assigned(CpContingencia1) then
+      CpContingencia1.Visible := FNFe.Ide.tpEmis <> teNormal;
+
+    CpContingencia2 := frxReport.FindObject('ChildContingenciaIdentificacao');
+    if Assigned(CpContingencia2) then
+      CpContingencia2.Visible := FNFe.Ide.tpEmis <> teNormal;
+  end;
 begin
 
   qrCode := '';
@@ -2331,42 +2375,11 @@ begin
                   if Assigned(CpLogomarca) and Assigned(CpTituloReport) then
                     CpLogomarca.Visible := CpTituloReport.Visible;
                 end;
+              tiSimplificadoTipo2 : MontarDanfce;
+
             end;
 
-      65 :  begin
-              CpTituloReport := frxReport.FindObject('ReportTitle1');
-              if Assigned(CpTituloReport) then
-                CpTituloReport.Visible := cdsParametros.FieldByName('Imagem').AsString <> '';
-
-              CpLogomarca := frxReport.FindObject('ImgLogo');
-              if Assigned(CpLogomarca) and Assigned(CpTituloReport) then
-                CpLogomarca.Visible := CpTituloReport.Visible;
-
-              if EstaVazio(Trim(NFe.infNFeSupl.qrCode)) then
-                qrcode := TACBrNFe(DANFEClassOwner.ACBrNFe).GetURLQRCode(NFe)
-              else
-                qrcode := NFe.infNFeSupl.qrCode;
-
-              if Assigned(Sender) and (LeftStr(Sender.Name, 9) = 'ImgQrCode') then
-                PintarQRCode(qrcode, TfrxPictureView(Sender).Picture{$IFNDEF FMX}.Bitmap{$ENDIF}, qrUTF8NoBOM);
-
-              CpDescrProtocolo := frxReport.FindObject('Memo25');
-              if Assigned(CpDescrProtocolo) then
-                CpDescrProtocolo.Visible := cdsParametros.FieldByName('Contingencia_Valor').AsString <> '';
-
-              CpTotTrib := frxReport.FindObject('ValorTributos');
-              if Assigned(CpTotTrib) then
-                CpTotTrib.Visible := cdsCalculoImposto.FieldByName('VTotTrib').AsFloat > 0;
-
-              // ajusta Informação de contingência no NFCe
-              CpContingencia1 := frxReport.FindObject('ChildContingenciaCabecalho');
-              if Assigned(CpContingencia1) then
-                CpContingencia1.Visible := FNFe.Ide.tpEmis <> teNormal;
-
-              CpContingencia2 := frxReport.FindObject('ChildContingenciaIdentificacao');
-              if Assigned(CpContingencia2) then
-                CpContingencia2.Visible := FNFe.Ide.tpEmis <> teNormal;
-            end;
+      65 :  MontarDanfce;
     end;
   end;
 end;

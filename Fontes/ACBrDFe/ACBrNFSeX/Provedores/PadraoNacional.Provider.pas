@@ -423,7 +423,7 @@ var
 
         ANode := DocumentXml.Root.Childrens.FindAnyNs('infNFSe');
 
-        CodVerif := OnlyNumber(ObterConteudoTag(ANode.Attributes.Items['Id']));
+        CodVerif := RemoverLiteralChave(ObterConteudoTag(ANode.Attributes.Items['Id']));
         NumNFSe := ObterConteudoTag(ANode.Childrens.FindAnyNs('nNFSe'), tcStr);
         DataAut := ObterConteudoTag(ANode.Childrens.FindAnyNs('dhProc'), tcDatHor);
 
@@ -1137,6 +1137,8 @@ begin
 
                 ANota := CarregarXmlNfse(ANota, DocumentXml.Root.OuterXml);
                 SalvarXmlNfse(ANota);
+                AResumo.NomeArq := ANota.NomeArq;
+                AResumo.XmlRetorno := ANota.XMLNFSe;
               except
                 on E:Exception do
                 begin
@@ -1184,6 +1186,8 @@ begin
                 AResumo.idEvento := Response.idEvento;
                 AResumo.tpEvento := Response.tpEvento;
                 AResumo.idNota := Response.idNota;
+                AResumo.NomeArq := ANota.NomeArq;
+                AResumo.XmlRetorno := ANota.XMLNFSe;
               except
                 on E:Exception do
                 begin

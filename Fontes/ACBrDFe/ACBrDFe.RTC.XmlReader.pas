@@ -82,6 +82,8 @@ type
     procedure Ler_pgtoVinc(const ANode: TACBrXmlNode; pgtoVinc: TpgtoVinc);
     procedure Ler_pgto(const ANode: TACBrXmlNode; pgto: TpgtoCollection);
 
+    procedure Ler_gIBSCBSSemProcJur(const ANode: TACBrXmlNode; gIBSCBS: TgIBSCBSSemProcJud);
+
     // Usado pela NF-e
     procedure Ler_gCompraGov(const ANode: TACBrXmlNode; gCompraGov: TgCompraGov);
     procedure Ler_gPagAntecipado(const ANode: TACBrXmlNode; gPagAntecipado: TgPagAntecipado);
@@ -199,6 +201,11 @@ procedure TDFeRTCXmlReader.Ler_gIBSCBS(const ANode: TACBrXmlNode; gIBSCBS: TgIBS
 begin
   if not Assigned(ANode) then Exit;
 
+  gIBSCBS.vOperacIndiv := ObterConteudo(ANode.Childrens.Find('vOperacIndiv'), tcDe2);
+  gIBSCBS.vTornaIndiv := ObterConteudo(ANode.Childrens.Find('vTornaIndiv'), tcDe2);
+  gIBSCBS.vRedAjusteIndiv := ObterConteudo(ANode.Childrens.Find('vRedAjusteIndiv'), tcDe2);
+  gIBSCBS.vRedSocialIndiv := ObterConteudo(ANode.Childrens.Find('vRedSocialIndiv'), tcDe2);
+
   gIBSCBS.vBC := ObterConteudo(ANode.Childrens.Find('vBC'), tcDe2);
   gIBSCBS.vIBS := ObterConteudo(ANode.Childrens.Find('vIBS'), tcDe2);
 
@@ -270,7 +277,7 @@ begin
   if not Assigned(ANode) then Exit;
 
   gRed.pRedAliq := ObterConteudo(ANode.Childrens.Find('pRedAliq'), tcDe4);
-  gRed.pAliqEfet := ObterConteudo(ANode.Childrens.Find('pAliqEfet'), tcDe2);
+  gRed.pAliqEfet := ObterConteudo(ANode.Childrens.Find('pAliqEfet'), tcDe4);
 end;
 
 procedure TDFeRTCXmlReader.Ler_gTribRegular(const ANode: TACBrXmlNode;
@@ -312,10 +319,15 @@ end;
 
 procedure TDFeRTCXmlReader.Ler_gALCZFMCBS(const ANode: TACBrXmlNode;
   gALCZFMCBS: TgALCZFMCBS);
+var
+  sAux: string;
 begin
   if not Assigned(ANode) then Exit;
 
-  gALCZFMCBS.tpALCZFMCBS := StrTotpALCZFMCBS(ObterConteudo(ANode.Childrens.Find('tpALCZFMCBS'), tcStr));
+  sAux := ObterConteudo(ANode.Childrens.Find('tpALCZFMCBS'), tcStr);
+  if sAux <> '' then
+    gALCZFMCBS.tpALCZFMCBS := StrTotpALCZFMCBS(sAux);
+
   gALCZFMCBS.nProcSuframa := ObterConteudo(ANode.Childrens.Find('nProcSuframa'), tcStr);
   gALCZFMCBS.pAliqEfetRegCBS := ObterConteudo(ANode.Childrens.Find('pAliqEfetRegCBS'), tcDe4);
   gALCZFMCBS.vTribRegCBS := ObterConteudo(ANode.Childrens.Find('vTribRegCBS'), tcDe2);
@@ -397,6 +409,10 @@ begin
   if not Assigned(ANode) then Exit;
 
   ANodes := ANode.Childrens.FindAll('pgto');
+
+  if ANodes = nil then
+    ANodes := ANode.Childrens.FindAll('gPgto');
+
   for i := 0 to Length(ANodes) - 1 do
   begin
     Ler_pgto(ANodes[i], pgtoVinc.pgto);
@@ -417,7 +433,18 @@ begin
 
   Item.tpMeioPgto := ObterConteudo(ANode.Childrens.Find('tpMeioPgto'), tcStr);
   Item.CNPJReceb := ObterConteudo(ANode.Childrens.Find('CNPJReceb'), tcStr);
-  Item.CNPJBasePSP := ObterConteudo(ANode.Childrens.Find('CNPJBasePSP'), tcDe2);
+  Item.CNPJBasePSP := ObterConteudo(ANode.Childrens.Find('CNPJBasePSP'), tcStr);
+end;
+
+procedure TDFeRTCXmlReader.Ler_gIBSCBSSemProcJur(const ANode: TACBrXmlNode;
+  gIBSCBS: TgIBSCBSSemProcJud);
+begin
+  if not Assigned(ANode) then Exit;
+
+  gIBSCBS.vBC := ObterConteudo(ANode.Childrens.Find('vBC'), tcDe2);
+  gIBSCBS.vIBSUF := ObterConteudo(ANode.Childrens.Find('vIBSUF'), tcDe2);
+  gIBSCBS.vIBSMun := ObterConteudo(ANode.Childrens.Find('vIBSMun'), tcDe2);
+  gIBSCBS.vCBS := ObterConteudo(ANode.Childrens.Find('vCBS'), tcDe2);
 end;
 
 // Usado pela NF-e
@@ -468,7 +495,7 @@ begin
   ISel.cClassTribIS := ObterConteudo(ANode.Childrens.Find('cClassTribIS'), tcStr);
   ISel.vBCIS := ObterConteudo(ANode.Childrens.Find('vBCIS'), tcDe2);
   ISel.pIS := ObterConteudo(ANode.Childrens.Find('pIS'), tcDe2);
-  ISel.pISEspec := ObterConteudo(ANode.Childrens.Find('pISEspec'), tcDe2);
+  ISel.adRemIS := ObterConteudo(ANode.Childrens.Find('adRemIS'), tcDe4);
   ISel.uTrib := ObterConteudo(ANode.Childrens.Find('uTrib'), tcStr);
   ISel.qTrib := ObterConteudo(ANode.Childrens.Find('qTrib'), tcDe4);
   ISel.vIS := ObterConteudo(ANode.Childrens.Find('vIS'), tcDe2);

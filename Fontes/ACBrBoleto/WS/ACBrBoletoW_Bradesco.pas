@@ -738,8 +738,11 @@ begin
     Exit;
   LJsonObject := TACBrJSONObject.Create;
   try
-    LJsonObject.AddPair('registrarTitulo', 1); //1 = Registrar o título 2 = Somente consistir dados do título
-    LJsonObject.AddPair('codUsuario', 'APISERVIC');//FIXO.
+    if Boleto.Cedente.CedenteWS.IndicadorPix then
+    begin
+      LJsonObject.AddPair('registrarTitulo', 1); //1 = Registrar o título 2 = Somente consistir dados do título
+      LJsonObject.AddPair('codUsuario', 'APISERVIC');//FIXO.
+    end;
     if Boleto.Cedente.TipoInscricao = pJuridica then
     begin
       LJsonObject.AddPair('nroCpfCnpjBenef',    Copy(OnlyCPFCNPJAlphaNum(Boleto.Cedente.CNPJCPF), 1, 8));
@@ -752,7 +755,11 @@ begin
       LJsonObject.AddPair('digCpfCnpjBenef',  Copy(OnlyCPFCNPJAlphaNum(Boleto.Cedente.CNPJCPF), 10, 2));
     end;
     if ATitulo.DataLimitePagto > 0 then
-       LJsonObject.AddPair('qtdDecurPrz', DaysBetween(ATitulo.Vencimento, ATitulo.DataLimitePagto));
+      LJsonObject.AddPair('qtdDecurPrz', DaysBetween(ATitulo.Vencimento, ATitulo.DataLimitePagto))
+    else
+      if Boleto.Configuracoes.WebService.Ambiente <> tawsProducao then
+        LJsonObject.AddPair('qtdDecurPrz', '00');
+
     LJsonObject.AddPair('tipoAcesso', 2);//FIXO.
     LJsonObject.AddPair('cpssoaJuridContr', 0);//FIXO.
     LJsonObject.AddPair('ctpoContrNegoc', 0);//FIXO.
@@ -771,18 +778,19 @@ begin
       LJsonObject.AddPair('ctitloCobrCdent', OnlyNumber(ATitulo.NossoNumero));//LEGADO
 
     //ctitloCliCdent: Identificador do título pelo beneficiário(Seu Número).
+    //if Boleto.Cedente.CedenteWS.IndicadorPix then
+      //LJsonObject.AddPair('ctitloCliCdent', ATitulo.SeuNumero)
+    //else
     LJsonObject.AddPair('ctitloCliCdent', Trim(IfThen(ATitulo.NumeroDocumento <> '',
-                                           ATitulo.NumeroDocumento,
-                                           IfThen(ATitulo.SeuNumero <> '',
-                                                  ATitulo.SeuNumero,
-                                                  OnlyNumber(ATitulo.NossoNumero)))));
+                                             ATitulo.NumeroDocumento,
+                                             IfThen(ATitulo.SeuNumero <> '',
+                                                    ATitulo.SeuNumero,
+                                                    OnlyNumber(ATitulo.NossoNumero)))));
+
     LJsonObject.AddPair('demisTitloCobr', DateTimeToDateBradesco(ATitulo.DataDocumento));
     LJsonObject.AddPair('dvctoTitloCobr', DateTimeToDateBradesco(ATitulo.Vencimento));
     LJsonObject.AddPair('cidtfdTpoVcto', 0);//FIXO.
 
-    //data limite pagto
-    if ATitulo.DataLimitePagto > 0 then
-     LJsonObject.AddPair('dataLimitePgt10', DateTimeToDateBradesco(ATitulo.DataLimitePagto));
     // A propriedade cindcdEconmMoeda só existe no boleto com QrCode/Hibrido tanto no legado/portal dev
     // Segundo manual do portal DEV QrCode v1.8.1 e Convencional v1.7.0
 //	if Boleto.Configuracoes.WebService.UseCertificateHTTP then // Portal Developers
@@ -794,12 +802,12 @@ begin
 
     LJsonObject.AddPair('vnmnalTitloCobr', ATitulo.ValorDocumento*100);
     LJsonObject.AddPair('qmoedaNegocTitlo', 0);//FIXO.
-    LJsonObject.AddPair('cespceTitloCobr', EspecieDocumento);
+    LJsonObject.AddPair('cespceTitloCobr', IntToStrZero(EspecieDocumento,2));
     LJsonObject.AddPair('cindcdAceitSacdo', 'N');
    //ctpoProteTitlo: Tipo de protesto automático do título: 1 = Dias corridos | 2 = Dias úteis.
     LJsonObject.AddPair('ctpoProteTitlo', 0);//NÃO Obrigatório;
     //Quantidade de dias após o vencimento, para protesto automático. Obrigatório? Sim, caso informado ctpoProteTitlo.
-    LJsonObject.AddPair('ctpoPrzProte', 0);
+
     //Tipo decurso de protesto: 1 = Dias corridos | 2 = Dias úteis. Obrigatório? Sim, caso informado ctpoProteTitlo.
     LJsonObject.AddPair('ctpoProteDecurs', 0);
     LJsonObject.AddPair('ctpoPrzDecurs', 0);//FIXO.
@@ -1481,6 +1489,7 @@ begin
 
   AJsonObject.AddPair('ctpoProteTitlo', LTipoProtesto);
   AJsonObject.AddPair('ctpoPrzProte', LDiasProtesto);
+  AJsonObject.AddPair('ctpoProteDecurs', LTipoProtesto);  
 end;
 
 procedure TBoletoW_Bradesco.GerarProtestoOuNegativacao(
@@ -1674,12 +1683,17 @@ function TBoletoW_Bradesco.AgenciaContaFormatada(const APadding : Integer) : Str
 var
   LAgencia, LConta, LZeros : String;
 begin
-  LConta := RemoveZerosEsquerda(ATitulo.ACBrBoleto.Cedente.Conta);
-  LAgencia := ATitulo.ACBrBoleto.Cedente.Agencia;
+  if Boleto.Configuracoes.WebService.Ambiente = tawsProducao then
+  begin
+    LConta := RemoveZerosEsquerda(ATitulo.ACBrBoleto.Cedente.Conta);
+    LAgencia := ATitulo.ACBrBoleto.Cedente.Agencia;
 
-  LZeros := Poem_Zeros('0',APadding - (Length(LAgencia) + Length(LConta)));
+    LZeros := Poem_Zeros('0',APadding - (Length(LAgencia) + Length(LConta)));
 
-  Result := LAgencia + LZeros + LConta;
+    Result := LAgencia + LZeros + LConta;
+  end
+  else
+    Result := '111111111111111111';
 end;
 
 function TBoletoW_Bradesco.AjustaFormatacaoValorNominal(const AValue: String): String;
