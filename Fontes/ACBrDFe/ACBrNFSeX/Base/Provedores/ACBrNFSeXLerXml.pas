@@ -178,6 +178,7 @@ implementation
 uses
   synautil,
   StrUtils, StrUtilsEx,
+  ACBrNFSeX,
   ACBrJSON,
 //  ACBrNFSeX.LerIni,
   ACBrUtil.Strings,
@@ -375,6 +376,9 @@ begin
      (Pos('{', LDiscriminacao) > 0) and (Pos('}', LDiscriminacao) > 0) then
   begin
     FpAOwner.ConfigGeral.DetalharServico := True;
+    // Limpa a lista para evitar duplicidade ao fazer a leitura do XML com o
+    // componente já carregado.
+    NFSe.Servico.ItemServico.Clear;
 
     if Pos('":', LDiscriminacao) > 0 then
       LerListaJson(LDiscriminacao)
@@ -923,6 +927,7 @@ begin
       DeducaoMateriais := FpAOwner.StrToSimNao(Ok, AINIRec.ReadString(sSecao, 'DeducaoMateriais', ''));
       // Provedor SigISSWeb
       NFSe.verAplic := AINIRec.ReadString(sSecao, 'verAplic', 'ACBrNFSeX-1.00');
+      NFSe.chNFSeRej := AINIRec.ReadString(sSecao, 'chNFSeRej', '');
     end;
 
     sSecao := 'RpsSubstituido';
@@ -1510,6 +1515,8 @@ begin
 
       //Padrão Nacional
       Servico.Valores.ValorRecebido := StringToFloatDef(AINIRec.ReadString(sSecao, 'ValorRecebido', ''), 0);
+      Servico.Valores.pAjusteBCISSQN := StringToFloatDef(AINIRec.ReadString(sSecao, 'pAjusteBCISSQN', ''), 0);
+      Servico.Valores.vAjusteBCISSQN := StringToFloatDef(AINIRec.ReadString(sSecao, 'vAjusteBCISSQN', ''), 0);
 
       // Provedor Infisc
       Servico.Valores.totalAproxTrib := StringToFloatDef(AINIRec.ReadString(sSecao, 'totalAproxTrib', ''), 0);

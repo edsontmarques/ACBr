@@ -378,10 +378,13 @@ end;
 
 function TNFSeW_Giss204.GerarXMLTributacaoFederal: TACBrXmlNode;
 begin
-  Result := CreateElement('tribFed');
+  Result := nil;
 
   if NFSe.Servico.Valores.tribFed.CST <> cstVazio then
+  begin
+    Result := CreateElement('tribFed');
     Result.AppendChild(GerarXMLTributacaoOutrosPisCofins);
+  end;
   {
   if (NFSe.Servico.Valores.tribFed.vRetCP > 0) or
      (NFSe.Servico.Valores.tribFed.vRetIRRF > 0) or
@@ -448,9 +451,7 @@ begin
     Result.AppendChild(AddNode(tcStr, '#1', 'indTotTrib', 1, 1, 1,
                   indTotTribToStr(NFSe.Servico.Valores.totTrib.indTotTrib), ''))
   else
-  if (NFSe.Servico.Valores.totTrib.pTotTribFed > 0) or
-     (NFSe.Servico.Valores.totTrib.pTotTribEst > 0) or
-     (NFSe.Servico.Valores.totTrib.pTotTribMun > 0) then
+  if NFSe.OptanteSimplesNacional = snNao then
     Result.AppendChild(GerarXMLPercentualTotalTributos)
   else
     Result.AppendChild(AddNode(tcDe2, '#1', 'pTotTribSN', 1, 5, 1,
